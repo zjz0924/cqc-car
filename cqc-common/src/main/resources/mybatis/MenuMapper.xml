@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wow.common.dao.MenuDao">
+	<resultMap id="BaseResultMap" type="cn.wow.common.domain.Menu">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="logo" property="logo" jdbcType="VARCHAR" />
+		<result column="p_id" property="pId" jdbcType="BIGINT" />
+		<result column="sort_num" property="sortNum" jdbcType="INTEGER" />
+		<result column="is_parent" property="isParent" jdbcType="CHAR" />
+		<result column="alias" property="alias" jdbcType="VARCHAR" />
+		<collection property="subList" javaType="ArrayList" column="id" ofType="Attachment"  select="cn.wow.common.dao.MenuDao.getSubList"/>
+	</resultMap>
+	
+	<sql id="base_columns">
+		id, name, url, logo, p_id, sort_num, is_parent,alias
+	</sql>
+	
+	<select id="getMenuList" resultMap="BaseResultMap">
+	  	select <include refid="base_columns" /> from menu where is_parent = 'Y' order by sort_num asc
+	</select>
+	
+	<select id="getSubList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+		select <include refid="base_columns" /> from menu where is_parent = 'N' and p_id = #{id, jdbcType=BIGINT} order by sort_num asc
+	</select>
+
+</mapper>
