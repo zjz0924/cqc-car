@@ -249,6 +249,12 @@ function checkEmail(email) {
 }
 
 
+/**
+ * 自适应高度
+ */
+function adjustHeight(){
+	window.parent.adapter(document.body.scrollHeight + 10);
+}
 
 
 

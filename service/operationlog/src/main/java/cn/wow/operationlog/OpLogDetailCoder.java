@@ -23,6 +23,12 @@ public class OpLogDetailCoder
    public final static String KEY_ENTITYTYPE = "ENTITYTYPE";
 
    public final static String KEY_OPERATION = "OPERATION";
+   
+   public final static String KEY_FROM = "from";
+   
+   public final static String KEY_TO = "to";
+   
+   public final static String KEY_NAME = "name";
 
    /**
     * Encode the job detail information for a creation operation

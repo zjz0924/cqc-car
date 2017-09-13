@@ -14,7 +14,8 @@ public enum ServiceType implements Serializable {
 	ACCOUNT("Account"), 
 	USER_LOGIN("User Login"),
 	USER_LOGOUT("User Logout"), 
-	ROLE("Role");
+	ROLE("Role"),
+	AREA("Area");
 
 	private String displayName;
 

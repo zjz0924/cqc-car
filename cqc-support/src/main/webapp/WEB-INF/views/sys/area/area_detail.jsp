@@ -10,10 +10,6 @@
 	<%@include file="../../common/source.jsp"%>
 	
 	<script type="text/javascript">
-		$(function(){
-		
-		});
-	
 		function save(){
 			var name = $("#name").val();
 			
@@ -26,13 +22,15 @@
 				url: "${ctx}/area/save?time=" + new Date(),
 				data: {
 					"text": name,
-					"desc": $("#desc").val()
+					"desc": $("#desc").val(),
+					"id": "${id}",
+					"parentid": "${parentid}"
 				},
 				success:function(data){
 					if(data.success){
-						tipMsg(data.msg, function(){
-							
-						});
+						artDialog.data("currentNodeId", data.data);
+						artDialog.data("result", data.msg);
+						art.dialog.close();
 					}else{
 						errorMsg(data.msg);
 					}

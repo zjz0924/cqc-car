@@ -121,6 +121,15 @@ public class OperationLogController extends AbstractController {
 				
 				dataList = toFacade(newJsonDetail, oldJsonDetail);
 				model.addAttribute("operation", strMap.get(OpLogDetailCoder.KEY_OPERATION));
+			}else{
+				if(strMap.get(OpLogDetailCoder.KEY_FROM) != null){
+					FieldValue val = new FieldValue();
+					val.setName(strMap.get(OpLogDetailCoder.KEY_NAME));
+					val.setNewValue(strMap.get(OpLogDetailCoder.KEY_TO));
+					val.setOldValue(strMap.get(OpLogDetailCoder.KEY_FROM));
+					
+					dataList.add(val);
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -6,7 +6,7 @@ public enum OperationType implements Serializable {
 
    CREATE("Create", LogLevel.ONLYNEW), UPDATE("Update", LogLevel.BOTH),
    DELETE("Delete", LogLevel.ONLYOLD), SAVE("Save", LogLevel.BOTH),
-   LOGIN("Login"), LOGOUT("Logout"),
+   LOGIN("Login"), LOGOUT("Logout"), MOVE("Move"),
    // will not use in code
    UNKNOWN("Unknown");
 

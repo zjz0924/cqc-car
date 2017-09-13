@@ -21,7 +21,7 @@
 
 	<!-- 获取子节点 -->
 	<select id="selectSubList" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="base_columns" /> from area where parentid = #{id}
+		select <include refid="base_columns" /> from area where parentid = #{id} order by name asc
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -29,7 +29,10 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Area">
-		insert into area (name, parentid, desc, create_time)
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+		    SELECT @@IDENTITY
+		</selectKey>
+		insert into area (name, parentid, `desc`, create_time)
 			values (#{name,jdbcType=VARCHAR}, #{parentid,jdbcType=BIGINT}, #{desc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
 	</insert>
 	
@@ -42,7 +45,7 @@
 			<if test="parentid != null">
 				parentid = #{parentid,jdbcType=BIGINT},
 			</if>
-			desc = #{desc,jdbcType=VARCHAR}
+			`desc` = #{desc,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -53,10 +56,10 @@
 	      from area
 	     <where>
 			  <if test="name != null">
-				name = #{name,jdbcType=VARCHAR}
+				and name = #{name,jdbcType=VARCHAR}
 			  </if>
 			  <if test="parentid != null">
-				parentid = #{parentid,jdbcType=BIGINT}
+				and parentid = #{parentid,jdbcType=BIGINT}
 			</if>
 	      </where>
 	      

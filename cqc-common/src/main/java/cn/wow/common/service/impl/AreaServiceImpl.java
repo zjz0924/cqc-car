@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import cn.wow.common.dao.AreaDao;
 import cn.wow.common.domain.Area;
 import cn.wow.common.domain.AreaNode;
@@ -38,6 +36,10 @@ public class AreaServiceImpl implements AreaService {
 		return areaDao.update(area);
 	}
 
+	public int move(Area area) {
+		return areaDao.update(area);
+	}
+
 	public int deleteByPrimaryKey(String userName, Area area) {
 		return areaDao.deleteByPrimaryKey(area.getId());
 	}
@@ -47,6 +49,9 @@ public class AreaServiceImpl implements AreaService {
 		return areaDao.selectAllList(map);
 	}
 
+	/**
+	 * 获取区域树
+	 */
 	public List<AreaNode> getAreaTree() {
 		Area rootArea = areaDao.selectOne(1l);
 		AreaNode rootNode = new AreaNode();
@@ -70,7 +75,7 @@ public class AreaServiceImpl implements AreaService {
 					subAreaNode.setText(subArea.getName());
 					subAreaNode.setParent(rootArea.getId().toString());
 					// 遍历子节点
-					addSonOrg(subAreaNode, subArea);
+					addSonNode(subAreaNode, subArea);
 					subNodeList.add(subAreaNode);
 				}
 				rootNode.setChildren(subNodeList);
@@ -81,7 +86,7 @@ public class AreaServiceImpl implements AreaService {
 		return tree;
 	}
 
-	private void addSonOrg(AreaNode subAreaNode, Area area) {
+	private void addSonNode(AreaNode subAreaNode, Area area) {
 		// 获取子集合
 		Iterator<Area> subList = area.getSubList().iterator();
 
@@ -97,11 +102,10 @@ public class AreaServiceImpl implements AreaService {
 				sonNode.setText(subArea.getName());
 				sonNode.setParent(area.getId().toString());
 				// 遍历子节点
-				addSonOrg(sonNode, subArea);
+				addSonNode(sonNode, subArea);
 				subNodeList.add(sonNode);
 			}
 			subAreaNode.setChildren(subNodeList);
 		}
 	}
-
 }

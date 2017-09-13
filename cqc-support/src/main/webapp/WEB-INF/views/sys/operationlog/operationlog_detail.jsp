@@ -91,36 +91,47 @@
 						<div style="font-weight:bold;">Detail Information</div>
 						
 						<c:if test="${not empty dataList}">
-							<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;">
-								<thead>
-									<tr>
-										<th>Field</th>
-										<th>Value</th>
+							<c:choose>
+								<c:when test="${opeartionLog.operation != 'Move' }">
+									<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;">
+										<thead>
+											<tr>
+												<th>Field</th>
+												<th>Value</th>
+												
+												<c:if test="${operation == 'Update'}">
+													<th>Old Value</th>
+												</c:if>
+											</tr>
+										</thead>
 										
-										<c:if test="${operation == 'Update'}">
-											<th>Old Value</th>
-										</c:if>
-									</tr>
-								</thead>
-								
-								<c:forEach items="${dataList}" var="vo" > 
-									<tr>
-										<td>${vo.name}</td>
-										<c:choose>
-											<c:when test="${operation == 'Update'}">
-												<td>${vo.newValue}</td>
-												<td>${vo.oldValue}</td>
-											</c:when>
-											<c:when test="${operation == 'Create'}">
-												<td>${vo.newValue}</td>
-											</c:when>
-											<c:otherwise>
-												<td>${vo.oldValue}</td>
-											</c:otherwise>
-										</c:choose>
-									</tr>
-								</c:forEach> 
-							</table>
+										<c:forEach items="${dataList}" var="vo" > 
+											<tr>
+												<td>${vo.name}</td>
+												<c:choose>
+													<c:when test="${opeartionLog.operation == 'Update'}">
+														<td>${vo.newValue}</td>
+														<td>${vo.oldValue}</td>
+													</c:when>
+													<c:when test="${opeartionLog.operation == 'Create'}">
+														<td>${vo.newValue}</td>
+													</c:when>
+													<c:otherwise>
+														<td>${vo.oldValue}</td>
+													</c:otherwise>
+												</c:choose>
+											</tr>
+										</c:forEach> 
+									</table>
+								</c:when>
+								<c:otherwise>
+									<c:forEach items="${dataList}" var="vo" > 
+										<p>区域名称： ${vo.name}</p>
+										<p>从： ${vo.oldValue}</p>
+										<p>到: ${vo.newValue }</p>
+									</c:forEach>
+								</c:otherwise>
+							</c:choose>	
 						</c:if>
 					</div>
 

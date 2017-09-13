@@ -42,7 +42,9 @@ public class JsonUtil {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			writer.writeValue(baos, obj);
-			json = baos.toString();
+		//	json = baos.toString();
+			byte[] lens = baos.toByteArray();
+			json = new String(lens, "utf-8");
 		} catch (Exception ex) {
 			throw new RuntimeException("JsonUtil", ex);
 		} finally {

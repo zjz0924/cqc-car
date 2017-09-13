@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.wow.common.domain.Area;
 import cn.wow.common.domain.AreaNode;
 import cn.wow.common.service.AreaService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 
 /**
  * 区域管理控制器
@@ -33,6 +36,8 @@ public class AreaController extends AbstractController {
 
 	@Autowired
 	private AreaService areaService;
+	@Autowired
+	private OperationLogService operationLogService;
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model) {
@@ -48,9 +53,11 @@ public class AreaController extends AbstractController {
 			Area area = areaService.selectOne(Long.parseLong(id));
 			model.addAttribute("area", area);
 		}
-		
+
 		Area parentArea = areaService.selectOne(Long.parseLong(parentid));
 		model.addAttribute("parentArea", parentArea);
+		model.addAttribute("id", id);
+		model.addAttribute("parentid", parentid);
 		return "sys/area/area_detail";
 	}
 
@@ -61,7 +68,6 @@ public class AreaController extends AbstractController {
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String parentid, String text, String desc) {
 		AjaxVO vo = new AjaxVO();
-		vo.setMsg("保存成功");
 		Area area = null;
 
 		try {
@@ -86,6 +92,8 @@ public class AreaController extends AbstractController {
 					area.setName(text);
 					area.setParentid(Long.parseLong(parentid));
 					areaService.update(getCurrentUserName(), area);
+					
+					vo.setMsg("编辑成功");
 				}
 			} else {
 				Map<String, Object> rMap = new HashMap<String, Object>();
@@ -103,7 +111,11 @@ public class AreaController extends AbstractController {
 					area.setDesc(desc);
 					area.setName(text);
 					area.setParentid(Long.parseLong(parentid));
+					Area parentArea = areaService.selectOne(Long.parseLong(parentid));
+					area.setParentArea(parentArea);
+					
 					areaService.save(getCurrentUserName(), area);
+					vo.setMsg("新建成功");
 				}
 			}
 		} catch (Exception ex) {
@@ -112,7 +124,9 @@ public class AreaController extends AbstractController {
 			vo.setMsg("保存失败，系统异常");
 			vo.setSuccess(false);
 			logger.error("区域保存失败：", ex.getMessage());
+			return vo;
 		}
+		vo.setData(area.getId());
 		return vo;
 	}
 
@@ -132,6 +146,8 @@ public class AreaController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/info")
 	public Area info(HttpServletRequest request, Model model, String id) {
+	//	AreaVO areaNode = areaService.getAreaInfo(Long.parseLong(id));
+		
 		Area area = areaService.selectOne(Long.parseLong(id));
 		return area;
 	}
@@ -146,9 +162,19 @@ public class AreaController extends AbstractController {
 
 		try {
 			Area area = areaService.selectOne(Long.parseLong(id));
+			
+			String oldParentName = "";
+			if (area.getParentArea() != null) {
+				oldParentName = area.getParentArea().getName();
+			}
 			area.setParentid(Long.parseLong(parentid));
+			areaService.move(area);
 
-			areaService.update(getCurrentUserName(), area);
+			// 当前父节点
+			Area currentParentArea = areaService.selectOne(Long.parseLong(id));
+
+			String detail = "{\"name\":\"" + area.getName() + "\", \"from\":\"" + oldParentName + "\", \"to\":\"" + currentParentArea.getParentArea().getName() + "\"}";
+			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("区域移动失败：", ex.getMessage());
@@ -176,6 +202,7 @@ public class AreaController extends AbstractController {
 			vo.setMsg("删除失败，系统异常");
 			vo.setSuccess(false);
 			logger.error("区域删除失败：", ex.getMessage());
+			return vo;
 		}
 
 		vo.setMsg("删除成功");

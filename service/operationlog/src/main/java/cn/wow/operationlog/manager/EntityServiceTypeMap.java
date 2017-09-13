@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Area;
 import cn.wow.common.domain.Role;
 import cn.wow.common.utils.operationlog.ServiceType;
 
@@ -26,11 +27,13 @@ public final class EntityServiceTypeMap {
 		typeMap.clear();
 		typeMap.put(Account.class.getName(), ServiceType.ACCOUNT);
 		typeMap.put(Role.class.getName(), ServiceType.ROLE);
+		typeMap.put(Area.class.getName(), ServiceType.AREA);
 		
 		//DAO 类型
 		daoMap.clear();
 		daoMap.put(Account.class.getName(), "cn.wow.common.dao.AccountDao.selectOne");
 		daoMap.put(Role.class.getName(), "cn.wow.common.dao.RoleDao.selectOne");
+		daoMap.put(Area.class.getName(), "cn.wow.common.dao.AreaDao.selectOne");
 	}
 
 	public static ServiceType getServiceType(Class<?> clazz) {

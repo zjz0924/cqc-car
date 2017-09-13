@@ -3,6 +3,7 @@ package cn.wow.common.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 区域
@@ -23,6 +24,7 @@ public class Area extends JpaEntity{
 
     private Date createTime;
     // 子区域
+    @JsonIgnore
     private List<Area> subList;
 
     public Long getId() {
@@ -81,7 +83,7 @@ public class Area extends JpaEntity{
 		this.parentArea = parentArea;
 	}
 
-	@Override
+	 @JsonIgnore
 	public Serializable getPrimaryKey() {
 		return id;
 	}
