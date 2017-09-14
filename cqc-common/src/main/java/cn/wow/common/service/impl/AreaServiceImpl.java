@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.dao.AreaDao;
 import cn.wow.common.domain.Area;
-import cn.wow.common.domain.AreaNode;
+import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.AreaService;
 import cn.wow.common.utils.pagination.PageHelperExt;
 
@@ -56,11 +56,11 @@ public class AreaServiceImpl implements AreaService {
 	/**
 	 * 获取区域树
 	 */
-	public List<AreaNode> getAreaTree() {
+	public List<TreeNode> getAreaTree() {
 		Area rootArea = areaDao.selectOne(1l);
-		AreaNode rootNode = new AreaNode();
+		TreeNode rootNode = new TreeNode();
 
-		List<AreaNode> tree = new ArrayList<AreaNode>();
+		List<TreeNode> tree = new ArrayList<TreeNode>();
 		if (rootArea != null) {
 			rootNode.setId(rootArea.getId().toString());
 			rootNode.setText(rootArea.getName());
@@ -68,13 +68,13 @@ public class AreaServiceImpl implements AreaService {
 			// 获取子集合
 			Iterator<Area> subList = rootArea.getSubList().iterator();
 			if (subList.hasNext()) {
-				List<AreaNode> subNodeList = new ArrayList<AreaNode>();
+				List<TreeNode> subNodeList = new ArrayList<TreeNode>();
 
 				// 遍历子节点
 				while (subList.hasNext()) {
 					Area subArea = subList.next();
 
-					AreaNode subAreaNode = new AreaNode();
+					TreeNode subAreaNode = new TreeNode();
 					subAreaNode.setId(subArea.getId().toString());
 					subAreaNode.setText(subArea.getName());
 					subAreaNode.setParent(rootArea.getId().toString());
@@ -90,18 +90,18 @@ public class AreaServiceImpl implements AreaService {
 		return tree;
 	}
 
-	private void addSonNode(AreaNode subAreaNode, Area area) {
+	private void addSonNode(TreeNode subAreaNode, Area area) {
 		// 获取子集合
 		Iterator<Area> subList = area.getSubList().iterator();
 
 		if (subList.hasNext()) {
-			List<AreaNode> subNodeList = new ArrayList<AreaNode>();
+			List<TreeNode> subNodeList = new ArrayList<TreeNode>();
 
 			// 遍历子节点
 			while (subList.hasNext()) {
 				Area subArea = subList.next();
 
-				AreaNode sonNode = new AreaNode();
+				TreeNode sonNode = new TreeNode();
 				sonNode.setId(subArea.getId().toString());
 				sonNode.setText(subArea.getName());
 				sonNode.setParent(area.getId().toString());

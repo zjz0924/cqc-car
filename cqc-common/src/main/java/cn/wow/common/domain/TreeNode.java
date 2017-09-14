@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * 区域树节点
  */
-public class AreaNode implements Serializable {
+public class TreeNode implements Serializable {
 
 	private static final long serialVersionUID = -3120773122177211682L;
 
@@ -21,7 +21,7 @@ public class AreaNode implements Serializable {
 	public String text;
 	
 	@JsonInclude(Include.NON_NULL)
-	public List<AreaNode> children;
+	public List<TreeNode> children;
 
 	@JsonInclude(Include.NON_NULL)
 	public String icon;
@@ -58,11 +58,11 @@ public class AreaNode implements Serializable {
 		this.icon = icon;
 	}
 
-	public List<AreaNode> getChildren() {
+	public List<TreeNode> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<AreaNode> children) {
+	public void setChildren(List<TreeNode> children) {
 		this.children = children;
 	}
 	

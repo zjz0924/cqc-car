@@ -13,32 +13,34 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import cn.wow.common.domain.Area;
+import cn.wow.common.domain.Org;
 import cn.wow.common.domain.TreeNode;
-import cn.wow.common.service.AreaService;
 import cn.wow.common.service.OperationLogService;
+import cn.wow.common.service.OrgService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
 
 /**
- * 区域管理控制器
+ * 机构管理控制器
  * 
- * @author zhenjunzhuo 2017-09-12
+ * @author zhenjunzhuo 
+ * 2017-09-15
  */
 @Controller
-@RequestMapping(value = "area")
-public class AreaController extends AbstractController {
+@RequestMapping(value = "org")
+public class OrgController extends AbstractController {
 
-	Logger logger = LoggerFactory.getLogger(AreaController.class);
+	Logger logger = LoggerFactory.getLogger(OrgController.class);
 
 	@Autowired
-	private AreaService areaService;
+	private OrgService orgService;
 	@Autowired
 	private OperationLogService operationLogService;
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model) {
-		return "sys/area/area_list";
+		return "sys/org/org_list";
 	}
 
 	/**
@@ -47,15 +49,15 @@ public class AreaController extends AbstractController {
 	@RequestMapping(value = "/detail")
 	public String detail(HttpServletRequest request, Model model, String id, String parentid) {
 		if (StringUtils.isNotBlank(id)) {
-			Area area = areaService.selectOne(Long.parseLong(id));
-			model.addAttribute("area", area);
+			Org org = orgService.selectOne(Long.parseLong(id));
+			model.addAttribute("area", org);
 		}
 
-		Area parent = areaService.selectOne(Long.parseLong(parentid));
+		Org parent = orgService.selectOne(Long.parseLong(parentid));
 		model.addAttribute("parent", parent);
 		model.addAttribute("id", id);
 		model.addAttribute("parentid", parentid);
-		return "sys/area/area_detail";
+		return "sys/org/org_detail";
 	}
 
 	/**
@@ -63,39 +65,42 @@ public class AreaController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc, String areaid) {
 		AjaxVO vo = new AjaxVO();
-		Area area = null;
+		Org org = null;
 
 		try {
 			if (StringUtils.isNoneBlank(id)) {
-				area = areaService.selectOne(Long.parseLong(id));
+				org = orgService.selectOne(Long.parseLong(id));
 
-				if (area != null) {
-					if (!area.getName().equals(text)) {
+				if (org != null) {
+					if (!org.getName().equals(text)) {
 						Map<String, Object> rMap = new HashMap<String, Object>();
 						rMap.put("name", text);
 						rMap.put("parentid", parentid);
-						List<Area> areaList = areaService.selectAllList(rMap);
+						List<Org> areaList = orgService.selectAllList(rMap);
 
 						if (areaList != null && areaList.size() > 0) {
-							vo.setMsg("同一级区域下，区域名不能重复");
+							vo.setMsg("同一级机构下，机构名称不能重复");
 							vo.setSuccess(false);
 							return vo;
 						}
 					}
 
-					area.setDesc(desc);
-					area.setName(text);
-					area.setParentid(Long.parseLong(parentid));
-					areaService.update(getCurrentUserName(), area);
+					org.setDesc(desc);
+					org.setName(text);
+					org.setParentid(Long.parseLong(parentid));
+					if(StringUtils.isNotBlank(areaid)){
+						org.setAreaid(Long.parseLong(areaid));
+					}
+					orgService.update(getCurrentUserName(), org);
 					
 					vo.setMsg("编辑成功");
 				}
 			} else {
-				Area exist = areaService.getAreaByCode(code);
+				Org exist = orgService.getByCode(code);
 				if(exist != null){
-					vo.setMsg("区域编码已经存在，请重新输入");
+					vo.setMsg("机构编码已经存在，请重新输入");
 					vo.setSuccess(false);
 					return vo;
 				}
@@ -103,22 +108,25 @@ public class AreaController extends AbstractController {
 				Map<String, Object> rMap = new HashMap<String, Object>();
 				rMap.put("name", text);
 				rMap.put("parentid", parentid);
-				List<Area> areaList = areaService.selectAllList(rMap);
+				List<Org> orgList = orgService.selectAllList(rMap);
 
-				if (areaList != null && areaList.size() > 0) {
-					vo.setMsg("同一级区域下，区域名不能重复");
+				if (orgList != null && orgList.size() > 0) {
+					vo.setMsg("同一级机构下，机构名称不能重复");
 					vo.setSuccess(false);
 					return vo;
 				} else {
-					area = new Area();
-					area.setDesc(desc);
-					area.setName(text);
-					area.setCode(code);
-					area.setParentid(Long.parseLong(parentid));
-					Area parentArea = areaService.selectOne(Long.parseLong(parentid));
-					area.setParent(parentArea);
+					org = new Org();
+					org.setDesc(desc);
+					org.setName(text);
+					org.setCode(code);
+					org.setParentid(Long.parseLong(parentid));
+					if(StringUtils.isNotBlank(areaid)){
+						org.setAreaid(Long.parseLong(areaid));
+					}
+					Org parent = orgService.selectOne(Long.parseLong(parentid));
+					org.setParent(parent);
 					
-					areaService.save(getCurrentUserName(), area);
+					orgService.save(getCurrentUserName(), org);
 					vo.setMsg("新建成功");
 				}
 			}
@@ -127,35 +135,35 @@ public class AreaController extends AbstractController {
 
 			vo.setMsg("保存失败，系统异常");
 			vo.setSuccess(false);
-			logger.error("区域保存失败：", ex.getMessage());
+			logger.error("机构保存失败：", ex.getMessage());
 			return vo;
 		}
-		vo.setData(area.getId());
+		vo.setData(org.getId());
 		return vo;
 	}
 
 	/**
-	 * 区域树
+	 * 机构树
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/tree")
 	public List<TreeNode> tree(HttpServletRequest request, Model model) {
-		List<TreeNode> areaTree = areaService.getAreaTree();
+		List<TreeNode> areaTree = orgService.getTree();
 		return areaTree;
 	}
 
 	/**
-	 * 区域信息
+	 * 机构信息
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/info")
-	public Area info(HttpServletRequest request, Model model, String id) {
-		Area area = areaService.selectOne(Long.parseLong(id));
-		return area;
+	public Org info(HttpServletRequest request, Model model, String id) {
+		Org org = orgService.selectOne(Long.parseLong(id));
+		return org;
 	}
 
 	/**
-	 * 区域移动
+	 * 机构移动
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/move")
@@ -163,23 +171,23 @@ public class AreaController extends AbstractController {
 		AjaxVO vo = new AjaxVO();
 
 		try {
-			Area area = areaService.selectOne(Long.parseLong(id));
+			Org org = orgService.selectOne(Long.parseLong(id));
 			
 			String oldParentCode = "";
-			if (area.getParent() != null) {
-				oldParentCode = area.getParent().getCode();
+			if (org.getParent() != null) {
+				oldParentCode = org.getParent().getCode();
 			}
-			area.setParentid(Long.parseLong(parentid));
-			areaService.move(area);
+			org.setParentid(Long.parseLong(parentid));
+			orgService.move(org);
 
 			// 当前父节点
-			Area currentParentArea = areaService.selectOne(Long.parseLong(id));
+			Org currentParent = orgService.selectOne(Long.parseLong(id));
 
-			String detail = "{\"name\":\"" + area.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParentArea.getParent().getCode() + "\"}";
+			String detail = "{\"name\":\"" + org.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParent.getParent().getCode() + "\"}";
 			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("区域移动失败：", ex.getMessage());
+			logger.error("机构移动失败：", ex.getMessage());
 		}
 
 		vo.setMsg("移动成功");
@@ -188,7 +196,7 @@ public class AreaController extends AbstractController {
 	}
 
 	/**
-	 * 区域删除
+	 * 机构删除
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete")
@@ -196,14 +204,14 @@ public class AreaController extends AbstractController {
 		AjaxVO vo = new AjaxVO();
 
 		try {
-			Area area = areaService.selectOne(Long.parseLong(id));
-			areaService.deleteByPrimaryKey(getCurrentUserName(), area);
+			Org org = orgService.selectOne(Long.parseLong(id));
+			orgService.deleteByPrimaryKey(getCurrentUserName(), org);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
 			vo.setMsg("删除失败，系统异常");
 			vo.setSuccess(false);
-			logger.error("区域删除失败：", ex.getMessage());
+			logger.error("机构删除失败：", ex.getMessage());
 			return vo;
 		}
 

@@ -3,7 +3,7 @@ package cn.wow.common.service;
 import java.util.List;
 import java.util.Map;
 import cn.wow.common.domain.Area;
-import cn.wow.common.domain.AreaNode;
+import cn.wow.common.domain.TreeNode;
 
 public interface AreaService {
     public Area selectOne(Long id);
@@ -16,7 +16,7 @@ public interface AreaService {
 
     public List<Area> selectAllList(Map<String, Object> map);
     
-    public List<AreaNode> getAreaTree();
+    public List<TreeNode> getAreaTree();
     
     public int move(Area area);
     
