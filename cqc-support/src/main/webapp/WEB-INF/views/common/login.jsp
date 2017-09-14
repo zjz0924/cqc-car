@@ -9,96 +9,70 @@
     	<meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <title>后台管理系统</title>		
+	    <title>后台管理系统</title>	
 		
-        <!--[if lt IE 9]>
-		<link href="http://fonts.useso.com/css?family=Open+Sans:400" rel="stylesheet" type="text/css" />
-		<link href="http://fonts.useso.com/css?family=Open+Sans:700" rel="stylesheet" type="text/css" />
-		<link href="http://fonts.useso.com/css?family=Droid+Sans:400" rel="stylesheet" type="text/css" />
-		<link href="http://fonts.useso.com/css?family=Droid+Sans:700" rel="stylesheet" type="text/css" />
-		<![endif]-->
+		<link href='${ctx}/resources/css/cssreset.css' rel="stylesheet" type="text/css" />
+		
+	    <style type="text/css">
+	    	body{ background:#152652 url(${ctx}/resources/img/login/bg_31.png) repeat-x top;}
 
-	    <!-- Css files -->
-	    <link href="${ctx}/resources/frame/css/bootstrap.min.css" rel="stylesheet">		
-		<link href="${ctx}/resources/frame/css/jquery.mmenu.css" rel="stylesheet">		
-		<link href="${ctx}/resources/frame/css/font-awesome.min.css" rel="stylesheet">
-		<link href="${ctx}/resources/frame/plugins/jquery-ui/css/jquery-ui-1.10.4.min.css" rel="stylesheet">			    
-	    <link href="${ctx}/resources/frame/css/style.min.css" rel="stylesheet">
-		<link href="${ctx}/resources/frame/css/add-ons.min.css" rel="stylesheet">
-
-	    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	    <!--[if lt IE 9]>
-			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-	    <![endif]-->
+			.wrap{ width:955px; height:567px; margin:0 auto; background:url(${ctx}/resources/img/login/bg_321.png) no-repeat center; margin-top:79px; position:relative;}
+			.wrap table{ position:absolute; top:203px; left:408px;}
+			.wrap table td input{ border:1px solid #a5b7ca; outline:none; padding-left:5px; width: 140px; line-height: 19px;}
+			.wrap table td{ height:24px; padding:5px; line-height:24px; vertical-align:middle;}
+			.wrap table td span{ border:1px solid #126AEF; float:right; margin-left:5px; height:22px;}
+			.wrap table td.btn input{ width:57px; height:20px; text-align:center; line-height:20px; background:url(${ctx}/resources/img/login/bg_33.png) no-repeat; cursor:pointer; color:#fff; margin-right:15px;border:none;}
+	    </style>
 	</head>
 </head>
 
 <body>
-	<div class="container-fluid content">
-		<div class="row">
-			<div id="content" class="col-sm-12 full">
-				<div class="row">
-					<div class="login-box">
-						<div class="header" style="font-size: 20px;letter-spacing: .15em;font-weight: 700;">
-							后台管理系统
-						</div>
-					
-						<form id="loginForm" action="${ctx}/login" method="post" class="form-horizontal login" >
-							<fieldset class="col-sm-12">
-								<div class="form-group">
-									<div class="controls row">
-										<div class="input-group col-sm-12">	
-											<input type="text" class="form-control" id="username" name="username" placeholder="账号" autofocus="true"/>
-											<span class="input-group-addon"><i class="fa fa-user"></i></span>
-										</div>	
-									</div>
-								</div>
-							
-								<div class="form-group">
-									<div class="controls row">
-										<div class="input-group col-sm-12">	
-											<input type="password" class="form-control" id="password" name="password" placeholder="密码"/>
-											<span class="input-group-addon"><i class="fa fa-key"></i></span>
-										</div>	
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<div class="controls row">
-										<div class="input-group col-sm-12">	
-											<input name="vcode" id="vcode" class="form-control" maxLength="4" placeholder="验证码"  style="width:68%;vertical-align:middle;display:inline-block"/> 
-											<img src="${ctx}/verifycode" id="verifyimg" title="看不清？点击刷新！" style="cursor: pointer;vertical-align:middle;margin-left:20px;margin-top:5px;"/>
-										</div>
-									</div>
-								</div>
-								
 
-								<div class="confirm" style="text-align:center;color:red;font-weight:bold;" id="error_message">
-									${error}
-								</div>	
-
-								<div class="row">
-									<button type="button" id="login" class="btn btn-lg btn-primary col-xs-12">登录</button>
-								</div>
-							</fieldset>	
-						</form>
-						
-						<div class="clearfix"></div>				
-					</div>
-				</div><!--/row-->
-			</div>	
-		</div><!--/row-->		
-	</div><!--/container-->
+	<div class="wrap ">
+		<form id="loginForm" action="${ctx}/login" method="post" class="form-horizontal login" >
+		    <table>
+		        <tr>
+		            <td>用户名</td>
+		            <td><input id="username" name="username" type="text"/></td>
+		        </tr>
+		        <tr>
+		            <td>密码</td>
+		            <td><input type="password" id="password" name="password"></input></td>
+		        </tr>
+		        <tr>
+		            <td>验证码</td>
+		            <td>
+		            	<input name="vcode" id="vcode" type="text" maxLength="4"/>
+		            	<span>
+		            		<img src="${ctx}/verifycode" id="verifyimg" title="看不清？点击刷新！" style="width:50px;height:20px;"/>
+		            	</span>
+		            </td>
+		        </tr>
+		        <tr>
+		            <td></td>
+		            <td class="btn">
+		            	<input type="button" name="" value="登录" onclick="doSubmit()"/>
+		            	<input name="" type="button"  value="重置" onclick="reset()"/>
+		            </td>
+		        </tr>
+		    </table>
+	    </form>
+	    <div style="color:#d25; font-weight:bold;margin-left: 300px;padding-top: 346px;" id="error_message">
+	    	<c:choose>
+		    	<c:when test="${not empty error }">
+		    		${error}
+		    	</c:when>
+		    	<c:otherwise>
+		    		您还没有登录，请先登录。
+		    	</c:otherwise>
+	    	</c:choose>
+	    </div>
+	</div>
 		
 	<script src="${ctx}/resources/js/jquery-2.1.1.min.js"></script>
 
 	<script type="text/javascript">
 		$(function(){
-			$("#login").click(function(){
-				doSubmit();
-			});
-			
 			$("#verifyimg").click(function(){
 				refreshVerify("verifyimg");
 			});

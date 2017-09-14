@@ -68,9 +68,9 @@ public class LoginController {
 		if(exceptionClassName!=null) {
 				String error = null;
 			if (UnknownAccountException.class.getName().equals(exceptionClassName)) {
-				error = "用户名或密码错误";
+				error = "用户名或密码错误，请核对后重新登录！";
 			} else if (IncorrectCredentialsException.class.getName().equals(exceptionClassName)) {
-				error = "用户名或密码错误";
+				error = "用户名或密码错误，请核对后重新登录！";
 			} else if (LockedAccountException.class.getName().equals(exceptionClassName)) {
 				error = "账号已被锁定，请与管理员联系";
 			} else if (exceptionClassName != null) {
