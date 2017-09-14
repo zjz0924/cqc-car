@@ -118,8 +118,9 @@
 					 success: function(data){
 						 $("#name").html(data.name);
 						 $("#desc").html(data.desc);
-						 if(!isNull(data.parentArea)){
-							 $("#parentName").html(data.parentArea.name);
+						 $("#code").html(data.code);
+						 if(!isNull(data.parent)){
+							 $("#parentName").html(data.parent.name);
 						 }else{
 							 $("#parentName").html("");
 						 }
@@ -217,6 +218,11 @@
 						<div class="column" style="padding:10px 20px;">
 							<p>区域信息</p>
 							<a href="javscript:void(0)" onclick="selectRootNode()">refresh</a>
+							<div class="info">
+								<span class="info_title">区域编码：</span>
+								<span id="code"></span>
+							</div>
+							
 							<div class="info">
 								<span class="info_title">区域名称：</span>
 								<span id="name"></span>

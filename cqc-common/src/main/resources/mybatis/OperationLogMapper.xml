@@ -39,7 +39,7 @@
 		from operation_log
 		<where>
 			<if test="userName != null and userName != ''">
-				and username like concat('%', #{userName,jdbcType=VARCHAR}, '%')
+				and user_name like concat('%', #{userName,jdbcType=VARCHAR}, '%')
 			</if>
 
 			<if test="type != null and type != ''">

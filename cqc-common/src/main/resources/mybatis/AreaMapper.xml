@@ -3,20 +3,24 @@
 <mapper namespace="cn.wow.common.dao.AreaDao">
 	<resultMap id="BaseResultMap" type="cn.wow.common.domain.Area">
 		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="parentid" property="parentid" jdbcType="BIGINT" />
 		<result column="desc" property="desc" jdbcType="VARCHAR" />
-		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-		<association property="parentArea" javaType="cn.wow.common.domain.Area" column="parentid" select="cn.wow.common.dao.AreaDao.selectOne"/> 
+		<association property="parent" javaType="cn.wow.common.domain.Area" column="parentid" select="cn.wow.common.dao.AreaDao.selectOne"/> 
 		<collection property="subList" javaType="java.util.ArrayList" column="id" ofType="cn.wow.common.domain.Area" select="selectSubList"></collection>
 	</resultMap>
 
 	<sql id="base_columns">
-		id, name, parentid, `desc`, create_time
+		id, name, parentid, `desc`, code
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="base_columns" /> from area where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="getAreaByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="base_columns" /> from area where code = #{code,jdbcType=VARCHAR}
 	</select>
 
 	<!-- 获取子节点 -->
@@ -32,8 +36,8 @@
 		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
 		    SELECT @@IDENTITY
 		</selectKey>
-		insert into area (name, parentid, `desc`, create_time)
-			values (#{name,jdbcType=VARCHAR}, #{parentid,jdbcType=BIGINT}, #{desc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+		insert into area (name, parentid, `desc`, code)
+			values (#{name,jdbcType=VARCHAR}, #{parentid,jdbcType=BIGINT}, #{desc,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Area">

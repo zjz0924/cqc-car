@@ -12,9 +12,15 @@
 	<script type="text/javascript">
 		function save(){
 			var name = $("#name").val();
+			var code = $("#code").val();
+			
+			if(isNull(code)){
+				errorMsg("区域编码必填");	
+				return;
+			}
 			
 			if(isNull(name)){
-				errorMsg("区域名必填");	
+				errorMsg("区域名称必填");	
 				return;
 			}
 			
@@ -22,6 +28,7 @@
 				url: "${ctx}/area/save?time=" + new Date(),
 				data: {
 					"text": name,
+					"code": code,
 					"desc": $("#desc").val(),
 					"id": "${id}",
 					"parentid": "${parentid}"
@@ -41,9 +48,10 @@
 </head>
 
 <body>
-	<div>
-		<p>区域名： <input type="text" id="name" name="name" value="${area.name}"></p>
-		<p>上级区域： ${parentArea.name } </p>
+	<div style="margin-top:30px;margin-left:20px;">
+		<p>区域编码： <input type="text" id="code" name="code" value="${area.code}" <c:if test="${not empty id}">disabled</c:if>></p>
+		<p>区域名称： <input type="text" id="name" name="name" value="${area.name}"></p>
+		<p>上级区域： ${parent.name } </p>
 		<p>备注： <input type="text" id="desc" name="desc" value="${area.desc}"></p>
 		
 		<button onclick="save()">保存</button>

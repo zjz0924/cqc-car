@@ -1,12 +1,14 @@
 package cn.wow.common.utils.operationlog;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum OperationType implements Serializable {
 
-   CREATE("Create", LogLevel.ONLYNEW), UPDATE("Update", LogLevel.BOTH),
-   DELETE("Delete", LogLevel.ONLYOLD), SAVE("Save", LogLevel.BOTH),
-   LOGIN("Login"), LOGOUT("Logout"), MOVE("Move"),
+   CREATE("新建", LogLevel.ONLYNEW), UPDATE("编辑", LogLevel.BOTH),
+   DELETE("删除", LogLevel.ONLYOLD), 
+   LOGIN("登录"), LOGOUT("登出"), MOVE("移动"),
    // will not use in code
    UNKNOWN("Unknown");
 
@@ -65,5 +67,13 @@ public enum OperationType implements Serializable {
    {      
       NONE, ONLYOLD, ONLYNEW, BOTH
    }
+   
+	public static List<String> getAllType() {
+		List<String> typeList = new ArrayList<String>();
+		for (OperationType item : OperationType.values()) {
+			typeList.add(item.getDisplayName());
+		}
+		return typeList;
+	}
 
 }

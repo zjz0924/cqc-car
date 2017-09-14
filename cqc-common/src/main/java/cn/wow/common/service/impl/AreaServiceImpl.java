@@ -27,6 +27,10 @@ public class AreaServiceImpl implements AreaService {
 	public Area selectOne(Long id) {
 		return areaDao.selectOne(id);
 	}
+	
+	public Area getAreaByCode(String code){
+		return areaDao.getAreaByCode(code);
+	}
 
 	public int save(String userName, Area area) {
 		return areaDao.insert(area);

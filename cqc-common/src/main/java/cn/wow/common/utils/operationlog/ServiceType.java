@@ -11,11 +11,11 @@ import java.io.Serializable;
  *
  */
 public enum ServiceType implements Serializable {
-	ACCOUNT("Account"), 
-	USER_LOGIN("User Login"),
-	USER_LOGOUT("User Logout"), 
-	ROLE("Role"),
-	AREA("Area");
+	ACCOUNT("用户管理"), 
+	USER_LOGIN("用户登录"),
+	USER_LOGOUT("用户登出"), 
+	ROLE("角色管理"),
+	AREA("区域管理");
 
 	private String displayName;
 

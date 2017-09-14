@@ -8,65 +8,58 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * 区域
  */
-public class Area extends JpaEntity{
-	
+public class Area extends JpaEntity {
+
 	private static final long serialVersionUID = -5450900564575959225L;
 
 	private Long id;
+	// 编码
+	private String code;
 
-    private String name;
-    // 父区域
-    private Long parentid;
-    
-    private Area parentArea;
+	private String name;
+	// 父区域
+	private Long parentid;
 
-    private String desc;
+	private Area parent;
 
-    private Date createTime;
-    // 子区域
-    @JsonIgnore
-    private List<Area> subList;
+	private String desc;
 
-    public Long getId() {
-        return id;
-    }
+	// 子区域
+	@JsonIgnore
+	private List<Area> subList;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Long getParentid() {
-        return parentid;
-    }
+	public void setName(String name) {
+		this.name = name == null ? null : name.trim();
+	}
 
-    public void setParentid(Long parentid) {
-        this.parentid = parentid;
-    }
+	public Long getParentid() {
+		return parentid;
+	}
 
-    public String getDesc() {
-        return desc;
-    }
+	public void setParentid(Long parentid) {
+		this.parentid = parentid;
+	}
 
-    public void setDesc(String desc) {
-        this.desc = desc == null ? null : desc.trim();
-    }
+	public String getDesc() {
+		return desc;
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public void setDesc(String desc) {
+		this.desc = desc == null ? null : desc.trim();
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-    
 	public List<Area> getSubList() {
 		return subList;
 	}
@@ -74,16 +67,24 @@ public class Area extends JpaEntity{
 	public void setSubList(List<Area> subList) {
 		this.subList = subList;
 	}
-	
-	public Area getParentArea() {
-		return parentArea;
+
+	public String getCode() {
+		return code;
 	}
 
-	public void setParentArea(Area parentArea) {
-		this.parentArea = parentArea;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	 @JsonIgnore
+	public Area getParent() {
+		return parent;
+	}
+
+	public void setParent(Area parent) {
+		this.parent = parent;
+	}
+
+	@JsonIgnore
 	public Serializable getPrimaryKey() {
 		return id;
 	}

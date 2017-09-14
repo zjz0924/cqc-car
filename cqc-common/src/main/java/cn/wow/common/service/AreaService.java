@@ -20,4 +20,6 @@ public interface AreaService {
     
     public int move(Area area);
     
+    public Area getAreaByCode(String code);
+    
 }

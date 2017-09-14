@@ -25,6 +25,8 @@ import cn.wow.support.utils.Contants;
  * @author zhenjunzhuo 2017-1-5
  */
 public class AbstractController {
+	
+	private final static String defaultPageSize = "20";
 
 	// 照片上传根路径
 	@Value("${img.root.url}")

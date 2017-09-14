@@ -1,12 +1,9 @@
 package cn.wow.support.web;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +51,8 @@ public class AreaController extends AbstractController {
 			model.addAttribute("area", area);
 		}
 
-		Area parentArea = areaService.selectOne(Long.parseLong(parentid));
-		model.addAttribute("parentArea", parentArea);
+		Area parent = areaService.selectOne(Long.parseLong(parentid));
+		model.addAttribute("parent", parent);
 		model.addAttribute("id", id);
 		model.addAttribute("parentid", parentid);
 		return "sys/area/area_detail";
@@ -66,7 +63,7 @@ public class AreaController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String parentid, String text, String desc) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc) {
 		AjaxVO vo = new AjaxVO();
 		Area area = null;
 
@@ -96,6 +93,13 @@ public class AreaController extends AbstractController {
 					vo.setMsg("编辑成功");
 				}
 			} else {
+				Area exist = areaService.getAreaByCode(code);
+				if(exist != null){
+					vo.setMsg("区域编码已经存在，请重新输入");
+					vo.setSuccess(false);
+					return vo;
+				}
+				
 				Map<String, Object> rMap = new HashMap<String, Object>();
 				rMap.put("name", text);
 				rMap.put("parentid", parentid);
@@ -107,12 +111,12 @@ public class AreaController extends AbstractController {
 					return vo;
 				} else {
 					area = new Area();
-					area.setCreateTime(new Date());
 					area.setDesc(desc);
 					area.setName(text);
+					area.setCode(code);
 					area.setParentid(Long.parseLong(parentid));
 					Area parentArea = areaService.selectOne(Long.parseLong(parentid));
-					area.setParentArea(parentArea);
+					area.setParent(parentArea);
 					
 					areaService.save(getCurrentUserName(), area);
 					vo.setMsg("新建成功");
@@ -146,8 +150,6 @@ public class AreaController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/info")
 	public Area info(HttpServletRequest request, Model model, String id) {
-	//	AreaVO areaNode = areaService.getAreaInfo(Long.parseLong(id));
-		
 		Area area = areaService.selectOne(Long.parseLong(id));
 		return area;
 	}
@@ -163,9 +165,9 @@ public class AreaController extends AbstractController {
 		try {
 			Area area = areaService.selectOne(Long.parseLong(id));
 			
-			String oldParentName = "";
-			if (area.getParentArea() != null) {
-				oldParentName = area.getParentArea().getName();
+			String oldParentCode = "";
+			if (area.getParent() != null) {
+				oldParentCode = area.getParent().getCode();
 			}
 			area.setParentid(Long.parseLong(parentid));
 			areaService.move(area);
@@ -173,7 +175,7 @@ public class AreaController extends AbstractController {
 			// 当前父节点
 			Area currentParentArea = areaService.selectOne(Long.parseLong(id));
 
-			String detail = "{\"name\":\"" + area.getName() + "\", \"from\":\"" + oldParentName + "\", \"to\":\"" + currentParentArea.getParentArea().getName() + "\"}";
+			String detail = "{\"name\":\"" + area.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParentArea.getParent().getCode() + "\"}";
 			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -209,5 +211,4 @@ public class AreaController extends AbstractController {
 		vo.setSuccess(true);
 		return vo;
 	}
-
 }

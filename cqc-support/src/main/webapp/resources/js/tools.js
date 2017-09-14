@@ -257,8 +257,66 @@ function adjustHeight(){
 }
 
 
+/**
+ * datagrid - 格式化日期时间
+ */
+function DateTimeFormatter(value) {
+    var date = new Date(value);
+    var year = date.getFullYear().toString();
+    var month = (date.getMonth() + 1);
+    var day = date.getDate().toString();
+    var hour = date.getHours().toString();
+    var minutes = date.getMinutes().toString();
+    var seconds = date.getSeconds().toString();
+    if (month < 10) {
+        month = "0" + month;
+    }
+    if (day < 10) {
+        day = "0" + day;
+    }
+    if (hour < 10) {
+        hour = "0" + hour;
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+    return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
+}
 
 
+/**
+ * datagrid - 格式化单元格提示信息 
+ */ 
+function formatCellTooltip(value){
+	if(!isNull(value)){
+		return "<span title='" + value + "'>" + value + "</span>";
+	}
+} 
+
+
+/**
+ * datagrid - 获取数据
+ * @param id    datagrid ID
+ * @param url   访问的url
+ * @param data  过滤的数据
+ */
+function getData(id, url, data){
+	$.ajax({
+        type : "POST",
+        dataType : "json",
+        url : url,
+        data : data,
+        success : function(data) {
+            $("#" + id).datagrid('loadData', data);
+        },
+        error : function(err) {
+            $.messager.alert('操作提示', '获取信息失败...请联系管理员!', 'error');
+        }
+  });
+}
 
 
 

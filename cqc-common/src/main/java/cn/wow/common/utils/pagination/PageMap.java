@@ -133,11 +133,16 @@ public class PageMap extends HashMap<String, Object> implements IPageMap<String,
 			this.isPage = true;
 			
 			String pageSize = request.getParameter("pageSize");
-			if(StringUtils.isNotBlank(pageSize) && StringUtils.isNumeric(pageSize) ) {
+			if (StringUtils.isNotBlank(pageSize) && StringUtils.isNumeric(pageSize)) {
 				this.put("pageSize", Integer.parseInt(pageSize));
 			} else {
-				this.put("pageSize", defaultPageSize);
-			}			
+				pageSize = (String) request.getAttribute("pageSize");
+				if (StringUtils.isNotBlank(pageSize) && StringUtils.isNumeric(pageSize)) {
+					this.put("pageSize", Integer.parseInt(pageSize));
+				} else {
+					this.put("pageSize", defaultPageSize);
+				}
+			}		
 			
 			String pageNum = request.getParameter("pageNum");
 			if(StringUtils.isBlank(pageNum)) {//如果没传pageNum，找startSize（适配不传pageNum传startSize的情况）

@@ -17,15 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.OperationLog;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.utils.JsonUtil;
 import cn.wow.common.utils.operationlog.FieldValue;
+import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.operationlog.OpLogDetailCoder;
 import cn.wow.operationlog.manager.EntityServiceTypeMap;
-import cn.wow.support.utils.Contants;
 
 @Controller
 @RequestMapping(value = "operationlog")
@@ -33,7 +36,7 @@ public class OperationLogController extends AbstractController {
 
 	private static Logger logger = LoggerFactory.getLogger(OperationLogController.class);
 
-	private final static String moduleName = Contants.OPERATIONLOG;
+	private final static String defaultPageSize = "10";
 
 	@Autowired
 	private OperationLogService operationLogService;
@@ -41,46 +44,11 @@ public class OperationLogController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model, String userName, String type,
 			String startTimeFrom, String startTimeTo, String detail, String operation) {
-		Map<String, Object> map = new PageMap(httpServletRequest);
-		map.put("custom_order_sql", "time desc");
-
-		if (StringUtils.isNotBlank(userName)) {
-			map.put("userName", userName);
-		}
-		if (StringUtils.isNotBlank(type)) {
-			map.put("type", type);
-		}
-		if (StringUtils.isNotBlank(operation)) {
-			map.put("operation", operation);
-		}
-		if (StringUtils.isNotBlank(detail)) {
-			map.put("detail", detail);
-		}
-		if (StringUtils.isNotBlank(startTimeFrom)) {
-			map.put("startTimeFrom", startTimeFrom + " 00:00:00");
-		}
-		if (StringUtils.isNotBlank(startTimeTo)) {
-			map.put("startTimeTo", startTimeTo + " 23:59:59");
-		}
-		List<OperationLog> opeartionLogList = operationLogService.selectAllList(map);
-
-		if (opeartionLogList != null && opeartionLogList.size() > 0) {
-			for (OperationLog operationLog : opeartionLogList) {
-				if (StringUtils.isNotBlank(operationLog.getDetail())) {
-					operationLog
-							.setDetail(operationLog.getDetail().replaceAll("\\\\r\\\\n", "").replaceAll("\\\\", ""));
-				}
-			}
-		}
-
-		model.addAttribute("userName", userName);
-		model.addAttribute("type", type);
-		model.addAttribute("operation", operation);
-		model.addAttribute("detail", detail);
-		model.addAttribute("startTimeFrom", startTimeFrom);
-		model.addAttribute("startTimeTo", startTimeTo);
+		
 		model.addAttribute("typeList", EntityServiceTypeMap.getAllType());
-		model.addAttribute("dataList", opeartionLogList);
+		model.addAttribute("operationList", OperationType.getAllType());
+		model.addAttribute("defaultPageSize", defaultPageSize);
+		
 		return "sys/operationlog/operationlog_list";
 	}
 
@@ -122,7 +90,7 @@ public class OperationLogController extends AbstractController {
 				dataList = toFacade(newJsonDetail, oldJsonDetail);
 				model.addAttribute("operation", strMap.get(OpLogDetailCoder.KEY_OPERATION));
 			}else{
-				if(strMap.get(OpLogDetailCoder.KEY_FROM) != null){
+				if(strMap != null && strMap.get(OpLogDetailCoder.KEY_FROM) != null){
 					FieldValue val = new FieldValue();
 					val.setName(strMap.get(OpLogDetailCoder.KEY_NAME));
 					val.setNewValue(strMap.get(OpLogDetailCoder.KEY_TO));
@@ -139,6 +107,62 @@ public class OperationLogController extends AbstractController {
 		model.addAttribute("dataList", dataList);
 		return "sys/operationlog/operationlog_detail";
 	}
+	
+	/**
+	 * 获取数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getLogList")
+	public Map<String, Object> getLogList(HttpServletRequest request, Model model, String userName, String type,
+			String startTimeFrom, String startTimeTo, String detail, String operation){
+		
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", defaultPageSize);
+		}
+		
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "time desc");
+
+		if (StringUtils.isNotBlank(userName)) {
+			map.put("userName", userName);
+		}
+		if (StringUtils.isNotBlank(type)) {
+			map.put("type", type);
+		}
+		if (StringUtils.isNotBlank(operation)) {
+			map.put("operation", operation);
+		}
+		if (StringUtils.isNotBlank(detail)) {
+			map.put("detail", detail);
+		}
+		if (StringUtils.isNotBlank(startTimeFrom)) {
+			map.put("startTimeFrom", startTimeFrom + " 00:00:00");
+		}
+		if (StringUtils.isNotBlank(startTimeTo)) {
+			map.put("startTimeTo", startTimeTo + " 23:59:59");
+		}
+		List<OperationLog> opeartionLogList = operationLogService.selectAllList(map);
+		
+		if (opeartionLogList != null && opeartionLogList.size() > 0) {
+			for (OperationLog operationLog : opeartionLogList) {
+				if (StringUtils.isNotBlank(operationLog.getDetail())) {
+					operationLog.setDetail(operationLog.getDetail().replaceAll("\\\\r\\\\n", "").replaceAll("\\\\", ""));
+				}
+			}
+		}
+		
+		// 分页
+		Page<OperationLog> pageList = (Page<OperationLog>)opeartionLogList;
+		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+		
+		return dataMap;
+	}
+	
 
 	public List<FieldValue> toFacade(Map<String, String> entityMap, Map<String, String> oldEntityMap) {
 		List<FieldValue> dataList = new ArrayList<FieldValue>();
