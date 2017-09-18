@@ -9,11 +9,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<%@include file="../../common/source.jsp"%>
 	
-	<link rel="stylesheet" type="text/css" href="${ctx}/resources/js/jquery-easyui-1.5.3/themes/material/easyui.css">
-    <link rel="stylesheet" type="text/css" href="${ctx}/resources/js/jquery-easyui-1.5.3/themes/icon.css">
-	<script type="text/javascript" src="${ctx}/resources/js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
-	<script type="text/javascript" src="${ctx}/resources/js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
-    
 	<script type="text/javascript">
 		function goTo(url){
 			window.location.href = "${ctx}/operationlog/" + url;

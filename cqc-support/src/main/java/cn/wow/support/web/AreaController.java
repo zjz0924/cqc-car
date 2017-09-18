@@ -139,8 +139,8 @@ public class AreaController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/tree")
-	public List<TreeNode> tree(HttpServletRequest request, Model model) {
-		List<TreeNode> areaTree = areaService.getAreaTree();
+	public List<TreeNode> tree(HttpServletRequest request, Model model, String svalue, String stype) {
+		List<TreeNode> areaTree = areaService.getAreaTree(svalue, stype);
 		return areaTree;
 	}
 

@@ -16,7 +16,7 @@ public interface AreaService {
 
     public List<Area> selectAllList(Map<String, Object> map);
     
-    public List<TreeNode> getAreaTree();
+    public List<TreeNode> getAreaTree(String svalue, String stype);
     
     public int move(Area area);
     

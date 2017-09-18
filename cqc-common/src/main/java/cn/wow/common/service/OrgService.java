@@ -16,7 +16,12 @@ public interface OrgService {
 
     public List<Org> selectAllList(Map<String, Object> map);
     
-    public List<TreeNode> getTree();
+    /**
+     * 获取树
+     * @param svalue 搜索值
+     * @param stype  搜索类型
+     */
+    public List<TreeNode> getTree(String svalue, String stype);
     
     public int move(Org org);
     

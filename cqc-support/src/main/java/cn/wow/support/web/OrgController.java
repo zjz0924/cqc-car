@@ -147,8 +147,8 @@ public class OrgController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/tree")
-	public List<TreeNode> tree(HttpServletRequest request, Model model) {
-		List<TreeNode> areaTree = orgService.getTree();
+	public List<TreeNode> tree(HttpServletRequest request, Model model, String svalue, String stype) {
+		List<TreeNode> areaTree = orgService.getTree(svalue, stype);
 		return areaTree;
 	}
 

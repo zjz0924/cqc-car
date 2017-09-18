@@ -40,12 +40,13 @@
 	<script type="text/javascript">
 		//操作类型, 0: 新建修改  1：删除
 		var operation = "";
+		var getDataUrl = "${ctx}/area/tree";
 		
 		$(function () {
 			$('#areaTree').jstree({
 				core : {
 			        'data' : {
-			            'url' : "${ctx}/area/tree?time=" + new Date()
+			            'url' : getDataUrl + "?time=" + new Date()
 			        },
 			        "check_callback" : true
 			    },
@@ -145,18 +146,44 @@
                 // 默认选中根节点
                 selectRootNode();
             }).on("refresh.jstree", function (event, data) {  //refresh完成后调用
-            	if(operation != 0){
+            	if(operation == 0){
+            		// 删除后自动选中根节点
+            		selectRootNode();
+            	}else if(operation > 0){
             		// 添加后自动展开父节点
             		$('#areaTree').jstree('open_all');
             		$('#areaTree').jstree('deselect_all');
             		$('#areaTree').jstree("select_node", operation);
-            	}else{
-            		// 删除后自动选中根节点
-            		selectRootNode();
             	}
-            	
+            
             	adjustHeight();
             });
+			
+			$('#searchbox').searchbox({
+			    searcher:function(value,name){
+			    	$.ajax({
+			    		url: getDataUrl + "?time=" + new Date(),
+			    	    type: "post",
+			    	    data: {
+			    	    	"stype": name,
+			    	    	"svalue": value
+			    	    },
+			    	    success: function(data){
+			    	    	$('#areaTree').jstree(true).settings.core.data = data;
+			    	    	refreshTree(-1);
+					    	// 展开所有节点 
+			                $('#areaTree').jstree('open_all');
+					    	
+					    	$("#name").html("");
+							$("#desc").html("");
+							$("#code").html("");
+							$("#parentName").html("");
+			    	    }
+			    	});
+			    },
+			    menu:'#mm',
+			    prompt:''
+			});
 			
 			adjustHeight();
 		});
@@ -214,7 +241,16 @@
 
 				<div class="panel-body">
 					<div class="table">
-						<div id="areaTree" class="column" style="height: 500px;width: 300px;border-right:1px dashed #000;overflow-x:auto;overflow-y:auto;"></div>
+						<div class="column" style="height: 500px;width: 300px;border-right:1px dashed #000;overflow-x:auto;overflow-y:auto;">
+							<input id="searchbox"></input>
+							<div id="mm">
+						        <div data-options="name:'name'">名称</div>
+						        <div data-options="name:'code'">编码</div>
+						    </div>
+							
+							<div id="areaTree"></div>
+						</div>
+						
 						<div class="column" style="padding:10px 20px;">
 							<p>区域信息</p>
 							<a href="javscript:void(0)" onclick="selectRootNode()">refresh</a>

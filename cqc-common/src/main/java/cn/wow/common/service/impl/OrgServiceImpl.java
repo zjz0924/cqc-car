@@ -1,19 +1,23 @@
 package cn.wow.common.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import cn.wow.common.utils.pagination.PageHelperExt;
+
 import cn.wow.common.dao.OrgDao;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.OrgService;
+import cn.wow.common.utils.pagination.PageHelperExt;
 
 @Service
 @Transactional
@@ -56,10 +60,32 @@ public class OrgServiceImpl implements OrgService{
     /**
 	 * 获取区域树
 	 */
-	public List<TreeNode> getTree() {
+	public List<TreeNode> getTree(String svalue, String stype) {
 		Org rootOrg = orgDao.selectOne(1l);
-		TreeNode rootNode = new TreeNode();
+		
+		/**
+		 * 搜索思路：
+		 * 1. 先搜索有哪些节点匹配
+		 * 2. 获取它们的次上级父节点
+		 * 3. 再添加子节点的时候过滤掉父节点是当前节点的节点
+		 */
+		List<Long> sId = new ArrayList<Long>();
+		if (isSearch(svalue)) {
+			Map<String, Object> qMap = new HashMap<String, Object>();
+			qMap.put(stype, svalue);
+			List<Org> dataList = orgDao.selectAllList(qMap);
 
+			List<Org> parentList = new ArrayList<Org>();
+			if (dataList != null && dataList.size() > 0) {
+				for (Org org : dataList) {
+					sId.add(org.getId());
+					parentList.add(getSecondOrg(org));
+				}
+			}
+			rootOrg.setSubList(dataList);
+		}
+		
+		TreeNode rootNode = new TreeNode();
 		List<TreeNode> tree = new ArrayList<TreeNode>();
 		if (rootOrg != null) {
 			rootNode.setId(rootOrg.getId().toString());
@@ -78,8 +104,11 @@ public class OrgServiceImpl implements OrgService{
 					subOrgNode.setId(subOrg.getId().toString());
 					subOrgNode.setText(subOrg.getName());
 					subOrgNode.setParent(rootOrg.getId().toString());
-					// 遍历子节点
-					addSonNode(subOrgNode, subOrg);
+					
+					if ((isSearch(svalue) && !sId.contains(subOrg.getId())) || !isSearch(svalue)) {
+						// 遍历子节点
+						addSonNode(subOrgNode, subOrg);
+					}
 					subNodeList.add(subOrgNode);
 				}
 				rootNode.setChildren(subNodeList);
@@ -110,6 +139,23 @@ public class OrgServiceImpl implements OrgService{
 				subNodeList.add(sonNode);
 			}
 			subOrgNode.setChildren(subNodeList);
+		}
+	}
+	
+	// 获取二级节点
+	private Org getSecondOrg(Org org) {
+		if (org.getParent() != null && org.getParent().getId() != 1l) {
+			getSecondOrg(org.getParent());
+		}
+		return org.getParent();
+	}
+	
+	
+	private boolean isSearch(String svalue) {
+		if (StringUtils.isNotBlank(svalue)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

@@ -60,10 +60,10 @@
 	      from area
 	     <where>
 			  <if test="name != null">
-				and name = #{name,jdbcType=VARCHAR}
+				and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
 			  </if>
 			  <if test="code != null">
-				and code = #{code,jdbcType=VARCHAR}
+				and code like concat('%', #{code,jdbcType=VARCHAR}, '%')
 			  </if>
 			  <if test="parentid != null">
 				and parentid = #{parentid,jdbcType=BIGINT}
