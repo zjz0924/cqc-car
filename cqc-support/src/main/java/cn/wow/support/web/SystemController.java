@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SystemController {
 
 	@RequestMapping(value = "/index")
-	public String list(HttpServletRequest httpServletRequest, Model model) {
-
+	public String index(HttpServletRequest httpServletRequest, Model model) {
+		
 		return "sys/index";
 	}
 	

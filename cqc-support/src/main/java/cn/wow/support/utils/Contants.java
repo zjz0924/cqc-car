@@ -32,7 +32,7 @@ public class Contants {
 	
 	public static final String CURRENT_ACCOUNT = "currentAccount";
 	public static final String CURRNET_PERMISSION = "currentPermission";
-	
+	public static final String MENU_LIST = "menuList";
 	
 	// Controller 别名
 	public static final String ACCOUNT = "account_manager";

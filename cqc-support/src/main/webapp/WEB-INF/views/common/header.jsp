@@ -59,92 +59,30 @@
 			<div class="ri">
 				<p>
 					<a href='/smsh/xtszTab/tabs1-3'><span><img src='../../resources/img/icon_11.png' /></span>${currentAccount.nickName }，晚上好</a>&nbsp;&nbsp;
-					<a href="#" class="loginOut"><img src='../../resources/img/icon_04.png' />退出</a> 
+					<a href="${ctx}/loginout" class="loginOut"><img src='../../resources/img/icon_04.png' />退出</a> 
 				</p>
 			</div>
 			
 			<div class="nav">
 				<nav class="rm-nav rm-nojs rm-darken">
 					<ul>
-						<li class='base'><a class='base_a' style='' href='/smsh'>首页</a>
-						</li>
-						<li class="nojuris base" _t_nav="BM"><a href="#"
-							class="base_a">我的部门</a></li>
-						<li class="nojuris base" _t_nav="GYSTXJS"><a href="#"
-							class="base_a">供应商体系</a></li>
-						<li class='base' _t_nav="YWGL"><a href="/smsh/bpm/tabs1-3"
-							class="base_a">业务管理</a>
-							<ul>
-								<li class='hasitemli'><a href="#">APQP</a>
+						<li class='base'><a class='base_a' style='' href='${ctx}/index'>首页</a></li>
+						
+						<c:forEach items="${menuList}" var="vo">
+							<li class="base <c:if test='${vo.isAuthorized == false}'>nojuris</c:if>" _t_nav="YWGL">
+								<a href="${ctx}/${vo.url}" class="base_a">${vo.name}</a>
+								<c:if test="${vo.isAuthorized == true}">
 									<ul>
-										<li class='subli'><a href="#">项目管理</a></li>
-										<li class='subli'><a href="#">供应商评审</a></li>
-										<li class='subli'><a href="#">供应商质量开发</a></li>
-									</ul></li>
-								<li class='hasitemli'><a href="/smsh/bpm/tabs1-3">供应商质量保障</a>
-									<ul>
-										<li class='subli'><a href="/smsh/bpm/tabs1-3">现场质量问题</a>
-										</li>
-										<li class='subli'><a href="/smsh/bpm/tabs2-1">问题解决</a></li>
-										<li class='subli'><a href="#">质量保障</a></li>
-										<li class='subli'><a href="#">IPTV管理</a></li>
-									</ul></li>
-								<li class='subli'><a href="#">供应商实验室管理</a></li>
-								<li class='hasitemli'><a href="#">供应商质量成本管理</a>
-									<ul>
-										<li class='subli'><a href="#">售后三包索赔管理</a></li>
-										<li class='subli'><a href="#">特殊索赔管理</a></li>
-									</ul></li>
-							</ul></li>
-						<li class='base' _t_nav="WDYW"><a
-							href="/smsh/jbpm/taskpersonal" class="base_a">我的业务</a>
-							<ul>
-								<li class='hasitemli'><a href="#">个人工作任务跟踪</a>
-									<ul>
-										<li class='subli'><a href="#">新增个人工作计划</a></li>
-										<li class='subli'><a href="#">个人工作计划一览</a></li>
-										<li class='subli'><a href="#">新增个人工作总结</a></li>
-										<li class='subli'><a href="#">个人工作总结一览</a></li>
-									</ul></li>
-								<li class='subli'><a href="/smsh/jbpm/taskpersonal">我的待办事项</a>
-								</li>
-								<li class='hasitemli'><a href="#">所管供应商质量表现</a>
-									<ul>
-										<li class='subli'><a href="#">供应商表现一览</a></li>
-										<li class='subli'><a href="#">供应商质量分析</a></li>
-										<li class='subli'><a href="#">供应商质量改进</a></li>
-									</ul></li>
-							</ul></li>
-						<li class="nojuris base" _t_nav="GYSJXGL"><a href="#"
-							class="base_a" style='padding-top: 17px; height: 56px;'>供应商<br>绩效管理
-						</a></li>
-						<li class="nojuris base" _t_nav="GYSNLGL"><a href="#"
-							class="base_a" style='padding-top: 17px; height: 56px;'>供应商<br>能力管理
-						</a></li>
-						<li class="nojuris base" _t_nav="GYSPXGL"><a href="#"
-							class="base_a" style='padding-top: 17px; height: 56px;'>供应商<br>培训管理
-						</a></li>
-						<li class="nojuris base" _t_nav="ZSFX"><a href="#"
-							class="base_a">知识分享</a></li>
-						<li class="nojuris base" _t_nav="FXGL"><a href="#"
-							class="base_a" style='padding-top: 17px; height: 56px;'>供应商<br>风险管理
-						</a></li>
-						<li class='base' _t_nav="XTGL"><a
-							href="/smsh/xtszTab/tabs1-1" class="base_a ed">系统管理</a>
-							<ul>
-								<li class='hasitemli rm-last'><a
-									href="/smsh/xtszTab/tabs1-1">系统设置</a>
-									<ul>
-										<li class='subli'><a href="/smsh/xtszTab/tabs1-2">个人审批设置</a>
-										</li>
-										<li class='subli'><a href="/smsh/xtszTab/tabs1-3">密码修改</a>
-										</li>
-										<li class='subli'><a href="/smsh/xtszTab/tabs1-5">供应商用户信息</a>
-										</li>
+										<c:forEach items="${vo.subList}" var="subVo">
+											<li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if>">
+												<a href="${ctx}/${vo.url}?choose=${subVo.url}">${subVo.name}</a>
+											</li>
+										</c:forEach>
 									</ul>
-								</li>
-							</ul>
-						</li>
+								</c:if>
+							</li>
+						</c:forEach>
+						
 					</ul>
 				</nav>
 

@@ -3,6 +3,8 @@ package cn.wow.common.domain;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Menu implements Serializable{
 	
 	private static final long serialVersionUID = -7677318918671654590L;
@@ -22,8 +24,13 @@ public class Menu implements Serializable{
     private String isParent;
     
     private List<Menu> subList;
+    
     //菜单别名，用来设置权限，必须唯一
     private String alias;
+    
+    // 是否有权限
+    @JsonIgnore
+    private boolean isAuthorized = true;
 
     public Long getId() {
         return id;
@@ -95,5 +102,13 @@ public class Menu implements Serializable{
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public boolean getIsAuthorized() {
+		return isAuthorized;
+	}
+
+	public void setAuthorized(boolean isAuthorized) {
+		this.isAuthorized = isAuthorized;
 	}
 }
