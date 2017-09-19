@@ -36,18 +36,18 @@ public class OperationLogController extends AbstractController {
 
 	private static Logger logger = LoggerFactory.getLogger(OperationLogController.class);
 
-	private final static String defaultPageSize = "10";
+	private final static String defaultPageSize = "20";
 
 	@Autowired
 	private OperationLogService operationLogService;
 
 	@RequestMapping(value = "/list")
-	public String list(HttpServletRequest httpServletRequest, Model model, String userName, String type,
+	public String list(HttpServletRequest request, Model model, String userName, String type,
 			String startTimeFrom, String startTimeTo, String detail, String operation) {
 		
-		model.addAttribute("typeList", EntityServiceTypeMap.getAllType());
-		model.addAttribute("operationList", OperationType.getAllType());
-		model.addAttribute("defaultPageSize", defaultPageSize);
+		request.setAttribute("typeList", EntityServiceTypeMap.getAllType());
+		request.setAttribute("operationList", OperationType.getAllType());
+		request.setAttribute("defaultPageSize", defaultPageSize);
 		
 		return "sys/operationlog/operationlog_list";
 	}

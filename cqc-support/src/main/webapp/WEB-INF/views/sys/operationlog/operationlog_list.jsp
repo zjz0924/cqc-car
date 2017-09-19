@@ -1,19 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
-<%@include file="/page/NavPageBar.jsp"%>
 
-<!DOCTYPE html>
-<html>
-	<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<%@include file="../../common/source.jsp"%>
-	
+<body>
 	<script type="text/javascript">
-		function goTo(url){
-			window.location.href = "${ctx}/operationlog/" + url;
-		}
-
 		var url = "${ctx}/operationlog/getLogList?time=" + new Date();
 		var datagrid = "dg";
 		$(function(){
@@ -30,27 +19,27 @@
 		        }, {
 		            field : 'userName',
 		            title : '用户名',
-		            width : '160',
+		            width : '120',
 		            align : 'center'
 		        }, {
 		            field : 'type',
 		            title : '类型',
-		            width : '80',
+		            width : '120',
 		            align : 'center'
 		        }, {
 		            field : 'operation',
 		            title : '操作',
-		            width : '80',
+		            width : '120',
 		            align : 'center'
 		        }, {
 		            field : 'clientIp',
 		            title : '访问IP',
-		            width : '100',
+		            width : '140',
 		            align : 'center'
 		        }, {
 		            field : 'detail',
 		            title : '详情',
-		            width : '450',
+		            width : '480',
 		            align : 'center',
 		            formatter: formatCellTooltip
 		        }, {
@@ -62,10 +51,10 @@
 		        }
 		        ]],
 		        onClickRow:function(rowIndex,rowData){
-		        	goTo('detail?id='+ rowData.id);
+		        	info("${ctx}/operationlog/detail?id=" + rowData.id);
 		       	}
 		    });
-			
+			 
 			// 分页信息
 			$('#' + datagrid).datagrid('getPager').pagination({  
                 pageSize: "${defaultPageSize}",  
@@ -73,7 +62,7 @@
                 displayMsg: '当前显示 {from} - {to} 条记录    共  {total} 条记录',
                 onSelectPage: function (pageNumber, pageSize) {//分页触发  
                 	var data = {
-                        'userName' : $("#userName").val(),
+                        'userName' : $("#account").val(),
                         'type' : $("#type").val(),
                         'startTimeFrom' : $("#startTimeFrom").val(),
                         'startTimeTo' : $("#startTimeTo").val(),
@@ -85,12 +74,11 @@
             	} 
 			});
 			
-			adjustHeight();
 		});
 		
 		function doSearch(){
 			var data = {
-                'userName' : $("#userName").val(),
+                'userName' : $("#account").textbox('getValue'),
                 'type' : $("#type").val(),
                 'startTimeFrom' : $("#startTimeFrom").val(),
                 'startTimeTo' : $("#startTimeTo").val(),
@@ -100,7 +88,7 @@
 		}
 		
 		function doClear(){
-			$("#userName").textbox('setValue', "");
+			$("#account").textbox('clear');
 			$("#operation").combobox('select', "");  
 			$("#type").combobox('select', "");
 			$("#startTimeFrom").val('');
@@ -108,64 +96,62 @@
 			getData(datagrid, url, {});
 		}
 		
-		
+		function info(url){
+			$('#dd').dialog({
+			    title: '日志信息',
+			    width: 800,
+			    height: 500,
+			    closed: false,
+			    cache: false,
+			    href: url,
+			    modal: true
+			});
+			$('#dd').window('center');
+		}
 	</script>
-</head>
-
-<body>
-
-	<div class="row">
-		<div class="col-lg-12">
-			<ol class="breadcrumb">
-				<li>系统管理</li>
-				<li><a href="${ctx}/operationlog/list">日志管理</a></li>
-			</ol>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h2><span class="break"></span><strong>日志管理</strong></h2>
-				</div>
-
-				<div class="panel-body">
-					<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 30px;">
-						<input id="userName" name="userName" class="easyui-textbox"  label="用户名:" labelPosition="left" style="width: 200px;"> &nbsp;&nbsp;&nbsp;
-						
-						<select id="type" name="type" class="easyui-combobox" label="类型" labelPosition="left" style="width: 200px;" data-options="panelHeight:'auto'"> 
-							<option value="">全部</option>
-							<c:forEach items="${typeList}" var="vo">
--                               <option value="${vo}">${vo}</option>
--                           </c:forEach>
-						</select> &nbsp;&nbsp;&nbsp;
-						
-						<select id="operation" name="operation" class="easyui-combobox" data-options="panelHeight:'auto'" label="操作" labelPosition="left" style="width: 200px;margin-right:20px;" >
-							<option value="">全部</option>
-							<c:forEach items="${operationList}" var="vo">
-                               <option value="${vo}">${vo}</option>
-                            </c:forEach>
-						</select>&nbsp;&nbsp;&nbsp;
+	
+	<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 30px;">
+		用户名：<input id="account" name="account" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;
 		
-						 <input type="text" id="startTimeFrom" name="startTimeFrom" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'startTimeTo\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> -
--                        <input type="text" id="startTimeTo" name="startTimeTo" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTimeFrom\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/>
-						
-						<p style="margin-right: 20px;">
-							<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
-							<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doClear()">清空</a>
-						</p>
-					</div>
+		类型：<select id="type" name="type" class="easyui-combobox" style="width: 150px;" data-options="panelHeight:'auto'"> 
+			<option value="">全部</option>
+			<c:forEach items="${typeList}" var="vo">
+				<option value="${vo}">${vo}</option>
+			</c:forEach>
+		</select> &nbsp;&nbsp;&nbsp;
+		
+		操作：<select id="operation" name="operation" class="easyui-combobox" data-options="panelHeight:'auto'" style="width: 150px;margin-right:20px;" >
+			<option value="">全部</option>
+			<c:forEach items="${operationList}" var="vo">
+                  <option value="${vo}">${vo}</option>
+               </c:forEach>
+		</select>&nbsp;&nbsp;&nbsp;
 
-					<div style="margin-top:30px;">
-						<table id="dg" style="height:500px;width:auto"></table>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-		<!--/col-->
+		 时间：<input type="text" id="startTimeFrom" name="startTimeFrom" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'startTimeTo\')}'})" class="textbox" style="line-height: 23px;width:150px;display:inline-block"/> -
+            <input type="text" id="startTimeTo" name="startTimeTo" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTimeFrom\')}'})" class="textbox" style="line-height: 23px;width:150px;display:inline-block"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doClear()">清空</a>
 	</div>
-	<!--/row-->
+
+	<div style="margin-top:30px;">
+		<table id="dg" style="height:auto;width:auto"></table>
+	</div>
+	
+	<div id="dd"></div>
+
+	<style style="text/css">
+		.datagrid-btable tr {
+			height: 30px;
+		}
+		
+		.datagrid-header {
+			background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
+		}
+		
+		.datagrid-header-row {
+			font-weight: bold;
+			height: 50px
+		}
+	</style>
 </body>
-</html>

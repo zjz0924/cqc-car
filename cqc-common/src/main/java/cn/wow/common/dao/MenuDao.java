@@ -7,4 +7,6 @@ import cn.wow.common.domain.Menu;
 public interface MenuDao extends SqlDao{
 
 	public List<Menu> getMenuList();
+	
+	public Menu selectByAlias(String alias);
 }

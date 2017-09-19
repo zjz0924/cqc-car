@@ -73,9 +73,9 @@
 								<a href="${ctx}/${vo.url}" class="base_a">${vo.name}</a>
 								<c:if test="${vo.isAuthorized == true}">
 									<ul>
-										<c:forEach items="${vo.subList}" var="subVo">
+										<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
 											<li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if>">
-												<a href="${ctx}/${vo.url}?choose=${subVo.url}">${subVo.name}</a>
+												<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
 											</li>
 										</c:forEach>
 									</ul>

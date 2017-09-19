@@ -6,25 +6,39 @@
 	<head>
 		<meta charset="utf-8">
 		<title>SGMW</title>
-		<link href="${ctx}/resources/css/style.css" rel="stylesheet">
-		<link href="${ctx}/resources/css/cssreset.css" rel="stylesheet">
-		<script src="${ctx}/resources/js/jquery-2.1.1.min.js"></script>
+		<%@include file="../common/source.jsp"%>
 		
-		<link rel="stylesheet" type="text/css" href="${ctx}/resources/js/jquery-easyui-1.5.3/themes/material/easyui.css">
-		<link rel="stylesheet" type="text/css" href="${ctx}/resources/js/jquery-easyui-1.5.3/themes/icon.css">
-		<script type="text/javascript" src="${ctx}/resources/js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
-		<script type="text/javascript" src="${ctx}/resources/js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
-		
-		 <script type="text/javascript">
-	        function setTabs(){
-	            $('#tt').tabs({
-	                plain: $('#plain').is(':checked'),
-	                narrow: $('#narrow').is(':checked'),
-	                pill: $('#pill').is(':checked'),
-	                justified: $('#justified').is(':checked')
-	            })
-	        }
-	    </script>
+		<script type="text/javascript">
+	        
+	        $(function(){
+	        	
+				$("#tt").tabs({
+					onSelect : function(title, index) {
+						// 刷新
+						$('#tt').tabs('getTab', index).panel('refresh');
+	
+						/* if ($('#tt').tabs('exists', title)) {
+							var currTab = $('#tt').tabs('getTab', title);
+							iframe = $(currTab.panel('options').content);
+							content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
+							$('#tt').tabs('update', {
+								tab : currTab,
+								options : {
+									content : content
+								}
+							});
+						} */
+					}
+				});
+
+				// 选中tab
+				$("#tt").tabs('select', parseInt("${choose}"));
+
+				$(".tabs").css("height", "36px");
+				$(".tabs-inner").css("height", "35px");
+				$(".tabs-inner").css("line-height", "35px");
+			});
+		</script>
 		
 	</head>
 	
@@ -34,25 +48,13 @@
 		<!--banner-->
 		<div class="inbanner XTGL"></div>
 		
-		<div style="width: 100%;height: auto; min-height: 650px; background: #e6e6e6; font-size: 14px;">
-			<div id="tt" class="easyui-tabs" style="width:100%;height:250px">
-		        <div title="About" style="padding:10px">
-		            <p style="font-size:14px">jQuery EasyUI framework helps you build your web pages easily.</p>
-		            <ul>
-		                <li>easyui is a collection of user-interface plugin based on jQuery.</li>
-		                <li>easyui provides essential functionality for building modem, interactive, javascript applications.</li>
-		                <li>using easyui you don't need to write many javascript code, you usually defines user-interface by writing some HTML markup.</li>
-		                <li>complete framework for HTML5 web page.</li>
-		                <li>easyui save your time and scales while developing your products.</li>
-		                <li>easyui is very easy but powerful.</li>
-		            </ul>
-		        </div>
-		        <div title="My Documents" style="padding:10px">
-		            <ul class="easyui-tree" data-options="url:'tree_data1.json',method:'get',animate:true"></ul>
-		        </div>
-		        <div title="Help" data-options="iconCls:'icon-help',closable:true" style="padding:10px">
-		            This is the help content.
-		        </div>
+		<div style="width: auto;height: auto; min-height: 650px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
+			<div id="tt" class="easyui-tabs" style="width:100%;height:auto;" data-options="plain: true,pill: true, justified: true, narrow: false">
+		        <c:if test="${not empty menu.subList}">
+		        	<c:forEach items="${menu.subList}" var="vo">
+						<div title="${vo.name}" data-options="href:'${ctx}/${vo.url}',closed:true"></div>	        	
+		        	</c:forEach>
+		        </c:if>
 		    </div>
 		</div>
 		

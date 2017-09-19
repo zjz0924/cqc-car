@@ -7,5 +7,7 @@ import cn.wow.common.domain.Menu;
 public interface MenuService {
 
     public List<Menu> getMenuList();
+    
+    public Menu selectByAlias(String alias);
 
 }

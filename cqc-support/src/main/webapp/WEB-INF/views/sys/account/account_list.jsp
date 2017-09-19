@@ -140,9 +140,6 @@
 							</table>
 						</div>
 
-						<c:if test="${not empty dataList}">
-							<pagination:pagebar startRow="${dataList.getStartRow()}" id="queryForm" pageSize="${dataList.getPageSize()}" totalSize="${dataList.getTotal()}" showbar="true" showdetail="true" />
-						</c:if>
 					</form>
 				</div>
 			</div>

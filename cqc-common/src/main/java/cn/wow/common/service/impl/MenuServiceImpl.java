@@ -24,5 +24,8 @@ public class MenuServiceImpl implements MenuService{
     public List<Menu> getMenuList(){
     	return menuDao.getMenuList();
     }
-
+    
+    public Menu selectByAlias(String alias){
+    	return menuDao.selectByAlias(alias);
+    }
 }
