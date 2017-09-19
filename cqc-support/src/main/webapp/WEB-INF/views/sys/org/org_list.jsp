@@ -223,19 +223,11 @@
 		function selectRootNode(){
 			$('#orgTree').jstree("select_node", "1");
 		}
+		
 	</script>
 </head>
 
 <body>
-
-	<div class="row">
-		<div class="col-lg-12">
-			<ol class="breadcrumb">
-				<li>系统管理</li>
-				<li><a href="${ctx}/org/list">机构管理</a></li>
-			</ol>
-		</div>
-	</div>
 
 	<div class="row">
 		<div class="col-lg-12">

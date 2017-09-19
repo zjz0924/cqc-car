@@ -1,18 +1,11 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
-<%@include file="/page/NavPageBar.jsp"%>
 
-<!DOCTYPE html>
-<html>
-	<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<%@include file="../../common/source.jsp"%>
-	
+<body>
 	<script type="text/javascript">
 		function save(){
-			var name = $("#name").val();
-			var code = $("#code").val();
+			var name = $("#e_name").val();
+			var code = $("#e_code").val();
 			
 			if(isNull(code)){
 				errorMsg("区域编码必填");	
@@ -35,9 +28,7 @@
 				},
 				success:function(data){
 					if(data.success){
-						artDialog.data("currentNodeId", data.data);
-						artDialog.data("result", data.msg);
-						art.dialog.close();
+						window.parent.closeDialog(data.data, data.msg);
 					}else{
 						errorMsg(data.msg);
 					}
@@ -45,13 +36,12 @@
 			});
 		}
 	</script>
-</head>
 
-<body>
+
 	<div style="margin-top:30px;margin-left:20px;">
-		<p>区域编码： <input type="text" id="code" name="code" value="${area.code}" <c:if test="${not empty id}">disabled</c:if>></p>
-		<p>区域名称： <input type="text" id="name" name="name" value="${area.name}"></p>
-		<p>上级区域： ${parent.name } </p>
+		<p>区域编码： <input type="text" id="e_code" name="e_code" value="${area.code}" <c:if test="${not empty id}">disabled</c:if>></p>
+		<p>区域名称： <input type="text" id="e_name" name="e_name" value="${area.name}"></p>
+		<p>上级区域： ${area.parent.name } </p>
 		<p>备注： <input type="text" id="desc" name="desc" value="${area.desc}"></p>
 		
 		<button onclick="save()">保存</button>
@@ -59,4 +49,3 @@
 	
 
 </body>
-</html>

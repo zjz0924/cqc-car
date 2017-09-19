@@ -103,7 +103,6 @@ public class OrgServiceImpl implements OrgService{
 					TreeNode subOrgNode = new TreeNode();
 					subOrgNode.setId(subOrg.getId().toString());
 					subOrgNode.setText(subOrg.getName());
-					subOrgNode.setParent(rootOrg.getId().toString());
 					
 					if ((isSearch(svalue) && !sId.contains(subOrg.getId())) || !isSearch(svalue)) {
 						// 遍历子节点
@@ -133,7 +132,6 @@ public class OrgServiceImpl implements OrgService{
 				TreeNode sonNode = new TreeNode();
 				sonNode.setId(subOrg.getId().toString());
 				sonNode.setText(subOrg.getName());
-				sonNode.setParent(org.getId().toString());
 				// 遍历子节点
 				addSonNode(sonNode, subOrg);
 				subNodeList.add(sonNode);

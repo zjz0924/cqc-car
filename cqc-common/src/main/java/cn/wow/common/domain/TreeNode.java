@@ -15,16 +15,17 @@ public class TreeNode implements Serializable {
 
 	public String id;
 
-	@JsonInclude(Include.NON_NULL)
-	public String parent;
-
 	public String text;
 	
-	@JsonInclude(Include.NON_NULL)
 	public List<TreeNode> children;
 
-	@JsonInclude(Include.NON_NULL)
-	public String icon;
+	public String iconCls;
+	
+	public String state;
+	
+	public boolean checked;
+	
+	public Object attributes;
 
 	public String getId() {
 		return id;
@@ -32,14 +33,6 @@ public class TreeNode implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getParent() {
-		return parent;
-	}
-
-	public void setParent(String parent) {
-		this.parent = parent;
 	}
 
 	public String getText() {
@@ -50,14 +43,6 @@ public class TreeNode implements Serializable {
 		this.text = text;
 	}
 
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-
 	public List<TreeNode> getChildren() {
 		return children;
 	}
@@ -65,7 +50,36 @@ public class TreeNode implements Serializable {
 	public void setChildren(List<TreeNode> children) {
 		this.children = children;
 	}
-	
-	
 
+	public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	public Object getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Object attributes) {
+		this.attributes = attributes;
+	}
 }

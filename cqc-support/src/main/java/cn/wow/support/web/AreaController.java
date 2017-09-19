@@ -51,8 +51,6 @@ public class AreaController extends AbstractController {
 			model.addAttribute("area", area);
 		}
 
-		Area parent = areaService.selectOne(Long.parseLong(parentid));
-		model.addAttribute("parent", parent);
 		model.addAttribute("id", id);
 		model.addAttribute("parentid", parentid);
 		return "sys/area/area_detail";
@@ -87,7 +85,6 @@ public class AreaController extends AbstractController {
 
 					area.setDesc(desc);
 					area.setName(text);
-					area.setParentid(Long.parseLong(parentid));
 					areaService.update(getCurrentUserName(), area);
 					
 					vo.setMsg("编辑成功");

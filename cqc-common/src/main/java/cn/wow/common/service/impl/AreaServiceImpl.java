@@ -101,7 +101,6 @@ public class AreaServiceImpl implements AreaService {
 					TreeNode subAreaNode = new TreeNode();
 					subAreaNode.setId(subArea.getId().toString());
 					subAreaNode.setText(subArea.getName());
-					subAreaNode.setParent(rootArea.getId().toString());
 					// 遍历子节点
 					addSonNode(subAreaNode, subArea);
 					subNodeList.add(subAreaNode);
@@ -128,7 +127,6 @@ public class AreaServiceImpl implements AreaService {
 				TreeNode sonNode = new TreeNode();
 				sonNode.setId(subArea.getId().toString());
 				sonNode.setText(subArea.getName());
-				sonNode.setParent(area.getId().toString());
 				// 遍历子节点
 				addSonNode(sonNode, subArea);
 				subNodeList.add(sonNode);

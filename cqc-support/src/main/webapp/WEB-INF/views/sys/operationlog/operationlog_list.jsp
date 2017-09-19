@@ -153,5 +153,11 @@
 			font-weight: bold;
 			height: 50px
 		}
+		
+		.datagrid-row-over, .datagrid-header td.datagrid-header-over {
+		    background: #e6e6e6;
+		    color: #00438a;
+		    cursor: default;
+		}
 	</style>
 </body>
