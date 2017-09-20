@@ -64,10 +64,6 @@
 				dnd:true,
 				lines: true,
 			    url: getDataUrl + "?time=" + new Date(),
-			    onBeforeLoad: function (node, param) {
-                    param.param1= 1,
-                    param.param2= 2
-        		},
 			    onBeforeDrop: function(target,source,point){
 					var targetNode = $("#areaTree").tree('getNode', target);
 					if(!isNull(targetNode.children)){

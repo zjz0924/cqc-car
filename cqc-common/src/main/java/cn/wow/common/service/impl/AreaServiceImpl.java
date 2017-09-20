@@ -17,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.AreaDao;
 import cn.wow.common.domain.Area;
+import cn.wow.common.domain.Org;
 import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.AreaService;
+import cn.wow.common.utils.operationlog.annotation.OperationLogIgnore;
 import cn.wow.common.utils.pagination.PageHelperExt;
 
 @Service
@@ -91,9 +93,6 @@ public class AreaServiceImpl implements AreaService {
 					if(area.getParent() != null){
 						targetId.add(area.getId());
 						legalId.add(area.getId());
-					}
-					
-					if(area.getParent() != null){
 						parentId.add(area.getParentid());
 					}
 					
@@ -102,6 +101,7 @@ public class AreaServiceImpl implements AreaService {
 					if (!parentSet.contains(parentArea)) {
 						parentSet.add(parentArea);
 					}
+					removeDuplicate(parentSet);
 				}
 				
 				//防止父节点与子节点名称相同
@@ -189,5 +189,21 @@ public class AreaServiceImpl implements AreaService {
 		} else {
 			return false;
 		}
+	}
+	
+	// 去除set中重复数据的方法
+	@OperationLogIgnore
+	private Set<Area> removeDuplicate(Set<Area> set) {
+		Map<String, Area> map = new HashMap<String, Area>();
+		Set<Area> tempSet = new HashSet<Area>();
+		for (Area area : set) {
+			if (map.get(area.getCode()) == null) {
+				map.put(area.getCode(), area);
+			} else {
+				tempSet.add(area);
+			}
+		}
+		set.removeAll(tempSet);
+		return set;
 	}
 }

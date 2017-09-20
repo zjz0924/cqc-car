@@ -50,13 +50,24 @@ public class OrgController extends AbstractController {
 	public String detail(HttpServletRequest request, Model model, String id, String parentid) {
 		if (StringUtils.isNotBlank(id)) {
 			Org org = orgService.selectOne(Long.parseLong(id));
-			model.addAttribute("area", org);
+			
+			if (org.getParent() != null) {
+				parentid = org.getParent().getId().toString();
+			}
+			if(org.getArea() != null){
+				model.addAttribute("areaid", org.getArea().getId());
+				model.addAttribute("areaname", org.getArea().getName());
+			}
+			
+			model.addAttribute("org", org);
 		}
 
-		Org parent = orgService.selectOne(Long.parseLong(parentid));
-		model.addAttribute("parent", parent);
+		if(StringUtils.isNotBlank(parentid)){
+			Org parentOrg = orgService.selectOne(Long.parseLong(parentid));
+			model.addAttribute("parentOrg", parentOrg);
+		}
+		
 		model.addAttribute("id", id);
-		model.addAttribute("parentid", parentid);
 		return "sys/org/org_detail";
 	}
 
@@ -81,8 +92,9 @@ public class OrgController extends AbstractController {
 						List<Org> areaList = orgService.selectAllList(rMap);
 
 						if (areaList != null && areaList.size() > 0) {
-							vo.setMsg("同一级机构下，机构名称不能重复");
+							vo.setMsg("名称已存在");
 							vo.setSuccess(false);
+							vo.setData("name");
 							return vo;
 						}
 					}
@@ -100,8 +112,9 @@ public class OrgController extends AbstractController {
 			} else {
 				Org exist = orgService.getByCode(code);
 				if(exist != null){
-					vo.setMsg("机构编码已经存在，请重新输入");
+					vo.setMsg("编码已存在");
 					vo.setSuccess(false);
+					vo.setData("code");
 					return vo;
 				}
 				
@@ -111,8 +124,9 @@ public class OrgController extends AbstractController {
 				List<Org> orgList = orgService.selectAllList(rMap);
 
 				if (orgList != null && orgList.size() > 0) {
-					vo.setMsg("同一级机构下，机构名称不能重复");
+					vo.setMsg("名称已存在");
 					vo.setSuccess(false);
+					vo.setData("name");
 					return vo;
 				} else {
 					org = new Org();
@@ -135,7 +149,7 @@ public class OrgController extends AbstractController {
 
 			vo.setMsg("保存失败，系统异常");
 			vo.setSuccess(false);
-			logger.error("机构保存失败：", ex.getMessage());
+			logger.error("机构保存失败：", ex);
 			return vo;
 		}
 		vo.setData(org.getId());
@@ -187,7 +201,7 @@ public class OrgController extends AbstractController {
 			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("机构移动失败：", ex.getMessage());
+			logger.error("机构移动失败：", ex);
 		}
 
 		vo.setMsg("移动成功");
@@ -211,7 +225,7 @@ public class OrgController extends AbstractController {
 
 			vo.setMsg("删除失败，系统异常");
 			vo.setSuccess(false);
-			logger.error("机构删除失败：", ex.getMessage());
+			logger.error("机构删除失败：", ex);
 			return vo;
 		}
 

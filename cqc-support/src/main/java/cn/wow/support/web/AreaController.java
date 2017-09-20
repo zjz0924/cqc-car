@@ -135,7 +135,7 @@ public class AreaController extends AbstractController {
 
 			vo.setMsg("保存失败，系统异常");
 			vo.setSuccess(false);
-			logger.error("区域保存失败：", ex.getMessage());
+			logger.error("区域保存失败：", ex);
 			return vo;
 		}
 		vo.setData(area.getId());
@@ -187,7 +187,7 @@ public class AreaController extends AbstractController {
 			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("区域移动失败：", ex.getMessage());
+			logger.error("区域移动失败：", ex);
 		}
 
 		vo.setMsg("移动成功");
@@ -211,7 +211,7 @@ public class AreaController extends AbstractController {
 
 			vo.setMsg("删除失败，系统异常");
 			vo.setSuccess(false);
-			logger.error("区域删除失败：", ex.getMessage());
+			logger.error("区域删除失败：", ex);
 			return vo;
 		}
 

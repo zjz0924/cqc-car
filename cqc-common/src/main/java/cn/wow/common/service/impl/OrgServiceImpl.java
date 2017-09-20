@@ -2,9 +2,11 @@ package cn.wow.common.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import cn.wow.common.dao.OrgDao;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.OrgService;
+import cn.wow.common.utils.operationlog.annotation.OperationLogIgnore;
 import cn.wow.common.utils.pagination.PageHelperExt;
 
 @Service
@@ -62,6 +65,7 @@ public class OrgServiceImpl implements OrgService{
 	 */
 	public List<TreeNode> getTree(String svalue, String stype) {
 		Org rootOrg = orgDao.selectOne(1l);
+		TreeNode rootNode = new TreeNode();
 		
 		/**
 		 * 搜索思路：
@@ -69,23 +73,46 @@ public class OrgServiceImpl implements OrgService{
 		 * 2. 获取它们的次上级父节点
 		 * 3. 再添加子节点的时候过滤掉父节点是当前节点的节点
 		 */
-		List<Long> sId = new ArrayList<Long>();
+		// 搜索的节点ID
+		Set<Long> targetId = new HashSet<Long>();
+		// 所有符合要求的节点ID
+		Set<Long> legalId = new HashSet<Long>();
+		// 搜索的节点的父ID
+		Set<Long> parentId = new HashSet<Long>();
+		
 		if (isSearch(svalue)) {
 			Map<String, Object> qMap = new HashMap<String, Object>();
 			qMap.put(stype, svalue);
 			List<Org> dataList = orgDao.selectAllList(qMap);
 
-			List<Org> parentList = new ArrayList<Org>();
+			Set<Org> parentSet = new HashSet<Org>();
 			if (dataList != null && dataList.size() > 0) {
 				for (Org org : dataList) {
-					sId.add(org.getId());
-					parentList.add(getSecondOrg(org));
+					//不处理根节点
+					if(org.getParent() != null){
+						targetId.add(org.getId());
+						legalId.add(org.getId());
+						parentId.add(org.getParentid());
+					}
+					
+					// 获取搜索节点的二级父节点
+					Org parentOrg = getSecondOrg(org, legalId);
+					if (!parentSet.contains(parentOrg)) {
+						parentSet.add(parentOrg);
+					}
+					// 去掉重复的对象
+					removeDuplicate(parentSet);
 				}
+				
+				//防止父节点与子节点名称相同
+				targetId.removeAll(parentId);
 			}
-			rootOrg.setSubList(dataList);
+			
+			List<Org> parentList = new ArrayList<Org>();
+			parentList.addAll(parentSet);
+			rootOrg.setSubList(parentList);
 		}
 		
-		TreeNode rootNode = new TreeNode();
 		List<TreeNode> tree = new ArrayList<TreeNode>();
 		if (rootOrg != null) {
 			rootNode.setId(rootOrg.getId().toString());
@@ -100,15 +127,18 @@ public class OrgServiceImpl implements OrgService{
 				while (subList.hasNext()) {
 					Org subOrg = subList.next();
 
-					TreeNode subOrgNode = new TreeNode();
-					subOrgNode.setId(subOrg.getId().toString());
-					subOrgNode.setText(subOrg.getName());
-					
-					if ((isSearch(svalue) && !sId.contains(subOrg.getId())) || !isSearch(svalue)) {
-						// 遍历子节点
-						addSonNode(subOrgNode, subOrg);
+					if ((isSearch(svalue) && legalId.contains(subOrg.getId())) || !isSearch(svalue)) {
+						TreeNode subOrgNode = new TreeNode();
+						subOrgNode.setId(subOrg.getId().toString());
+						subOrgNode.setText(subOrg.getName());
+
+						boolean isSearch = isSearch(svalue);
+						if ((isSearch && !targetId.contains(subOrg.getId())) || !isSearch) {
+							// 遍历子节点
+							addSonNode(subOrgNode, subOrg, legalId, targetId, isSearch);
+						}
+						subNodeList.add(subOrgNode);
 					}
-					subNodeList.add(subOrgNode);
 				}
 				rootNode.setChildren(subNodeList);
 			}
@@ -118,7 +148,7 @@ public class OrgServiceImpl implements OrgService{
 		return tree;
 	}
 
-	private void addSonNode(TreeNode subOrgNode, Org org) {
+	private void addSonNode(TreeNode subOrgNode, Org org, Set<Long> legalId, Set<Long> targetId, boolean isSearch) {
 		// 获取子集合
 		Iterator<Org> subList = org.getSubList().iterator();
 
@@ -129,23 +159,29 @@ public class OrgServiceImpl implements OrgService{
 			while (subList.hasNext()) {
 				Org subOrg = subList.next();
 
-				TreeNode sonNode = new TreeNode();
-				sonNode.setId(subOrg.getId().toString());
-				sonNode.setText(subOrg.getName());
-				// 遍历子节点
-				addSonNode(sonNode, subOrg);
-				subNodeList.add(sonNode);
+				if ((isSearch && legalId.contains(subOrg.getId())) || !isSearch) {
+					TreeNode sonNode = new TreeNode();
+					sonNode.setId(subOrg.getId().toString());
+					sonNode.setText(subOrg.getName());
+					
+					if ((isSearch && !targetId.contains(subOrg.getId())) || !isSearch) {
+						// 遍历子节点
+						addSonNode(sonNode, subOrg, legalId, targetId, isSearch);
+					}
+					subNodeList.add(sonNode);
+				}
 			}
 			subOrgNode.setChildren(subNodeList);
 		}
 	}
 	
 	// 获取二级节点
-	private Org getSecondOrg(Org org) {
+	private Org getSecondOrg(Org org, Set<Long> legalId) {
 		if (org.getParent() != null && org.getParent().getId() != 1l) {
-			getSecondOrg(org.getParent());
+			legalId.add(org.getParent().getId());
+			return getSecondOrg(org.getParent(), legalId);
 		}
-		return org.getParent();
+		return org;
 	}
 	
 	
@@ -157,4 +193,20 @@ public class OrgServiceImpl implements OrgService{
 		}
 	}
 
+	// 去除set中重复数据的方法
+	@OperationLogIgnore
+	private Set<Org> removeDuplicate(Set<Org> set) {
+		Map<String, Org> map = new HashMap<String, Org>();
+		Set<Org> tempSet = new HashSet<Org>();
+		for (Org org : set) {
+			if (map.get(org.getCode()) == null) {
+				map.put(org.getCode(), org);
+			} else {
+				tempSet.add(org);
+			}
+		}
+		set.removeAll(tempSet);
+		return set;
+	}
+	
 }

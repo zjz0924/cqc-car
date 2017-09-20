@@ -4,13 +4,13 @@
 <body>
 	<div style="margin-top:15px;margin-left:20px;">
 		<div class="info-div">
-			<span class="title-span">区域编码：</span> 
+			<span class="title-span"><span class="req-span">*</span>区域编码：</span> 
 			<input id="e_code" name="e_code" value="${area.code}" <c:if test="${not empty id}">disabled</c:if> class="easyui-validatebox tb">
 			<span id="code_error" class="error-message"></span>
 		</div>
 		
 		<div class="info-div">
-			<span class="title-span">区域名称： </span>
+			<span class="title-span"><span class="req-span">*</span>区域名称： </span>
 			<input id="e_name" name="e_name" value="${area.name}" class="easyui-validatebox tb">
 			<span id="name_error" class="error-message"></span>
 		</div>
@@ -26,7 +26,7 @@
 		</div>
 		
 		<div style="text-align:center;margin-top:5px;" class="info-div">
-			<a href="javascript:void()"  onclick="save()" class="easyui-linkbutton" >保存</a>
+			<a href="javascript:void(0)"  onclick="save()" class="easyui-linkbutton" >保存</a>
 			<span id="exception_error" class="error-message"></span>
 		</div>
 	</div>
@@ -95,6 +95,11 @@
             margin: 4px 0 0 5px;
             padding: 0;
             color: red;
+        }
+        
+        .req-span{
+        	font-weight: bold;
+        	color: red;
         }
 	</style>
 

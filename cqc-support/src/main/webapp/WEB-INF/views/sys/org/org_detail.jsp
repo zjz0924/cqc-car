@@ -1,27 +1,88 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
-<%@include file="/page/NavPageBar.jsp"%>
+	
 
-<!DOCTYPE html>
-<html>
-	<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<%@include file="../../common/source.jsp"%>
+<body>
+	<div style="margin-top:15px;margin-left:20px;">
+		<div class="info-div">
+			<span class="title-span"><span class="req-span">*</span>机构编码：</span> 
+			<input id="o_code" name="o_code" value="${org.code}" <c:if test="${not empty id}">disabled</c:if> class="easyui-validatebox tb">
+			<span id="ocode_error" class="error-message"></span>
+		</div>
+		
+		<div class="info-div">
+			<span class="title-span"><span class="req-span">*</span>机构名称： </span>
+			<input id="o_name" name="o_name" value="${org.name}" class="easyui-validatebox tb">
+			<span id="oname_error" class="error-message"></span>
+		</div>
+		
+		<div class="info-div">
+			<span class="title-span">上级机构： </span>
+			${parentOrg.name } 
+		</div>
+		
+		<div>
+			<span class="title-span"><span class="req-span">*</span>区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域： </span>
+			<input id="oarea_id" >
+			<span id="oarea_error" class="error-message"></span>
+		</div>
+		
+		<div class="info-div">
+			<span class="title-span">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注： </span>
+			<input type="text" id="o_desc" name="o_desc" value="${area.desc}">
+		</div>
+		
+		<div style="text-align:center;margin-top:5px;" class="info-div">
+			<a href="javascript:void(0);"  onclick="save()" class="easyui-linkbutton" >保存</a>
+			<span id="exception_error" class="error-message"></span>
+		</div>
+	</div>
 	
 	<script type="text/javascript">
+		$(function(){
+			$('#oarea_id').combotree({
+			    url: '${ctx}/area/tree'
+			});
+			
+			var areaid = "${areaid}";
+			if(!isNull(areaid)){
+				$('#oarea_id').combotree('setValue', {
+					id: "${areaid}",
+					text: "${areaname}"
+				});
+			}
+		});
+	
 		function save(){
-			var name = $("#name").val();
-			var code = $("#code").val();
+			var name = $("#o_name").val();
+			var code = $("#o_code").val();
+			var areaid = "";
+			
+			var tree = $('#oarea_id').combotree('tree');	
+			var selecteNode = tree.tree('getSelected');
+			if(!isNull(selecteNode)){
+				areaid = selecteNode.id;
+			}
 			
 			if(isNull(code)){
-				errorMsg("机构编码必填");	
+				err("ocode_error", "机构编码必填");
 				return;
+			}else{
+				err("ocode_error", "");
 			}
 			
 			if(isNull(name)){
-				errorMsg("机构名称必填");	
+				err("oname_error", "区域名称必填");	
 				return;
+			}else{
+				err("oname_error", "");
+			}
+			
+			if(isNull(areaid)){
+				err("oarea_error", "区域必选");	
+				return;
+			}else{
+				err("oarea_error", "");
 			}
 			
 			$.ajax({
@@ -29,35 +90,53 @@
 				data: {
 					"text": name,
 					"code": code,
-					"desc": $("#desc").val(),
+					"desc": $("#o_desc").val(),
 					"id": "${id}",
-					"parentid": "${parentid}"
+					"parentid": "${parentOrg.id}",
+					"areaid": areaid
 				},
 				success:function(data){
 					if(data.success){
-						artDialog.data("currentNodeId", data.data);
-						artDialog.data("result", data.msg);
-						art.dialog.close();
+						window.parent.closeDialog(data.data, data.msg);
 					}else{
-						errorMsg(data.msg);
+						if(data.data == "name"){
+							err("oname_error", data.msg);
+						}else if(data.data == "code"){
+							err("ocode_error", data.msg);
+						}else{
+							err("exception_error", data.msg);
+						}
 					}
 				}
 			});
 		}
-	</script>
-</head>
-
-<body>
-	<div style="margin-top:30px;margin-left:20px;">
-		<p>机构编码： <input type="text" id="code" name="code" value="${org.code}" <c:if test="${not empty id}">disabled</c:if>></p>
-		<p>机构名称： <input type="text" id="name" name="name" value="${org.name}"></p>
-		<p>上级机构： ${parent.name } </p>
-		<p>区域： ${parent.name } </p>
-		<p>备注： <input type="text" id="desc" name="desc" value="${org.desc}"></p>
 		
-		<button onclick="save()">保存</button>
-	</div>
+		function err(id, message){
+            $("#" + id).html(message);
+        }
+	</script>
 	
+	<style type="text/css">
+		.info-div{
+			line-height: 35px;
+		}
+		
+		.title-span{
+			font-weight: bold;
+			display: inline-block;
+			width: 80px;
+		}
+		
+        .error-message{
+            margin: 4px 0 0 5px;
+            padding: 0;
+            color: red;
+        }
+        
+        .req-span{
+        	font-weight: bold;
+        	color: red;
+        }
+	</style>
 
 </body>
-</html>
