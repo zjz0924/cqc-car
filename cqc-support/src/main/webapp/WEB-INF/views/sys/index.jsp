@@ -16,7 +16,7 @@
 					onSelect : function(title, index) {
 						// 刷新 
 						//点击 日志管理时会有error信息
-						$('#tt').tabs('getTab', index).panel('refresh');
+					//	$('#tt').tabs('getTab', index).panel('refresh');
 	
 						//可能会造成textbox 赋值失败
 						/* if ($('#tt').tabs('exists', title)) {

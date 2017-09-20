@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.wow.common.domain.Area;
 import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.AreaService;
@@ -48,11 +49,18 @@ public class AreaController extends AbstractController {
 	public String detail(HttpServletRequest request, Model model, String id, String parentid) {
 		if (StringUtils.isNotBlank(id)) {
 			Area area = areaService.selectOne(Long.parseLong(id));
+			if(area.getParent() != null){
+				parentid = area.getParent().getId().toString();
+			}
 			model.addAttribute("area", area);
 		}
-
+		
+		if(StringUtils.isNotBlank(parentid)){
+			Area parentArea = areaService.selectOne(Long.parseLong(parentid));
+			model.addAttribute("parentArea", parentArea);
+		}
+		
 		model.addAttribute("id", id);
-		model.addAttribute("parentid", parentid);
 		return "sys/area/area_detail";
 	}
 
@@ -77,8 +85,9 @@ public class AreaController extends AbstractController {
 						List<Area> areaList = areaService.selectAllList(rMap);
 
 						if (areaList != null && areaList.size() > 0) {
-							vo.setMsg("同一级区域下，区域名不能重复");
+							vo.setMsg("区域名已存在");
 							vo.setSuccess(false);
+							vo.setData("name");
 							return vo;
 						}
 					}
@@ -92,8 +101,9 @@ public class AreaController extends AbstractController {
 			} else {
 				Area exist = areaService.getAreaByCode(code);
 				if(exist != null){
-					vo.setMsg("区域编码已经存在，请重新输入");
+					vo.setMsg("编码已存在");
 					vo.setSuccess(false);
+					vo.setData("code");
 					return vo;
 				}
 				
@@ -103,8 +113,9 @@ public class AreaController extends AbstractController {
 				List<Area> areaList = areaService.selectAllList(rMap);
 
 				if (areaList != null && areaList.size() > 0) {
-					vo.setMsg("同一级区域下，区域名不能重复");
+					vo.setMsg("区域名已存在");
 					vo.setSuccess(false);
+					vo.setData("name");
 					return vo;
 				} else {
 					area = new Area();
@@ -208,4 +219,5 @@ public class AreaController extends AbstractController {
 		vo.setSuccess(true);
 		return vo;
 	}
+
 }

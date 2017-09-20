@@ -106,4 +106,16 @@ public class Org extends JpaEntity {
 	public Serializable getPrimaryKey() {
 		return id;
 	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof Area) {
+			Org org = (Org) obj;
+			return code.equals(org.getCode().trim());
+		}
+		return false;
+	}
+	
+	public int hashCode() {
+		return code.hashCode();
+	}
 }

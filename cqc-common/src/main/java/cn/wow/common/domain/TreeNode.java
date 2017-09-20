@@ -17,14 +17,19 @@ public class TreeNode implements Serializable {
 
 	public String text;
 	
+	@JsonInclude(Include.NON_NULL) 
 	public List<TreeNode> children;
 
+	@JsonInclude(Include.NON_NULL) 
 	public String iconCls;
 	
+	@JsonInclude(Include.NON_NULL) 
 	public String state;
 	
+	@JsonInclude(Include.NON_NULL) 
 	public boolean checked;
 	
+	@JsonInclude(Include.NON_NULL) 
 	public Object attributes;
 
 	public String getId() {
@@ -42,6 +47,7 @@ public class TreeNode implements Serializable {
 	public void setText(String text) {
 		this.text = text;
 	}
+
 
 	public List<TreeNode> getChildren() {
 		return children;

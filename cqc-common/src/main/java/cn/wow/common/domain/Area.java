@@ -88,4 +88,16 @@ public class Area extends JpaEntity {
 	public Serializable getPrimaryKey() {
 		return id;
 	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof Area) {
+			Area area = (Area) obj;
+			return code.equals(area.getCode().trim());
+		}
+		return false;
+	}
+	
+	public int hashCode() {
+		return code.hashCode();
+	}
 }

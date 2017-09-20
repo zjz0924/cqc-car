@@ -15,8 +15,10 @@
 			</div>
 		</div>
 		
-		<div class="column" style="padding:10px 20px;">
-			<p>区域信息</p>
+		<div class="column" style="padding:30px 20px;font-size: 14px;width:90%;">
+			<p style="font-size: 16px;margin-bottom: 10px;">区域信息</p>
+			
+			<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
 		
 			<div class="info">
 				<span class="info_title">区域编码：</span>
@@ -34,7 +36,7 @@
 			</div>
 			
 			<div class="info">
-				<span class="info_title">备注：</span>
+				<span class="info_title">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span>
 				<span id="desc"></span>
 			</div>
 		</div>
@@ -52,166 +54,194 @@
 		//操作类型, 0: 新建修改  1：删除
 		var operation = "";
 		var getDataUrl = "${ctx}/area/tree";
+		var svalue = "";
+		var stype = ""; 
 		
 		$(function () {
 			$('#areaTree').tree({
-				dnd: true,
+				method:'get',
 				animate:true,
+				dnd:true,
+				lines: true,
 			    url: getDataUrl + "?time=" + new Date(),
-			    onDrop: function(target,source,point){
-			    	var targetId = $(target).tree('getNode', targetNode).id;
-			    	$.ajax({
-		        		url: "${ctx}/area/move?time=" + new Date(),
-		        		data:{
-		        			id: point.id,
-		        			parentid: targetId
-		        		},
-		        		success:function(data){
-	    					if(!data.success){
-	    						errorMsg(data.msg);
-	    					}else{
-	    						operation = point.id;
-	    						$("#areaTree").tree("reload");
-	    					}
-	    				}
-		        	});
-			    },
-			    onSelect: function(node){
-					 $.ajax({
-						 url: "${ctx}/area/info?time="+ new Date(),
-						 data: {
-							 id: node.id
-						 },
-						 success: function(data){
-							 $("#name").html(data.name);
-							 $("#desc").html(data.desc);
-							 $("#code").html(data.code);
-							 
-							 if(!isNull(data.area)){
-								 $("#areaName").html(data.area.name);
-							 }
-							 if(!isNull(data.parent)){
-								 $("#parentName").html(data.parent.name);
-							 }else{
-								 $("#parentName").html("");
-							 }
-						 }
+			    onBeforeLoad: function (node, param) {
+                    param.param1= 1,
+                    param.param2= 2
+        		},
+			    onBeforeDrop: function(target,source,point){
+					var targetNode = $("#areaTree").tree('getNode', target);
+					if(!isNull(targetNode.children)){
+						for(var i = 0; i < targetNode.children.length; i++){
+							var node = targetNode.children[i];
+							if(node.text == source.text){
+								return false;
+							}
+						}
+					}
+					return true;
+				},
+				onDrop : function(target, source, point) { 
+					var targetId = $("#areaTree").tree('getNode', target).id;
+					
+					$.ajax({
+						url : "${ctx}/area/move?time=" + new Date(),
+						data : {
+							id : source.id,
+							parentid : targetId
+						},
+						success : function(data) {
+							if (!data.success) {
+								errorMsg(data.msg);
+							} else {
+								operation = source.id;
+								$("#areaTree").tree("reload");
+							}
+						}
 					});
-			    },
-			    onContextMenu: function(e, node){
-			    	e.preventDefault();
-			    	$('#areaTree').tree('select', node.target);
-			    	
+				},
+				onSelect : function(node) {
+					$.ajax({
+						url : "${ctx}/area/info?time=" + new Date(),
+						data : {
+							id : node.id
+						},
+						success : function(data) {
+							$("#name").html(data.name);
+							$("#desc").html(data.desc);
+							$("#code").html(data.code);
+
+							if (!isNull(data.area)) {
+								$("#areaName").html(data.area.name);
+							}
+							if (!isNull(data.parent)) {
+								$("#parentName").html(data.parent.name);
+							} else {
+								$("#parentName").html("");
+							}
+						}
+					});
+				},
+				onContextMenu : function(e, node) {
+					e.preventDefault();
+					$('#areaTree').tree('select', node.target);
+
 					$('#treeMenu').menu('show', {
-						left: e.pageX,
-						top: e.pageY
+						left : e.pageX,
+						top : e.pageY
 					})
-			    },
-			    onLoadSuccess: function(node, data){
-			    	if(operation == 0 || isNull(operation)){
-	            		// 删除后自动选中根节点
-	            		$("#areaTree").tree("select", $("#areaTree").tree("getRoot").target);
-	            	}else if(operation > 0){
-	            		// 创建/编辑成功后自动选中该节点
-	            		 var node = $('#areaTree').tree('find', operation); 
-	            		$("#areaTree").tree("select", node.target);
-	            	}
-			    }
+				},
+				onLoadSuccess : function(node, data) {
+					if (operation == 0 || isNull(operation)) {
+						// 删除后自动选中根节点
+						$("#areaTree").tree("select", $("#areaTree").tree("getRoot").target);
+					} else if (operation > 0) {
+						// 创建/编辑成功后自动选中该节点
+						var node = $('#areaTree').tree('find', operation);
+						$("#areaTree").tree("select", node.target);
+					}
+				},
+				onBeforeLoad: function(node, param){
+					param.svalue = svalue;
+					param.stype = stype;
+				}
 			});
-			
+
 			$('#searchbox').searchbox({
-			    searcher:function(value,name){
-			    	$.ajax({
-			    		url: getDataUrl + "?time=" + new Date(),
-			    	    type: "post",
-			    	    data: {
-			    	    	"stype": name,
-			    	    	"svalue": value
-			    	    },
-			    	    success: function(data){
-			    	    	$('#areaTree').jstree(true).settings.core.data = data;
-			    	    	refreshTree(-1);
-					    	// 展开所有节点 
-			                $('#areaTree').jstree('open_all');
-					    	
-					    	$("#name").html("");
-							$("#desc").html("");
-							$("#code").html("");
-							$("#parentName").html("");
-			    	    }
-			    	});
-			    },
-			    menu:'#searchMenu',
-			    prompt:''
+				searcher : function(value, name) {
+					svalue = value;
+					stype = name;
+					
+					// 搜索时不选中任何
+					if(isNull(value)){
+						operation = 0;
+					}else{
+						operation = -1;
+						$("#name").html("");
+						$("#desc").html("");
+						$("#code").html("");
+						$("#parentName").html("");
+					}
+					
+					$("#areaTree").tree("reload");
+				},
+				menu : '#searchMenu',
+				prompt : ''
 			});
 		});
-		
-		function createUpdate(type){
+
+		function createUpdate(type) {
 			var id = "";
 			var parentid = "";
-			if(type == 1){
-				parentid = $("#areaTree").tree("getSelected").id;
-			}else{
-				id = $("#areaTree").tree("getSelected").id;
+			var selecteNode = $("#areaTree").tree("getSelected");
+			if (type == 1) {
+				parentid = selecteNode.id;
+			} else {
+				id = selecteNode.id;
+				
+				var parentNode = $("#areaTree").tree("getParent", selecteNode.target);
+				if(isNull(parentNode)){
+					errorMsg("不能编辑根节点");
+					return false;
+				}
 			}
-			
+
 			$('#dd').dialog({
-			    title: '区域信息',
-			    width: 800,
-			    height: 500,
-			    closed: false,
-			    cache: false,
-			    href: '${ctx}/area/detail?id=' + id + '&parentid='+ parentid,
-			    modal: true
+				title : '区域信息',
+				width : 380,
+				height : 250,
+				closed : false,
+				cache : false,
+				href : '${ctx}/area/detail?id=' + id + '&parentid=' + parentid,
+				modal : true
 			});
 			$('#dd').window('center');
 		}
-		
+
 		// 关掉对话时回调
-		function closeDialog(id, result){
+		function closeDialog(id, result) {
 			$('#dd').dialog('close');
-			
+
 			// 创建/编辑成功
-			if(!isNull(id)){ 
+			if (!isNull(id)) {
 				tipMsg(result);
 				operation = id;
 			}
 			$("#areaTree").tree("reload");
 		}
-		
-		function remove(){
-			$.messager.confirm('确认','确定要删除此机构？删除后不可恢复?',function(r){
-			    if (r){
-			    	 var node = $("#areaTree").tree("getSelected");
-			    	 var parentNode = $("#areaTree").tree("getParent", node.target);
-			    	
-			    	 if(parentNode == null){
-                    	 errorMsg("不能删除根节点");
-                    	 return;
-                     } 
-                     
-			    	 var children = $("#areaTree").tree("getChildren", node.target);
-                     if(!isNull(children)){
-                    	 errorMsg("请先删除下级机构");
-                    	 return;
-                     }
-                  
-                     $.ajax({
-                    	url: "${ctx}/area/delete?time=" + new Date(),
-                    	data:{
-                    		id: node.id
-                    	},
-        				success:function(data){
-        					if(data.success){
-        						operation = 0;
-        						$("#areaTree").tree("reload");
-        						tipMsg(data.msg);
-        					}else{
-        						errorMsg(data.msg);
-        					}
-        				}
-                     });
-			    }
+
+		function remove() {
+			$.messager.confirm('确认', '确定要删除此区域？删除后不可恢复?', function(r) {
+				if (r) {
+					var node = $("#areaTree").tree("getSelected");
+					var parentNode = $("#areaTree").tree("getParent", node.target);
+
+					if (parentNode == null) {
+						errorMsg("不能删除根节点");
+						return;
+					}
+
+					var children = $("#areaTree").tree("getChildren", node.target);
+					if (!isNull(children)) {
+						errorMsg("请先删除下级区域");
+						return;
+					}
+
+					$.ajax({
+						url : "${ctx}/area/delete?time=" + new Date(),
+						data : {
+							id : node.id
+						},
+						success : function(data) {
+							if (data.success) {
+								operation = 0;
+								$("#areaTree").tree("reload");
+								tipMsg(data.msg);
+							} else {
+								errorMsg(data.msg);
+							}
+						}
+					});
+				}
 			});
 		}
 	</script>
