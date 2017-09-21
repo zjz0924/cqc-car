@@ -12,7 +12,7 @@ public interface RoleService {
 
     public int update(String userName, Role role);
 
-    public int deleteByPrimaryKey(String userName, Long id);
+    public int deleteByPrimaryKey(String userName, Role role);
 
     public List<Role> selectAllList(Map<String, Object> map);
     
@@ -21,5 +21,8 @@ public interface RoleService {
     public void updateRole(String userName, Role role, RolePermission rolePermission);
     
     public void deleteRole(String userName, Role role);
-
+    
+    public Role selectByCode(String code);
+    
+    public int move(Role role);
 }

@@ -26,7 +26,7 @@
 						errorMsg("请选择要编辑的菜单项");
 					}
 	            }
-	        },{
+	        }, '-', {
 	            text:'保存',
 	            iconCls:'icon-save',
 	            handler: function(){
@@ -56,7 +56,7 @@
 						errorMsg("没有正在编辑中的菜单项");
 					}
 				}
-			}, {
+			}, '-',  {
 				text : '取消',
 				iconCls : 'icon-cancel',
 				handler : function() {
@@ -96,5 +96,26 @@
 			});
 		});
 	</script>
+	
+	<style style="text/css">
+		.datagrid-btable tr {
+			height: 30px;
+		}
+		
+		.datagrid-header {
+			background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
+		}
+		
+		.datagrid-header-row {
+			font-weight: bold;
+			height: 50px
+		}
+		
+		.datagrid-row-over, .datagrid-header td.datagrid-header-over {
+		    background: #e6e6e6;
+		    color: #00438a;
+		    cursor: default;
+		}
+	</style>
 	
 </body>

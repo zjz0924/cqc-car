@@ -94,10 +94,9 @@
 						success : function(data) {
 							if (!data.success) {
 								errorMsg(data.msg);
-							} else {
-								operation = source.id;
-								$("#orgTree").tree("reload");
-							}
+							} 
+							operation = source.id;
+							$("#orgTree").tree("reload");
 						}
 					});
 				},

@@ -15,6 +15,7 @@ public enum ServiceType implements Serializable {
 	USER_LOGIN("用户登录"),
 	USER_LOGOUT("用户登出"), 
 	ROLE("角色管理"),
+	ROLE_GROUP("角色组管理"),
 	ORG("机构管理"),
 	AREA("区域管理"),
 	MENU("菜单管理");

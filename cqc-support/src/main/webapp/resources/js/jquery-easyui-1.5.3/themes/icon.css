@@ -94,3 +94,11 @@
 .icon-large-chart{
 	background:url('icons/large_chart.png') no-repeat center center;
 }
+
+.icon-group{
+	background:url('icons/group.png') no-repeat center center;
+}
+
+.icon-user{
+	background:url('icons/user.png') no-repeat center center;
+}

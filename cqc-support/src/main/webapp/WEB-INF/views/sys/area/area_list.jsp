@@ -88,10 +88,9 @@
 						success : function(data) {
 							if (!data.success) {
 								errorMsg(data.msg);
-							} else {
-								operation = source.id;
-								$("#areaTree").tree("reload");
-							}
+							} 
+							operation = source.id;
+							$("#areaTree").tree("reload");
 						}
 					});
 				},

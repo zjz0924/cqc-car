@@ -1,5 +1,6 @@
 package cn.wow.support.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,16 +15,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.wow.common.domain.Account;
-import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Role;
-import cn.wow.common.domain.RolePermission;
-import cn.wow.common.service.AccountService;
-import cn.wow.common.service.MenuService;
-import cn.wow.common.service.RolePermissionService;
+import cn.wow.common.domain.RoleGroup;
+import cn.wow.common.domain.TreeNode;
+import cn.wow.common.service.OperationLogService;
+import cn.wow.common.service.RoleGroupService;
 import cn.wow.common.service.RoleService;
 import cn.wow.common.utils.AjaxVO;
-import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.support.utils.Contants;
 
 @Controller
@@ -32,172 +32,361 @@ public class RoleController extends AbstractController {
 
 	private static Logger logger = LoggerFactory.getLogger(RoleController.class);
 
-	private final static String moduleName = Contants.ROLE;
-	
 	@Autowired
 	private RoleService roleService;
 	@Autowired
-	private MenuService menuService;
+	private RoleGroupService roleGroupService;
 	@Autowired
-	private RolePermissionService rolePermissionService;
-	@Autowired
-	private AccountService accountService;
+	private OperationLogService operationLogService;
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
-		List<Menu> menuList = menuService.getMenuList();
-
-		model.addAttribute("menuList", menuList);
 		return "sys/role/role_list";
 	}
 
-	@RequestMapping(value = "/data")
+	/**
+	 * 获取树
+	 */
 	@ResponseBody
-	public AjaxVO data(HttpServletRequest httpServletRequest, Model model, String roleName) {
-		AjaxVO vo = new AjaxVO();
+	@RequestMapping(value = "/tree")
+	public List<TreeNode> tree(HttpServletRequest request, Model model, String svalue, String stype) {
+		List<TreeNode> areaTree = roleGroupService.getTree(svalue, stype);
+		return areaTree;
+	}
 
-		try {
-			Map<String, Object> map = new PageMap(false);
-			map.put("custom_order_sql", "name asc");
-			if (StringUtils.isNotBlank(roleName)) {
-				map.put("name", roleName);
+	/**
+	 * 新建/修改页面
+	 * 
+	 * @param type:
+	 *            类型- 1. 角色 2. 角色组
+	 */
+	@RequestMapping(value = "/detail")
+	public String detail(HttpServletRequest request, Model model, String id, String parentid, Integer type) {
+		RoleGroup parentGroup = null;
+		String title = "";
+
+		if (type == 1) {
+			if (StringUtils.isNotBlank(id)) {
+				Role role = roleService.selectOne(plainId(id));
+				if (role.getGroup() != null) {
+					parentGroup = role.getGroup();
+				}
+				model.addAttribute("facade", role);
+			} else {
+				parentGroup = roleGroupService.selectOne(plainId(parentid));
 			}
-			List<Role> dataList = roleService.selectAllList(map);
+			title = "角色";
+		} else {
+			if (StringUtils.isNotBlank(id)) {
+				RoleGroup roleGroup = roleGroupService.selectOne(plainId(id));
+				if (roleGroup.getParent() != null) {
+					parentGroup = roleGroup.getParent();
+				}
+				model.addAttribute("facade", roleGroup);
+			} else {
+				parentGroup = roleGroupService.selectOne(plainId(parentid));
+			}
+			title = "角色组";
+		}
 
-			vo.setSuccess(true);
-			vo.setData(dataList);
-		} catch (Exception ex) {
-			vo.setSuccess(false);
-			vo.setMsg("系统异常，数据加载失败");
-			logger.error("Failed to get role data.", ex);
+		model.addAttribute("parentGroup", parentGroup);
+		model.addAttribute("type", type);
+		model.addAttribute("title", title);
+		return "sys/role/role_detail";
+	}
+
+	/**
+	 * 新建/修改保存
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/save")
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String name,
+			String desc, Integer type) {
+		AjaxVO vo = null;
+
+		if (type == 1) {
+			vo = createUpdateRole(id, code, parentid, name, desc);
+		} else {
+			vo = createUpdateRoleGroup(id, parentid, name, desc);
 		}
 		return vo;
+	}
+
+	public AjaxVO createUpdateRole(String id, String code, String parentid, String name, String desc) {
+		AjaxVO vo = new AjaxVO();
+		Role role = null;
+
+		try {
+			if (StringUtils.isNoneBlank(id)) {
+				if (Contants.SUPER_ROLE.equals(code)) {
+					vo.setMsg("禁止编辑超级管理员");
+					vo.setSuccess(false);
+					return vo;
+				}
+				role = roleService.selectOne(Long.parseLong(id));
+
+				if (role != null) {
+					if (!role.getName().equals(name)) {
+						Map<String, Object> rMap = new HashMap<String, Object>();
+						rMap.put("name", name);
+						rMap.put("grid", parentid);
+						List<Role> roleList = roleService.selectAllList(rMap);
+
+						if (roleList != null && roleList.size() > 0) {
+							vo.setMsg("角色名已存在");
+							vo.setSuccess(false);
+							vo.setData("name");
+							return vo;
+						}
+					}
+
+					role.setDesc(desc);
+					role.setName(name);
+					roleService.update(getCurrentUserName(), role);
+
+					vo.setMsg("编辑成功");
+				}
+			} else {
+				Role exist = roleService.selectByCode(code);
+				if (exist != null) {
+					vo.setMsg("编码已存在");
+					vo.setSuccess(false);
+					vo.setData("code");
+					return vo;
+				}
+
+				Map<String, Object> rMap = new HashMap<String, Object>();
+				rMap.put("name", name);
+				rMap.put("grid", parentid);
+				List<Role> roleList = roleService.selectAllList(rMap);
+
+				if (roleList != null && roleList.size() > 0) {
+					vo.setMsg("角色名已存在");
+					vo.setSuccess(false);
+					vo.setData("name");
+					return vo;
+				} else {
+					role = new Role();
+					role.setDesc(desc);
+					role.setName(name);
+					role.setCode(code);
+					role.setGrid(Long.parseLong(parentid));
+					RoleGroup parentGroup = roleGroupService.selectOne(Long.parseLong(parentid));
+					role.setGroup(parentGroup);
+
+					roleService.save(getCurrentUserName(), role);
+					vo.setMsg("新建成功");
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+
+			vo.setMsg("保存失败，系统异常");
+			vo.setSuccess(false);
+			logger.error("区域保存失败：", ex);
+			return vo;
+		}
+		vo.setData("r_" + role.getId());
+		return vo;
+	}
+
+	public AjaxVO createUpdateRoleGroup(String id, String parentid, String name, String desc) {
+		AjaxVO vo = new AjaxVO();
+		RoleGroup roleGroup = null;
+
+		try {
+			if (StringUtils.isNoneBlank(id)) {
+				roleGroup = roleGroupService.selectOne(Long.parseLong(id));
+
+				if (roleGroup != null) {
+					if (!roleGroup.getName().equals(name)) {
+						Map<String, Object> rMap = new HashMap<String, Object>();
+						rMap.put("name", name);
+						rMap.put("parentid", parentid);
+						List<RoleGroup> roleList = roleGroupService.selectAllList(rMap);
+
+						if (roleList != null && roleList.size() > 0) {
+							vo.setMsg("角色组名已存在");
+							vo.setSuccess(false);
+							vo.setData("name");
+							return vo;
+						}
+					}
+
+					roleGroup.setDesc(desc);
+					roleGroup.setName(name);
+					roleGroupService.update(getCurrentUserName(), roleGroup);
+
+					vo.setMsg("编辑成功");
+				}
+			} else {
+				Map<String, Object> rMap = new HashMap<String, Object>();
+				rMap.put("name", name);
+				rMap.put("parentid", parentid);
+				List<RoleGroup> roleGroupList = roleGroupService.selectAllList(rMap);
+
+				if (roleGroupList != null && roleGroupList.size() > 0) {
+					vo.setMsg("角色组名已存在");
+					vo.setSuccess(false);
+					vo.setData("name");
+					return vo;
+				} else {
+					roleGroup = new RoleGroup();
+					roleGroup.setDesc(desc);
+					roleGroup.setName(name);
+					roleGroup.setParentid(Long.parseLong(parentid));
+					RoleGroup parentGroup = roleGroupService.selectOne(Long.parseLong(parentid));
+					roleGroup.setParent(parentGroup);
+
+					roleGroupService.save(getCurrentUserName(), roleGroup);
+					vo.setMsg("新建成功");
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+
+			vo.setMsg("保存失败，系统异常");
+			vo.setSuccess(false);
+			logger.error("区域保存失败：", ex);
+			return vo;
+		}
+		vo.setData("g_" + roleGroup.getId());
+		return vo;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/roleInfo")
+	public Role roleInfo(HttpServletRequest request, Model model, String id) {
+		Role role = roleService.selectOne(plainId(id));
+		return role;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/roleGroupInfo")
+	public RoleGroup roleGroupInfo(HttpServletRequest request, Model model, String id) {
+		RoleGroup roleGroup = roleGroupService.selectOne(plainId(id));
+		return roleGroup;
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/delete")
 	public AjaxVO delete(HttpServletRequest request, String id) {
 		AjaxVO vo = new AjaxVO();
-
-		if (StringUtils.isNotBlank(id)) {
-			int num = roleService.deleteByPrimaryKey(getCurrentUserName(), Long.parseLong(id));
-
-			if (num > 0) {
-				getResponse(vo, Contants.SUC_DELETE);
-			} else {
-				getResponse(vo, Contants.FAIL_DELETE);
-			}
-		} else {
-			getResponse(vo, Contants.FAIL_DELETE);
-		}
-
-		return vo;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/rolePermission")
-	public AjaxVO rolePermission(HttpServletRequest request, String id) {
-		AjaxVO vo = new AjaxVO();
-
-		if (StringUtils.isNotBlank(id)) {
-			RolePermission permission = rolePermissionService.selectOne(Long.parseLong(id));
-
-			vo.setData(permission);
-			vo.setSuccess(true);
-		} else {
-			vo.setSuccess(false);
-			vo.setMsg("系统异常，获取角色权限失败");
-		}
-		return vo;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/addRole")
-	public AjaxVO addRole(HttpServletRequest request, String id, String name, String permission) {
-		AjaxVO vo = new AjaxVO();
-		vo.setMsg("保存成功");
-		List<Role> roleList = getRoleListByName(name);
+		String type = null;
 
 		try {
-			RolePermission rolePermission = null;
-			Role role = null;
+			if (isRole(id)) {
+				type = "角色";
 
-			if (StringUtils.isNotBlank(id)) {
-				if (roleList != null && roleList.size() > 0
-						&& roleList.get(0).getId().longValue() != Long.parseLong(id)) {
+				Role role = roleService.selectOne(plainId(id));
+				if (Contants.SUPER_ROLE.equals(role.getCode())) {
+					vo.setMsg("不能删除超级管理员");
 					vo.setSuccess(false);
-					vo.setMsg("角色名已存在");
-				}else{
-					role = roleService.selectOne(Long.parseLong(id));
-					role.setName(name);
-
-					String oldPermission = "";
-					rolePermission = rolePermissionService.selectOne(Long.parseLong(id));
-					if (rolePermission == null) {
-						rolePermission = new RolePermission();
-						rolePermission.setRoleId(role.getId());
-					}
-					oldPermission = rolePermission.getPermission();
-					rolePermission.setPermission(permission);
-
-					roleService.updateRole(getCurrentUserName(), role, rolePermission);
-					logger.info("update role [ " + name + " ], old permission [ "+ oldPermission +" ] ,  new permission [ " + permission +" ]");
+					return vo;
 				}
+				roleService.deleteByPrimaryKey(getCurrentUserName(), role);
 			} else {
-				if (roleList != null && roleList.size() > 0){
-					vo.setSuccess(false);
-					vo.setMsg("角色名已存在");
-				}else{
-					role = new Role(name);
-					role.setPermission(permission);
-					rolePermission = new RolePermission(permission);
-					
-					roleService.createRole(getCurrentUserName(), role, rolePermission);
-					logger.info("create role [ " + name + " ], the permission [ " + permission +" ]");
-				}
+				type = "角色组";
+				RoleGroup group = roleGroupService.selectOne(plainId(id));
+
+				roleGroupService.deleteByPrimaryKey(getCurrentUserName(), group);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			vo.setMsg("系统异常，保存失败");
-			vo.setSuccess(false);
-			logger.error("Failed to add role.", ex);
-		}
-		return vo;
-	}
 
-	@ResponseBody
-	@RequestMapping(value = "/deleteRole")
-	public AjaxVO deleteRole(HttpServletRequest request, Long roleId) {
-		AjaxVO vo = new AjaxVO();
+			vo.setMsg(type + "删除失败，系统异常");
+			vo.setSuccess(false);
+			logger.error(type + "删除失败：", ex);
+			return vo;
+		}
+
 		vo.setMsg("删除成功");
-
-		try {
-			Map<String, Object> map = new PageMap(false);
-			map.put("roleId", roleId);
-			List<Account> accountList = accountService.selectAllList(map);
-
-			if (accountList == null || accountList.size() < 1) {
-				Role role = roleService.selectOne(roleId);
-				roleService.deleteRole(getCurrentUserName(), role);
-			} else {
-				vo.setSuccess(false);
-				vo.setMsg("删除失败，当前角色正在使用中");
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-
-			vo.setSuccess(false);
-			vo.setMsg("系统异常，无法删除");
-			logger.error("Failed to delete role.", ex);
-		}
+		vo.setSuccess(true);
 		return vo;
 	}
 
-	public List<Role> getRoleListByName(String name) {
-		Map<String, Object> map = new PageMap(false);
-		map.put("name", name);
-		List<Role> roleList = roleService.selectAllList(map);
-		return roleList;
+	
+
+	/**
+	 * 移动
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/move")
+	public AjaxVO move(HttpServletRequest request, Model model, String id, String parentid) {
+		AjaxVO vo = new AjaxVO();
+		String type = null;
+		try {
+			if(isRole(id)){
+				type = "角色";
+				Role role = roleService.selectOne(plainId(id));
+				
+				String oldParentGroup = "";
+				if (role.getGroup() != null) {
+					oldParentGroup = role.getGroup().getName();
+				}
+				role.setGrid(plainId(parentid));
+				roleService.move(role);
+
+				// 当前父节点
+				RoleGroup currentParentGroup = roleGroupService.selectOne(plainId(parentid));
+
+				String detail = "{\"name\":\"" + role.getName() + "\", \"from\":\"" + oldParentGroup + "\", \"to\":\"" + currentParentGroup.getName() + "\"}";
+				operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.ROLE, detail);
+			}else{
+				type = "角色组";
+				
+				RoleGroup roleGroup = roleGroupService.selectOne(plainId(id));
+				
+				String oldParentGroup = "";
+				if (roleGroup.getParent() != null) {
+					oldParentGroup = roleGroup.getParent().getName();
+				}
+				roleGroup.setParentid(plainId(parentid));
+				roleGroupService.move(roleGroup);
+
+				// 当前父节点
+				RoleGroup currentParentGroup = roleGroupService.selectOne(plainId(parentid));
+
+				String detail = "{\"name\":\"" + roleGroup.getName() + "\", \"from\":\"" + oldParentGroup + "\", \"to\":\"" + currentParentGroup.getName() + "\"}";
+				operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.ROLE, detail);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error(type + "移动失败：", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg(type + "移动失败");
+			return vo;
+		}
+
+		vo.setMsg("移动成功");
+		vo.setSuccess(true);
+		return vo;
+	}
+
+	/**
+	 * 解析获取ID
+	 */
+	private Long plainId(String id) {
+		if (StringUtils.isNotBlank(id)) {
+			String[] arry = id.split("_");
+
+			if (arry.length == 2) {
+				return Long.parseLong(arry[1]);
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	private boolean isRole(String id) {
+		if (id.startsWith("r")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

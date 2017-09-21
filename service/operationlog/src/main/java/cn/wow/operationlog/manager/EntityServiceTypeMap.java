@@ -10,6 +10,7 @@ import cn.wow.common.domain.Area;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.Role;
+import cn.wow.common.domain.RoleGroup;
 import cn.wow.common.utils.operationlog.ServiceType;
 
 public final class EntityServiceTypeMap {
@@ -29,6 +30,7 @@ public final class EntityServiceTypeMap {
 		typeMap.clear();
 		typeMap.put(Account.class.getName(), ServiceType.ACCOUNT);
 		typeMap.put(Role.class.getName(), ServiceType.ROLE);
+		typeMap.put(RoleGroup.class.getName(), ServiceType.ROLE_GROUP);
 		typeMap.put(Area.class.getName(), ServiceType.AREA);
 		typeMap.put(Org.class.getName(), ServiceType.ORG);
 		typeMap.put(Menu.class.getName(), ServiceType.MENU);
@@ -40,6 +42,7 @@ public final class EntityServiceTypeMap {
 		daoMap.put(Area.class.getName(), "cn.wow.common.dao.AreaDao.selectOne");
 		daoMap.put(Org.class.getName(), "cn.wow.common.dao.OrgDao.selectOne");
 		daoMap.put(Menu.class.getName(), "cn.wow.common.dao.MenuDao.selectOne");
+		daoMap.put(RoleGroup.class.getName(), "cn.wow.common.dao.RoleGroupDao.selectOne");
 	}
 
 	public static ServiceType getServiceType(Class<?> clazz) {

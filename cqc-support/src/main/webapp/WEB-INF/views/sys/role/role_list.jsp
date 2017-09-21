@@ -1,381 +1,334 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
-<%@include file="/page/NavPageBar.jsp"%>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<%@include file="../../common/source.jsp"%>
-	
-	<style type="text/css">
-		.role-content{
-			width: 250px;
-			border:1px solid #A3A3A3;
-			height: 450px;
-		}
-		
-		.role-content-query{
-			margin:8px 0px 0px 10px;
-		}
-	
-		.role-content-item{
-			border-bottom:1px solid #d0d0d0;
-			padding-left:10px;
-			line-height:30px;
-			color: #303030;
-		}
-		
-		.role-content-item:hover{
-			background: #E0EEEE;
-		}
-		
-		.role-content-item-selected{
-			background: #d1e6fd;
-			font-weight: bold;
-		}
-		
-		.role-content-item:first-child{
-			border-top:1px solid #d0d0d0;
-		}
-		
-		.role-content-query-input{
-		    background: white;
-		    border-width: 1px;
-		    border-style: solid;
-		    border-color: #d7d7d7;
-		    font-family: Verdana,Geneva,Helvetica,Arial,sans-serif;
-		    width: 50%;
-		}
-		
-		.role-content-title{
-			font-weight: bold;
-			margin-left: 10px;
-			margin-top: 10px;
-		}
-		
-		.role-content-query-tn{
-			padding: 2px 10px;
-		}
-		
-		.role-content-list{
-			margin-top:5px;
-			overflow-y: auto;
-			height: 400px;
-		}
-		
-		.role-content-list-delete{
-			display: inline-block;
-		    float: right;
-		    margin-top: 8px;
-		    margin-right: 10px;
-		}
-		
-		.role-content-item-error{
-			padding: 0px 10px;
-			color: red;
-		}
-		
-		.table{
-			display: table;
-			table-layout: fixed;
-		}
-	
-		.column{
-			display: table-cell;
-		    vertical-align: top;
-		    margin: 0;
-		    padding: 0;
-		}
-		
-		.permission{
-			border:1px solid #A3A3A3;
-			border-left:0px;
-			padding: 10px 15px
-		}
-		
-		.permisson-content-separate{
-			width: 100%;
-			border: 1px solid #eaeaea;
-			margin-top: 20px;
-		}
-		
-		.permisson-content-list{
-			margin-top: 10px;
-			margin-left: 10px;
-		}
-		
-		.permisson-content-item{
-			padding: 8px 0px;
-			background: #f2f8ff;
-			width:248px;
-			float:left
-		}
-		
-		.permisson-content-select{
-			width: 120px;
-    		display: inline-block;
-		}
-		
-		.permisson-content-span{
-			color: black;
-   			margin-right: 10px;
-   			display: inline-block;
-    		width: 90px;
-		}
-		
-		.permisson-content-input{
-			display: inline-block;
-		    width: 200px;
-		    font-weight: bold;
-		}
-	</style>
-	
-	<script type="text/javascript">
-		var currentId;
-	
-		$(function(){
-			loadRolelist();
-			
-			document.onkeydown = function(e){ 
-			    var ev = document.all ? window.event : e;
-			    if(ev.keyCode == 13) {
-			    	loadRolelist();
-			    }
-			}
-		});
-		
-		function loadRolelist(){
-			$.ajax({
-				url: "${ctx}/role/data?data=" + new Date(),
-				data: {
-					roleName: $("#roleName").val()
-				},
-				success: function(data){
-					$("#role-content-list").empty();
-					
-					if(data.success){
-						data.data.forEach(function(d){
-							$("#role-content-list").append("<div class='role-content-item' id='"+ d.id + "' name='"+ d.name +"'>"+ d.name + "<div class='role-content-list-delete'><a href='javascript:void(0)' onclick='deleteRole("+ d.id +")'><i class='fa fa-trash-o'></i></a></div></div>");
-						});
-						addClickEven();
-					}else{
-						$("#role-content-list").append("<div class='role-content-item-error'>"+ data.msg + "</div>");
-						$("#name").val('');
-						// 全部选中第一个值
-						$('select').prop('selectedIndex', 0);
-					}
-				}
-			});
-		}
-		
-		// 添加点击事件 
-		function addClickEven(){
-			$(".role-content-item").click(function(){
-				$(".role-content-item").removeClass("role-content-item-selected");
-				$(this).addClass("role-content-item-selected");
-				
-				var id = $(this).attr("id");
-				var name = $(this).attr("name");
-				$("#name").val(name);
-				$("#addBtn").show();
-				
-				currentId = id;
-				
-				$.ajax({
-					url: "${ctx}/role/rolePermission?date=" + new Date(),
-					data: {
-						id: id
-					},
-					success: function(d){
-						if(d.success){
-							if(d.data != null && d.data.permission != null && d.data.permission != ""){
-								var vals = d.data.permission.split(",");
-								
-								vals.forEach(function(rp){
-									// 设置值
-									var kv = rp.split("-");
-									$("#" + kv[0]).val(kv[1]);
-								});
-							}
-						}else{
-							errorMsg(data.msg);
-						}
-					}
-				});
-				
-			});
-			
-			// 默认点击第一个
-			$(".role-content-item").eq(0).trigger("click");
-		}
-		
-		function addRole(){
-			currentId = "";
-			$("#addBtn").hide();
-			$("#name").val('');
-			// 全部选中第一个值
-			$('select').prop('selectedIndex', 0);
-			$(".role-content-item").removeClass("role-content-item-selected");
-		}
-		
-		function cancelAdd(){
-			$("#addBtn").show();
-			// 默认点击第一个
-			$(".role-content-item").eq(0).trigger("click");
-		}
-		
-		function saveAdd(){
-			var name = $("#name").val();
-			
-			if(isNull(name)){
-				errorMsg("请输入角色名称");
-				return;
-			}
-			
-			var permission = "";
-			$("select").each(function() {
-				permission += $(this).attr("id") + "-" + $(this).val() + ",";
-			});
-			
-			$.ajax({
-				url: "${ctx}/role/addRole?date=" + new Date(),
-				data: {
-					id: currentId,
-					permission: permission,
-					name: name
-				},
-				type: "post",
-				success: function(data){
-					if(data.success){
-						tipMsg(data.msg, function(){
-							window.location.reload();
-						});
-					}else{
-						errorMsg(data.msg);
-					}
-				}
-			});
-		}
-		
-		function deleteRole(roleId){
-			art.dialog.confirm("是否确定删除当前角色？", function () {
-				$.ajax({
-					url: "${ctx}/role/deleteRole?date=" + new Date,
-					data: {
-						roleId: roleId
-					},
-					success: function(data){
-						if(data.success){
-							tipMsg(data.msg, function(){
-								window.location.reload();
-							});
-						}else{
-							errorMsg(data.msg);
-						}
-					}
-				});
-			});
-		}
-		
-		function cancelQuery(){
-			$("#roleName").val('');
-			loadRolelist();
-			$("#addBtn").show();
-		}
-	</script>
-</head>
 
 <body>
-    <div class="row">
-        <div class="col-lg-12">
-            <ol class="breadcrumb">
-            	<li>系统管理</li>
-                <li>角色管理</li>
-            </ol>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2><span class="break"></span><strong>角色管理</strong></h2>
-
-                    <span style="float:right;padding-top:5px;">
-                        <button type="button" class="btn btn-primary btn-xs" onclick="addRole()" id="addBtn">添加</button>
-                    </span>
-                </div>
-
-                <div class="panel-body">
-                	<div class="table">
-	                	<div class="role-content column">
-	                		<div class="role-content-query">
-	                			<input type="text" id="roleName" name="roleName" class="role-content-query-input">
-	                			<button class="btn btn-primary role-content-query-tn" onclick="loadRolelist()">查询</button>
-	                			<button class="btn btn-danger role-content-query-tn" onclick="cancelQuery()">取消</button>
-	                		</div>
-	                		
-	                		<div class="role-content-title">角色</div>
-	                		<div class="role-content-list" id="role-content-list"></div>
-	                	</div>
-	                
-	                    <div class="permission column">
-	                    	<div>
-	                    		<span class="role-content-title" style="margin-right: 15px;">角色</span>
-	                    		<input type="text" id="name" name="role" class="form-control permisson-content-input">
-	                    	</div>
-	                    	
-	                    	<div class="permisson-content-separate"></div>
-	                    	<div class="role-content-title">用户权限</div>
-	                    	
-	                    	<c:forEach items="${menuList}" var="vo">
-	                    		<c:choose>
-									<c:when test="${fn:length(vo.subList) > 0}">
-	                    				<div class="permisson-content-list">
-	                    					<div>${vo.name}</div>
-	                    					<div style="border-top: 1px solid #eaeaea; border-bottom: 1px solid #eaeaea;"  class="table">
-                    							<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
-													<div class="permisson-content-item">
-						                    			<span class="permisson-content-span">${subVo.name}</span>
-						                    			<select class="form-control permisson-content-select" id="${subVo.alias}">
-						                    				<option value="2">可读-可写</option>
-						                    				<option value="1">只读</option>
-						                    				<option value="0">无权限</option>
-						                    			</select>
-						                    		</div>
-												</c:forEach>
-	                    					</div>
-	                    				</div>
-	                    			</c:when>
-									<c:otherwise>
-										<div class="permisson-content-list">
-	                    					<div>${vo.name}</div>
-	                    					<div style="border-top: 1px solid #eaeaea; border-bottom: 1px solid #eaeaea" class="table">
-												<div class="permisson-content-item column">
-					                    			<span class="permisson-content-span">${vo.name}</span>
-					                    			<select class="form-control permisson-content-select" id="${vo.alias}">
-					                    				<option value="2">可读-可写</option>
-					                    				<option value="1">只读</option>
-					                    				<option value="0">无权限</option>
-					                    			</select>
-					                    		</div>
-	                    					</div>
-	                    				</div>
-	                    			</c:otherwise>
-								</c:choose>
-							</c:forEach>
+ 	<div class="table">
+ 		<div class="column" style="height: 600px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:20px;padding-left:10px;">
+			<input id="searchbox" name="searchbox" style="width: 280px;"></input>
+			<div id="roleSearchMenu">
+		        <div data-options="name:'name'">名称</div>
+		        <div data-options="name:'code'">编码</div>
+		    </div>
+			
+			<div style="margin-top:10px;margin-right: 10px;">
+				<ul id="roleTree"></ul>
+			</div>
+		</div>
+		
+		<div class="column" style="padding:30px 20px;font-size: 14px;width:90%;">
+			<p style="font-size: 16px;margin-bottom: 10px;"><span id="r_title"></span></p>
+			
+			<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
+		
+			<div class="info" id="code_div">
+				<span class="info_title">编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</span>
+				<span id="code"></span>
+			</div>
+			
+			<div class="info">
+				<span class="info_title">名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称：</span>
+				<span id="name"></span>
+			</div>
+			
+			<div class="info">
+				<span class="info_title"><span id="r_pname"></span></span>
+				<span id="parentName"></span>
+			</div>
+			
+			<div class="info">
+				<span class="info_title">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span>
+				<span id="desc"></span>
+			</div>
+		</div>
+ 	</div>
+ 	
+ 	<div id="roleTreeMenu" class="easyui-menu" style="width:120px;">
+		<div onclick="createUpdate(1, 1)">添加角色</div>
+		<div onclick="createUpdate(1, 2)">添加角色组</div>
+		<div onclick="createUpdate(2)">编辑</div>
+		<div onclick="remove()">删除</div>
+	</div>
+	
+	<div id="roleDialog"></div>
+ 	
+ 	<script type="text/javascript">
+		//操作类型, 0: 新建修改  1：删除
+		var operation = "";
+		var getDataUrl = "${ctx}/role/tree";
+		var svalue = "";
+		var stype = ""; 
+		
+		$(function () {
+			$('#roleTree').tree({
+				method:'get',
+				animate:true,
+				dnd:true,
+				lines: true,
+			    url: getDataUrl + "?time=" + new Date(),
+			    onBeforeDrop: function(target,source,point){
+					var targetNode = $("#roleTree").tree('getNode', target);
+					if(!isNull(targetNode.children)){
+						for(var i = 0; i < targetNode.children.length; i++){
+							var node = targetNode.children[i];
+							console.info(node.text + "," + source.text);
+							if(node.text == source.text){
+								return false;
+							}
+						}
+					}
+					
+					// 不能移动角色组到角色下
+					if(getType(source.id) == 2 && getType(targetNode.id) == 1){
+						return false;
+					}
+					
+					// 不能移动角色到角色下
+					if(getType(source.id) == 1 && getType(targetNode.id) == 1){
+						return false;
+					}
+					
+					return true;
+				},
+				onDrop : function(target, source, point) { 
+					var targetId = $("#roleTree").tree('getNode', target).id;
+					
+					$.ajax({
+						url : "${ctx}/role/move?time=" + new Date(),
+						data : {
+							id : source.id,
+							parentid : targetId
+						},
+						success : function(data) {
+							if (!data.success) {
+								errorMsg(data.msg);
+							} 
+							operation = source.id;
+							$("#roleTree").tree("reload");
+						}
+					});
+				},
+				onSelect : function(node) {
+					var url;
+					var type = getType(node.id);
+					
+					if(type == 1){
+						url = "${ctx}/role/roleInfo?time=" + new Date();
+						$("#r_title").html("角色信息");
+						$("#r_pname").html("角&nbsp;&nbsp;色&nbsp;&nbsp;组：");
+						$("#code_div").show();
+					}else{
+						url = "${ctx}/role/roleGroupInfo?time=" + new Date();
+						$("#r_title").html("角色组信息");
+						$("#code_div").hide();
+						$("#r_pname").html("上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;级：");
+					}
+					
+					$.ajax({
+						url : url,
+						data : {
+							id : node.id
+						},
+						success : function(data) {
+							$("#name").html(data.name);
+							$("#desc").html(data.desc);
 							
-							<div style="margin-top:50px;">
-								<button type="button" class="btn btn-primary" onclick="saveAdd()">保存</button>
-								<button type="button" class="btn btn-danger" onclick="cancelAdd()">取消</button>									
-							</div>
-	                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+							if(type == 1){
+								$("#code").html(data.code);
+								
+								if (!isNull(data.group)) {
+									$("#parentName").html(data.group.name);
+								} else {
+									$("#parentName").html("");
+								}
+							}else{
+								if (!isNull(data.parent)) {
+									$("#parentName").html(data.parent.name);
+								} else {
+									$("#parentName").html("");
+								}
+							}
+						}
+					});
+				},
+				onContextMenu : function(e, node) {
+					e.preventDefault();
+					$('#roleTree').tree('select', node.target);
+
+					$('#roleTreeMenu').menu('show', {
+						left : e.pageX,
+						top : e.pageY
+					})
+				},
+				onLoadSuccess : function(node, data) {
+					if (operation == 0 || isNull(operation)) {
+						// 删除后自动选中根节点
+						$("#roleTree").tree("select", $("#roleTree").tree("getRoot").target);
+					} else if (isNaN(operation)) {
+						// 创建/编辑成功后自动选中该节点
+						var node = $('#roleTree').tree('find', operation);
+						$("#roleTree").tree("select", node.target);
+					}
+				},
+				onBeforeLoad: function(node, param){
+					param.svalue = svalue;
+					param.stype = stype;
+				}
+			});
+
+			$('#searchbox').searchbox({
+				searcher : function(value, name) {
+					svalue = value;
+					stype = name;
+					
+					// 搜索时不选中任何
+					if(isNull(value)){
+						operation = 0;
+					}else{
+						operation = -1;
+						$("#name").html("");
+						$("#desc").html("");
+						$("#code").html("");
+						$("#parentName").html("");
+					}
+					
+					$("#roleTree").tree("reload");
+				},
+				menu : '#roleSearchMenu',
+				prompt : ''
+			});
+		});
+
+		
+		/*
+		 * type: 1-添加     2-编辑 
+		 * rtype: 1- 角色    2-角色组
+		 */
+		function createUpdate(type, rtype) {
+			var id = "";
+			var parentid = "";
+			var selecteNode = $("#roleTree").tree("getSelected");
+			var title;
+			
+			if (type == 1) {
+				parentid = selecteNode.id;
+				
+				if(getType(selecteNode.id) == 1){
+					errorMsg("角色下不能再添加角色或角色组");
+					return false;
+				}
+				
+				title = type == 1 ? "角色": "角色组";
+			} else {
+				id = selecteNode.id;
+				
+				var parentNode = $("#roleTree").tree("getParent", selecteNode.target);
+				if(isNull(parentNode)){
+					errorMsg("不能编辑根节点");
+					return false;
+				}
+				
+				if(getType(selecteNode.id) == 1){
+					rtype = 1;
+					title = "角色"
+				}else{
+					rtype = 2;
+					title = "角色组";
+				}
+			}
+
+			$('#roleDialog').dialog({
+				title : title + '信息',
+				width : 380,
+				height : 250,
+				closed : false,
+				cache : false,
+				href : '${ctx}/role/detail?id=' + id + '&parentid=' + parentid + "&type=" + rtype,
+				modal : true
+			});
+			$('#roleDialog').window('center');
+		}
+
+		// 关掉对话时回调
+		function closeDialog(id, result) {
+			$('#roleDialog').dialog('close');
+
+			// 创建/编辑成功
+			if (!isNull(id)) {
+				tipMsg(result);
+				operation = id;
+			}
+			$("#roleTree").tree("reload");
+		}
+
+		function remove() {
+			$.messager.confirm('确认', '确定要删除此角色或角色组？删除后不可恢复?', function(r) {
+				if (r) {
+					var node = $("#roleTree").tree("getSelected");
+					var parentNode = $("#roleTree").tree("getParent", node.target);
+
+					if (parentNode == null) {
+						errorMsg("不能删除根节点");
+						return;
+					}
+
+					var children = $("#roleTree").tree("getChildren", node.target);
+					if (!isNull(children)) {
+						errorMsg("请先删除下级区域");
+						return;
+					}
+
+					$.ajax({
+						url : "${ctx}/role/delete?time=" + new Date(),
+						data : {
+							id : node.id
+						},
+						success : function(data) {
+							if (data.success) {
+								operation = 0;
+								$("#roleTree").tree("reload");
+								tipMsg(data.msg);
+							} else {
+								errorMsg(data.msg);
+							}
+						}
+					});
+				}
+			});
+		}
+		
+		function getType(id){
+			if(id.indexOf("r") != -1){
+				return 1;
+			}else{
+				return 2;
+			}
+		}
+	</script>
+
+
+	<style type="text/css">
+		.table {
+			table-layout: fixed;
+			display: table;
+		}
+		
+		.column {
+			display: table-cell;
+			vertical-align: top;
+			margin: 0;
+			padding: 0;
+		}
+		
+		.info{
+			line-height: 30px;
+		}
+		
+		.info_title{
+			display: inline-block;
+			width: 80px;
+			font-weight:bold;
+		}
+	</style>
+ 	
+ 	
 </body>
-</html>

@@ -34,8 +34,6 @@ public class Contants {
 	public static final String CURRNET_PERMISSION = "currentPermission";
 	public static final String MENU_LIST = "menuList";
 	
-	// Controller 别名
-	public static final String ACCOUNT = "account_manager";
-	public static final String ROLE = "role_manager";
-	public static final String OPERATIONLOG = "log_manager";
+	// 超级管理员
+	public static final String SUPER_ROLE = "super admin";
 }

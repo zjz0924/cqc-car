@@ -38,9 +38,13 @@ public class RoleServiceImpl implements RoleService{
     public int update(String userName, Role role){
     	return roleDao.update(role);
     }
+    
+    public int move(Role role){
+    	return roleDao.update(role);
+    }
 
-    public int deleteByPrimaryKey(String userName, Long id){
-    	return roleDao.deleteByPrimaryKey(id);
+    public int deleteByPrimaryKey(String userName, Role role){
+    	return roleDao.deleteByPrimaryKey(role.getId());
     }
 
     public List<Role> selectAllList(Map<String, Object> map){
@@ -64,5 +68,9 @@ public class RoleServiceImpl implements RoleService{
     	roleDao.deleteByPrimaryKey(role.getId());
     	rolePermissionDao.deleteByPrimaryKey(role.getId());
     }
+    
+	public Role selectByCode(String code) {
+		return roleDao.selectByCode(code);
+	}
     
 }

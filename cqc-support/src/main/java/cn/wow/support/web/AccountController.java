@@ -35,8 +35,6 @@ public class AccountController extends AbstractController {
 
 	Logger logger = LoggerFactory.getLogger(AccountController.class);
 
-	private final static String moduleName = Contants.ACCOUNT;
-
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -75,7 +73,6 @@ public class AccountController extends AbstractController {
 		model.addAttribute("lock", lock);
 		model.addAttribute("startCreateTime", startCreateTime);
 		model.addAttribute("endCreateTime", endCreateTime);
-		model.addAttribute("permission", getPermission(httpServletRequest, moduleName));
 		return "sys/account/account_list";
 	}
 

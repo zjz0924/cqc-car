@@ -197,11 +197,15 @@ public class OrgController extends AbstractController {
 			// 当前父节点
 			Org currentParent = orgService.selectOne(Long.parseLong(id));
 
-			String detail = "{\"name\":\"" + org.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParent.getParent().getCode() + "\"}";
+			String detail = "{\"name\":\"" + org.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParent.getCode() + "\"}";
 			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("机构移动失败：", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("机构移动失败");
+			return vo;
 		}
 
 		vo.setMsg("移动成功");
