@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Menu implements Serializable{
+public class Menu extends JpaEntity {
 	
-	private static final long serialVersionUID = -7677318918671654590L;
+	private static final long serialVersionUID = -7001176848220281363L;
 
 	private Long id;
 
@@ -15,17 +15,21 @@ public class Menu implements Serializable{
 
     private String url;
 
+    @JsonIgnore
     private String logo;
 
     private Long pId;
 
     private Integer sortNum;
     
+    @JsonIgnore
     private String isParent;
     
+    @JsonIgnore
     private List<Menu> subList;
     
     //菜单别名，用来设置权限，必须唯一
+    @JsonIgnore
     private String alias;
     
     // 是否有权限
@@ -110,5 +114,10 @@ public class Menu implements Serializable{
 
 	public void setAuthorized(boolean isAuthorized) {
 		this.isAuthorized = isAuthorized;
+	}
+	
+	@JsonIgnore
+	public Serializable getPrimaryKey() {
+		return id;
 	}
 }

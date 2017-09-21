@@ -24,5 +24,44 @@
 	<select id="getSubList" resultMap="BaseResultMap" parameterType="java.lang.Long" >
 		select <include refid="base_columns" /> from menu where is_parent = 'N' and p_id = #{id, jdbcType=BIGINT} order by sort_num asc
 	</select>
+	
+	<select id="selectByAlias" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="base_columns" /> from menu where alias = #{alias,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="base_columns" /> from menu where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<update id="update" parameterType="cn.wow.common.domain.Menu">
+		update menu
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			sort_num = #{sortNum,jdbcType=INTEGER}
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+	  	select 
+	    <include refid="base_columns" />
+	      from menu
+	     <where>
+			  <if test="name != null">
+				and name = #{name,jdbcType=VARCHAR}
+			  </if>
+	      </where>
+	      
+		  <choose>
+	  		<when test="custom_order_sql != null">
+	  			order by ${custom_order_sql}
+	  		</when>
+	  		<otherwise>
+	  			order by id desc
+	  		</otherwise>
+	 	 </choose>
+	 </select>
 
 </mapper>
