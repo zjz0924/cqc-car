@@ -1,174 +1,247 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@include file="/page/taglibs.jsp"%>
-<%@include file="/page/NavPageBar.jsp"%>
 
-<!DOCTYPE html>
-<html>
-	<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<%@include file="../../common/source.jsp"%>
+<body>
+	<input type="hidden" id="id" name="id" value="${facadeBean.id}"/>
+	
+	<div style="margin-top:15px;margin-left:20px;">
+		<div class="data-row">
+			<span class="title-span"><span class="req-span">*</span>用户名：</span> 
+			<input id="userName" name="userName" value="${facadeBean.userName}" <c:if test="${not empty facadeBean.id}">disabled</c:if> class="easyui-textbox">
+			<span id="userName_error" class="error-message"></span>
+		</div>
+		
+		<c:if test="${empty facadeBean.id }"> 
+            <div class="data-row">
+				<span class="title-span"><span class="req-span">*</span>密码：</span> 
+				<input id="password" name="password" class="easyui-passwordbox">
+				<span id="password_error" class="error-message"></span>
+			</div>
+			
+			<div class="data-row">
+				<span class="title-span"><span class="req-span">*</span>确认密码：</span> 
+				<input id="repeatPassword" name="repeatPassword" class="easyui-passwordbox">
+				<span id="repeatPassword_error" class="error-message"></span>
+			</div>
+        </c:if>
+		
+		<div class="data-row">
+			<span class="title-span"><span class="req-span">*</span>姓名：</span> 
+			<input id="nickName" name="nickName" class="easyui-textbox" value="${facadeBean.nickName}">
+			<span id="nickName_error" class="error-message"></span>
+		</div>
+		
+		<div class="data-row">
+			<span class="title-span"><span class="req-span">*</span>角色：</span> 
+			<input id="role" name="role">
+			<span id="role_error" class="error-message"></span>
+		</div>
+		
+		<div class="data-row">
+			<span class="title-span"><span class="req-span">*</span>机构：</span> 
+			<input id="org" name="org">
+			<span id="org_error" class="error-message"></span>
+		</div>
+		
+		<div class="data-row">
+			<span class="title-span">手机：</span> 
+			<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" data-options="validType:'phone'">
+		</div>
+		
+		<div class="data-row">
+			<span class="title-span">邮箱：</span> 
+			<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'">
+		</div>
+		
+		<c:if test="${not empty facadeBean.id }"> 
+              <div class="data-row">
+                  <span class="title-span">状态</span>
+                   <c:choose>
+						<c:when test="${facadeBean.lock == 'N'}">
+							<span class="label label-success">正常</span>
+						</c:when>
+						<c:otherwise>
+							<span class="label label-danger">锁定</span>
+						</c:otherwise>
+					</c:choose>
+              </div>
+              
+              <div class="data-row">
+                  <span class="title-span">创建时间：</span>
+       			  <span><fmt:formatDate value='${facadeBean.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss" /></span>
+       		  </div>
+		 </c:if>
+		 
+		 <div style="text-align:center;margin-top:5px;" class="data-row">
+			<a href="javascript:void(0);"  onclick="save()" class="easyui-linkbutton" >保存</a>
+			<span id="exception_error" class="error-message"></span>
+		</div>
+	</div>
 	
 	<script type="text/javascript">
 		$(function(){
-			var resultCode = "${resultCode}";
-			if(resultCode != null && resultCode != '' && resultCode != undefined){
-				var resultMsg = "${resultMsg}";
-				// 设置按钮不可点
-				$("#saveBtn").attr("class", "btn btn-primary disabled");
-				
-				if(resultCode == "01" || resultCode == "03"){ 
-					window.location.href = "${ctx}/account/list";
-				}else{
-					// 设置按钮可点
-					$("#saveBtn").attr("class", "btn btn-primary");
-				}
-			}
+			$('#role').combotree({
+				url: '${ctx}/role/tree',
+				multiple: true,
+				animate: true,	
+				checkbox: function(node){
+					console.info("sdf");
+					if(node.id.indexOf("r") != -1){
+						return true;
+					}
+                }
+			});
 			
-			var mode = "${mode}";
-			if(mode == "readonly"){
-				$(":input").attr("disabled","true");
-			}
+			$('#org').combotree({
+				url: '${ctx}/org/tree'
+			});
 			
-			//自适应高度
-			window.parent.adapter(document.body.scrollHeight + 10);
+			var roleVal = "${roleVal}";  
+		 	if(!isNull(roleVal)){
+		 		var roleJson = eval('(' + roleVal + ')');
+		 		$('#role').combotree('setValues', roleJson);
+		 	}
+		 	
+		 	var orgId = "${orgId}"; 
+		 	if(!isNull(orgId)){
+				$('#org').combotree('setValue', {id: orgId, text: '${orgName}'});
+			}
 		});
 	
-		function checkData(){
-			if(isNull("${facadeBean.id}")){
-				if(!isRequired("userName", "用户名必填")) return false;
-				if(!isRequired("password", "密码必填")) return false;
-				if(!isRequired("repeatPassword", "确认密码必填")) return false;
+		function save(){
+			var userName = $("#userName").textbox("getValue");
+			
+			if(isNull(userName)){
+				err("userName_error", "用户名必填");
+				return false;
+			}else{
+				err("userName_error", "");
+			}
+			
+			var accountId = $("#id").val();
+			if(isNull(accountId)){
+				var password = $("#password").val();
+				var repeatPassword = $("#repeatPassword").val();
 				
-				if($("#password").val() != $("#repeatPassword").val()){
-					alert("两次密码不一致");
+				if(isNull(password)){
+					err("password_error", "密码必填");
 					return false;
+				}else{
+					err("password_error", "");
+				}
+				
+				if(isNull(repeatPassword)){
+					err("repeatPassword_error", "确认密码必填");
+					return false;
+				}else{
+					err("repeatPassword_error", "");
+				}
+				
+				if(password != repeatPassword){
+					err("password_error", "两次密码不一致");
+					return false;
+				}else{
+					err("repeatPassword_error", "");
 				}
 			}
 			
-			if(!isRequired("nickName", "昵称不能为空")) return false;
+			var nickName = $("#nickName").val();
+			if(isNull(nickName)){
+				err("nickName_error", "姓名必填");
+				return false;
+			}else{
+				err("nickName_error", "");
+			}
+			
+			var roleId = "";
+			var roleVals = $("#role").combotree('getValues');
+			if(roleVals.length > 0){
+				for(var i = 0; i < roleVals.length; i++){
+					var id = roleVals[i];
+					id = id.split("_")[1];
+					
+					if(i != roleVals.length - 1){
+						roleId += id + ",";
+					}else{
+						roleId += id;
+					}
+				}
+			}
+			if(isNull(roleId)){
+				err("role_error", "请选择角色");
+				return false;
+			}else{
+				err("role_error", "");
+			}
+			
+			var orgId = "";
+			var orgTree = $('#org').combotree('tree');	
+			var selecteNode = orgTree.tree('getSelected');
+			if(!isNull(selecteNode)){
+				orgId = selecteNode.id;
+			}
+			if(isNull(orgId)){
+				err("org_error", "请选择机构");
+				return false;
+			}else{
+				err("org_error", "");
+			}
+			
+			var mobile = $("#mobile").textbox("getValue");
+			var email = $("#email").textbox("getValue");
+			
+			$.ajax({
+				url: "${ctx}/account/save?time=" + new Date(),
+				data: {
+					userName: userName,
+					password: password,
+					nickName: nickName,
+					roleId: roleId,
+					orgId: orgId,
+					mobile: mobile,
+					email: email,
+					id: accountId
+				},
+				success:function(data){
+					if(data.success){
+						window.parent.closeDialog(data.msg);
+					}else{
+						if(data.data == "userName"){
+							err("userName_error", data.msg);
+						}else{
+							err("exception_error", data.msg);
+						}
+					}
+				}
+			});
 		}
+		
+		function err(id, message){
+            $("#" + id).html(message);
+        }
 	</script>
-</head>
-
-<body>
-
-	<div class="row">
-		<div class="col-lg-12">
-			<ol class="breadcrumb">
-				<li>系统管理</li>
-				<li><a href="${ctx}/account/list">用户管理</a></li>
-				<li>用户信息</li>
-			</ol>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h2>
-						<span class="break"></span><strong>用户信息</strong>
-					</h2>
-				</div>
-
-				<div class="panel-body" style="padding-top:30px;padding-left:30px;">
-					<form action="${ctx}/account/save" method="post" onsubmit="return checkData();">
-						<input type="hidden" id="id" name="id" value="${facadeBean.id}"/>
-						
-						<div class="form-group height_30">
-		                    <label class="col-md-2 control-label"><span class="asterisk">*</span>用户名</label>
-		                    <div class="col-md-3">
-		                    	<c:choose>
-		                    		<c:when test="${empty facadeBean.id}">
-		                    			<input type="text" id="userName" name="userName" class="form-control" value="${facadeBean.userName}">
-		                    		</c:when>
-			                    	<c:otherwise>
-			                    		<p class="form-control-static">${facadeBean.userName}</p>
-			                    	</c:otherwise>
-		                    	</c:choose>
-		                    </div>
-		                </div>
-		                
-		                <c:if test="${empty facadeBean.id }"> 
-			                <div class="form-group height_30">
-			                    <label class="col-md-2 control-label"><span class="asterisk">*</span>密码</label>
-			                    <div class="col-md-3">
-			                    	<input type="password" id="password" name="password" class="form-control">
-			                    </div>
-			                </div>
-			                
-			                <div class="form-group height_30">
-			                    <label class="col-md-2 control-label"><span class="asterisk">*</span>确认密码</label>
-			                    <div class="col-md-3">
-			                    	<input type="password" id="repeatPassword" name="repeatPassword" class="form-control">
-			                    </div>
-			                </div>
-		                </c:if>
-		                
-		                <div class="form-group height_30">
-		                    <label class="col-md-2 control-label"><span class="asterisk">*</span>昵称</label>
-		                    <div class="col-md-3">
-		                        <input type="text" id="nickName" name="nickName" class="form-control" value="${facadeBean.nickName}">
-		                    </div>
-		                </div>
-		                
-		                <div class="form-group height_30">
-		                    <label class="col-md-2 control-label">手机</label>
-		                    <div class="col-md-3">
-		                        <input type="text" id="mobile" name="mobile" class="form-control" value="${facadeBean.mobile}">
-		                    </div>
-		                </div>
-		                
-		                <div class="form-group height_30">
-		                    <label class="col-md-2 control-label">角色</label>
-		                    <div class="col-md-3">
-		                        <select class="form-control" id="roleId" name="roleId">
-		                        	<c:forEach items="${roleList}" var="vo"> 
-		                        		<option value="${vo.id}"  <c:if test="${vo.id == facadeBean.roleId}">selected="selected"</c:if>>${vo.name}</option>
-		                        	</c:forEach>
-	                   			</select>
-		                    </div>
-		                </div>
-		                
-		                 <c:if test="${not empty facadeBean.id }"> 
-			                <div class="form-group height_30">
-			                    <label class="col-md-2 control-label">状态</label>
-			                    <div class="col-md-3 height_30" style="padding-top: 5px;">
-			                        <c:choose>
-										<c:when test="${facadeBean.lock == 'N'}">
-											<span class="label label-success">正常</span>
-										</c:when>
-										<c:otherwise>
-											<span class="label label-danger">锁定</span>
-										</c:otherwise>
-									</c:choose>
-			                    </div>
-			                </div>
-				        
-					        <div class="form-group height_30">
-			                    <label class="col-md-2 control-label">创建时间</label>
-			                    <div class="col-md-3">
-			                        <p class="form-control-static">
-			                        	<fmt:formatDate value='${facadeBean.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss" />
-			                        </p>
-			                    </div>
-			                </div>        
-						</c:if>
-						
-						<c:if test="${mode != 'readonly'}">
-							 <div class="form-group height_30 text-center">
-								<button id="saveBtn" type="submit" class="btn btn-primary">保存</button>
-								<button type="button" class="btn btn-danger" onclick="window.location.reload();">取消</button>
-							</div>
-						</c:if>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!--/col-->
-	</div>
-	<!--/row-->
-
+	
+	<style type="text/css">
+		.data-row{
+			height: 35px;
+		}
+	
+		.title-span{
+			font-weight: bold;
+			display: inline-block;
+			width: 80px;
+		}
+		
+        .error-message{
+            margin: 4px 0 0 5px;
+            padding: 0;
+            color: red;
+        }
+        
+        .req-span{
+        	font-weight: bold;
+        	color: red;
+        }
+	</style>
+	
 </body>
-</html>

@@ -102,3 +102,23 @@
 .icon-user{
 	background:url('icons/user.png') no-repeat center center;
 }
+
+.icon-key{
+	background:url('icons/key.png') no-repeat center center;
+}
+
+.icon-import{
+	background:url('icons/import.png') no-repeat center center;
+}
+
+.icon-export{
+	background:url('icons/export.png') no-repeat center center;
+}
+
+.icon-lock1{
+	background:url('icons/lock1.png') no-repeat center center;
+}
+
+.icon-timg{
+	background:url('icons/timg.png') no-repeat center center;
+}

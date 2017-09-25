@@ -6,4 +6,6 @@ import cn.wow.common.domain.Role;
 public interface RoleDao extends SqlDao{
 
 	public List<Role> selectByGrid(Long id);
+	
+	public List<Role> selectRoles(Long[] ids);
 }

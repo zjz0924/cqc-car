@@ -138,7 +138,6 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 						subNodeList.add(subNode);
 					}
 				}
-				rootNode.setChildren(subNodeList);
 				
 				if(rootGroup.getRoleList() != null && rootGroup.getRoleList().size() > 0){
 					for(Role role: rootGroup.getRoleList()){
@@ -149,6 +148,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 						subNodeList.add(roleNode);
 					}
 				}
+				rootNode.setChildren(subNodeList);
 			}
 		}
 		tree.add(rootNode);
@@ -190,6 +190,18 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 				}
 			}
 			subAreaNode.setChildren(subNodeList);
+		}else{
+			List<TreeNode> nodeList = new ArrayList<TreeNode>();
+			if (group.getRoleList() != null && group.getRoleList().size() > 0) {
+				for (Role role : group.getRoleList()) {
+					TreeNode roleNode = new TreeNode();
+					roleNode.setId("r_" + role.getId());
+					roleNode.setText(role.getName());
+					roleNode.setIconCls("icon-user");
+					nodeList.add(roleNode);
+				}
+			}
+			subAreaNode.setChildren(nodeList);
 		}
 	}
 

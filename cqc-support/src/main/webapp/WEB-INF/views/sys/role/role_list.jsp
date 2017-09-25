@@ -70,7 +70,6 @@
 					if(!isNull(targetNode.children)){
 						for(var i = 0; i < targetNode.children.length; i++){
 							var node = targetNode.children[i];
-							console.info(node.text + "," + source.text);
 							if(node.text == source.text){
 								return false;
 							}

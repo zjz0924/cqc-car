@@ -1,5 +1,6 @@
 package cn.wow.support.shiro.filter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -90,8 +91,13 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 	private List<Menu> getPermission(Account account) {
 		List<Menu> menuList = menuService.getMenuList();
 		Set<String> legalMenu = new HashSet<String>();
+		
+		String[] roles = null;
+		if(StringUtils.isNoneBlank(account.getRoleId())){
+			roles = account.getRoleId().split(",");
+		}
 
-		RolePermission permission = rolePermissionService.selectOne(account.getRoleId());
+		RolePermission permission = rolePermissionService.selectOne(Long.parseLong(roles[0]));
 		if (permission != null && StringUtils.isNotBlank(permission.getPermission())) {
 			String[] vals = permission.getPermission().split(",");
 

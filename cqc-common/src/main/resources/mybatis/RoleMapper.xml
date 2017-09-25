@@ -34,6 +34,13 @@
 		from role where grid = #{id,jdbcType=BIGINT} order by name asc
 	</select>
 	
+	<select id="selectRoles" resultMap="BaseResultMap" parameterType="java.util.ArrayList" >
+	    select <include refid="base_columns" /> from role 
+	    where id in <foreach collection="array" item="id" index="index" separator=","  open= "(" close =")">  
+			 #{id}        
+		</foreach> 
+  	</select>
+	
 	<insert id="insert" parameterType="cn.wow.common.domain.Role">
 		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
 		    SELECT @@IDENTITY
@@ -66,7 +73,10 @@
 	      from role
 	     <where>
 			  <if test="name != null">
-				and name = #{name,jdbcType=VARCHAR}
+				and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+			  </if>
+			  <if test="name != null">
+				and code like concat('%', #{code,jdbcType=VARCHAR}, '%')
 			  </if>
 			  <if test="grid != null">
 				and grid = #{grid,jdbcType=BIGINT}

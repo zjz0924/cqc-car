@@ -2,6 +2,9 @@ package cn.wow.common.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,6 +23,7 @@ public class Account extends JpaEntity{
 	// 昵称
 	private String nickName;
 	// 登录密码
+	@JsonIgnore
 	private String password;
 	// 手机号码
 	private String mobile;
@@ -28,9 +32,18 @@ public class Account extends JpaEntity{
 	// 是否被封号：Y-是，N-否
 	private String lock = "N";
 	// 角色ID
-	private Long roleId;
+	private String roleId;
 	// 角色
-	private Role role;
+	private List<Role> roleList;
+	
+	private Long orgId;
+	
+	private Org org;
+	
+	private String email;
+	
+	@JsonIgnore
+	private Long[] roleIds;
 
 	public String getLock() {
 		return lock;
@@ -64,7 +77,6 @@ public class Account extends JpaEntity{
 		this.nickName = nickName;
 	}
 
-	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
@@ -89,22 +101,68 @@ public class Account extends JpaEntity{
 		this.createTime = createTime;
 	}
 
-	public Long getRoleId() {
+	public String getRoleId() {
 		return roleId;
 	}
 
-	public void setRoleId(Long roleId) {
+	public void setRoleId(String roleId) {
 		this.roleId = roleId;
 	}
 
-	public Role getRole() {
-		return role;
+	public List<Role> getRoleList() {
+		return roleList;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setRoleList(List<Role> roleList) {
+		this.roleList = roleList;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public Org getOrg() {
+		return org;
+	}
+
+	public void setOrg(Org org) {
+		this.org = org;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
+	public Long[] getRoleIds() {
+		if (StringUtils.isNotBlank(roleId)) {
+			String[] arry = roleId.split(",");
+			roleIds = new Long[arry.length];
+
+			if (arry != null && arry.length > 0) {
+				for (int i = 0; i < arry.length; i++) {
+					String str = arry[i];
+					if (StringUtils.isNotBlank(str)) {
+						roleIds[i] = Long.parseLong(str);
+					}
+
+				}
+			}
+		}
+		return roleIds;
+	}
+
+	public void setRoleIds(Long[] roleIds) {
+		this.roleIds = roleIds;
+	}
+
 	@JsonIgnore
 	public Serializable getPrimaryKey() {
 		return id;

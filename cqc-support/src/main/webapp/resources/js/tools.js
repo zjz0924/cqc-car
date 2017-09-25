@@ -294,6 +294,18 @@ function formatCellTooltip(value){
 	if(!isNull(value)){
 		return "<span title='" + value + "'>" + value + "</span>";
 	}
+}
+
+
+/**
+ * datagrid - 格式化单元格提示信息 
+ */ 
+function formatCellLock(value){
+	if(!isNull(value) && value == 'Y'){
+		return "<span style='color:red;font-weight:bold;' title='锁定'>锁定 </span>";
+	}else{
+		return "<span title='正常'>正常</span>";
+	}
 } 
 
 

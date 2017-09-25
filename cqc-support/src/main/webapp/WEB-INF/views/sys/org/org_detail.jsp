@@ -6,7 +6,7 @@
 	<div style="margin-top:15px;margin-left:20px;">
 		<div class="info-div">
 			<span class="title-span"><span class="req-span">*</span>机构编码：</span> 
-			<input id="o_code" name="o_code" value="${org.code}" <c:if test="${not empty id}">disabled</c:if> class="easyui-validatebox tb">
+			<input id="o_code" name="o_code" value="${org.code}" <c:if test="${not empty id}">disabled</c:if> class="easyui-textbox">
 			<span id="ocode_error" class="error-message"></span>
 		</div>
 		

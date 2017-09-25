@@ -7,21 +7,24 @@
     <result column="nickname" property="nickName" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="lock" property="lock" jdbcType="CHAR" />
-    <result column="role_id" property="roleId" jdbcType="BIGINT" />
-    <association property="role" javaType="cn.wow.common.domain.Role" column="role_id" select="cn.wow.common.dao.RoleDao.selectOne"/> 
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="BIGINT" />
+    <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
+    <!-- <collection property="roleList" javaType="cn.wow.common.domain.Role" column="role_id" select="cn.wow.common.dao.RoleDao.selectRoles"/> -->
   </resultMap>
   
   <sql id="base_columns" >
-    id, username, nickname, password, mobile, create_time, `lock`, role_id
+    id, username, nickname, password, mobile, email, create_time, `lock`, role_id, org_id
   </sql>
   
   <insert id="insert" parameterType="cn.wow.common.domain.Account" >
-    insert into account (username, nickname, password, mobile, create_time, `lock`, role_id)
+    insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id)
     	values (#{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
       		#{password,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
-      		#{createTime,jdbcType=TIMESTAMP}, #{lock,jdbcType=CHAR}, #{roleId,jdbcType=BIGINT})
+      		#{createTime,jdbcType=TIMESTAMP}, #{lock,jdbcType=CHAR}, #{roleId,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT})
   </insert>
   
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -46,6 +49,9 @@
       <if test="mobile != null" >
         mobile = #{mobile,jdbcType=VARCHAR},
       </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -53,7 +59,10 @@
         `lock` = #{lock,jdbcType=CHAR}, 
       </if>
       <if test="roleId != null" >
-        role_id = #{roleId,jdbcType=BIGINT}
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=BIGINT}
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -100,7 +109,18 @@
 	      </if>
 	      
 	      <if test="roleId != null" >
-	        and role_id = #{roleId,jdbcType=BIGINT}
+	        and role_id in
+	        <foreach collection="roleId" item="id" index="index" separator=","  open= "(" close =")">  
+				 #{id}        
+			</foreach>
+	      </if>
+	      
+	      <if test="email != null" >
+	        and email = #{email,jdbcType=VARCHAR}
+	      </if>
+	      
+	      <if test="orgId != null" >
+	        and org_id = #{orgId,jdbcType=BIGINT}
 	      </if>
       </where>
       

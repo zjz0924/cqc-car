@@ -33,7 +33,7 @@
 					if (editingId != undefined) {
 						//先开始编辑，获取最新修改的信息						
 						$('#menuTree').treegrid('endEdit', editingId);
-						var row = $('#menuTree').treegrid('getSelected')
+						var row = $('#menuTree').treegrid('getSelected');
 						
 						$.ajax({
 							url: "${ctx}/menu/update?time" + new Date(),

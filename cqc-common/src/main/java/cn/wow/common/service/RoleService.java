@@ -25,4 +25,6 @@ public interface RoleService {
     public Role selectByCode(String code);
     
     public int move(Role role);
+    
+    public List<Role> selectRoles(Long[] ids);
 }
