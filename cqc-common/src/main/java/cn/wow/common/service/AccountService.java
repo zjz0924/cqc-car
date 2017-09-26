@@ -18,4 +18,8 @@ public interface AccountService {
 	public Account selectByAccountName(String userName);
 	
 	public List<Account> selectAllList(Map<String, Object> map);
+	
+	public void batchAdd(List<Account> list);
+	
+	public void batchUpdate(List<Account> list);
 }

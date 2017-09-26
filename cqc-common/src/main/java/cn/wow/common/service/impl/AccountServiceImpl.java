@@ -47,4 +47,12 @@ public class AccountServiceImpl implements AccountService {
 		PageHelperExt.startPage(map);
 		return accountDao.selectAllList(map);
 	}
+
+	public void batchAdd(List<Account> list) {
+		accountDao.batchAdd(list);
+	}
+
+	public void batchUpdate(List<Account> list) {
+		accountDao.batchUpdate(list);
+	}
 }

@@ -14,9 +14,12 @@
 	        	
 				$("#tt").tabs({
 					onSelect : function(title, index) {
+						
+						//refreshTab($('#tt').tabs('getTab', index));
+						
 						// 刷新 
 						//点击 日志管理时会有error信息
-					//	$('#tt').tabs('getTab', index).panel('refresh');
+						//$('#tt').tabs('getTab', index).panel('refresh');
 	
 						//可能会造成textbox 赋值失败
 						/* if ($('#tt').tabs('exists', title)) {
@@ -40,6 +43,17 @@
 				$(".tabs-inner").css("height", "35px");
 				$(".tabs-inner").css("line-height", "35px");
 			});
+	        
+			function refreshTab(currentTab) {
+				var url = $(currentTab.panel('options')).attr('href');
+				$('#tt').tabs('update', {
+					tab : currentTab,
+					options : {
+						href : url
+					}
+				});
+				currentTab.panel('refresh');
+			}
 		</script>
 		
 	</head>

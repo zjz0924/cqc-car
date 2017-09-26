@@ -1,6 +1,8 @@
 package cn.wow.support.web;
 
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -28,13 +31,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.github.pagehelper.Page;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.Role;
 import cn.wow.common.service.AccountService;
+import cn.wow.common.service.OrgService;
 import cn.wow.common.service.RoleService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.cookie.MD5;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.support.utils.Contants;
@@ -50,18 +58,22 @@ public class AccountController extends AbstractController {
 
 	Logger logger = LoggerFactory.getLogger(AccountController.class);
 
-	private final static String defaultPageSize = "20";
+	private final static String DEFAULT_PAGE_SIZE = "20";
+	
+	private final static String DEFAULT_PWD = "888888";
 
 	@Autowired
 	private AccountService accountService;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private OrgService orgService;
 
 	private List<Account> data = new ArrayList<Account>();
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
-		model.addAttribute("defaultPageSize", defaultPageSize);
+		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		return "sys/account/account_list";
 	}
 
@@ -76,14 +88,14 @@ public class AccountController extends AbstractController {
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
-			request.setAttribute("pageSize", defaultPageSize);
+			request.setAttribute("pageSize", DEFAULT_PAGE_SIZE);
 		}
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "username asc");
 
 		if (StringUtils.isNotBlank(userName)) {
-			map.put("userName", userName);
+			map.put("qUserName", userName);
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -295,7 +307,7 @@ public class AccountController extends AbstractController {
 				Account account = accountService.selectOne(Long.parseLong(id));
 
 				if (account != null) {
-					String newPwd = MD5.getMD5("888888", "utf-8").toUpperCase();
+					String newPwd = MD5.getMD5(DEFAULT_PWD, "utf-8").toUpperCase();
 
 					account.setPassword(newPwd);
 					accountService.update(getCurrentUserName(), account);
@@ -345,10 +357,14 @@ public class AccountController extends AbstractController {
 		return vo;
 	}
 
+	/**
+	 * 导出用户
+	 */
 	@RequestMapping(value = "/exportUser")
 	public void exportUser(HttpServletRequest request, HttpServletResponse response) {
 		String filename = "用户清单";
-
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		try {
 			// 设置头
 			setResponseHeader(response, filename + ".xlsx");
@@ -356,77 +372,82 @@ public class AccountController extends AbstractController {
 			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
 			// 工作簿
 			Sheet sh = wb.createSheet("用户清单");
-
+			sh.setColumnWidth(0, (short) 4000);
+			sh.setColumnWidth(1, (short) 4000);
+			sh.setColumnWidth(2, (short) 4000);
+			sh.setColumnWidth(3, (short) 5000);
+			sh.setColumnWidth(4, (short) 9000);
+			sh.setColumnWidth(5, (short) 6000);
+			sh.setColumnWidth(6, (short) 3000);
+			sh.setColumnWidth(7, (short) 6000);
+			
 			Map<String, CellStyle> styles = createStyles(wb);
 
 			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "角色", "邮箱", "状态", "创建时间" };
-			String[] engTitles = { "userName", "nickName", "mobile", "orgName", "roleName", "email", "lock",
-					"createTime" };
 			int r = 0;
-
-			sh.setColumnWidth(0, (short) 6000);
-			sh.setColumnWidth(1, (short) 6000);
-			sh.setColumnWidth(2, (short) 6000);
-			sh.setColumnWidth(3, (short) 6000);
-			sh.setColumnWidth(4, (short) 6000);
-			sh.setColumnWidth(5, (short) 6000);
-			sh.setColumnWidth(6, (short) 6000);
-			sh.setColumnWidth(7, (short) 6000);
-
-			for (int j = 0; j <= data.size(); j++) {// 添加数据
+			
+			Row titleRow = sh.createRow(0);
+			titleRow.setHeight((short) 450);
+			for(int k = 0; k < titles.length; k++){
+				Cell cell = titleRow.createCell(k);
+				cell.setCellStyle(styles.get("header"));
+				cell.setCellValue(titles[k]);
+			}
+			
+			++r;
+			for (int j = 0; j < data.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
+				contentRow.setHeight((short) 400);
 				Account account = data.get(j);
 
-				for (int i = 0; i < engTitles.length; i++) {
-					Cell cell1 = contentRow.createCell(0);
-					cell1.setCellStyle(styles.get("cell"));
-					cell1.setCellValue(account.getUserName());
+				Cell cell1 = contentRow.createCell(0);
+				cell1.setCellStyle(styles.get("cell"));
+				cell1.setCellValue(account.getUserName());
 
-					Cell cell2 = contentRow.createCell(1);
-					cell2.setCellStyle(styles.get("cell"));
-					cell2.setCellValue(account.getNickName());
+				Cell cell2 = contentRow.createCell(1);
+				cell2.setCellStyle(styles.get("cell"));
+				cell2.setCellValue(account.getNickName());
 
-					Cell cell3 = contentRow.createCell(2);
-					cell3.setCellStyle(styles.get("cell"));
-					cell3.setCellValue(account.getMobile());
+				Cell cell3 = contentRow.createCell(2);
+				cell3.setCellStyle(styles.get("cell"));
+				cell3.setCellValue(account.getMobile());
 
-					Cell cell4 = contentRow.createCell(3);
-					cell4.setCellStyle(styles.get("cell"));
-					cell4.setCellValue(account.getOrg().getName());
+				Cell cell4 = contentRow.createCell(3);
+				cell4.setCellStyle(styles.get("cell"));
+				cell4.setCellValue(account.getOrg().getName());
 
-					String roleStr = "";
-					List<Role> roleList = roleService.selectRoles(account.getRoleIds());
+				String roleStr = "";
+				List<Role> roleList = roleService.selectRoles(account.getRoleIds());
 
-					if (roleList != null && roleList.size() > 0) {
-						for (int k = 0; i < roleList.size(); i++) {
-							Role role = roleList.get(k);
-							if (k != roleList.size() - 1) {
-								roleStr += role.getName() + ",";
-							} else {
-								roleStr += role.getName();
-							}
+				if (roleList != null && roleList.size() > 0) {
+					for (int i = 0; i < roleList.size(); i++) {
+						Role role = roleList.get(i);
+						if (i != roleList.size() - 1) {
+							roleStr += role.getName() + ",";
+						} else {
+							roleStr += role.getName();
 						}
 					}
-					Cell cell5 = contentRow.createCell(4);
-					cell5.setCellStyle(styles.get("cell"));
-					cell5.setCellValue(roleStr);
-
-					Cell cell6 = contentRow.createCell(5);
-					cell6.setCellStyle(styles.get("cell"));
-					cell6.setCellValue(account.getEmail());
-
-					String lock = "正常";
-					if (account.getLock() == "Y") {
-						lock = "锁定";
-					}
-					Cell cell7 = contentRow.createCell(6);
-					cell7.setCellStyle(styles.get("cell"));
-					cell7.setCellValue(lock);
-
-					Cell cell8 = contentRow.createCell(7);
-					cell8.setCellStyle(styles.get("cell"));
-					cell8.setCellValue(account.getCreateTime());
 				}
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				cell5.setCellValue(roleStr);
+
+				Cell cell6 = contentRow.createCell(5);
+				cell6.setCellStyle(styles.get("cell"));
+				cell6.setCellValue(account.getEmail());
+
+				String lock = "正常";
+				if (account.getLock() == "Y") {
+					lock = "锁定";
+				}
+				Cell cell7 = contentRow.createCell(6);
+				cell7.setCellStyle(styles.get("cell"));
+				cell7.setCellValue(lock);
+
+				Cell cell8 = contentRow.createCell(7);
+				cell8.setCellStyle(styles.get("cell"));
+				cell8.setCellValue(sdf.format(account.getCreateTime()));
 				r++;
 			}
 
@@ -438,6 +459,168 @@ public class AccountController extends AbstractController {
 			logger.error("用户清单导出失败");
 		}
 	}
+	
+	
+	/**  
+     * 用户导入
+     */  
+	@ResponseBody
+	@RequestMapping(value = "/importUser")
+	public AjaxVO importUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		AjaxVO vo = new AjaxVO();
+
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+		MultipartFile file = multipartRequest.getFile("upfile");
+		if (file.isEmpty()) {
+			vo.setSuccess(false);
+			vo.setData("文件不存在");
+			return vo;
+		}
+
+		try {
+			InputStream in = file.getInputStream();
+			List<List<Object>> execelList = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
+			List<Account> createList = new ArrayList<Account>();
+			List<Account> updateList = new ArrayList<Account>();
+
+			if (execelList != null && execelList.size() > 0) {
+				Map<String, Org> orgMap = new HashMap<String, Org>();
+				Map<String, Role> roleMap = new HashMap<String, Role>();
+				Map<String, Account> accountMap = new HashMap<String, Account>();
+				getMapData(orgMap, roleMap, accountMap);
+
+				for (int i = 0; i < execelList.size(); i++) {
+					List<Object> obj = execelList.get(i);
+					
+					if(obj.size() < 1 || obj.get(0) == null){
+						continue;
+					}
+					
+					String userName = obj.get(0).toString();
+					String nickName = null;
+					if(obj.size() >= 2 && obj.get(1) != null){
+						nickName = obj.get(1).toString();
+					}
+					
+					String mobile = null;
+					if(obj.size() >= 3 && obj.get(2) != null){
+						mobile = obj.get(2).toString();
+					}
+					
+					String orgCode = null;
+					if(obj.size() >= 4 && obj.get(3) != null){
+						orgCode = obj.get(3).toString();
+					}
+					
+					String roleCodes = null;
+					if(obj.size() >= 5 && obj.get(4) != null){
+						roleCodes = obj.get(4).toString();
+					}
+					
+					String email = null;
+					if(obj.size() >= 6  && obj.get(5) != null){
+						email = obj.get(5).toString();
+					}
+					
+					if (StringUtils.isBlank(userName)) {
+						continue;
+					}
+					if (StringUtils.isBlank(nickName)) {
+						continue;
+					}
+
+					// 是否已经存在
+					Account dbAccount = accountMap.get(userName);
+
+					Account account = new Account();
+					account.setNickName(nickName);
+					account.setMobile(mobile);
+					account.setEmail(email);
+
+					if (dbAccount == null) { // 修改
+						account.setUserName(userName);
+						account.setPassword(MD5.getMD5(DEFAULT_PWD, "utf-8").toUpperCase());
+						account.setCreateTime(new Date());
+					} else {
+						account.setId(dbAccount.getId());
+					}
+
+					String roleId = "";
+					if (StringUtils.isNotBlank(roleCodes)) {
+						String[] array = roleCodes.split(",");
+						if (array != null && array.length > 0) {
+							for (String str : array) {
+								Role role = roleMap.get(str);
+								if (role != null) {
+									roleId += role.getId() + ",";
+								}
+							}
+						}
+					}
+					if (StringUtils.isNotBlank(roleId)) {
+						roleId = roleId.substring(0, roleId.length() - 1);
+						account.setRoleId(roleId);
+					}
+
+					Org org = orgMap.get(orgCode);
+					if (org != null) {
+						account.setOrgId(org.getId());
+					}
+
+					if (dbAccount == null) {
+						createList.add(account);
+						accountMap.put(userName, account);
+					} else {
+						updateList.add(account);
+					}
+				}
+			}
+
+			if (createList.size() > 0) {
+				accountService.batchAdd(createList);
+			}
+			if (updateList.size() > 0) {
+				accountService.batchUpdate(updateList);
+			}
+			vo.setMsg("导入成功， 新增：" + createList.size() + " 用户，修改：" + updateList.size() + "用户");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("用户导入失败：", ex);
+
+			vo.setMsg("导入失败，系统异常");
+			vo.setSuccess(false);
+			return vo;
+		}
+		return vo;
+	}
+	
+	/**
+	 * 把list转换成map
+	 */
+	private void getMapData(Map<String, Org> orgMap, Map<String, Role> roleMap, Map<String, Account> accountMap) {
+		List<Org> orgList = orgService.selectAllList(new PageMap(false));
+		if (orgList != null && orgList.size() > 0) {
+			for (Org org : orgList) {
+				orgMap.put(org.getCode(), org);
+			}
+		}
+
+		List<Role> roleList = roleService.selectAllList(new PageMap(false));
+		if (roleList != null && roleList.size() > 0) {
+			for (Role role : roleList) {
+				roleMap.put(role.getCode(), role);
+			}
+		}
+		
+		List<Account> accountList = accountService.selectAllList(new PageMap(false));
+		if (accountList != null && accountList.size() > 0) {
+			for (Account account : accountList) {
+				accountMap.put(account.getUserName(), account);
+			}
+		}
+	}
+	
 
 	/**
 	 * 设置头
@@ -464,12 +647,16 @@ public class AccountController extends AbstractController {
 
 		Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
 		CellStyle style;
-
+		
+		Font ztFont = wb.createFont(); 
+		ztFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		
 		style = wb.createCellStyle();
 		style.setAlignment(CellStyle.ALIGN_CENTER);
 		style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-		style.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
 		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setFont(ztFont);
 		styles.put("header", style);
 
 		style = wb.createCellStyle();

@@ -83,13 +83,17 @@
 			$('#role').combotree({
 				url: '${ctx}/role/tree',
 				multiple: true,
-				animate: true,	
-				checkbox: function(node){
-					console.info("sdf");
-					if(node.id.indexOf("r") != -1){
+				animate: true	
+			});
+			
+			// 只有角色才能选择
+			var t = $('#role').combotree('tree');	
+			t.tree({
+			   checkbox: function(node){
+				   if(node.id.indexOf("r") != -1){
 						return true;
 					}
-                }
+			   }
 			});
 			
 			$('#org').combotree({

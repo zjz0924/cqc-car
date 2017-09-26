@@ -33,6 +33,27 @@
 	
 	<div id="accountDialog"></div>
 	
+	<!-- Excel 导入 -->
+	<div id="excelDialog" class="easyui-dialog" title="用户导入" style="width: 300px; height: 200px; padding: 10px;" data-options="modal: true" closed="true">
+		<form method="POST" enctype="multipart/form-data" id="uploadForm">
+			<div>
+				请选择要导入的文件（<span style="color: red;">只支持 Excel</span>）：
+			</div>
+			
+			<div style="margin-top: 10px;">
+				<input class="easyui-filebox" id="upfile" name="upfile" style="width: 90%" data-options="buttonText: '选择文件'">
+				<p id="fileInfo" style="color:red;margin-top:5px;"></p>
+			</div>
+			
+			<div style="margin-top: 15px;">
+				<a href="javascript:void(0);" class="easyui-linkbutton" style="width: 90%" onclick="importExcel()">上传</a>
+			</div>
+			
+			<div id="result" style="margin-top:5px;"></div>
+		</form>
+	</div>
+	
+	<script src="${ctx}/resources/js/jquery.form.js"></script>
 	<script type="text/javascript">
 		var url = "${ctx}/account/getList?time=" + new Date();
 		var detailUrl = "${ctx}/account/detail";
@@ -89,7 +110,8 @@
 			text : '导入',
 			iconCls : 'icon-import',
 			handler : function() {
-				
+				$('#excelDialog').dialog('open');
+				$('#excelDialog').window('center');
 			}
 		}, '-',  {
 			text : '导出',
@@ -289,6 +311,34 @@
 			$('#accountDialog').dialog('close');
 			tipMsg(msg, function(){
 				$('#' + datagrid).datagrid('reload');
+			});
+		}
+		
+		function importExcel() {
+			$("#result").html("");
+			
+			var fileDir = $("#upfile").filebox("getValue");
+			var suffix = fileDir.substr(fileDir.lastIndexOf("."));
+			if ("" == fileDir) {
+				$("#fileInfo").html("请选择要导入的Excel文件");
+				return false;
+			}
+			if (".xls" != suffix && ".xlsx" != suffix) {
+				$("#fileInfo").html("请选择Excel格式的文件导入！");
+				return false;
+			}
+			
+			$("#fileInfo").html("");
+
+			$('#uploadForm').ajaxSubmit({
+				url : '${ctx}/account/importUser',
+				dataType : 'text',
+				success : function(msg) {
+					var data = eval('(' + msg + ')');
+					$("#upfile").filebox("clear");
+					$("#result").html(data.msg);
+					$('#' + datagrid).datagrid('reload');
+				}
 			});
 		}
 	</script>
