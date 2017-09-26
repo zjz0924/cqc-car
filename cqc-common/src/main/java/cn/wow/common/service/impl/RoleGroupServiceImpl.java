@@ -113,7 +113,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 		if (rootGroup != null) {
 			rootNode.setId("g_" + rootGroup.getId());
 			rootNode.setText(rootGroup.getName());
-			rootNode.setIconCls("icon-group");
+			rootNode.setIconCls("icon-sitemap");
 
 			// 获取子集合
 			Iterator<RoleGroup> subList = rootGroup.getSubList().iterator();
@@ -128,7 +128,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 						TreeNode subNode = new TreeNode();
 						subNode.setId("g_" + subGroup.getId());
 						subNode.setText(subGroup.getName());
-						subNode.setIconCls("icon-group");
+						subNode.setIconCls("icon-sitemap");
 
 						boolean isSearch = isSearch(svalue);
 						if ((isSearch && !targetId.contains(subGroup.getId())) || !isSearch) {
@@ -144,7 +144,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 						TreeNode roleNode = new TreeNode();
 						roleNode.setId("r_" + role.getId());
 						roleNode.setText(role.getName());
-						roleNode.setIconCls("icon-user");
+						roleNode.setIconCls("icon-group");
 						subNodeList.add(roleNode);
 					}
 				}
@@ -171,7 +171,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 					TreeNode sonNode = new TreeNode();
 					sonNode.setId("g_" + subGroup.getId());
 					sonNode.setText(subGroup.getName());
-					sonNode.setIconCls("icon-group");
+					sonNode.setIconCls("icon-sitemap");
 					// 遍历子节点
 					if ((isSearch && !targetId.contains(subGroup.getId())) || !isSearch) {
 						addSonNode(sonNode, subGroup, legalId, targetId, isSearch);
@@ -185,7 +185,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 					TreeNode roleNode = new TreeNode();
 					roleNode.setId("r_" + role.getId());
 					roleNode.setText(role.getName());
-					roleNode.setIconCls("icon-user");
+					roleNode.setIconCls("icon-group");
 					subNodeList.add(roleNode);
 				}
 			}
@@ -197,7 +197,7 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 					TreeNode roleNode = new TreeNode();
 					roleNode.setId("r_" + role.getId());
 					roleNode.setText(role.getName());
-					roleNode.setIconCls("icon-user");
+					roleNode.setIconCls("icon-group");
 					nodeList.add(roleNode);
 				}
 			}

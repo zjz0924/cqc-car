@@ -233,28 +233,25 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/delete")
 	public AjaxVO delete(HttpServletRequest request, String id) {
 		AjaxVO vo = new AjaxVO();
+		vo.setMsg("删除成功");
 
 		try {
-			if (StringUtils.isNotBlank(id)) {
-				Account account = accountService.selectOne(Long.parseLong(id));
+			Account account = accountService.selectOne(Long.parseLong(id));
 
-				if (account != null) {
-					int num = accountService.deleteByPrimaryKey(getCurrentUserName(), account);
-
-					if (num > 0) {
-						getResponse(vo, Contants.SUC_DELETE);
-					} else {
-						getResponse(vo, Contants.FAIL_DELETE);
-					}
-				} else {
-					getResponse(vo, Contants.FAIL_DELETE);
-				}
+			if (account != null) {
+				accountService.deleteByPrimaryKey(getCurrentUserName(), account);
 			} else {
-				getResponse(vo, Contants.FAIL_DELETE);
+				vo.setMsg("删除失败，记录不存在");
+				vo.setSuccess(false);
+				return vo;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			getResponse(vo, Contants.EXCEP);
+			logger.error("用户删除失败", ex);
+
+			vo.setMsg("删除失败，系统异常");
+			vo.setSuccess(false);
+			return vo;
 		}
 		return vo;
 	}

@@ -3,19 +3,19 @@
 
 <body>
 	<div class="table">
-		<div class="column" style="height: 600px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:20px;padding-left:10px;">
-			<input id="searchbox" name="searchbox" style="width: 280px;"></input>
+		<div class="column" style="height: 600px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:10px;padding-left:10px;">
+			<!-- <input id="areaSearchbox" name="areaSearchbox" style="width: 280px;"></input>
 			<div id="searchMenu">
 		        <div data-options="name:'name'">名称</div>
 		        <div data-options="name:'code'">编码</div>
-		    </div>
+		    </div> -->
 			
-			<div style="margin-top:10px;margin-right: 10px;">
+			<div style="margin-right: 10px;margin-top:10px;">
 				<ul id="areaTree" name="areaTree"></ul>
 			</div>
 		</div>
 		
-		<div class="column" style="padding:30px 20px;font-size: 14px;width:90%;">
+		<div class="column" style="padding:30px 20px;font-size: 14px;width:80%;">
 			<p style="font-size: 16px;margin-bottom: 10px;">区域信息</p>
 			
 			<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
@@ -48,7 +48,7 @@
 		<div onclick="remove()">删除</div>
 	</div>
 	
-	<div id="dd"></div>
+	<div id="areaDialog"></div>
 	
 	<script type="text/javascript">
 		//操作类型, 0: 新建修改  1：删除
@@ -141,7 +141,7 @@
 				}
 			});
 
-			$('#searchbox').searchbox({
+			/* $('#areaSearchbox').searchbox({
 				searcher : function(value, name) {
 					svalue = value;
 					stype = name;
@@ -161,7 +161,7 @@
 				},
 				menu : '#searchMenu',
 				prompt : ''
-			});
+			}); */
 		});
 
 		function createUpdate(type) {
@@ -180,7 +180,7 @@
 				}
 			}
 
-			$('#dd').dialog({
+			$('#areaDialog').dialog({
 				title : '区域信息',
 				width : 380,
 				height : 250,
@@ -189,12 +189,12 @@
 				href : '${ctx}/area/detail?id=' + id + '&parentid=' + parentid,
 				modal : true
 			});
-			$('#dd').window('center');
+			$('#areaDialog').window('center');
 		}
 
 		// 关掉对话时回调
 		function closeDialog(id, result) {
-			$('#dd').dialog('close');
+			$('#areaDialog').dialog('close');
 
 			// 创建/编辑成功
 			if (!isNull(id)) {

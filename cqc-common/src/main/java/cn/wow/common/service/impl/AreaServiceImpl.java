@@ -97,7 +97,7 @@ public class AreaServiceImpl implements AreaService {
 					}
 					
 					// 获取搜索节点的二级父节点
-					Area parentArea = getSecondArea(area, legalId);
+					Area parentArea = getSecondArea(area, legalId, parentId);
 					if (!parentSet.contains(parentArea)) {
 						parentSet.add(parentArea);
 					}
@@ -175,10 +175,11 @@ public class AreaServiceImpl implements AreaService {
 	}
 	
 	// 获取二级节点
-	private Area getSecondArea(Area area, Set<Long> legalId) {
+	private Area getSecondArea(Area area, Set<Long> legalId, Set<Long> parentId) {
 		if (area.getParent() != null && area.getParent().getId() != 1l) {
 			legalId.add(area.getParent().getId());
-			return getSecondArea(area.getParent(), legalId);
+			parentId.add(area.getParent().getId());
+			return getSecondArea(area.getParent(), legalId, parentId);
 		}
 		return area;
 	}

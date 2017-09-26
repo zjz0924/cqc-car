@@ -92,11 +92,10 @@ public class OrgServiceImpl implements OrgService{
 					if(org.getParent() != null){
 						targetId.add(org.getId());
 						legalId.add(org.getId());
-						parentId.add(org.getParentid());
 					}
 					
 					// 获取搜索节点的二级父节点
-					Org parentOrg = getSecondOrg(org, legalId);
+					Org parentOrg = getSecondOrg(org, legalId, parentId);
 					if (!parentSet.contains(parentOrg)) {
 						parentSet.add(parentOrg);
 					}
@@ -176,10 +175,11 @@ public class OrgServiceImpl implements OrgService{
 	}
 	
 	// 获取二级节点
-	private Org getSecondOrg(Org org, Set<Long> legalId) {
+	private Org getSecondOrg(Org org, Set<Long> legalId, Set<Long> parentId) {
 		if (org.getParent() != null && org.getParent().getId() != 1l) {
 			legalId.add(org.getParent().getId());
-			return getSecondOrg(org.getParent(), legalId);
+			parentId.add(org.getParent().getId());
+			return getSecondOrg(org.getParent(), legalId, parentId);
 		}
 		return org;
 	}

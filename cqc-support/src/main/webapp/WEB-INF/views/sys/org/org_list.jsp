@@ -5,19 +5,19 @@
 <body>
 
 	<div class="table">
-		<div class="column" style="height: 600px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:20px;padding-left:10px;">
-			<input id="searchbox" style="width: 280px;"></input>
+		<div class="column" style="height: 600px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:10px;padding-left:10px;">
+			<!-- <input id="orgSearchbox" style="width: 280px;"></input>
 			<div id="searchMenu">
 		        <div data-options="name:'name'">名称</div>
 		        <div data-options="name:'code'">编码</div>
-		    </div>
+		    </div> -->
 			
 			<div style="margin-top:10px;margin-right: 10px;">
 				<ul id="orgTree" name="orgTree"></ul>
 			</div>
 		</div>
 		
-		<div class="column" style="padding:30px 20px;font-size: 14px;width:90%;">
+		<div class="column" style="padding:30px 20px;font-size: 14px;width:80%;">
 			<p style="font-size: 16px;margin-bottom: 10px;">机构信息</p>
 			<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
 			
@@ -150,7 +150,7 @@
 			});
 			
 			
-			$('#searchbox').searchbox({
+			/* $('#orgSearchbox').searchbox({
 			    searcher:function(value,name){
 			    	svalue = value;
 					stype = name;
@@ -171,7 +171,7 @@
 			    },
 			    menu:'#searchMenu',
 			    prompt:''
-			});
+			}); */
 		});
 		
 		function createUpdate(type){

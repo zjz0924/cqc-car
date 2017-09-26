@@ -119,7 +119,37 @@
 			handler : function() {
 				window.location.href = "${ctx}/account/exportUser";
 			}
-		}  ];
+		}, '-',  {
+			text : '删除',
+			iconCls : 'icon-delete',
+			handler : function() {
+				var row = $("#" + datagrid).datagrid('getSelected');
+            	if(isNull(row)){
+            		errorMsg("请选择一条记录进行操作!");
+            		return;
+            	}
+            	
+            	 $.messager.confirm('系统提示', "此操作将删除该用户密码，您确定要继续吗？", function(r){
+                     if (r){
+                         $.ajax({
+                         	url: "${ctx}/account/delete",
+                         	data: {
+                         		id: row.id,
+                         	},
+                         	success: function(data){
+                         		if(data.success){
+                         			tipMsg(data.msg, function(){
+                						$('#' + datagrid).datagrid('reload');
+                					});
+                 				}else{
+                 					errorMsg(data.msg);
+                 				}
+                         	}
+                         });
+                     }
+                 });
+			}
+		}];
 		
 		
 		$(function(){
