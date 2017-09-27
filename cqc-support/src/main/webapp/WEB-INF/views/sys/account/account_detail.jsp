@@ -73,13 +73,13 @@
 		 </c:if>
 		 
 		 <div style="text-align:center;margin-top:5px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="save()" class="easyui-linkbutton" >保存</a>
+			<a href="javascript:void(0);"  onclick="saveAccount()" class="easyui-linkbutton" >保存</a>
 			<span id="exception_error" class="error-message"></span>
 		</div>
 	</div>
 	
 	<script type="text/javascript">
-		$(function(){
+		$.parser.onComplete = function(){
 			$('#role').combotree({
 				url: '${ctx}/role/tree',
 				multiple: true,
@@ -110,16 +110,16 @@
 		 	if(!isNull(orgId)){
 				$('#org').combotree('setValue', {id: orgId, text: '${orgName}'});
 			}
-		});
+		}
 	
-		function save(){
+		function saveAccount(){
 			var userName = $("#userName").textbox("getValue");
 			
 			if(isNull(userName)){
-				err("userName_error", "用户名必填");
+				errAccount("userName_error", "用户名必填");
 				return false;
 			}else{
-				err("userName_error", "");
+				errAccount("userName_error", "");
 			}
 			
 			var accountId = $("#id").val();
@@ -128,33 +128,33 @@
 				var repeatPassword = $("#repeatPassword").val();
 				
 				if(isNull(password)){
-					err("password_error", "密码必填");
+					errAccount("password_error", "密码必填");
 					return false;
 				}else{
-					err("password_error", "");
+					errAccount("password_error", "");
 				}
 				
 				if(isNull(repeatPassword)){
-					err("repeatPassword_error", "确认密码必填");
+					errAccount("repeatPassword_error", "确认密码必填");
 					return false;
 				}else{
-					err("repeatPassword_error", "");
+					errAccount("repeatPassword_error", "");
 				}
 				
 				if(password != repeatPassword){
-					err("password_error", "两次密码不一致");
+					errAccount("password_error", "两次密码不一致");
 					return false;
 				}else{
-					err("repeatPassword_error", "");
+					errAccount("repeatPassword_error", "");
 				}
 			}
 			
 			var nickName = $("#nickName").val();
 			if(isNull(nickName)){
-				err("nickName_error", "姓名必填");
+				errAccount("nickName_error", "姓名必填");
 				return false;
 			}else{
-				err("nickName_error", "");
+				errAccount("nickName_error", "");
 			}
 			
 			var roleId = "";
@@ -172,10 +172,10 @@
 				}
 			}
 			if(isNull(roleId)){
-				err("role_error", "请选择角色");
+				errAccount("role_error", "请选择角色");
 				return false;
 			}else{
-				err("role_error", "");
+				errAccount("role_error", "");
 			}
 			
 			var orgId = "";
@@ -185,10 +185,10 @@
 				orgId = selecteNode.id;
 			}
 			if(isNull(orgId)){
-				err("org_error", "请选择机构");
+				errAccount("org_error", "请选择机构");
 				return false;
 			}else{
-				err("org_error", "");
+				errAccount("org_error", "");
 			}
 			
 			var mobile = $("#mobile").textbox("getValue");
@@ -208,19 +208,19 @@
 				},
 				success:function(data){
 					if(data.success){
-						window.parent.closeDialog(data.msg);
+						closeAccountDialog(data.msg);
 					}else{
 						if(data.data == "userName"){
-							err("userName_error", data.msg);
+							errAccount("userName_error", data.msg);
 						}else{
-							err("exception_error", data.msg);
+							errAccount("exception_error", data.msg);
 						}
 					}
 				}
 			});
 		}
 		
-		function err(id, message){
+		function errAccount(id, message){
             $("#" + id).html(message);
         }
 	</script>

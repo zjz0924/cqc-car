@@ -6,14 +6,14 @@
 		<c:if test="${type == 1}">
 			<div class="info-div">
 				<span class="title-span"><span class="req-span">*</span>${title}编码：</span> 
-				<input id="e_code" name="e_code" value="${facade.code}" <c:if test="${not empty facade.id}">disabled</c:if> class="easyui-validatebox tb">
+				<input id="e_code" name="e_code" value="${facade.code}" <c:if test="${not empty facade.id}">disabled</c:if> class="easyui-textbox">
 				<span id="code_error" class="error-message"></span>
 			</div>
 		</c:if>
 		
 		<div class="info-div">
 			<span class="title-span"><span class="req-span">*</span>${title}名称： </span>
-			<input id="e_name" name="e_name" value="${facade.name}" class="easyui-validatebox tb">
+			<input id="e_name" name="e_name" value="${facade.name}" class="easyui-textbox">
 			<span id="name_error" class="error-message"></span>
 		</div>
 		
@@ -24,33 +24,33 @@
 		
 		<div class="info-div">
 			<span class="title-span">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注： </span>
-			<input type="text" id="e_desc" name="e_desc" value="${facade.desc}">
+			<input type="text" id="e_desc" name="e_desc" value="${facade.desc}" class="easyui-textbox">
 		</div>
 		
 		<div style="text-align:center;margin-top:5px;" class="info-div">
-			<a href="javascript:void(0)"  onclick="save()" class="easyui-linkbutton" >保存</a>
+			<a href="javascript:void(0)"  onclick="saveRole()" class="easyui-linkbutton" >保存</a>
 			<span id="exception_error" class="error-message"></span>
 		</div>
 	</div>
 	
 	<script type="text/javascript">
-		function save(){
+		function saveRole(){
 			var name = $("#e_name").val();
 			var code = $("#e_code").val();
 			var type = "${type}";
 			
 			if(type == 1 && isNull(code)){
-				err("code_error", "编码必填");
+				errRole("code_error", "编码必填");
 				return;
 			}else{
-				err("code_error", "");	
+				errRole("code_error", "");	
 			}
 			
 			if(isNull(name)){
-				err("name_error", "名称必填");
+				errRole("name_error", "名称必填");
 				return;
 			}else{
-				err("name_error", "");
+				errRole("name_error", "");
 			}
 			
 			$.ajax({
@@ -65,28 +65,28 @@
 				},
 				success:function(data){
 					if(data.success){
-						window.parent.closeDialog(data.data, data.msg);
+						closeRoleDialog(data.data, data.msg);
 					}else{
 						if(data.data == "name"){
-							err("name_error", data.msg);
+							errRole("name_error", data.msg);
 						}else if(data.data == "code"){
-							err("code_error", data.msg);
+							errRole("code_error", data.msg);
 						}else{
-							err("exception_error", data.msg);
+							errRole("exception_error", data.msg);
 						}
 					}
 				}
 			});
 		}
 		
-        function err(id, message){
+        function errRole(id, message){
             $("#" + id).html(message);
         }
 	</script>
 		
 	<style type="text/css">
 		.info-div{
-			line-height: 35px;
+			height: 35px;
 		}
 		
 		.title-span{

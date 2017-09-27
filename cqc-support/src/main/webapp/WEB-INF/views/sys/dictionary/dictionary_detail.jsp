@@ -60,7 +60,7 @@
 				},
 				success:function(data){
 					if(data.success){
-						window.parent.closeDialog(data.msg);
+						closeDialog(data.msg);
 					}else{
 						if(data.data == "name"){
 							err("name_error", data.msg);

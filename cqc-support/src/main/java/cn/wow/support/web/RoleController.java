@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wow.common.domain.Role;
 import cn.wow.common.domain.RoleGroup;
+import cn.wow.common.domain.RolePermission;
 import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.RoleGroupService;
+import cn.wow.common.service.RolePermissionService;
 import cn.wow.common.service.RoleService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.operationlog.OperationType;
@@ -38,6 +40,8 @@ public class RoleController extends AbstractController {
 	private RoleGroupService roleGroupService;
 	@Autowired
 	private OperationLogService operationLogService;
+	@Autowired
+	private RolePermissionService rolePermissionService;
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
@@ -364,6 +368,45 @@ public class RoleController extends AbstractController {
 		return vo;
 	}
 
+	/**
+	 * 保存操作权限
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/saveOperationPermission")
+	public AjaxVO saveOperationPermission(HttpServletRequest request, String roleId, String menuIds) {
+		AjaxVO vo = new AjaxVO();
+
+		try {
+			if (StringUtils.isNotBlank(roleId)) {
+				RolePermission permission = new RolePermission();
+				permission.setRoleId(Long.parseLong(roleId));
+				
+				if(StringUtils.isNoneBlank(menuIds) && menuIds.endsWith(",")){
+					menuIds = menuIds.substring(0, menuIds.length() - 1);
+				}
+				permission.setPermission(menuIds);
+				rolePermissionService.save(permission);
+			} else {
+				vo.setMsg("角色操作权限保存失败，请选择角色");
+				vo.setSuccess(false);
+				return vo;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+
+			vo.setMsg("角色操作权限保存失败，系统异常");
+			vo.setSuccess(false);
+			logger.error("保存失败：", ex);
+			return vo;
+		}
+
+		vo.setMsg("保存成功");
+		vo.setSuccess(true);
+		return vo;
+	}
+	
+	
+	
 	/**
 	 * 解析获取ID
 	 */

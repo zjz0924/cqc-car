@@ -6,8 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import cn.wow.common.error.exceptions.MSAForbiddenException;
 
 /**
  * 可用于更新数据
@@ -20,10 +24,13 @@ public class SysUserFilter extends PathMatchingFilter {
     	HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     	HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		
-    	String username = (String)SecurityUtils.getSubject().getPrincipal();
-    	if (StringUtils.isNotBlank(username)) {
-    		
-		}
+		String uri = httpServletRequest.getRequestURI();
+
+		/*if(uri.contains("role")){
+			// 会跳转到403页面
+			httpServletResponse.sendError(403);
+		}*/
+		
         return true;
     }
 }

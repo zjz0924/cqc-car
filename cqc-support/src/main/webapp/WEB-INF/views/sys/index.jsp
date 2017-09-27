@@ -12,48 +12,59 @@
 	        
 	        $(function(){
 	        	
-				$("#tt").tabs({
+				$("#systemTabs").tabs({
 					onSelect : function(title, index) {
-						
-						//refreshTab($('#tt').tabs('getTab', index));
-						
-						// 刷新 
-						//点击 日志管理时会有error信息
-						//$('#tt').tabs('getTab', index).panel('refresh');
-	
-						//可能会造成textbox 赋值失败
-						/* if ($('#tt').tabs('exists', title)) {
-							var currTab = $('#tt').tabs('getTab', title);
-							iframe = $(currTab.panel('options').content);
-							content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-							$('#tt').tabs('update', {
-								tab : currTab,
-								options : {
-									content : content
-								}
-							});
-						} */
+						refreshTab($('#systemTabs').tabs('getTab', index));
 					}
 				});
-
-				// 选中tab
-				$("#tt").tabs('select', parseInt("${choose}"));
-
+				
+				var selectTabIndex = parseInt("${choose}");
+				var sub = '${menu}';
+				var menuJson = eval('(' + sub + ')');
+					
+				if(!isNull(menuJson)){
+					for(var i = 0; i < menuJson.length; i++){
+						var selected = false;
+						var obj = menuJson[i];
+						if(i == selectTabIndex){
+							selected = true;
+						}
+						createTab(obj.name, obj.url, selected);
+					}
+				}
+				
 				$(".tabs").css("height", "36px");
 				$(".tabs-inner").css("height", "35px");
 				$(".tabs-inner").css("line-height", "35px");
 			});
 	        
 			function refreshTab(currentTab) {
-				var url = $(currentTab.panel('options')).attr('href');
-				$('#tt').tabs('update', {
+				var url = currentTab.panel('options').href; 
+	
+			 	$('#systemTabs').tabs('update', {
 					tab : currentTab,
 					options : {
 						href : url
 					}
 				});
-				currentTab.panel('refresh');
+			 	
+			 	// 刷新时样式会重新设置
+			 	$(".tabs").css("height", "36px");
+				$(".tabs-inner").css("height", "35px");
+				$(".tabs-inner").css("line-height", "35px");
 			}
+			
+			// 创建tab
+		 	function createTab(title, url, selected) {  
+				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="650px">'; 
+			    $('#systemTabs').tabs('add', {   
+			        title : title,   
+			        selected : selected,   
+			        closable : false,   
+			        content : content   
+			    });   
+			}; 
+			
 		</script>
 		
 	</head>
@@ -65,12 +76,7 @@
 		<div class="inbanner XTGL"></div>
 		
 		<div style="width: auto;height: auto; min-height: 650px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
-			<div id="tt" class="easyui-tabs" style="width:100%;height:auto;" data-options="plain: true,pill: true, justified: true, narrow: false">
-		        <c:if test="${not empty menu.subList}">
-		        	<c:forEach items="${menu.subList}" var="vo">
-						<div title="${vo.name}" data-options="href:'${ctx}/${vo.url}',closed:true"></div>	        	
-		        	</c:forEach>
-		        </c:if>
+			<div id="systemTabs" style="width:100%;height:auto;" data-options="plain: true,pill: true, justified: true, narrow: false">
 		    </div>
 		</div>
 		

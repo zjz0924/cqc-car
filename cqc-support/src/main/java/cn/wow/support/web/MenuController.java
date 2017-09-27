@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.MenuNode;
+import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.utils.AjaxVO;
 
@@ -84,6 +85,9 @@ public class MenuController extends AbstractController {
 	}
 
 	
+	/**
+	 * treegrid
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/tree")
 	public Map<String, Object> tree(HttpServletRequest request, Model model, String svalue, String stype) {
@@ -96,5 +100,15 @@ public class MenuController extends AbstractController {
 		return dataMap;
 	}
 	
+	
+	/**
+	 * tree
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTreeData")
+	public List<TreeNode> getTreeData(HttpServletRequest request, Model model, String svalue, String stype) {
+		List<TreeNode> menuTree = menuService.getTreeData();
+		return menuTree;
+	}
 	
 }

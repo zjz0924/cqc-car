@@ -23,6 +23,7 @@ public class RolePermissionServiceImpl implements RolePermissionService{
     }
 
     public int save(RolePermission rolePermisson){
+    	deleteByPrimaryKey(rolePermisson.getRoleId());
     	return rolePermissonDao.insert(rolePermisson);
     }
 

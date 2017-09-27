@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.MenuNode;
+import cn.wow.common.domain.TreeNode;
 
 public interface MenuService {
 
@@ -19,4 +20,6 @@ public interface MenuService {
     public List<Menu> selectAllList(Map<String, Object> map);
     
     public List<MenuNode> getMenuTree();
+    
+    public List<TreeNode> getTreeData();
 }

@@ -138,17 +138,23 @@ public class RoleGroupServiceImpl implements RoleGroupService {
 						subNodeList.add(subNode);
 					}
 				}
-				
-				if(rootGroup.getRoleList() != null && rootGroup.getRoleList().size() > 0){
-					for(Role role: rootGroup.getRoleList()){
-						TreeNode roleNode = new TreeNode();
-						roleNode.setId("r_" + role.getId());
-						roleNode.setText(role.getName());
-						roleNode.setIconCls("icon-group");
-						subNodeList.add(roleNode);
-					}
-				}
 				rootNode.setChildren(subNodeList);
+			}
+			
+			if(rootGroup.getRoleList() != null && rootGroup.getRoleList().size() > 0){
+				List<TreeNode> children = new ArrayList<TreeNode>();
+				if(rootNode.getChildren() != null){
+					children = rootNode.getChildren();
+				}
+				
+				for(Role role: rootGroup.getRoleList()){
+					TreeNode roleNode = new TreeNode();
+					roleNode.setId("r_" + role.getId());
+					roleNode.setText(role.getName());
+					roleNode.setIconCls("icon-group");
+					children.add(roleNode);
+				}
+				rootNode.setChildren(children);
 			}
 		}
 		tree.add(rootNode);

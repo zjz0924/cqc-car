@@ -2,7 +2,6 @@
 <%@include file="/page/taglibs.jsp"%>
 	
 
-<body>
 	<div style="margin-top:15px;margin-left:20px;">
 		<div class="info-div">
 			<span class="title-span"><span class="req-span">*</span>机构编码：</span> 
@@ -12,7 +11,7 @@
 		
 		<div class="info-div">
 			<span class="title-span"><span class="req-span">*</span>机构名称： </span>
-			<input id="o_name" name="o_name" value="${org.name}" class="easyui-validatebox tb">
+			<input id="o_name" name="o_name" value="${org.name}" class="easyui-textbox">
 			<span id="oname_error" class="error-message"></span>
 		</div>
 		
@@ -21,7 +20,7 @@
 			${parentOrg.name } 
 		</div>
 		
-		<div>
+		<div class="info-div">
 			<span class="title-span"><span class="req-span">*</span>区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域： </span>
 			<input id="oarea_id" >
 			<span id="oarea_error" class="error-message"></span>
@@ -29,7 +28,7 @@
 		
 		<div class="info-div">
 			<span class="title-span">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注： </span>
-			<input type="text" id="o_desc" name="o_desc" value="${area.desc}">
+			<input type="text" id="o_desc" name="o_desc" value="${area.desc}" class="easyui-textbox">
 		</div>
 		
 		<div style="text-align:center;margin-top:5px;" class="info-div">
@@ -97,7 +96,7 @@
 				},
 				success:function(data){
 					if(data.success){
-						window.parent.closeDialog(data.data, data.msg);
+						closeOrgDialog(data.data, data.msg);
 					}else{
 						if(data.data == "name"){
 							err("oname_error", data.msg);
@@ -118,7 +117,7 @@
 	
 	<style type="text/css">
 		.info-div{
-			line-height: 35px;
+			height: 35px;
 		}
 		
 		.title-span{
@@ -138,5 +137,3 @@
         	color: red;
         }
 	</style>
-
-</body>
