@@ -83,7 +83,7 @@
 		           		return;
 		           	}
 		           	
-		           	 $.messager.confirm('系统提示', "此操作将删除该用户密码，您确定要继续吗？", function(r){
+		           	 $.messager.confirm('系统提示', "此操作将删除该用户，您确定要继续吗？", function(r){
 		                    if (r){
 		                        $.ajax({
 		                        	url: "${ctx}/account/delete",

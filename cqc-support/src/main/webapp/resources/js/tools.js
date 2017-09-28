@@ -288,6 +288,26 @@ function DateTimeFormatter(value) {
 
 
 /**
+ * datagrid - 格式化日期时间
+ */
+function DateFormatter(value) {
+    var date = new Date(value);
+    var year = date.getFullYear().toString();
+    var month = (date.getMonth() + 1);
+    var day = date.getDate().toString();
+    var hour = date.getHours().toString();
+    var minutes = date.getMinutes().toString();
+    var seconds = date.getSeconds().toString();
+    if (month < 10) {
+        month = "0" + month;
+    }
+    if (day < 10) {
+        day = "0" + day;
+    }
+    return year + "-" + month + "-" + day;
+}
+
+/**
  * datagrid - 格式化单元格提示信息 
  */ 
 function formatCellTooltip(value){

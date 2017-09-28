@@ -7,10 +7,12 @@ import java.util.Map;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Area;
+import cn.wow.common.domain.Dictionary;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.Role;
 import cn.wow.common.domain.RoleGroup;
+import cn.wow.common.domain.Vehicle;
 import cn.wow.common.utils.operationlog.ServiceType;
 
 public final class EntityServiceTypeMap {
@@ -29,11 +31,13 @@ public final class EntityServiceTypeMap {
 	static void initMap() {
 		typeMap.clear();
 		typeMap.put(Account.class.getName(), ServiceType.ACCOUNT);
-		typeMap.put(Role.class.getName(), ServiceType.ROLE);
-		typeMap.put(RoleGroup.class.getName(), ServiceType.ROLE_GROUP);
-		typeMap.put(Area.class.getName(), ServiceType.AREA);
-		typeMap.put(Org.class.getName(), ServiceType.ORG);
-		typeMap.put(Menu.class.getName(), ServiceType.MENU);
+		typeMap.put(Role.class.getName(), ServiceType.SYSTEM);
+		typeMap.put(RoleGroup.class.getName(), ServiceType.SYSTEM);
+		typeMap.put(Area.class.getName(), ServiceType.SYSTEM);
+		typeMap.put(Org.class.getName(), ServiceType.SYSTEM);
+		typeMap.put(Menu.class.getName(), ServiceType.SYSTEM);
+		typeMap.put(Dictionary.class.getName(), ServiceType.SYSTEM);
+		typeMap.put(Vehicle.class.getName(), ServiceType.INFO);
 		
 		//DAO 类型
 		daoMap.clear();
@@ -43,6 +47,8 @@ public final class EntityServiceTypeMap {
 		daoMap.put(Org.class.getName(), "cn.wow.common.dao.OrgDao.selectOne");
 		daoMap.put(Menu.class.getName(), "cn.wow.common.dao.MenuDao.selectOne");
 		daoMap.put(RoleGroup.class.getName(), "cn.wow.common.dao.RoleGroupDao.selectOne");
+		daoMap.put(Vehicle.class.getName(), "cn.wow.common.dao.VehicleDao.selectOne");
+		daoMap.put(Dictionary.class.getName(), "cn.wow.common.dao.DictionaryDao.selectOne");
 	}
 
 	public static ServiceType getServiceType(Class<?> clazz) {

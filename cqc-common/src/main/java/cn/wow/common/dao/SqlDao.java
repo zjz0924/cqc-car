@@ -23,8 +23,5 @@ public interface SqlDao {
 	
 	int deleteByPrimaryKey(Long id);
 	
-	public Role selectByCode(String code);
-	
-	public List<Role> selectRoles(Long[] ids);
 }
 
