@@ -21,7 +21,6 @@ public class Role extends JpaEntity{
     
     private RoleGroup group;
     
-    @JsonIgnore
     private String permission;
 
     public Role(){

@@ -38,4 +38,11 @@
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	
+	<select id="batchQuery" resultMap="BaseResultMap" parameterType="java.util.List">
+		SELECT <include refid="base_columns" /> FROM role_permission WHERE role_id in
+		<foreach collection="list" item="id" index="index" separator=","  open= "(" close =")">  
+			 #{id}        
+		</foreach>
+	</select>
+	
 </mapper>

@@ -1,5 +1,8 @@
 package cn.wow.common.service.impl;
 
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +38,8 @@ public class RolePermissionServiceImpl implements RolePermissionService{
     	return rolePermissonDao.deleteByPrimaryKey(id);
     }
 
+    public List<RolePermission> batchQuery(List<Long> list){
+    	return rolePermissonDao.batchQuery(list);
+    }
+    
 }

@@ -68,7 +68,7 @@
 					<ul>
 						<li class='base'><a class='base_a' style='' href='${ctx}/index'>首页</a></li>
 						
-						<c:forEach items="${menuList}" var="vo">
+						<c:forEach items="${currentMenuList}" var="vo">
 							<li class="base <c:if test='${vo.isAuthorized == false}'>nojuris</c:if>" _t_nav="YWGL">
 								<a href="${ctx}/${vo.url}" class="base_a">${vo.name}</a>
 								<c:if test="${vo.isAuthorized == true}">

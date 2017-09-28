@@ -1,6 +1,7 @@
 package cn.wow.support.shiro.filter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -61,12 +63,15 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 
 		String username = (String) SecurityUtils.getSubject().getPrincipal();
 		if (StringUtils.isNotBlank(username)) {
-			Account account = accountService.selectByAccountName(username);
+			HttpSession session = httpServletRequest.getSession();
 			
-			httpServletRequest.getSession().setAttribute(Contants.CURRENT_ACCOUNT, account);
+			Account account = accountService.selectByAccountName(username);
+			session.setAttribute(Contants.CURRENT_ACCOUNT, account);
 			
 			//菜单信息
-			httpServletRequest.getSession().setAttribute(Contants.MENU_LIST, getPermission(account));
+			Set<String> illegalMenu = new HashSet<String>();
+			session.setAttribute(Contants.CURRENT_PERMISSION_MENU, getPermission(account, illegalMenu));
+			session.setAttribute(Contants.CURRENT_ILLEGAL_MENU, illegalMenu);
 			
 			// 判断用户客户端信息
 			createOrUpdateClientInfo(username, request.getRemoteAddr(), httpServletRequest.getHeader("user-agent"));
@@ -88,58 +93,69 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 	/**
 	 * 获取当前角色的菜单
 	 */
-	private List<Menu> getPermission(Account account) {
+	private List<Menu> getPermission(Account account, Set<String> illegalMenu) {
+		// 获取二级父节点
 		List<Menu> menuList = menuService.getMenuList();
-		Set<String> legalMenu = new HashSet<String>();
 		
-		String[] roles = null;
-		if(StringUtils.isNoneBlank(account.getRoleId())){
-			roles = account.getRoleId().split(",");
-		}
-
-		RolePermission permission = rolePermissionService.selectOne(Long.parseLong(roles[0]));
-		if (permission != null && StringUtils.isNotBlank(permission.getPermission())) {
-			String[] vals = permission.getPermission().split(",");
-
-			for (String per : vals) {
-				String[] array = per.split("-");
-				String key = array[0];
-				String value = array[1];
-
-				if (!"0".equals(value)) {
-					legalMenu.add(key);
+		// 用户角色
+		List<Long> roleIdList = new ArrayList<Long>();
+		if (StringUtils.isNoneBlank(account.getRoleId())) {
+			String[] array = account.getRoleId().split(",");
+			for (String id : array) {
+				if (StringUtils.isNotBlank(id)) {
+					roleIdList.add(Long.parseLong(id));
 				}
 			}
+		}
+		
+		if(!roleIdList.contains(Long.parseLong(Contants.SUPER_ROLE_ID))){  // 非超级管理员
+			
+			// 当前用户所有角色的权限
+			List<RolePermission> permissionList = rolePermissionService.batchQuery(roleIdList);
 
-			Iterator<Menu> it = menuList.iterator();
-			while (it.hasNext()) {
-				Menu menu = it.next();
-				List<Menu> subList = menu.getSubList();
+			if (permissionList != null && permissionList.size() > 0) {
 
-				if (subList != null && subList.size() > 0) {
-					Iterator<Menu> subIt = subList.iterator();
-					while (subIt.hasNext()) {
-						Menu subMenu = subIt.next();
-						if (!legalMenu.contains(subMenu.getAlias())) {
-							subMenu.setAuthorized(false);
+				// 有权限的菜单ID
+				Set<String> legalMenu = new HashSet<String>();
+
+				for (RolePermission per : permissionList) {
+					if (StringUtils.isNotBlank(per.getPermission())) {
+						legalMenu.addAll(Arrays.asList(per.getPermission().split(",")));
+					}
+				}
+
+				Iterator<Menu> it = menuList.iterator();
+				while (it.hasNext()) {
+					Menu menu = it.next();
+					List<Menu> subList = menu.getSubList();
+
+					if (subList != null && subList.size() > 0) {
+						Iterator<Menu> subIt = subList.iterator();
+						while (subIt.hasNext()) {
+							Menu subMenu = subIt.next();
+							if (!legalMenu.contains(subMenu.getId().toString())) {
+								subMenu.setAuthorized(false);
+								illegalMenu.add(subMenu.getAlias());
+							}
+						}
+
+						if (subList == null || subList.size() < 1) {
+							menu.setAuthorized(false);
+							illegalMenu.add(menu.getAlias());
+						}
+					} else {
+						if (!legalMenu.contains(menu.getId().toString())) {
+							menu.setAuthorized(false);
+							illegalMenu.add(menu.getAlias());
 						}
 					}
-
-					if (subList == null || subList.size() < 1) {
-						menu.setAuthorized(false);
-					}
-				} else {
-					if (!legalMenu.contains(menu.getAlias())) {
-						menu.setAuthorized(false);
-					}
+				}
+			} else {
+				for (Menu menu : menuList) {
+					menu.setAuthorized(false);
 				}
 			}
-		}else{
-			for (Menu menu : menuList) {
-				menu.setAuthorized(false);
-			}
 		}
-
 		return menuList;
 	}
 

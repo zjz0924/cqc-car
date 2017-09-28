@@ -45,6 +45,8 @@ public class RoleController extends AbstractController {
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
+		model.addAttribute("superRoleCode", Contants.SUPER_ROLE_CODE);
+		model.addAttribute("superRoleId", "r_" + Contants.SUPER_ROLE_ID);
 		return "sys/role/role_list";
 	}
 
@@ -122,7 +124,7 @@ public class RoleController extends AbstractController {
 
 		try {
 			if (StringUtils.isNoneBlank(id)) {
-				if (Contants.SUPER_ROLE.equals(code)) {
+				if (Contants.SUPER_ROLE_CODE.equals(code)) {
 					vo.setMsg("禁止编辑超级管理员");
 					vo.setSuccess(false);
 					return vo;
@@ -262,6 +264,12 @@ public class RoleController extends AbstractController {
 	@RequestMapping(value = "/roleInfo")
 	public Role roleInfo(HttpServletRequest request, Model model, String id) {
 		Role role = roleService.selectOne(plainId(id));
+		
+		// 角色操作权限
+		RolePermission permission = rolePermissionService.selectOne(role.getId());
+		if(permission != null){
+			role.setPermission(permission.getPermission());
+		}
 		return role;
 	}
 
@@ -283,7 +291,7 @@ public class RoleController extends AbstractController {
 				type = "角色";
 
 				Role role = roleService.selectOne(plainId(id));
-				if (Contants.SUPER_ROLE.equals(role.getCode())) {
+				if (Contants.SUPER_ROLE_CODE.equals(role.getCode())) {
 					vo.setMsg("不能删除超级管理员");
 					vo.setSuccess(false);
 					return vo;

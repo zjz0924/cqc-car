@@ -2,16 +2,13 @@ package cn.wow.support.web;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +19,6 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.github.pagehelper.Page;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Org;
@@ -266,25 +261,22 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/lock")
 	public AjaxVO lock(HttpServletRequest request, String id, String lock) {
 		AjaxVO vo = new AjaxVO();
-
+		vo.setData("操作成功");
+		
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				Account account = accountService.selectOne(Long.parseLong(id));
 
-				if (account != null) {
-					account.setLock(lock);
-					accountService.update(getCurrentUserName(), account);
-
-					getResponse(vo, Contants.SUC_EDIT);
-				} else {
-					getResponse(vo, Contants.FAIL_EDIT);
-				}
-			} else {
-				getResponse(vo, Contants.FAIL_EDIT);
+				account.setLock(lock);
+				accountService.update(getCurrentUserName(), account);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			getResponse(vo, Contants.EXCEP);
+			logger.error("用户锁定/解锁失败", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常");
+			return vo;
 		}
 		return vo;
 	}
@@ -298,27 +290,24 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/resetPwd")
 	public AjaxVO resetPwd(HttpServletRequest request, String id, String lock) {
 		AjaxVO vo = new AjaxVO();
-
+		vo.setMsg("密码重置成功");
+		
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				Account account = accountService.selectOne(Long.parseLong(id));
 
-				if (account != null) {
-					String newPwd = MD5.getMD5(DEFAULT_PWD, "utf-8").toUpperCase();
+				String newPwd = MD5.getMD5(DEFAULT_PWD, "utf-8").toUpperCase();
 
-					account.setPassword(newPwd);
-					accountService.update(getCurrentUserName(), account);
-
-					getResponse(vo, true, "密码重置成功");
-				} else {
-					getResponse(vo, false, "密码重置失败");
-				}
-			} else {
-				getResponse(vo, false, "密码重置失败");
+				account.setPassword(newPwd);
+				accountService.update(getCurrentUserName(), account);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			getResponse(vo, Contants.EXCEP);
+			logger.error("用户重置密码失败", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("重置失败，系统异常");
+			return vo;
 		}
 		return vo;
 	}
@@ -332,6 +321,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/updatePwd")
 	public AjaxVO updatePwd(HttpServletRequest request, String oldPwd, String newPwd) {
 		AjaxVO vo = new AjaxVO();
+		vo.setMsg("密码修改成功，请重新登录");
 		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		try {
@@ -344,12 +334,14 @@ public class AccountController extends AbstractController {
 				newPwd = MD5.getMD5(newPwd, "utf-8").toUpperCase();
 				currentAccount.setPassword(newPwd);
 				accountService.update(getCurrentUserName(), currentAccount);
-
-				getResponse(vo, true, "密码修改成功，请重新登录");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			getResponse(vo, Contants.EXCEP);
+			logger.error("用户修改密码失败", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("修改失败，系统异常");
+			return vo;
 		}
 		return vo;
 	}

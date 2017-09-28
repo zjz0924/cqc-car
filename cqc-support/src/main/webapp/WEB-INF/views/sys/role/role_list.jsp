@@ -22,7 +22,7 @@
 					dnd:true,
 					lines: true,
 				    url: getRoleDataUrl + "?time=" + new Date(),
-				    onBeforeDrop: function(target,source,point){
+				    onBeforeDrop: function(target,source,point){  // 拖放前
 						var targetNode = $("#roleTree").tree('getNode', target);
 						if(!isNull(targetNode.children)){
 							for(var i = 0; i < targetNode.children.length; i++){
@@ -45,7 +45,7 @@
 						
 						return true;
 					},
-					onDrop : function(target, source, point) { 
+					onDrop : function(target, source, point) {   // 拖放
 						var targetId = $("#roleTree").tree('getNode', target).id;
 						
 						$.ajax({
@@ -63,7 +63,7 @@
 							}
 						});
 					},
-					onSelect : function(node) {
+					onSelect : function(node) {   //选中
 						var url;
 						var type = getRoleType(node.id);
 						
@@ -94,7 +94,7 @@
 								$("#name").html(data.name);
 								$("#desc").html(data.desc);
 								
-								if(type == 1){
+								if(type == 1){  //角色
 									$("#code").html(data.code);
 									
 									if (!isNull(data.group)) {
@@ -102,27 +102,35 @@
 									} else {
 										$("#parentName").html("");
 									}
-								}else{
+									
+									// 显示选中的菜单权限
+									if(data.code == "${superRoleCode}"){
+										$("#permissionBtn").hide();
+										treeChecked("check");
+									}else{
+										$("#permissionBtn").show();
+										treeChecked("uncheck");
+										
+										var permission = data.permission;
+										if(!isNull(permission)){
+											var array = permission.split(",");  
+											for(var j = 0; j < array.length; j++){
+												 var node = $('#operationTree').tree('find', array[j]);//查找节点  
+										         $('#operationTree').tree("check", node.target);//将得到的节点选中  
+											}
+										}
+									}
+								}else{  // 角色组
 									if (!isNull(data.parent)) {
 										$("#parentName").html(data.parent.name);
 									} else {
 										$("#parentName").html("");
 									}
 								}
-								
-								if(data.code == "super admin"){
-									var roots = $('#operationPermission').tree('getRoots');//返回tree的所有根节点数组  
-							        for ( var i = 0; i < roots.length; i++) {  
-							            var node = $('#operationPermission').tree('find', roots[i].id);//查找节点  
-							            $('#operationPermission').tree('check', node.target);//将得到的节点选中  
-							        }  
-								}
-								
-								
 							}
 						});
 					},
-					onContextMenu : function(e, node) {
+					onContextMenu : function(e, node) {  // 上下文菜单 
 						e.preventDefault();
 						$('#roleTree').tree('select', node.target);
 	
@@ -131,7 +139,7 @@
 							top : e.pageY
 						})
 					},
-					onLoadSuccess : function(node, data) {
+					onLoadSuccess : function(node, data) {    // 加载成功
 						if (roleOpeartion == 0 || isNull(roleOpeartion)) {
 							// 删除后自动选中根节点
 							$("#roleTree").tree("select", $("#roleTree").tree("getRoot").target);
@@ -169,6 +177,7 @@
 					prompt : ''
 				}); */
 				
+				// 菜单树
 				$('#operationTree').tree({
 					method : 'get',
 					lines : true,
@@ -201,7 +210,6 @@
 						errorMsg("角色下不能再添加角色或角色组");
 						return false;
 					}
-
 					title = type == 1 ? "角色" : "角色组";
 				} else {
 					id = selecteNode.id;
@@ -211,7 +219,7 @@
 						errorMsg("不能编辑根节点");
 						return false;
 					}
-
+					
 					if (getRoleType(selecteNode.id) == 1) {
 						rtype = 1;
 						title = "角色"
@@ -246,6 +254,7 @@
 				$("#roleTree").tree("reload");
 			}
 
+			// 删除角色/角色组
 			function removeRole() {
 				$.messager.confirm('确认', '确定要删除此角色或角色组？删除后不可恢复?', function(r) {
 					if (r) {
@@ -256,7 +265,7 @@
 							errorMsg("不能删除根节点");
 							return;
 						}
-
+						
 						var children = $("#roleTree").tree("getChildren", node.target);
 						if (!isNull(children)) {
 							errorMsg("请先删除下级区域");
@@ -282,6 +291,7 @@
 				});
 			}
 
+			// 获取类型
 			function getRoleType(id) {
 				if (id.indexOf("r") != -1) {
 					return 1;
@@ -290,6 +300,7 @@
 				}
 			}
 			
+			// 保存操作权限
 			function saveOperationPermission(){
 				var menuIds = "";
 				var roleId = "";
@@ -325,6 +336,16 @@
 						}
 					}
 				});
+			}
+			
+			// 全选与全不选
+			function treeChecked(type){
+				var root = $('#operationTree').tree('getRoots')[0];//返回tree的所有根节点数组  
+				
+		        for ( var i = 0; i < root.children.length; i++) {  
+		            var node = $('#operationTree').tree('find', root.children[i].id);//查找节点  
+		            $('#operationTree').tree(type, node.target);//将得到的节点选中  
+		        }  
 			}
 		</script>
 	
@@ -402,7 +423,7 @@
 					<ul id="operationTree"></ul>	
 					
 					<div style="margin-top:15px;">
-						<a href="javascript:void(0)" onclick="saveOperationPermission()" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="width: 70px;">保存</a>
+						<a id="permissionBtn" href="javascript:void(0)" onclick="saveOperationPermission()" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="width: 70px;">保存</a>
 					</div>
 				</div>
 			</div>

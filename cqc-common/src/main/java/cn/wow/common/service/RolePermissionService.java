@@ -1,5 +1,8 @@
 package cn.wow.common.service;
 
+import java.util.List;
+import java.util.Set;
+
 import cn.wow.common.domain.RolePermission;
 
 public interface RolePermissionService {
@@ -11,4 +14,5 @@ public interface RolePermissionService {
 
     public int deleteByPrimaryKey(Long id);
 
+    public List<RolePermission> batchQuery(List<Long> list);
 }
