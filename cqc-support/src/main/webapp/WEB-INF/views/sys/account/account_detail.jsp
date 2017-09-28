@@ -79,7 +79,7 @@
 	</div>
 	
 	<script type="text/javascript">
-		$.parser.onComplete = function(){
+		$(function(){
 			$('#role').combotree({
 				url: '${ctx}/role/tree',
 				multiple: true,
@@ -110,7 +110,7 @@
 		 	if(!isNull(orgId)){
 				$('#org').combotree('setValue', {id: orgId, text: '${orgName}'});
 			}
-		}
+		});
 	
 		function saveAccount(){
 			var userName = $("#userName").textbox("getValue");

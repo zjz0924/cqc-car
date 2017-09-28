@@ -134,6 +134,9 @@ public class AccountController extends AbstractController {
 		return dataMap;
 	}
 
+	/**
+	 * 用户列表 详情
+	 */
 	@RequestMapping(value = "/detail")
 	public String detail(HttpServletRequest request, Model model, String id) {
 		if (StringUtils.isNotBlank(id)) {
@@ -167,6 +170,43 @@ public class AccountController extends AbstractController {
 		}
 		return "sys/account/account_detail";
 	}
+	
+	
+	/**
+	 * 当前用户信息
+	 */
+	@RequestMapping(value = "/info")
+	public String info(HttpServletRequest request, Model model) {
+		String roleVal = "";
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
+		Org org = account.getOrg();
+		if (org != null) {
+			model.addAttribute("orgId", org.getId());
+			model.addAttribute("orgName", org.getName());
+		}
+
+		if (StringUtils.isNotBlank(account.getRoleId())) {
+			List<Role> roleList = roleService.selectRoles(account.getRoleIds());
+
+			if (roleList != null && roleList.size() > 0) {
+				for (int i = 0; i < roleList.size(); i++) {
+					Role role = roleList.get(i);
+					if (i != roleList.size() - 1) {
+						roleVal += "{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'},";
+					} else {
+						roleVal += "{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'}";
+					}
+				}
+				roleVal = "[" + roleVal + "]";
+			}
+		}
+
+		model.addAttribute("roleVal", roleVal);
+		model.addAttribute("facadeBean", account);
+		return "sys/account/account_info";
+	}
+	
 
 	@ResponseBody
 	@RequestMapping(value = "/save")
@@ -312,10 +352,6 @@ public class AccountController extends AbstractController {
 		return vo;
 	}
 
-	@RequestMapping(value = "/changePwd")
-	public String changePwd(HttpServletRequest request, Model model) {
-		return "sys/account/account_changepwd";
-	}
 
 	@ResponseBody
 	@RequestMapping(value = "/updatePwd")
@@ -328,7 +364,10 @@ public class AccountController extends AbstractController {
 			if (currentAccount != null) {
 				oldPwd = MD5.getMD5(oldPwd, "utf-8").toUpperCase();
 				if (!oldPwd.equals(currentAccount.getPassword())) {
-					return new AjaxVO("修改失败，原密码不正确", false);
+					vo.setSuccess(false);
+					vo.setMsg("原密码不正确");
+					vo.setData("oldpwd");
+					return vo;
 				}
 
 				newPwd = MD5.getMD5(newPwd, "utf-8").toUpperCase();
@@ -341,6 +380,7 @@ public class AccountController extends AbstractController {
 			
 			vo.setSuccess(false);
 			vo.setMsg("修改失败，系统异常");
+			vo.setData("exception");
 			return vo;
 		}
 		return vo;

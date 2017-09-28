@@ -1,21 +1,14 @@
 package cn.wow.support.shiro.filter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.web.filter.PathMatchingFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import cn.wow.common.error.exceptions.MSAForbiddenException;
 import cn.wow.support.utils.Contants;
 
 /**
@@ -24,6 +17,13 @@ import cn.wow.support.utils.Contants;
  */
 public class SysUserFilter extends PathMatchingFilter {
 
+	// 白名单
+	private static List<String> whiteList = new ArrayList<String>();
+	static {
+		whiteList.add("/account/info");
+		whiteList.add("/account/updatePwd");
+	}
+	
     @Override
     protected boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
     	HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -33,16 +33,27 @@ public class SysUserFilter extends PathMatchingFilter {
     	// 当前访问路径
 		String uri = httpServletRequest.getRequestURI();
 
-		// 没有权限的菜单别名
-		Set<String> illegalMenu = (Set<String>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);
-		if(illegalMenu != null && illegalMenu.size() > 0){
-			for(String alias: illegalMenu){
-				if(uri.contains(alias)){
-					httpServletResponse.sendError(403);
-					break;
+		boolean isWhite = false;
+		for (String str : whiteList) {
+			if (uri.contains(str)) {
+				isWhite = true;
+				break;
+			}
+		}
+
+		if (!isWhite) {
+			// 没有权限的菜单别名
+			Set<String> illegalMenu = (Set<String>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);
+			if (illegalMenu != null && illegalMenu.size() > 0) {
+				for (String alias : illegalMenu) {
+					if (uri.contains(alias)) {
+						httpServletResponse.sendError(403);
+						break;
+					}
 				}
 			}
 		}
+		
         return true;
     }
 }
