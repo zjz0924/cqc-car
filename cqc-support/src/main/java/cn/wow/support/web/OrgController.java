@@ -198,7 +198,7 @@ public class OrgController extends AbstractController {
 			Org currentParent = orgService.selectOne(Long.parseLong(id));
 
 			String detail = "{\"name\":\"" + org.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParent.getCode() + "\"}";
-			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
+			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.SYSTEM, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("机构移动失败：", ex);

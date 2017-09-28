@@ -184,7 +184,7 @@ public class AreaController extends AbstractController {
 			Area currentParentArea = areaService.selectOne(Long.parseLong(id));
 
 			String detail = "{\"name\":\"" + area.getName() + "\", \"from\":\"" + oldParentCode + "\", \"to\":\"" + currentParentArea.getCode() + "\"}";
-			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.AREA, detail);
+			operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.SYSTEM, detail);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("区域移动失败：", ex);

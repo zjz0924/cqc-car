@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wow.common.dao.PartsDao">
+	<resultMap id="BaseResultMap" type="cn.wow.common.domain.Parts">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="producer" property="producer" jdbcType="VARCHAR" />
+		<result column="pro_time" property="proTime" jdbcType="DATE" />
+		<result column="place" property="place" jdbcType="VARCHAR" />
+		<result column="pro_no" property="proNo" jdbcType="VARCHAR" />
+		<result column="technology" property="technology" jdbcType="VARCHAR" />
+		<result column="mat_name" property="matName" jdbcType="VARCHAR" />
+		<result column="mat_no" property="matNo" jdbcType="VARCHAR" />
+		<result column="mat_color" property="matColor" jdbcType="VARCHAR" />
+		<result column="mat_producer" property="matProducer" jdbcType="VARCHAR" />
+		<result column="pic" property="pic" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="base_columns">
+		id, type, code, name, producer, pro_time, place, pro_no, technology, mat_name, mat_no,
+		mat_color, mat_producer, pic, remark, create_time
+	</sql>
+	
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="base_columns" /> from parts where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="base_columns" /> from parts where code = #{code,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from parts where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="cn.wow.common.domain.Parts">
+		insert into parts (type, code, name, producer, pro_time, place, pro_no, technology,
+			mat_name, mat_no, mat_color, mat_producer, pic, remark, create_time)
+		values (#{type,jdbcType=INTEGER},
+		#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE},
+		#{place,jdbcType=VARCHAR}, #{proNo,jdbcType=VARCHAR}, #{technology,jdbcType=VARCHAR},
+		#{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR},
+		#{matProducer,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	
+	<update id="update" parameterType="cn.wow.common.domain.Parts">
+		update parts
+		<set>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="producer != null">
+				producer = #{producer,jdbcType=VARCHAR},
+			</if>
+			<if test="proTime != null">
+				pro_time = #{proTime,jdbcType=DATE},
+			</if>
+			<if test="place != null">
+				place = #{place,jdbcType=VARCHAR},
+			</if>
+			<if test="proNo != null">
+				pro_no = #{proNo,jdbcType=VARCHAR},
+			</if>
+			<if test="technology != null">
+				technology = #{technology,jdbcType=VARCHAR},
+			</if>
+			<if test="matName != null">
+				mat_name = #{matName,jdbcType=VARCHAR},
+			</if>
+			<if test="matNo != null">
+				mat_no = #{matNo,jdbcType=VARCHAR},
+			</if>
+			<if test="matColor != null">
+				mat_color = #{matColor,jdbcType=VARCHAR},
+			</if>
+			<if test="matProducer != null">
+				mat_producer = #{matProducer,jdbcType=VARCHAR},
+			</if>
+			<if test="pic != null">
+				pic = #{pic,jdbcType=VARCHAR},
+			</if>
+			remark = #{remark,jdbcType=VARCHAR},
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+	  	select 
+	    <include refid="base_columns" />
+	      from parts
+	     <where>
+		      <if test="code != null and code != ''" >
+		        and code like concat('%', #{code,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
+		      <if test="type != null and type != ''" >
+		        and type like concat('%', #{type,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
+		     <if test="startProTime != null and startProTime != ''">  
+		    	and pro_time &gt;= #{startProTime, jdbcType=DATE}
+		      </if>
+		      
+		      <if test="endProTime != null and endProTime != ''">  
+		    	and pro_time &lt;= #{endProTime, jdbcType=DATE}
+		      </if>
+		      
+		      <if test="startCreateTime != null and startCreateTime != ''">  
+		    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+		      </if>
+		      
+		      <if test="endCreateTime != null and endCreateTime != ''">  
+		    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+		      </if>
+	      </where>
+	      
+		  <choose>
+	  		<when test="custom_order_sql != null">
+	  			order by ${custom_order_sql}
+	  		</when>
+	  		<otherwise>
+	  			order by id desc
+	  		</otherwise>
+	 	 </choose>
+	  </select>
+
+</mapper>

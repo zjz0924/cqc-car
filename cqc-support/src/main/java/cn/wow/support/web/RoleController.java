@@ -343,7 +343,7 @@ public class RoleController extends AbstractController {
 				RoleGroup currentParentGroup = roleGroupService.selectOne(plainId(parentid));
 
 				String detail = "{\"name\":\"" + role.getName() + "\", \"from\":\"" + oldParentGroup + "\", \"to\":\"" + currentParentGroup.getName() + "\"}";
-				operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.ROLE, detail);
+				operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.SYSTEM, detail);
 			}else{
 				type = "角色组";
 				
@@ -360,7 +360,7 @@ public class RoleController extends AbstractController {
 				RoleGroup currentParentGroup = roleGroupService.selectOne(plainId(parentid));
 
 				String detail = "{\"name\":\"" + roleGroup.getName() + "\", \"from\":\"" + oldParentGroup + "\", \"to\":\"" + currentParentGroup.getName() + "\"}";
-				operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.ROLE, detail);
+				operationLogService.save(getCurrentUserName(), OperationType.MOVE, ServiceType.SYSTEM, detail);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
