@@ -251,8 +251,8 @@
 			function accountInfo(url) {
 				$('#accountDialog').dialog({
 					title : '用户信息',
-					width : 450,
-					height : 400,
+					width : 800,
+					height : 450,
 					closed : false,
 					cache : false,
 					href : url,

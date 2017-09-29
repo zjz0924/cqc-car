@@ -41,6 +41,12 @@ public class Account extends JpaEntity{
 	private Org org;
 	
 	private String email;
+	// 备注
+	private String remark;
+	// 签名来源（1 - 登录用户姓名   2 - 使用图片签名）
+	private Integer signType;
+	// 签名图片
+	private String pic;
 	
 	@JsonIgnore
 	private Long[] roleIds;
@@ -141,6 +147,30 @@ public class Account extends JpaEntity{
 		this.email = email;
 	}
 	
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Integer getSignType() {
+		return signType;
+	}
+
+	public void setSignType(Integer signType) {
+		this.signType = signType;
+	}
+
+	public String getPic() {
+		return pic;
+	}
+
+	public void setPic(String pic) {
+		this.pic = pic;
+	}
+
 	public Long[] getRoleIds() {
 		if (StringUtils.isNotBlank(roleId)) {
 			String[] arry = roleId.split(",");

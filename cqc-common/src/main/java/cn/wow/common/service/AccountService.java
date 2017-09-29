@@ -22,4 +22,6 @@ public interface AccountService {
 	public void batchAdd(List<Account> list);
 	
 	public void batchUpdate(List<Account> list);
+	
+	public void clearPic(Long id);
 }

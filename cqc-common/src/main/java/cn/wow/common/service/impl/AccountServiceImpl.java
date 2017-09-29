@@ -55,4 +55,8 @@ public class AccountServiceImpl implements AccountService {
 	public void batchUpdate(List<Account> list) {
 		accountDao.batchUpdate(list);
 	}
+	
+	public void clearPic(Long id){
+		accountDao.clearPic(id);
+	}
 }

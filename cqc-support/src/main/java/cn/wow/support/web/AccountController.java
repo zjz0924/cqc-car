@@ -23,9 +23,11 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -57,6 +59,9 @@ public class AccountController extends AbstractController {
 	
 	private final static String DEFAULT_PWD = "888888";
 
+	@Value("${account.sign.url}")
+	protected String signlUrl;
+	
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -69,6 +74,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
+		model.addAttribute("resUrl", resUrl);
 		return "sys/account/account_list";
 	}
 
@@ -168,6 +174,7 @@ public class AccountController extends AbstractController {
 			model.addAttribute("roleVal", roleVal);
 			model.addAttribute("facadeBean", account);
 		}
+		model.addAttribute("resUrl", resUrl);
 		return "sys/account/account_detail";
 	}
 	
@@ -211,21 +218,36 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String userName, String nickName,
-			String mobile, String password, String roleId, Long orgId, String email) {
+			String mobile, String password, String roleId, Long orgId, String email, String remark, Integer signType, @RequestParam(value = "pic", required = false) MultipartFile file) {
 		AjaxVO vo = new AjaxVO();
 		Account account = null;
 
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				account = accountService.selectOne(Long.parseLong(id));
-
+				Integer oldSignType = account.getSignType();
+				
 				if (account != null) {
 					account.setRoleId(roleId);
 					account.setMobile(mobile);
 					account.setNickName(nickName);
 					account.setEmail(email);
 					account.setOrgId(orgId);
+					account.setRemark(remark);
+					account.setSignType(signType);
+					
+					if(signType == 2){
+						if (file != null && !file.isEmpty()) {
+							String pic = uploadImg(file, signlUrl);
+							account.setPic(pic);
+						}
+					}
 					accountService.update(getCurrentUserName(), account);
+					
+					// 原来是图片签名的，现在改成用户名，清空图片
+					if(oldSignType != null && oldSignType == 2 && signType == 1){
+						accountService.clearPic(account.getId());
+					}
 				}
 				vo.setMsg("编辑成功");
 			} else {
@@ -248,6 +270,15 @@ public class AccountController extends AbstractController {
 					account.setCreateTime(new Date());
 					account.setEmail(email);
 					account.setOrgId(orgId);
+					account.setRemark(remark);
+					account.setSignType(signType);
+					
+					if(signType == 2){
+						if (file != null && !file.isEmpty()) {
+							String pic = uploadImg(file, signlUrl);
+							account.setPic(pic);
+						}
+					}
 					accountService.save(getCurrentUserName(), account);
 
 					vo.setMsg("新增成功");
@@ -566,6 +597,7 @@ public class AccountController extends AbstractController {
 					account.setNickName(nickName);
 					account.setMobile(mobile);
 					account.setEmail(email);
+					account.setSignType(1);
 
 					if (dbAccount == null) { // 修改
 						account.setUserName(userName);
