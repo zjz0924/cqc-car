@@ -6,7 +6,7 @@
 	
 	<div style="margin-top:15px;margin-left:20px;">
 		<div class="data-row">
-			<span class="title-span"><span class="req-span">*</span>编码：</span> 
+			<span class="title-span"><span class="req-span">*</span>代码：</span> 
 			<input id="code" name="code" value="${facadeBean.code}" <c:if test="${not empty facadeBean.id}">disabled</c:if> class="easyui-textbox">
 			<span id="code_error" class="error-message"></span>
 		</div>

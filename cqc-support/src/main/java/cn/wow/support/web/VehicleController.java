@@ -122,7 +122,7 @@ public class VehicleController extends AbstractController {
 
 				if (dbVehicle != null) {
 					vo.setData("code");
-					vo.setMsg("编码已存在");
+					vo.setMsg("代码已存在");
 					vo.setSuccess(false);
 					return vo;
 				} else {

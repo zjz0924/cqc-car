@@ -29,7 +29,7 @@
 		select <include refid="base_columns" /> from parts where id = #{id,jdbcType=BIGINT}
 	</select>
 	
-	<select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	<select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select <include refid="base_columns" /> from parts where code = #{code,jdbcType=VARCHAR}
 	</select>
 	
@@ -90,7 +90,7 @@
 			<if test="pic != null">
 				pic = #{pic,jdbcType=VARCHAR},
 			</if>
-			remark = #{remark,jdbcType=VARCHAR},
+			remark = #{remark,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -104,8 +104,12 @@
 		        and code like concat('%', #{code,jdbcType=VARCHAR}, '%') 
 		      </if>
 		      
+		      <if test="name != null and name != ''" >
+		        and name like concat('%', #{name,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
 		      <if test="type != null and type != ''" >
-		        and type like concat('%', #{type,jdbcType=VARCHAR}, '%') 
+		        and type = #{type,jdbcType=INTEGER}
 		      </if>
 		      
 		     <if test="startProTime != null and startProTime != ''">  
@@ -122,6 +126,26 @@
 		      
 		      <if test="endCreateTime != null and endCreateTime != ''">  
 		    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+		      </if>
+		      
+		      <if test="producer != null and producer != ''" >
+		        and producer like concat('%', #{producer,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
+		      <if test="proNo != null and proNo != ''" >
+		        and pro_no like concat('%', #{proNo,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
+		      <if test="matName != null and matName != ''" >
+		        and mat_name like concat('%', #{matName,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
+		      <if test="matNo != null and matNo != ''" >
+		        and mat_no like concat('%', #{matNo,jdbcType=VARCHAR}, '%') 
+		      </if>
+		      
+		       <if test="matProducer != null and matProducer != ''" >
+		        and mat_roducer like concat('%', #{matProducer,jdbcType=VARCHAR}, '%') 
 		      </if>
 	      </where>
 	      

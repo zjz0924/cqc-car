@@ -304,7 +304,8 @@ function DateFormatter(value) {
     if (day < 10) {
         day = "0" + day;
     }
-    return year + "-" + month + "-" + day;
+    var val =  year + "-" + month + "-" + day;
+    return "<span title='" + val + "'>" + val + "</span>";
 }
 
 /**

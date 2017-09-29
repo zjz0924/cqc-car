@@ -84,7 +84,7 @@
 			            hidden: 'true'
 			        }, {
 			            field : 'code',
-			            title : '编码',
+			            title : '代码',
 			            width : '150',
 			            align : 'center',
 			            formatter: formatCellTooltip

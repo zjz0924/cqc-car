@@ -23,7 +23,7 @@ public class AbstractController {
 	
 	// 照片上传根路径
 	@Value("${img.root.url}")
-	private String rootPath;
+	protected String rootPath;
 
 	// 照片资源路径
 	@Value("${res.url.root}")

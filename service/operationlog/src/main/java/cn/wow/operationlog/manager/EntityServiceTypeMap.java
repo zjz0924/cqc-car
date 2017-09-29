@@ -10,6 +10,7 @@ import cn.wow.common.domain.Area;
 import cn.wow.common.domain.Dictionary;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Org;
+import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.Role;
 import cn.wow.common.domain.RoleGroup;
 import cn.wow.common.domain.Vehicle;
@@ -38,6 +39,7 @@ public final class EntityServiceTypeMap {
 		typeMap.put(Menu.class.getName(), ServiceType.SYSTEM);
 		typeMap.put(Dictionary.class.getName(), ServiceType.SYSTEM);
 		typeMap.put(Vehicle.class.getName(), ServiceType.INFO);
+		typeMap.put(Parts.class.getName(), ServiceType.INFO);
 		
 		//DAO 类型
 		daoMap.clear();
@@ -49,6 +51,7 @@ public final class EntityServiceTypeMap {
 		daoMap.put(RoleGroup.class.getName(), "cn.wow.common.dao.RoleGroupDao.selectOne");
 		daoMap.put(Vehicle.class.getName(), "cn.wow.common.dao.VehicleDao.selectOne");
 		daoMap.put(Dictionary.class.getName(), "cn.wow.common.dao.DictionaryDao.selectOne");
+		daoMap.put(Parts.class.getName(), "cn.wow.common.dao.PartsDao.selectOne");
 	}
 
 	public static ServiceType getServiceType(Class<?> clazz) {

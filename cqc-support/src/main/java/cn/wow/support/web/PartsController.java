@@ -12,10 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.github.pagehelper.Page;
 
@@ -39,10 +43,14 @@ public class PartsController extends AbstractController {
 
 	@Autowired
 	private PartsService partsService;
-
+	
+	@Value("${info.parts.url}")
+	protected String partsUrl;
+	
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
+		model.addAttribute("resUrl", resUrl);
 		return "info/parts/parts_list";
 	}
 
@@ -52,7 +60,8 @@ public class PartsController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String code, String type,
-			String startProTime, String endProTime) {
+			String startProTime, String endProTime, String name, String producer, String proNo, String matName,
+			String matNo, String matProducer) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -74,6 +83,24 @@ public class PartsController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endProTime)) {
 			map.put("endProTime", endProTime);
+		}
+		if (StringUtils.isNotBlank(name)) {
+			map.put("name", name);
+		}
+		if (StringUtils.isNotBlank(producer)) {
+			map.put("producer", producer);
+		}
+		if (StringUtils.isNotBlank(proNo)) {
+			map.put("proNo", proNo);
+		}
+		if (StringUtils.isNotBlank(matName)) {
+			map.put("matName", matName);
+		}
+		if (StringUtils.isNotBlank(matNo)) {
+			map.put("matNo", matNo);
+		}
+		if (StringUtils.isNotBlank(matProducer)) {
+			map.put("matProducer", matProducer);
 		}
 
 		List<Parts> dataList = partsService.selectAllList(map);
@@ -98,26 +125,44 @@ public class PartsController extends AbstractController {
 
 			model.addAttribute("facadeBean", parts);
 		}
+		model.addAttribute("resUrl", resUrl);
 		return "info/parts/parts_detail";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, Integer type, String proTime,
-			String proAddr, String remark, String producer, String place, String proNo, String technology,
-			String matName, String matNo, String matColor, String matProducer, String pic) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String name, Integer type, String proTime,
+			String remark, String producer, String place, String proNo, String technology,
+			String matName, String matNo, String matColor, String matProducer, @RequestParam(value = "pic", required = false) MultipartFile file) {
 		AjaxVO vo = new AjaxVO();
 		Parts parts = null;
-
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				parts = partsService.selectOne(Long.parseLong(id));
 
 				if (parts != null) {
 					parts.setType(type);
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					parts.setProTime(sdf.parse(proTime));
+					if(StringUtils.isNotBlank(proTime)){
+						parts.setProTime(sdf.parse(proTime));
+					}
 					parts.setRemark(remark);
+					parts.setProducer(matProducer);
+					parts.setPlace(place);
+					parts.setProNo(proNo);
+					parts.setTechnology(technology);
+					parts.setMatName(matName);
+					parts.setMatNo(matNo);
+					parts.setMatColor(matColor);
+					parts.setMatProducer(matProducer);
+					parts.setName(name);
+					
+					if (file != null && !file.isEmpty()) {
+						String pic = uploadImg(file, partsUrl);
+						parts.setPic(pic);
+					}
+					
 					partsService.update(getCurrentUserName(), parts);
 				}
 				vo.setMsg("编辑成功");
@@ -126,17 +171,33 @@ public class PartsController extends AbstractController {
 
 				if (dbVehicle != null) {
 					vo.setData("code");
-					vo.setMsg("编码已存在");
+					vo.setMsg("代码已存在");
 					vo.setSuccess(false);
 					return vo;
 				} else {
 					parts = new Parts();
 					parts.setType(type);
-					parts.setCode(code);
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					parts.setProTime(sdf.parse(proTime));
+					
+					if(StringUtils.isNotBlank(proTime)){
+						parts.setProTime(sdf.parse(proTime));
+					}
 					parts.setRemark(remark);
+					parts.setProducer(matProducer);
+					parts.setPlace(place);
+					parts.setProNo(proNo);
+					parts.setTechnology(technology);
+					parts.setMatName(matName);
+					parts.setMatNo(matNo);
+					parts.setMatColor(matColor);
+					parts.setMatProducer(matProducer);
+					parts.setName(name);
+					parts.setCode(code);
 					parts.setCreateTime(new Date());
+					
+					if (file != null && !file.isEmpty()) {
+						String pic = uploadImg(file, partsUrl);
+						parts.setPic(pic);
+					}
 					partsService.save(getCurrentUserName(), parts);
 
 					vo.setMsg("添加成功");
