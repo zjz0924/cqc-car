@@ -16,5 +16,7 @@ public interface PartsService {
     public List<Parts> selectAllList(Map<String, Object> map);
     
     public Parts selectByCode(String code);
+    
+    public Parts selectByCodeAndType(String code, Integer type);
 
 }

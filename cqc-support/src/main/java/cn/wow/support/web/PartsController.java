@@ -39,7 +39,7 @@ public class PartsController extends AbstractController {
 
 	Logger logger = LoggerFactory.getLogger(PartsController.class);
 
-	private final static String DEFAULT_PAGE_SIZE = "20";
+	private final static String DEFAULT_PAGE_SIZE = "10";
 
 	@Autowired
 	private PartsService partsService;
@@ -73,7 +73,7 @@ public class PartsController extends AbstractController {
 		map.put("custom_order_sql", "code asc");
 
 		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+			map.put("qcode", code);
 		}
 		if (StringUtils.isNotBlank(type)) {
 			map.put("type", type);
@@ -148,7 +148,7 @@ public class PartsController extends AbstractController {
 						parts.setProTime(sdf.parse(proTime));
 					}
 					parts.setRemark(remark);
-					parts.setProducer(matProducer);
+					parts.setProducer(producer);
 					parts.setPlace(place);
 					parts.setProNo(proNo);
 					parts.setTechnology(technology);
@@ -167,7 +167,7 @@ public class PartsController extends AbstractController {
 				}
 				vo.setMsg("编辑成功");
 			} else {
-				Parts dbVehicle = partsService.selectByCode(code);
+				Parts dbVehicle = partsService.selectByCodeAndType(code, type);
 
 				if (dbVehicle != null) {
 					vo.setData("code");

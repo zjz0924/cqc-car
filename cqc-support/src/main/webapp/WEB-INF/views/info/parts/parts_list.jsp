@@ -70,8 +70,8 @@
 			        url : getDataUrl,
 			      //  checkOnSelect: true,
 			        singleSelect : true, /*是否选中一行*/
-			        width:'auto', 
-			        height: "580px",
+			        width:'auto', 	
+			        height: "720px",
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
@@ -292,6 +292,11 @@
 			    height: 16px;
 			    margin-right: 3px;
 			}
+			
+			.qlabel{
+				display: inline-block;
+				width: 72px;
+			}
 		</style>
 		
 	</head>
@@ -299,29 +304,32 @@
 	<body>
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
-				代码：<input id="q_code" name="q_code" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				名称：<input id="q_name" name="q_name" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				类型：<select id="q_type" class="easyui-combobox" name="q_type" data-options="panelHeight:'auto'" style="width:171px;">
+				<div>
+					<span class="qlabel">代码：</span><input id="q_code" name="q_code" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">名称：</span><input id="q_name" name="q_name" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">类型：</span>
+						<select id="q_type" class="easyui-combobox" name="q_type" data-options="panelHeight:'auto'" style="width:140px;">
 					    <option value="">全部</option>
 						<option value="1">基准</option>
 					    <option value="2">抽样</option>
-					</select>
-					
-		      	生产时间：<input type="text" id="q_startProTime" name="q_startProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endProTime\')}'})" class="textbox" style="line-height: 23px;width:150px;display:inline-block"/> - 
-				   	   <input type="text" id="q_endProTime" name="q_endProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startProTime\')}'})" class="textbox"  style="line-height: 23px;width:150px;display:inline-block;margin-right:60px;"/>
-			
-				生产商：<input id="q_producer" name="q_producer" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					   </select>&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">生产时间：</span>
+					   <input type="text" id="q_startProTime" name="q_startProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endProTime\')}'})" class="textbox" style="line-height: 23px;width:140px;display:inline-block"/> - 
+				   	   <input type="text" id="q_endProTime" name="q_endProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startProTime\')}'})" class="textbox"  style="line-height: 23px;width:140px;display:inline-block;margin-right:60px;"/>
+				</div>
 				
-				生产批次：<input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<div style="margin-top:10px;">
+					<span class="qlabel">生产商：</span><input id="q_producer" name="q_producer" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">生产批次：</span><input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">材料名称：</span><input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">材料牌号：</span><input id="q_matNo" name="q_matNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">材料生产商：</span><input id="q_matProducer" name="q_matProducer" class="easyui-textbox" style="width: 140px;">
+				</div>
 				
-				材料名称：<input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				材料牌号：<input id="q_matNo" name="q_matNo" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				材料生产商：<input id="q_matProducer" name="q_matProducer" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			
-				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
-				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
+				<div align="right" style="margin-top:10px;margin-right: 40px;">
+					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
+				</div>
 			</div>
 		</div>
 				

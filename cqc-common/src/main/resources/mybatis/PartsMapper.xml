@@ -100,8 +100,12 @@
 	    <include refid="base_columns" />
 	      from parts
 	     <where>
-		      <if test="code != null and code != ''" >
-		        and code like concat('%', #{code,jdbcType=VARCHAR}, '%') 
+	     	   <if test="code != null and code != ''" >
+		        and code = #{code,jdbcType=VARCHAR}
+		      </if>
+	     
+		      <if test="qcode != null and qcode != ''" >
+		        and code like concat('%', #{qcode,jdbcType=VARCHAR}, '%') 
 		      </if>
 		      
 		      <if test="name != null and name != ''" >
@@ -145,7 +149,7 @@
 		      </if>
 		      
 		       <if test="matProducer != null and matProducer != ''" >
-		        and mat_roducer like concat('%', #{matProducer,jdbcType=VARCHAR}, '%') 
+		        and mat_producer like concat('%', #{matProducer,jdbcType=VARCHAR}, '%') 
 		      </if>
 	      </where>
 	      

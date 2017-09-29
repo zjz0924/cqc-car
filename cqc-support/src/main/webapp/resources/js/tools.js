@@ -261,29 +261,37 @@ function adjustHeight(){
  * datagrid - 格式化日期时间
  */
 function DateTimeFormatter(value) {
-    var date = new Date(value);
-    var year = date.getFullYear().toString();
-    var month = (date.getMonth() + 1);
-    var day = date.getDate().toString();
-    var hour = date.getHours().toString();
-    var minutes = date.getMinutes().toString();
-    var seconds = date.getSeconds().toString();
-    if (month < 10) {
-        month = "0" + month;
-    }
-    if (day < 10) {
-        day = "0" + day;
-    }
-    if (hour < 10) {
-        hour = "0" + hour;
-    }
-    if (minutes < 10) {
-        minutes = "0" + minutes;
-    }
-    if (seconds < 10) {
-        seconds = "0" + seconds;
-    }
-    return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
+	if (!isNull(value)) {
+		var date = new Date(value);
+		var year = date.getFullYear().toString();
+		var month = (date.getMonth() + 1);
+		var day = date.getDate().toString();
+		var hour = date.getHours().toString();
+		var minutes = date.getMinutes().toString();
+		var seconds = date.getSeconds().toString();
+		if (month < 10) {
+			month = "0" + month;
+		}
+		if (day < 10) {
+			day = "0" + day;
+		}
+		if (hour < 10) {
+			hour = "0" + hour;
+		}
+		if (minutes < 10) {
+			minutes = "0" + minutes;
+		}
+		if (seconds < 10) {
+			seconds = "0" + seconds;
+		}
+		var value = year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
+		return "<span title='" + value + "'>" + value + "</span>";
+	}else{
+		return "";
+	}
+   
+    
+    
 }
 
 
@@ -291,21 +299,25 @@ function DateTimeFormatter(value) {
  * datagrid - 格式化日期时间
  */
 function DateFormatter(value) {
-    var date = new Date(value);
-    var year = date.getFullYear().toString();
-    var month = (date.getMonth() + 1);
-    var day = date.getDate().toString();
-    var hour = date.getHours().toString();
-    var minutes = date.getMinutes().toString();
-    var seconds = date.getSeconds().toString();
-    if (month < 10) {
-        month = "0" + month;
-    }
-    if (day < 10) {
-        day = "0" + day;
-    }
-    var val =  year + "-" + month + "-" + day;
-    return "<span title='" + val + "'>" + val + "</span>";
+	if (!isNull(value)) {
+	    var date = new Date(value);
+	    var year = date.getFullYear().toString();
+	    var month = (date.getMonth() + 1);
+	    var day = date.getDate().toString();
+	    var hour = date.getHours().toString();
+	    var minutes = date.getMinutes().toString();
+	    var seconds = date.getSeconds().toString();
+	    if (month < 10) {
+	        month = "0" + month;
+	    }
+	    if (day < 10) {
+	        day = "0" + day;
+	    }
+	    var val =  year + "-" + month + "-" + day;
+	    return "<span title='" + val + "'>" + val + "</span>";
+	}else{
+		return "";
+	}
 }
 
 /**

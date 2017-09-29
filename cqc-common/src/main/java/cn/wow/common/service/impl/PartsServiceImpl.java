@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.dao.PartsDao;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.service.PartsService;
@@ -46,4 +47,17 @@ public class PartsServiceImpl implements PartsService{
     	return partsDao.selectAllList(map);
     }
 
+    
+	public Parts selectByCodeAndType(String code, Integer type) {
+		Map<String, Object> map = new PageMap(false);
+		map.put("code", code);
+		map.put("type", type);
+
+		List<Parts> list = partsDao.selectAllList(map);
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
 }
