@@ -8,80 +8,19 @@
 		<div style="margin-top:15px;margin-left:20px;">
 			<div class="data-row">
 				<div class="data-cell-left">
-					<span class="title-span"><span class="req-span">*</span>代码：</span> 
-					<input id="code" name="code" value="${facadeBean.code}" <c:if test="${not empty facadeBean.id}">disabled</c:if> class="easyui-textbox">
-					<span id="code_error" class="error-message"></span>
+					<span class="title-span"><span class="req-span">*</span>材料名称：</span> 
+					<input id="matName" name="matName" class="easyui-textbox" value="${facadeBean.matName}">
+					<span id="matName_error" class="error-message"></span>
 				</div>
-				
-				<div class="data-cell-right">
-					<span class="title-span"><span class="req-span">*</span>名称：</span> 
-					<input id="name" name="name" class="easyui-textbox" value="${facadeBean.name}">
-					<span id="name_error" class="error-message"></span>
-				</div>
-				
-			</div>
 			
-			<div class="data-row">
-				<div class="data-cell-left">
+				<div class="data-cell-right">
 					<span class="title-span">&nbsp;&nbsp;类型：</span> 
 					<select id="type" class="easyui-combobox" name="type" data-options="panelHeight:'auto'" style="width:171px;">
 					    <option value="1" <c:if test="${facadeBean.type == 1}">selected="selected"</c:if>>基准</option>
 					    <option value="2" <c:if test="${facadeBean.type == 2}">selected="selected"</c:if>>抽样</option>
 					</select>
 				</div>
-				
-				<div class="data-cell-right">
-					<span class="title-span">&nbsp;&nbsp;生产商：</span> 
-					<input id="producer" name="producer" class="easyui-textbox" value="${facadeBean.producer}">
-					<span id="producer_error" class="error-message"></span>
-				</div>
 			</div>
-			
-			<div class="data-row">
-				<div class="data-cell-left">
-					<span class="title-span">&nbsp;&nbsp;生产日期：</span> 
-					<input id="proTime" name="proTime" type="text" class="easyui-datebox" value="${facadeBean.proTime}">
-					<span id="proTime_error" class="error-message"></span>
-				</div>
-				
-				<div class="data-cell-right">
-					<span class="title-span">&nbsp;&nbsp;生产场地：</span> 
-					<input id="place" name="place" class="easyui-textbox" value="${facadeBean.place}">
-					<span id="place_error" class="error-message"></span>
-				</div>
-			</div>
-			
-			<div class="data-row">
-				<div class="data-cell-left">
-					<span class="title-span">&nbsp;&nbsp;生产批号：</span> 
-					<input id="proNo" name="proNo" class="easyui-textbox" value="${facadeBean.proNo}">
-					<span id="proNo_error" class="error-message"></span>
-				</div>
-				
-				<div class="data-cell-right">
-					<span class="title-span">&nbsp;&nbsp;生产工艺：</span> 
-					<input id="technology" name="technology" class="easyui-textbox" value="${facadeBean.technology}">
-					<span id="technology_error" class="error-message"></span>
-				</div>
-			</div>
-			
-			
-			<p style="font-weight:bold;font-size: 14px;color: #4F94CD">材料信息</p>
-			
-			<div class="data-row">
-				<div class="data-cell-left">
-					<span class="title-span">&nbsp;&nbsp;材料名称：</span> 
-					<input id="matName" name="matName" class="easyui-textbox" value="${facadeBean.matName}">
-					<span id="matName_error" class="error-message"></span>
-				</div>
-				
-				<div class="data-cell-right">
-					<span class="title-span">&nbsp;&nbsp;材料牌号：</span> 
-					<input id="matNo" name="matNo" class="easyui-textbox" value="${facadeBean.matNo}">
-					<span id="matNo_error" class="error-message"></span>
-				</div>
-			</div>
-			
 			
 			<div class="data-row">
 				<div class="data-cell-left">
@@ -91,14 +30,37 @@
 				</div>
 				
 				<div class="data-cell-right">
+					<span class="title-span">&nbsp;&nbsp;生产批号：</span> 
+					<input id="proNo" name="proNo" class="easyui-textbox" value="${facadeBean.proNo}">
+					<span id="proNo_error" class="error-message"></span>
+				</div>
+			</div>
+			
+			
+			<div class="data-row">
+				<div class="data-cell-left">
 					<span class="title-span">&nbsp;&nbsp;材料生产商：</span> 
 					<input id="matProducer" name="matProducer" class="easyui-textbox" value="${facadeBean.matProducer}">
 					<span id="matProducer_error" class="error-message"></span>
 				</div>
+				
+				<div class="data-cell-right">
+					<span class="title-span">&nbsp;&nbsp;材料牌号：</span> 
+					<input id="matNo" name="matNo" class="easyui-textbox" value="${facadeBean.matNo}">
+					<span id="matNo_error" class="error-message"></span>
+				</div>
+			</div>
+			
+			<div class="data-row">
+				<div class="data-cell-left">
+					<span class="title-span">&nbsp;&nbsp;生产商地址：</span> 
+					<input id="producerAdd" name="producerAdd" class="easyui-textbox" value="${facadeBean.producerAdd}" multiline="true">
+					<span id="producerAdd_error" class="error-message"></span>
+				</div>
 			</div>
 			
 			<div class="data-row" style="margin-top:15px;">
-				<span class="title-span">图片：</span> 
+				<span class="title-span">材料成分表：</span> 
 				<input id="pic" name="pic" class="easyui-filebox" style="width:171px" data-options="buttonText: '选择'">
 				<span id="pic_error" class="error-message"></span>
 			</div>
@@ -125,8 +87,7 @@
 	
 	<script type="text/javascript">
 		function save(){
-			if(!isRequire("code", "编码必填")){ return false; }
-			if(!isRequire("name", "名称必填")){ return false; }
+			if(!isRequire("matName", "名称必填")){ return false; }
 			
 			var fileDir = $("#pic").filebox("getValue");
 			if (!isNull(fileDir)) {
@@ -140,15 +101,15 @@
 			}
 			
 			$('#uploadForm').ajaxSubmit({
-				url: "${ctx}/parts/save?time=" + new Date(),
+				url: "${ctx}/material/save?time=" + new Date(),
 				dataType : 'text',
 				success:function(msg){
 					var data = eval('(' + msg + ')');
 					if(data.success){
 						closeDialog(data.msg);
 					}else{
-						if(data.data == "code"){
-							err("code_error", data.msg);
+						if(data.data == "matName"){
+							err("matName_error", data.msg);
 						}else{
 							err("exception_error", data.msg);
 						}
