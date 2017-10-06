@@ -16,4 +16,9 @@ public class Contants {
 	// 超级管理员
 	public static final String SUPER_ROLE_CODE = "admin";
 	public static final String SUPER_ROLE_ID = "1";
+	
+	// 基准类型
+	public static final Integer STANDARD_TYPE = 1;
+	// 抽样类型
+	public static final Integer SAMPLE_TYPE = 2;
 }

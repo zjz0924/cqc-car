@@ -19,14 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.github.pagehelper.Page;
-
 import cn.wow.common.domain.Parts;
 import cn.wow.common.service.PartsService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.support.utils.Contants;
 
 /**
  * 零部件信息
@@ -167,41 +165,42 @@ public class PartsController extends AbstractController {
 				}
 				vo.setMsg("编辑成功");
 			} else {
-				Parts dbVehicle = partsService.selectByCodeAndType(code, type);
-
-				if (dbVehicle != null) {
-					vo.setData("code");
-					vo.setMsg("代码已存在");
-					vo.setSuccess(false);
-					return vo;
-				} else {
-					parts = new Parts();
-					parts.setType(type);
-					
-					if(StringUtils.isNotBlank(proTime)){
-						parts.setProTime(sdf.parse(proTime));
+				if(type == Contants.STANDARD_TYPE){
+					Parts dbVehicle = partsService.selectByCodeAndType(code, type);
+					if (dbVehicle != null) {
+						vo.setData("code");
+						vo.setMsg("代码已存在");
+						vo.setSuccess(false);
+						return vo;
 					}
-					parts.setRemark(remark);
-					parts.setProducer(matProducer);
-					parts.setPlace(place);
-					parts.setProNo(proNo);
-					parts.setTechnology(technology);
-					parts.setMatName(matName);
-					parts.setMatNo(matNo);
-					parts.setMatColor(matColor);
-					parts.setMatProducer(matProducer);
-					parts.setName(name);
-					parts.setCode(code);
-					parts.setCreateTime(new Date());
-					
-					if (file != null && !file.isEmpty()) {
-						String pic = uploadImg(file, partsUrl);
-						parts.setPic(pic);
-					}
-					partsService.save(getCurrentUserName(), parts);
-
-					vo.setMsg("添加成功");
 				}
+				
+				parts = new Parts();
+				parts.setType(type);
+				
+				if(StringUtils.isNotBlank(proTime)){
+					parts.setProTime(sdf.parse(proTime));
+				}
+				parts.setRemark(remark);
+				parts.setProducer(matProducer);
+				parts.setPlace(place);
+				parts.setProNo(proNo);
+				parts.setTechnology(technology);
+				parts.setMatName(matName);
+				parts.setMatNo(matNo);
+				parts.setMatColor(matColor);
+				parts.setMatProducer(matProducer);
+				parts.setName(name);
+				parts.setCode(code);
+				parts.setCreateTime(new Date());
+				
+				if (file != null && !file.isEmpty()) {
+					String pic = uploadImg(file, partsUrl);
+					parts.setPic(pic);
+				}
+				partsService.save(getCurrentUserName(), parts);
+
+				vo.setMsg("添加成功");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -239,6 +238,13 @@ public class PartsController extends AbstractController {
 			return vo;
 		}
 		return vo;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/getByCode")
+	public Parts getByCode(HttpServletRequest request, String code) {
+		return partsService.selectByCode(code);
 	}
 
 }

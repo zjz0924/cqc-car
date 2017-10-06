@@ -146,13 +146,34 @@ function formatNum(val){
  * 格式化日期
  * @param date  整型 
  */
-function formatDate(time){
+function formatDateTime(time){
 	if(isNull(time)){
 		return "";
 	}else{
 		var date = new Date(time * 1000);
 		var str = date.getFullYear() + "-" + formatNum(date.getMonth()+1) + "-" + formatNum(date.getDate()) + " " + formatNum((date.getHours())) + ":" + formatNum(date.getMinutes()) + ":" + formatNum(date.getSeconds());
 		return str; 
+	}
+}
+
+function formatDate(value){
+	if (!isNull(value)) {
+	    var date = new Date(value);
+	    var year = date.getFullYear().toString();
+	    var month = (date.getMonth() + 1);
+	    var day = date.getDate().toString();
+	    var hour = date.getHours().toString();
+	    var minutes = date.getMinutes().toString();
+	    var seconds = date.getSeconds().toString();
+	    if (month < 10) {
+	        month = "0" + month;
+	    }
+	    if (day < 10) {
+	        day = "0" + day;
+	    }
+	    return  year + "-" + month + "-" + day;
+	}else{
+		return "";
 	}
 }
 

@@ -1,13 +1,10 @@
 package cn.wow.support.web;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,16 +120,6 @@ public class MaterialController extends AbstractController {
 				material = materialService.selectOne(Long.parseLong(id));
 
 				if (material != null) {
-					if (!matName.equals(material.getMatName())) {
-						Material dbVehicle = materialService.selectByNameAndType(matName, type);
-
-						if (dbVehicle != null) {
-							vo.setData("matName");
-							vo.setMsg("名称已存在");
-							vo.setSuccess(false);
-							return vo;
-						}
-					}
 					material.setType(type);
 					material.setRemark(remark);
 					material.setProNo(proNo);
@@ -151,33 +138,24 @@ public class MaterialController extends AbstractController {
 				}
 				vo.setMsg("编辑成功");
 			} else {
-				Material dbVehicle = materialService.selectByNameAndType(matName, type);
-
-				if (dbVehicle != null) {
-					vo.setData("matName");
-					vo.setMsg("名称已存在");
-					vo.setSuccess(false);
-					return vo;
-				} else {
-					material = new Material();
-					material.setType(type);
-					material.setRemark(remark);
-					material.setProNo(proNo);
-					material.setMatName(matName);
-					material.setMatNo(matNo);
-					material.setMatColor(matColor);
-					material.setMatProducer(matProducer);
-					material.setProducerAdd(producerAdd);
-					material.setCreateTime(new Date());
-					
-					if (file != null && !file.isEmpty()) {
-						String pic = uploadImg(file, materialUrl);
-						material.setPic(pic);
-					}
-					materialService.save(getCurrentUserName(), material);
-
-					vo.setMsg("添加成功");
+				material = new Material();
+				material.setType(type);
+				material.setRemark(remark);
+				material.setProNo(proNo);
+				material.setMatName(matName);
+				material.setMatNo(matNo);
+				material.setMatColor(matColor);
+				material.setMatProducer(matProducer);
+				material.setProducerAdd(producerAdd);
+				material.setCreateTime(new Date());
+				
+				if (file != null && !file.isEmpty()) {
+					String pic = uploadImg(file, materialUrl);
+					material.setPic(pic);
 				}
+				materialService.save(getCurrentUserName(), material);
+
+				vo.setMsg("添加成功");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

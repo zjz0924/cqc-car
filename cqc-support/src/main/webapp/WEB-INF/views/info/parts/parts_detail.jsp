@@ -9,7 +9,7 @@
 			<div class="data-row">
 				<div class="data-cell-left">
 					<span class="title-span"><span class="req-span">*</span>代码：</span> 
-					<input id="code" name="code" value="${facadeBean.code}" <c:if test="${not empty facadeBean.id}">disabled</c:if> class="easyui-textbox">
+					<input id="code" name="code" value="${facadeBean.code}" <c:if test="${not empty facadeBean.id}">disabled</c:if>>
 					<span id="code_error" class="error-message"></span>
 				</div>
 				
@@ -24,7 +24,7 @@
 			<div class="data-row">
 				<div class="data-cell-left">
 					<span class="title-span">&nbsp;&nbsp;类型：</span> 
-					<select id="type" class="easyui-combobox" name="type" data-options="panelHeight:'auto'" style="width:171px;">
+					<select id="type" name="type" style="width:171px;" onChange="autoFillIn()">
 					    <option value="1" <c:if test="${facadeBean.type == 1}">selected="selected"</c:if>>基准</option>
 					    <option value="2" <c:if test="${facadeBean.type == 2}">selected="selected"</c:if>>抽样</option>
 					</select>
@@ -124,6 +124,21 @@
 	</div>
 	
 	<script type="text/javascript">
+		$(function(){
+			$("#code").textbox({
+				onChange: function(n,o){
+					autoFillIn();
+				}
+			});
+			
+			$("#type").combobox({
+				panelHeight: 'auto',
+				onChange: function (n,o) {
+					autoFillIn();
+				}
+			});
+		});
+	
 		function save(){
 			if(!isRequire("code", "编码必填")){ return false; }
 			if(!isRequire("name", "名称必填")){ return false; }
@@ -174,6 +189,40 @@
 			}else{
 				err(id + "_error", "");
 				return true;
+			}
+		}
+		
+		// 自动填写
+		function autoFillIn(){
+			var type = $("#type").val();
+			var code = $("#code").val();
+		
+			if(type == 2 && !isNull(code)){
+				$.ajax({
+					url: "${ctx}/parts/getByCode?time=" + new Date(),
+					data: {
+						code: code
+					},
+					success: function(data){
+						if(!isNull(data)){
+							$("#name").textbox('setValue', data.name);
+							$("#producer").textbox('setValue', data.producer);
+							if(!isNull(data.proTime)){
+								var d = formatDate(data.createTime);
+								$("#proTime").datebox('setValue', d);
+							}else{
+								$("#proTime").datebox('setValue', '');
+							}
+							$("#place").textbox('setValue', data.place);
+							$("#proNo").textbox('setValue', data.proNo);
+							$("#technology").textbox('setValue', data.technology);
+							$("#matName").textbox('setValue', data.matName);
+							$("#matNo").textbox('setValue', data.matNo);
+							$("#matColor").textbox('setValue', data.matNo);
+							$("#matProducer").textbox('setValue', data.matProducer);
+						}
+					}
+				});
 			}
 		}
 	</script>
