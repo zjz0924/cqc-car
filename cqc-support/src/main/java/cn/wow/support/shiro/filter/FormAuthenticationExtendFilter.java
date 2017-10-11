@@ -1,15 +1,18 @@
 package cn.wow.support.shiro.filter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -19,6 +22,7 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.RolePermission;
@@ -60,15 +64,15 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 		String username = (String) SecurityUtils.getSubject().getPrincipal();
 		if (StringUtils.isNotBlank(username)) {
 			HttpSession session = httpServletRequest.getSession();
-			
+
 			Account account = accountService.selectByAccountName(username);
 			session.setAttribute(Contants.CURRENT_ACCOUNT, account);
-			
-			//菜单信息
+
+			// 菜单信息
 			Set<String> illegalMenu = new HashSet<String>();
 			session.setAttribute(Contants.CURRENT_PERMISSION_MENU, getPermission(account, illegalMenu));
 			session.setAttribute(Contants.CURRENT_ILLEGAL_MENU, illegalMenu);
-			
+
 			// 判断用户客户端信息
 			createOrUpdateClientInfo(username, request.getRemoteAddr(), httpServletRequest.getHeader("user-agent"));
 			// 添加日志
@@ -84,62 +88,82 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 		clientInfo.setUserAgent(userAgent);
 		operationLogService.createOrUpdateUserClientInfo(userName, clientInfo);
 	}
-	
-	
+
 	/**
 	 * 获取当前角色的菜单
 	 */
 	private List<Menu> getPermission(Account account, Set<String> illegalMenu) {
-		// 获取二级父节点
-		List<Menu> menuList = menuService.getMenuList();
+		List<Menu> emptyData = new ArrayList<Menu>();		
 		
-		if(account.getRole() != null && account.getRole().getId().longValue() != Long.parseLong(Contants.SUPER_ROLE_ID)){  // 非超级管理员
-			
-			// 当前用户所有角色的权限
-			RolePermission permission = rolePermissionService.selectOne(account.getRoleId());
+		if (account.getRole() != null) {
+			// 获取二级父节点
+			List<Menu> menuList = menuService.getMenuList();
 
-			if (permission != null) {
+			if (account.getRole().getId().longValue() != Long.parseLong(Contants.SUPER_ROLE_ID)) { // 非超级管理员
+				// 当前用户所有角色的权限
+				RolePermission permission = rolePermissionService.selectOne(account.getRoleId());
 
-				// 有权限的菜单ID
-				Set<String> legalMenu = new HashSet<String>();
+				if (permission != null) {
+					// 有权限的菜单ID
+					Set<String> legalMenu = new HashSet<String>();
 
-				if (StringUtils.isNotBlank(permission.getPermission())) {
-					legalMenu.addAll(Arrays.asList(permission.getPermission().split(",")));
-				}
+					if (StringUtils.isNotBlank(permission.getPermission())) {
+						legalMenu.addAll(Arrays.asList(permission.getPermission().split(",")));
+					}
 
-				Iterator<Menu> it = menuList.iterator();
-				while (it.hasNext()) {
-					Menu menu = it.next();
-					List<Menu> subList = menu.getSubList();
+					Iterator<Menu> it = menuList.iterator();
+					while (it.hasNext()) {
+						Menu menu = it.next();
+						List<Menu> subList = menu.getSubList();
 
-					if (subList != null && subList.size() > 0) {
-						Iterator<Menu> subIt = subList.iterator();
-						while (subIt.hasNext()) {
-							Menu subMenu = subIt.next();
-							if (!legalMenu.contains(subMenu.getId().toString())) {
-								subMenu.setAuthorized(false);
-								illegalMenu.add(subMenu.getAlias());
+						if (subList != null && subList.size() > 0) {
+							Iterator<Menu> subIt = subList.iterator();
+							while (subIt.hasNext()) {
+								Menu subMenu = subIt.next();
+								List<Menu> sList = subMenu.getSubList();
+
+								if (sList != null && sList.size() > 0) {
+									Iterator<Menu> sIt = sList.iterator();
+									while (sIt.hasNext()) {
+										Menu sMenu = sIt.next();
+
+										if (!legalMenu.contains(sMenu.getId().toString())) {
+											sIt.remove();
+											illegalMenu.add(subMenu.getAlias());
+										}
+									}
+
+									if (sList == null || sList.size() < 1) {
+										subIt.remove();
+										illegalMenu.add(menu.getAlias());
+									}
+								} else {
+									if (!legalMenu.contains(subMenu.getId().toString())) {
+										subIt.remove();
+										illegalMenu.add(subMenu.getAlias());
+									}
+								}
+							}
+
+							if (subList == null || subList.size() < 1) {
+								it.remove();
+								illegalMenu.add(menu.getAlias());
+							}
+						} else {
+							if (!legalMenu.contains(menu.getId().toString())) {
+								it.remove();
+								illegalMenu.add(menu.getAlias());
 							}
 						}
-
-						if (subList == null || subList.size() < 1) {
-							menu.setAuthorized(false);
-							illegalMenu.add(menu.getAlias());
-						}
-					} else {
-						if (!legalMenu.contains(menu.getId().toString())) {
-							menu.setAuthorized(false);
-							illegalMenu.add(menu.getAlias());
-						}
 					}
-				}
-			} else {
-				for (Menu menu : menuList) {
-					menu.setAuthorized(false);
+				} else {
+					return emptyData;
 				}
 			}
+			return menuList;
+		} else {
+			return emptyData;
 		}
-		return menuList;
 	}
 
 }

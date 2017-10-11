@@ -34,28 +34,30 @@ public class OperationLogServiceImpl implements OperationLogService {
 
 	@OperationLogIgnore
 	public Long save(String theUserName, OperationType operationType, ServiceType serviceType, String jsonDetail) {
-		String clientIp = null;
-		String userAgent = null;
-		String theUser1 = theUserName;
-		ClientInfo clientInfo = getClientInfoByUserName(theUserName);
-		clientIp = clientInfo.getClientIp();
-		userAgent = clientInfo.getUserAgent();
-
-		OperationLog operationLog = new OperationLog();
-		operationLog.setUserName(theUser1);
-		operationLog.setType(serviceType.getDisplayName());
-		operationLog.setTime(new Date());
-		operationLog.setClientIp(clientIp);
-		operationLog.setUserAgent(userAgent);
-		operationLog.setOperation(operationType.getDisplayName());
-		if (StringUtils.isNotBlank(jsonDetail)) {
-			operationLog.setDetail(jsonDetail);
-		}
-
+		OperationLog operationLog = null;
 		try{
+			String clientIp = null;
+			String userAgent = null;
+			String theUser1 = theUserName;
+			ClientInfo clientInfo = getClientInfoByUserName(theUserName);
+			clientIp = clientInfo.getClientIp();
+			userAgent = clientInfo.getUserAgent();
+
+			operationLog = new OperationLog();
+			operationLog.setUserName(theUser1);
+			operationLog.setType(serviceType.getDisplayName());
+			operationLog.setTime(new Date());
+			operationLog.setClientIp(clientIp);
+			operationLog.setUserAgent(userAgent);
+			operationLog.setOperation(operationType.getDisplayName());
+			if (StringUtils.isNotBlank(jsonDetail)) {
+				operationLog.setDetail(jsonDetail);
+			}
+			
 			operationLogDao.insert(operationLog);
 		}catch(Exception ex){
 			ex.printStackTrace();
+			return null;
 		}
 		
 		return operationLog.getId();

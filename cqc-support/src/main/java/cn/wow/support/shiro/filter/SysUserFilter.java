@@ -31,7 +31,7 @@ public class SysUserFilter extends PathMatchingFilter {
     	HttpSession session = httpServletRequest.getSession();
     	
     	// 当前访问路径
-		String uri = httpServletRequest.getRequestURI();
+	/*	String uri = httpServletRequest.getRequestURI();
 
 		boolean isWhite = false;
 		for (String str : whiteList) {
@@ -53,7 +53,7 @@ public class SysUserFilter extends PathMatchingFilter {
 				}
 			}
 		}
-		
+		*/
         return true;
     }
 }
