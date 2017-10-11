@@ -10,7 +10,7 @@ public interface OrgService {
 
     public int save(String userName, Org org);
 
-    public int update(String userName, Org org);
+    public int update(String userName, Org org, boolean update);
 
     public int deleteByPrimaryKey(String userName, Org org);
 
@@ -23,8 +23,12 @@ public interface OrgService {
      */
     public List<TreeNode> getTree(String svalue, String stype);
     
-    public int move(Org org);
+    public int move(Org org, boolean update);
     
     public Org getByCode(String code);
+    
+    public void delete(String userName, Org org);
+    
+    public void batchUpdate(Map<String, Object> map);
 
 }

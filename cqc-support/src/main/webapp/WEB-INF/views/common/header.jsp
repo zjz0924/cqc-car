@@ -92,8 +92,18 @@
 								<c:if test="${vo.isAuthorized == true}">
 									<ul>
 										<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
-											<li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if>">
+											<li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if> <c:if test="${not empty subVo.subList}">hasitemli</c:if>">
 												<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+												
+												<c:if test="${not empty subVo.subList}">
+												   <ul>
+												   	  <c:forEach items="${subVo.subList}" var="tVo" varStatus="vst">
+												   	  	 <li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if>">
+															<a href="${ctx}/${vo.url}?choose=${vst.index}">${tVo.name}</a>
+														 </li>
+												   	  </c:forEach>
+												   </ul>
+												</c:if>
 											</li>
 										</c:forEach>
 									</ul>

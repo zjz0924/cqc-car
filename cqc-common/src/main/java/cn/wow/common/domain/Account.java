@@ -32,9 +32,9 @@ public class Account extends JpaEntity{
 	// 是否被封号：Y-是，N-否
 	private String lock = "N";
 	// 角色ID
-	private String roleId;
+	private Long roleId;
 	// 角色
-	private List<Role> roleList;
+	private Role role;
 	
 	private Long orgId;
 	
@@ -48,9 +48,6 @@ public class Account extends JpaEntity{
 	// 签名图片
 	private String pic;
 	
-	@JsonIgnore
-	private Long[] roleIds;
-
 	public String getLock() {
 		return lock;
 	}
@@ -107,22 +104,6 @@ public class Account extends JpaEntity{
 		this.createTime = createTime;
 	}
 
-	public String getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
-	}
-
-	public List<Role> getRoleList() {
-		return roleList;
-	}
-
-	public void setRoleList(List<Role> roleList) {
-		this.roleList = roleList;
-	}
-
 	public Long getOrgId() {
 		return orgId;
 	}
@@ -171,26 +152,20 @@ public class Account extends JpaEntity{
 		this.pic = pic;
 	}
 
-	public Long[] getRoleIds() {
-		if (StringUtils.isNotBlank(roleId)) {
-			String[] arry = roleId.split(",");
-			roleIds = new Long[arry.length];
-
-			if (arry != null && arry.length > 0) {
-				for (int i = 0; i < arry.length; i++) {
-					String str = arry[i];
-					if (StringUtils.isNotBlank(str)) {
-						roleIds[i] = Long.parseLong(str);
-					}
-
-				}
-			}
-		}
-		return roleIds;
+	public Long getRoleId() {
+		return roleId;
 	}
 
-	public void setRoleIds(Long[] roleIds) {
-		this.roleIds = roleIds;
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	@JsonIgnore

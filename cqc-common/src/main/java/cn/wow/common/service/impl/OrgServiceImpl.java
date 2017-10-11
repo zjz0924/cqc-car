@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.OrgDao;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.TreeNode;
@@ -30,6 +31,8 @@ public class OrgServiceImpl implements OrgService{
 
     @Autowired
     private OrgDao orgDao;
+    @Autowired
+    private AccountDao accountDao;
 
     public Org selectOne(Long id){
     	return orgDao.selectOne(id);
@@ -43,16 +46,54 @@ public class OrgServiceImpl implements OrgService{
     	return orgDao.insert(org);
     }
     
-    public int move(Org org) {
-		return orgDao.update(org);
+    public int move(Org org, boolean update) {
+		int num = orgDao.update(org);
+		
+		// 如果类型改变了，把所有子机构都修改成当前类型
+		if (update) {
+			List<Long> idList = new ArrayList<Long>();
+			getAllSonId(org, idList);
+
+			if(idList.size() > 0){
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("type", org.getType());
+				map.put("list", idList);
+				orgDao.batchUpdate(map);
+			}
+		}
+		return num;
 	}
 
-    public int update(String userName, Org org){
-    	return orgDao.update(org);
+    public int update(String userName, Org org, boolean update){
+    	int num = orgDao.update(org);
+    	
+		// 如果类型改变了，把所有子机构都修改成当前类型
+		if (update) {
+			List<Long> idList = new ArrayList<Long>();
+			getAllSonId(org, idList);
+
+			if(idList.size() > 0){
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("type", org.getType());
+				map.put("list", idList);
+				orgDao.batchUpdate(map);
+			}
+		}
+    	return num;
+    }
+    
+    public void batchUpdate(Map<String, Object> map){
+    	orgDao.batchUpdate(map);
     }
 
     public int deleteByPrimaryKey(String userName, Org org){
     	return orgDao.deleteByPrimaryKey(org.getId());
+    }
+    
+    public void delete(String userName, Org org){
+    	//删除机构时，把用户所属机构也清空
+    	orgDao.deleteByPrimaryKey(org.getId());
+    	accountDao.clearOrg(org.getId());
     }
 
     public List<Org> selectAllList(Map<String, Object> map){
@@ -207,6 +248,20 @@ public class OrgServiceImpl implements OrgService{
 		}
 		set.removeAll(tempSet);
 		return set;
+	}
+	
+	
+	// 递归获取指定机构下的所有子机构的ID
+	public void getAllSonId(Org org, List<Long> idList) {
+		if (org != null) {
+			List<Org> subList = org.getSubList();
+			if (subList != null && subList.size() > 0) {
+				for (Org sub : subList) {
+					idList.add(sub.getId());
+					getAllSonId(sub, idList);
+				}
+			}
+		}
 	}
 	
 }

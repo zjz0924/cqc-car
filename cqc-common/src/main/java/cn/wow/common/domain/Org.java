@@ -26,6 +26,8 @@ public class Org extends JpaEntity {
     private Long parentid;
     
     private Org parent;
+    // 机构类型 (1-通用五菱, 2-供应商, 3-实验室, 4-其它)
+    private Integer type;
     
     @JsonIgnore
     private List<Org> subList;
@@ -100,6 +102,14 @@ public class Org extends JpaEntity {
 
 	public void setSubList(List<Org> subList) {
 		this.subList = subList;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 	@JsonIgnore

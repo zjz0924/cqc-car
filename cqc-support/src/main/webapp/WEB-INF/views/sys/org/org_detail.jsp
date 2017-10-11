@@ -16,6 +16,18 @@
 		</div>
 		
 		<div class="info-div">
+			<span class="title-span"><span class="req-span">*</span>机构类型： </span>
+			<select id="type" class="easyui-combobox" name="type" data-options="panelHeight:'auto'" style="width:171px;" <c:if test="${canEdit == false}">disabled</c:if>>
+				<option value="">请选择</option>
+			    <option value="1" <c:if test="${type == 1}">selected="selected"</c:if>>通用五菱</option>
+			    <option value="2" <c:if test="${type == 2}">selected="selected"</c:if>>供应商</option>
+			    <option value="3" <c:if test="${type == 3}">selected="selected"</c:if>>实验室</option>
+			    <option value="4" <c:if test="${type == 4}">selected="selected"</c:if>>其它</option>
+			</select>
+			<span id="otype_error" class="error-message"></span>
+		</div>
+		
+		<div class="info-div">
 			<span class="title-span">上级机构： </span>
 			${parentOrg.name } 
 		</div>
@@ -77,6 +89,14 @@
 				err("oname_error", "");
 			}
 			
+			var type = $("#type").val();
+			if(isNull(type)){
+				err("otype_error", "区域类型必选");	
+				return;
+			}else{
+				err("otype_error", "");
+			}
+			
 			if(isNull(areaid)){
 				err("oarea_error", "区域必选");	
 				return;
@@ -92,7 +112,8 @@
 					"desc": $("#o_desc").val(),
 					"id": "${id}",
 					"parentid": "${parentOrg.id}",
-					"areaid": areaid
+					"areaid": areaid,
+					"type": type
 				},
 				success:function(data){
 					if(data.success){

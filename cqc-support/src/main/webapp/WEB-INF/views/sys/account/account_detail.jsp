@@ -120,22 +120,36 @@
 		$(function(){
 			$('#role').combotree({
 				url: '${ctx}/role/tree',
-				multiple: true,
+				multiple: false,
 				animate: true	
 			});
 			
 			// 只有角色才能选择
 			var t = $('#role').combotree('tree');	
 			t.tree({
-			   checkbox: function(node){
+			   onBeforeSelect: function(node){
 				   if(node.id.indexOf("r") != -1){
 						return true;
-					}
+				   }else{
+					   return false;
+				   }
 			   }
 			});
 			
 			$('#org').combotree({
 				url: '${ctx}/org/tree'
+			});
+			
+			// 只能选择最底层机构
+			var orgTree = $('#org').combotree('tree');	
+			orgTree.tree({
+			   onBeforeSelect: function(node){  console.info(node);
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
 			});
 			
 			var roleVal = "${roleVal}";  

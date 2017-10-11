@@ -14,4 +14,6 @@ public interface AccountDao extends SqlDao{
 	public void batchUpdate(List<Account> list);
 	
 	public void clearPic(Long id);
+	
+	public void clearOrg(Long id);
 }

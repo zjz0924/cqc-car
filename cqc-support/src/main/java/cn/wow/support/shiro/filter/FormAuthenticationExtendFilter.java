@@ -1,18 +1,15 @@
 package cn.wow.support.shiro.filter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -22,7 +19,6 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.RolePermission;
@@ -97,31 +93,18 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 		// 获取二级父节点
 		List<Menu> menuList = menuService.getMenuList();
 		
-		// 用户角色
-		List<Long> roleIdList = new ArrayList<Long>();
-		if (StringUtils.isNoneBlank(account.getRoleId())) {
-			String[] array = account.getRoleId().split(",");
-			for (String id : array) {
-				if (StringUtils.isNotBlank(id)) {
-					roleIdList.add(Long.parseLong(id));
-				}
-			}
-		}
-		
-		if(!roleIdList.contains(Long.parseLong(Contants.SUPER_ROLE_ID))){  // 非超级管理员
+		if(account.getRole() != null && account.getRole().getId().longValue() != Long.parseLong(Contants.SUPER_ROLE_ID)){  // 非超级管理员
 			
 			// 当前用户所有角色的权限
-			List<RolePermission> permissionList = rolePermissionService.batchQuery(roleIdList);
+			RolePermission permission = rolePermissionService.selectOne(account.getRoleId());
 
-			if (permissionList != null && permissionList.size() > 0) {
+			if (permission != null) {
 
 				// 有权限的菜单ID
 				Set<String> legalMenu = new HashSet<String>();
 
-				for (RolePermission per : permissionList) {
-					if (StringUtils.isNotBlank(per.getPermission())) {
-						legalMenu.addAll(Arrays.asList(per.getPermission().split(",")));
-					}
+				if (StringUtils.isNotBlank(permission.getPermission())) {
+					legalMenu.addAll(Arrays.asList(permission.getPermission().split(",")));
 				}
 
 				Iterator<Menu> it = menuList.iterator();

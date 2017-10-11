@@ -110,6 +110,9 @@ public class AccountController extends AbstractController {
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
 		}
+		if (StringUtils.isNotBlank(roleId)) {
+			map.put("roleId", roleId.substring(roleId.indexOf("_") + 1));
+		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
@@ -118,16 +121,6 @@ public class AccountController extends AbstractController {
 		}
 
 		List<Account> dataList = accountService.selectAllList(map);
-
-		if (dataList != null && dataList.size() > 0) {
-			for (Account account : dataList) {
-				if (StringUtils.isNotBlank(account.getRoleId())) {
-					List<Role> roleList = roleService.selectRoles(account.getRoleIds());
-					account.setRoleList(roleList);
-				}
-			}
-		}
-
 		data = dataList;
 
 		// 分页
@@ -155,20 +148,9 @@ public class AccountController extends AbstractController {
 				model.addAttribute("orgName", org.getName());
 			}
 
-			if (StringUtils.isNotBlank(account.getRoleId())) {
-				List<Role> roleList = roleService.selectRoles(account.getRoleIds());
-
-				if (roleList != null && roleList.size() > 0) {
-					for (int i = 0; i < roleList.size(); i++) {
-						Role role = roleList.get(i);
-						if (i != roleList.size() - 1) {
-							roleVal += "{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'},";
-						} else {
-							roleVal += "{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'}";
-						}
-					}
-					roleVal = "[" + roleVal + "]";
-				}
+			Role role = account.getRole();
+			if (role != null) {
+				roleVal = "[{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'}]";
 			}
 
 			model.addAttribute("roleVal", roleVal);
@@ -193,20 +175,9 @@ public class AccountController extends AbstractController {
 			model.addAttribute("orgName", org.getName());
 		}
 
-		if (StringUtils.isNotBlank(account.getRoleId())) {
-			List<Role> roleList = roleService.selectRoles(account.getRoleIds());
-
-			if (roleList != null && roleList.size() > 0) {
-				for (int i = 0; i < roleList.size(); i++) {
-					Role role = roleList.get(i);
-					if (i != roleList.size() - 1) {
-						roleVal += "{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'},";
-					} else {
-						roleVal += "{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'}";
-					}
-				}
-				roleVal = "[" + roleVal + "]";
-			}
+		Role role = account.getRole();
+		if (role != null) {
+			roleVal = "[{ id: 'r_" + role.getId() + "', text: '" + role.getName() + "'}]";
 		}
 
 		model.addAttribute("roleVal", roleVal);
@@ -218,7 +189,7 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String userName, String nickName,
-			String mobile, String password, String roleId, Long orgId, String email, String remark, Integer signType, @RequestParam(value = "pic", required = false) MultipartFile file) {
+			String mobile, String password, Long roleId, Long orgId, String email, String remark, Integer signType, @RequestParam(value = "pic", required = false) MultipartFile file) {
 		AjaxVO vo = new AjaxVO();
 		Account account = null;
 
@@ -477,17 +448,8 @@ public class AccountController extends AbstractController {
 				cell4.setCellValue(account.getOrg().getName());
 
 				String roleStr = "";
-				List<Role> roleList = roleService.selectRoles(account.getRoleIds());
-
-				if (roleList != null && roleList.size() > 0) {
-					for (int i = 0; i < roleList.size(); i++) {
-						Role role = roleList.get(i);
-						if (i != roleList.size() - 1) {
-							roleStr += role.getName() + ",";
-						} else {
-							roleStr += role.getName();
-						}
-					}
+				if(account.getRole() != null){
+					roleStr = account.getRole().getName();
 				}
 				Cell cell5 = contentRow.createCell(4);
 				cell5.setCellStyle(styles.get("cell"));
@@ -607,21 +569,11 @@ public class AccountController extends AbstractController {
 						account.setId(dbAccount.getId());
 					}
 
-					String roleId = "";
 					if (StringUtils.isNotBlank(roleCodes)) {
-						String[] array = roleCodes.split(",");
-						if (array != null && array.length > 0) {
-							for (String str : array) {
-								Role role = roleMap.get(str);
-								if (role != null) {
-									roleId += role.getId() + ",";
-								}
-							}
+						Role role = roleMap.get(roleCodes);
+						if (role != null) {
+							account.setRoleId(role.getId());
 						}
-					}
-					if (StringUtils.isNotBlank(roleId)) {
-						roleId = roleId.substring(0, roleId.length() - 1);
-						account.setRoleId(roleId);
 					}
 
 					Org org = orgMap.get(orgCode);

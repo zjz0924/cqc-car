@@ -25,6 +25,7 @@
 				    onBeforeDrop: function(target,source,point){
 						var targetNode = $("#orgTree").tree('getNode', target);
 						if(!isNull(targetNode.children)){
+							// 已有相同名称的不能移动
 							for(var i = 0; i < targetNode.children.length; i++){
 								var node = targetNode.children[i];
 								if(node.text == source.text){
@@ -62,7 +63,20 @@
 								$("#name_info").html(data.name);
 								$("#desc_info").html(data.desc);
 								$("#code_info").html(data.code);
-	
+								
+								var type = data.type;
+								var typeName = "";
+								if(type == 1){
+									typeName = "通用五菱";
+								}else if(type == 2){
+									typeName = "供应商";
+								}else if(type == 3){
+									typeName = "实验室";
+								}else if(type == 4){
+									typeName = "其它";
+								}
+								$("#type_info").html(typeName);
+								
 								if (!isNull(data.area)) {
 									$("#areaName_info").html(data.area.name);
 								}else{
@@ -255,6 +269,11 @@
 				<div class="info">
 					<span class="info_title">机构名称：</span>
 					<span id="name_info"></span>
+				</div>
+				
+				<div class="info">
+					<span class="info_title">机构类型：</span>
+					<span id="type_info"></span>
 				</div>
 				
 				<div class="info">

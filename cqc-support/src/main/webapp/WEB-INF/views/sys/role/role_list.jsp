@@ -389,7 +389,7 @@
 				</div>
 			</div>
 			
-			<div class="column" style="padding:10px 20px;font-size: 14px;width:450px;border-right:1px dashed #e6e6e6;">
+			<div class="column" style="padding:10px 20px;font-size: 14px;width:550px;border-right:1px dashed #e6e6e6;">
 				<p style="font-size: 16px;margin-bottom: 10px;"><span id="r_title"></span></p>
 				<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
 			
@@ -415,7 +415,7 @@
 			</div>
 			
 			
-			<div class="column" style="padding:10px 20px;font-size: 14px;width:25%;border-right:1px dashed #e6e6e6;">
+			<div class="column" style="padding:10px 20px;font-size: 14px;width:40%;border-right:1px dashed #e6e6e6;">
 				<p style="font-size: 16px;margin-bottom: 10px;">操作权限</p>
 				<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
 				
@@ -426,12 +426,6 @@
 						<a id="permissionBtn" href="javascript:void(0)" onclick="saveOperationPermission()" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="width: 70px;">保存</a>
 					</div>
 				</div>
-			</div>
-			
-			<div class="column" style="padding:10px 20px;font-size: 14px;width:25%;">
-				<p style="font-size: 16px;margin-bottom: 10px;">数据权限</p>
-				<div style="border: 1px dashed #e6e6e6;width: 100%;margin-bottom:5px;"></div>
-				
 			</div>
 	 	</div>
 	 	

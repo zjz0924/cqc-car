@@ -10,14 +10,13 @@
     <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="lock" property="lock" jdbcType="CHAR" />
-    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
     <result column="org_id" property="orgId" jdbcType="BIGINT" />
     <result column="pic" property="pic" jdbcType="VARCHAR" />
 	<result column="remark" property="remark" jdbcType="VARCHAR" />
 	<result column="sign_type" property="signType" jdbcType="INTEGER" />
-    
     <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
-    <!-- <collection property="roleList" javaType="cn.wow.common.domain.Role" column="role_id" select="cn.wow.common.dao.RoleDao.selectRoles"/> -->
+    <association property="role" javaType="cn.wow.common.domain.Role" column="role_id" select="cn.wow.common.dao.RoleDao.selectOne"/>
   </resultMap>
   
   <sql id="base_columns" >
@@ -28,7 +27,7 @@
     insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id, pic, remark, sign_type)
     	values (#{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
       		#{password,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
-      		#{createTime,jdbcType=TIMESTAMP}, #{lock,jdbcType=CHAR}, #{roleId,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT},
+      		#{createTime,jdbcType=TIMESTAMP}, #{lock,jdbcType=CHAR}, #{roleId,jdbcType=BIGINT}, #{email,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT},
       		#{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{signType,jdbcType=INTEGER})
   </insert>
   
@@ -64,7 +63,7 @@
         `lock` = #{lock,jdbcType=CHAR}, 
       </if>
       <if test="roleId != null" >
-        role_id = #{roleId,jdbcType=VARCHAR},
+        role_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="orgId != null" >
         org_id = #{orgId,jdbcType=BIGINT},
@@ -83,6 +82,10 @@
 
 	<update id="clearPic" parameterType="java.lang.Long">
 		update account set pic = null where id = #{id}
+	</update>
+	
+    <update id="clearOrg" parameterType="java.lang.Long">
+		update account set org_id = null where org_id = #{id}
 	</update>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
@@ -130,10 +133,7 @@
 	      </if>
 	      
 	      <if test="roleId != null" >
-	        and role_id in
-	        <foreach collection="roleId" item="id" index="index" separator=","  open= "(" close =")">  
-				 #{id}        
-			</foreach>
+	        and role_id = #{roleId,jdbcType=BIGINT}
 	      </if>
 	      
 	      <if test="email != null" >
@@ -160,7 +160,7 @@
 		insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id) values 
 	<foreach collection="list" item="item" separator=",">  
 	  (#{item.userName,jdbcType=VARCHAR}, #{item.nickName,jdbcType=VARCHAR},  #{item.password,jdbcType=VARCHAR}, #{item.mobile,jdbcType=VARCHAR}, 
-       #{item.createTime,jdbcType=TIMESTAMP}, #{item.lock,jdbcType=CHAR}, #{item.roleId,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, #{item.orgId,jdbcType=BIGINT})
+       #{item.createTime,jdbcType=TIMESTAMP}, #{item.lock,jdbcType=CHAR}, #{item.roleId,jdbcType=BIGINT}, #{item.email,jdbcType=VARCHAR}, #{item.orgId,jdbcType=BIGINT})
 	</foreach>  
   </insert> 
   
@@ -181,7 +181,7 @@
 	        email = #{item.email,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.roleId != null" >
-	        role_id = #{item.roleId,jdbcType=VARCHAR},
+	        role_id = #{item.roleId,jdbcType=BIGINT},
 	      </if>
 	      <if test="item.orgId != null" >
 	        org_id = #{item.orgId,jdbcType=BIGINT}

@@ -48,8 +48,11 @@ public class OrgController extends AbstractController {
 	 */
 	@RequestMapping(value = "/detail")
 	public String detail(HttpServletRequest request, Model model, String id, String parentid) {
+		Org org = null;
+		boolean canEdit = true;
+		
 		if (StringUtils.isNotBlank(id)) {
-			Org org = orgService.selectOne(Long.parseLong(id));
+			org = orgService.selectOne(Long.parseLong(id));
 			
 			if (org.getParent() != null) {
 				parentid = org.getParent().getId().toString();
@@ -65,6 +68,20 @@ public class OrgController extends AbstractController {
 		if(StringUtils.isNotBlank(parentid)){
 			Org parentOrg = orgService.selectOne(Long.parseLong(parentid));
 			model.addAttribute("parentOrg", parentOrg);
+			
+			// 如果父节点没有选择类型，那么就显示当前自己的类型
+			Integer type = null;
+			if(parentOrg.getType() != null){
+				type = parentOrg.getType();
+				canEdit = false;
+			}else{
+				if(org != null){
+					type = org.getType();
+					canEdit = true;
+				}
+			}
+			model.addAttribute("type", type);
+			model.addAttribute("canEdit", canEdit);
 		}
 		
 		model.addAttribute("id", id);
@@ -76,7 +93,7 @@ public class OrgController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc, String areaid) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc, String areaid, Integer type) {
 		AjaxVO vo = new AjaxVO();
 		Org org = null;
 
@@ -99,13 +116,20 @@ public class OrgController extends AbstractController {
 						}
 					}
 
+					// 是否需要修改所有子机构的类型
+					boolean flag = false;
+					if(org.getType() != null && org.getType().intValue() != type.intValue()){
+						flag = true;
+					}
+					
 					org.setDesc(desc);
 					org.setName(text);
+					org.setType(type);
 					org.setParentid(Long.parseLong(parentid));
 					if(StringUtils.isNotBlank(areaid)){
 						org.setAreaid(Long.parseLong(areaid));
 					}
-					orgService.update(getCurrentUserName(), org);
+					orgService.update(getCurrentUserName(), org, flag);
 					
 					vo.setMsg("编辑成功");
 				}
@@ -133,6 +157,7 @@ public class OrgController extends AbstractController {
 					org.setDesc(desc);
 					org.setName(text);
 					org.setCode(code);
+					org.setType(type);
 					org.setParentid(Long.parseLong(parentid));
 					if(StringUtils.isNotBlank(areaid)){
 						org.setAreaid(Long.parseLong(areaid));
@@ -192,7 +217,15 @@ public class OrgController extends AbstractController {
 				oldParentCode = org.getParent().getCode();
 			}
 			org.setParentid(Long.parseLong(parentid));
-			orgService.move(org);
+			
+			boolean flag = true;
+			Org newOrg = orgService.selectOne(Long.parseLong(parentid));
+			if(newOrg.getType() != null && org.getParent().getType() != null && newOrg.getType().intValue() == org.getParent().getType().intValue()){
+				flag = false;
+			}else{
+				org.setType(newOrg.getType());
+			}
+			orgService.move(org, flag);
 
 			// 当前父节点
 			Org currentParent = orgService.selectOne(Long.parseLong(id));
@@ -223,7 +256,7 @@ public class OrgController extends AbstractController {
 
 		try {
 			Org org = orgService.selectOne(Long.parseLong(id));
-			orgService.deleteByPrimaryKey(getCurrentUserName(), org);
+			orgService.delete(getCurrentUserName(), org);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
