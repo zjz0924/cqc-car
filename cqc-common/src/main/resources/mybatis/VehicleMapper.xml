@@ -8,11 +8,12 @@
 		<result column="pro_time" property="proTime" jdbcType="DATE" />
 		<result column="pro_addr" property="proAddr" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, code, type, pro_time, pro_addr, remark, create_time
+		id, code, type, pro_time, pro_addr, remark, create_time, state
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -28,9 +29,13 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Vehicle">
-		insert into vehicle (code, type, pro_time, pro_addr, remark, create_time)
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+			SELECT @@IDENTITY
+		</selectKey>
+		
+		insert into vehicle (code, type, pro_time, pro_addr, remark, create_time, state)
 			values (#{code,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{proAddr,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
-				#{createTime,jdbcType=TIMESTAMP})
+				#{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Vehicle">
@@ -47,6 +52,9 @@
 			</if>
 			<if test="proAddr != null">
 				pro_addr = #{proAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
 			</if>
 			remark = #{remark,jdbcType=VARCHAR},
 			<if test="createTime != null">
@@ -68,6 +76,10 @@
 		      <if test="type != null and type != ''" >
 		        and type like concat('%', #{type,jdbcType=VARCHAR}, '%') 
 		      </if>
+		      
+		      <if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			 </if>
 		      
 		     <if test="startProTime != null and startProTime != ''">  
 		    	and pro_time &gt;= #{startProTime, jdbcType=DATE}

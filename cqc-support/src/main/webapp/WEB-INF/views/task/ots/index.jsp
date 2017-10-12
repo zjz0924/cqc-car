@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>SGMW</title>
-		<%@include file="../common/source.jsp"%>
+		<%@include file="../../common/source.jsp"%>
 		
 		<script type="text/javascript">
 	        
@@ -70,7 +70,7 @@
 	</head>
 	
 	<body>
-		<%@include file="../common/header.jsp"%>
+		<%@include file="../../common/header.jsp"%>
 		
 		<!--banner-->
 		<div class="inbanner XSLR"></div>
@@ -81,6 +81,6 @@
 		</div>
 		
 		<!-- footer -->
-		<%@include file="../common/footer.jsp"%>
+		<%@include file="../../common/footer.jsp"%>
 	</body>
 </html>

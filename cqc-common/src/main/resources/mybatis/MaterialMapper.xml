@@ -12,11 +12,12 @@
 		<result column="pro_no" property="proNo" jdbcType="VARCHAR" />
 		<result column="pic" property="pic" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, type, mat_name, mat_no, mat_color, mat_producer, producer_add, pro_no, pic, remark, create_time
+		id, type, mat_name, mat_no, mat_color, mat_producer, producer_add, pro_no, pic, remark, create_time, state
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -28,10 +29,14 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Material">
-		insert into material (type, mat_name, mat_no, mat_color, mat_producer, producer_add, pro_no, pic, remark, create_time)
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+			SELECT @@IDENTITY
+		</selectKey>
+		
+		insert into material (type, mat_name, mat_no, mat_color, mat_producer, producer_add, pro_no, pic, remark, create_time, state)
 		values (#{type,jdbcType=INTEGER}, #{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR}, #{matProducer,jdbcType=VARCHAR},
 		#{producerAdd,jdbcType=VARCHAR}, #{proNo,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
-		#{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+		#{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Material">
@@ -55,6 +60,9 @@
 			<if test="producerAdd != null">
 				producer_add = #{producerAdd,jdbcType=VARCHAR},
 			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
 			<if test="proNo != null">
 				pro_no = #{proNo,jdbcType=VARCHAR},
 			</if>
@@ -77,6 +85,10 @@
 		      <if test="type != null and type != ''" >
 		        and type = #{type,jdbcType=INTEGER}
 		      </if>
+		      
+		      <if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			 </if>
 		      
 		      <if test="startCreateTime != null and startCreateTime != ''">  
 		    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}

@@ -46,7 +46,7 @@ public class MaterialController extends AbstractController {
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
-		return "info/material/material_list";
+		return "task/ots/material/material_list";
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class MaterialController extends AbstractController {
 			model.addAttribute("facadeBean", material);
 		}
 		model.addAttribute("resUrl", resUrl);
-		return "info/material/material_detail";
+		return "task/ots/material/material_detail";
 	}
 
 	@ResponseBody

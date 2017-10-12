@@ -24,9 +24,9 @@ import cn.wow.common.service.RoleGroupService;
 import cn.wow.common.service.RolePermissionService;
 import cn.wow.common.service.RoleService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
-import cn.wow.support.utils.Contants;
 
 @Controller
 @RequestMapping(value = "role")

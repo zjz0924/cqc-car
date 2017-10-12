@@ -30,10 +30,10 @@ import cn.wow.common.service.AccountService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.RolePermissionService;
+import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.operationlog.ClientInfo;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
-import cn.wow.support.utils.Contants;
 
 public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 	private static Logger logger = LoggerFactory.getLogger(FormAuthenticationExtendFilter.class);
@@ -69,8 +69,9 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 			session.setAttribute(Contants.CURRENT_ACCOUNT, account);
 
 			// 菜单信息
-			Set<String> illegalMenu = new HashSet<String>();
+			Set<Long> illegalMenu = new HashSet<Long>();
 			session.setAttribute(Contants.CURRENT_PERMISSION_MENU, getPermission(account, illegalMenu));
+			// 没有权限的菜单ID
 			session.setAttribute(Contants.CURRENT_ILLEGAL_MENU, illegalMenu);
 
 			// 判断用户客户端信息
@@ -92,7 +93,7 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 	/**
 	 * 获取当前角色的菜单
 	 */
-	private List<Menu> getPermission(Account account, Set<String> illegalMenu) {
+	private List<Menu> getPermission(Account account, Set<Long> illegalMenu) {
 		List<Menu> emptyData = new ArrayList<Menu>();		
 		
 		if (account.getRole() != null) {
@@ -128,31 +129,31 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 										Menu sMenu = sIt.next();
 
 										if (!legalMenu.contains(sMenu.getId().toString())) {
+											illegalMenu.add(sMenu.getId());
 											sIt.remove();
-											illegalMenu.add(subMenu.getAlias());
 										}
 									}
 
 									if (sList == null || sList.size() < 1) {
+										illegalMenu.add(subMenu.getId());
 										subIt.remove();
-										illegalMenu.add(menu.getAlias());
 									}
 								} else {
 									if (!legalMenu.contains(subMenu.getId().toString())) {
+										illegalMenu.add(subMenu.getId());
 										subIt.remove();
-										illegalMenu.add(subMenu.getAlias());
 									}
 								}
 							}
 
 							if (subList == null || subList.size() < 1) {
+								illegalMenu.add(menu.getId());
 								it.remove();
-								illegalMenu.add(menu.getAlias());
 							}
 						} else {
 							if (!legalMenu.contains(menu.getId().toString())) {
+								illegalMenu.add(menu.getId());
 								it.remove();
-								illegalMenu.add(menu.getAlias());
 							}
 						}
 					}

@@ -18,15 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.Page;
 
-import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Dictionary;
-import cn.wow.common.domain.Org;
-import cn.wow.common.domain.Role;
 import cn.wow.common.service.DictionaryService;
 import cn.wow.common.utils.AjaxVO;
-import cn.wow.common.utils.cookie.MD5;
 import cn.wow.common.utils.pagination.PageMap;
-import cn.wow.support.utils.Contants;
 
 /**
  * 字典控制器

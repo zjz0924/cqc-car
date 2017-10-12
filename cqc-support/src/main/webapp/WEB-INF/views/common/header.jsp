@@ -89,28 +89,29 @@
 						<c:forEach items="${currentMenuList}" var="vo">
 							<li class="base <c:if test='${vo.isAuthorized == false}'>nojuris</c:if>" _t_nav="YWGL">
 								<a href="${ctx}/${vo.url}" class="base_a">${vo.name}</a>
-								<c:if test="${vo.isAuthorized == true}">
-									<ul>
-										<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
-											<li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if> <c:if test="${not empty subVo.subList}">hasitemli</c:if>">
-												<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
-												
-												<c:if test="${not empty subVo.subList}">
-												   <ul>
-												   	  <c:forEach items="${subVo.subList}" var="tVo" varStatus="vst">
-												   	  	 <li class="subli <c:if test='${subVo.isAuthorized == false}'>nojuris</c:if>">
-															<a href="${ctx}/${vo.url}?choose=${vst.index}">${tVo.name}</a>
-														 </li>
-												   	  </c:forEach>
-												   </ul>
-												</c:if>
-											</li>
-										</c:forEach>
-									</ul>
-								</c:if>
+								<ul>
+									<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
+										<li class="subli  <c:if test="${not empty subVo.subList}">hasitemli</c:if>">
+											<c:choose>
+												<c:when test="${not empty subVo.subList}">	
+													   <a href="${ctx}/${subVo.url}">${subVo.name}</a>
+													   <ul>
+													   	  <c:forEach items="${subVo.subList}" var="tVo" varStatus="tst">
+													   	  	 <li class="subli">
+																<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
+															 </li>
+													   	  </c:forEach>
+													   </ul>
+												</c:when>
+												<c:otherwise>
+													<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+												</c:otherwise>
+											</c:choose>
+										</li>
+									</c:forEach>
+								</ul>
 							</li>
 						</c:forEach>
-						
 					</ul>
 				</nav>
 

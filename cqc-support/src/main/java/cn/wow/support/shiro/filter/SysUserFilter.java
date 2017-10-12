@@ -2,14 +2,14 @@ package cn.wow.support.shiro.filter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.shiro.web.filter.PathMatchingFilter;
-import cn.wow.support.utils.Contants;
 
 /**
  * 可用于更新数据

@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.github.pagehelper.Page;
+
 import cn.wow.common.domain.Parts;
 import cn.wow.common.service.PartsService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
-import cn.wow.support.utils.Contants;
 
 /**
  * 零部件信息
@@ -49,7 +51,7 @@ public class PartsController extends AbstractController {
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
-		return "info/parts/parts_list";
+		return "task/ots/parts/parts_list";
 	}
 
 	/**
@@ -69,12 +71,11 @@ public class PartsController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "code asc");
+		map.put("state", Contants.FINISH_TYPE);
+		map.put("type", Contants.STANDARD_TYPE);
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("qcode", code);
-		}
-		if (StringUtils.isNotBlank(type)) {
-			map.put("type", type);
 		}
 		if (StringUtils.isNotBlank(startProTime)) {
 			map.put("startProTime", startProTime);
@@ -124,7 +125,7 @@ public class PartsController extends AbstractController {
 			model.addAttribute("facadeBean", parts);
 		}
 		model.addAttribute("resUrl", resUrl);
-		return "info/parts/parts_detail";
+		return "task/ots/parts/parts_detail";
 	}
 
 	@ResponseBody

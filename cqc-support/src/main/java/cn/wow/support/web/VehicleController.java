@@ -18,6 +18,7 @@ import com.github.pagehelper.Page;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 
 /**
@@ -31,7 +32,7 @@ public class VehicleController extends AbstractController {
 
 	Logger logger = LoggerFactory.getLogger(VehicleController.class);
 
-	private final static String DEFAULT_PAGE_SIZE = "20";
+	private final static String DEFAULT_PAGE_SIZE = "10";
 
 	@Autowired
 	private VehicleService vehicleService;
@@ -39,7 +40,7 @@ public class VehicleController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
-		return "info/vehicle/vehicle_list";
+		return "task/ots/vehicle/vehicle_list";
 	}
 
 	/**
@@ -58,6 +59,7 @@ public class VehicleController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "code asc");
+		map.put("state", Contants.FINISH_TYPE);
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -94,7 +96,7 @@ public class VehicleController extends AbstractController {
 
 			model.addAttribute("facadeBean", vehicle);
 		}
-		return "info/vehicle/vehicle_detail";
+		return "task/ots/vehicle/vehicle_detail";
 	}
 
 	@ResponseBody

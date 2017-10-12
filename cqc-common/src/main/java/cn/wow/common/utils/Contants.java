@@ -1,4 +1,4 @@
-package cn.wow.support.utils;
+package cn.wow.common.utils;
 
 public class Contants {
 	
@@ -21,4 +21,11 @@ public class Contants {
 	public static final Integer STANDARD_TYPE = 1;
 	// 抽样类型
 	public static final Integer SAMPLE_TYPE = 2;
+	
+	// 信息状态
+	// 审核中状态
+	public static final Integer ONDOING_TYPE = 0;
+	// 归档
+	public static final Integer FINISH_TYPE = 1;
+	
 }

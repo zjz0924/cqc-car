@@ -17,12 +17,13 @@
 		<result column="mat_producer" property="matProducer" jdbcType="VARCHAR" />
 		<result column="pic" property="pic" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 
 	<sql id="base_columns">
 		id, type, code, name, producer, pro_time, place, pro_no, technology, mat_name, mat_no,
-		mat_color, mat_producer, pic, remark, create_time
+		mat_color, mat_producer, pic, remark, create_time, state
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -38,13 +39,17 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Parts">
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+			SELECT @@IDENTITY
+		</selectKey>
+		
 		insert into parts (type, code, name, producer, pro_time, place, pro_no, technology,
-			mat_name, mat_no, mat_color, mat_producer, pic, remark, create_time)
+			mat_name, mat_no, mat_color, mat_producer, pic, remark, create_time, state)
 		values (#{type,jdbcType=INTEGER},
 		#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE},
 		#{place,jdbcType=VARCHAR}, #{proNo,jdbcType=VARCHAR}, #{technology,jdbcType=VARCHAR},
 		#{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR},
-		#{matProducer,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP}
+		#{matProducer,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}
 		)
 	</insert>
 	
@@ -87,6 +92,9 @@
 			<if test="matProducer != null">
 				mat_producer = #{matProducer,jdbcType=VARCHAR},
 			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
 			<if test="pic != null">
 				pic = #{pic,jdbcType=VARCHAR},
 			</if>
@@ -115,6 +123,10 @@
 		      <if test="type != null and type != ''" >
 		        and type = #{type,jdbcType=INTEGER}
 		      </if>
+		      
+		      <if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			</if>
 		      
 		     <if test="startProTime != null and startProTime != ''">  
 		    	and pro_time &gt;= #{startProTime, jdbcType=DATE}

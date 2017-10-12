@@ -25,6 +25,9 @@ public class Vehicle extends JpaEntity{
     //备注
     private String remark;
     
+    // 状态(0-审批中, 1-完成)
+    private Integer state;
+    
     private Date createTime;
 
     public Long getId() {
@@ -82,6 +85,14 @@ public class Vehicle extends JpaEntity{
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+    
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 
 	@JsonIgnore
 	public Serializable getPrimaryKey() {
