@@ -125,12 +125,23 @@
 		</div>
 
 		 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="examine(${facadeBean.id}, 1, '')" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">通过</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);"  onclick="notPass()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不通过</a>
+			<a href="javascript:void(0);"  onclick="doTransmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">分配任务</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);"  onclick="$('#transmitDetailDialog').dialog('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 		</div>
 
-		<div id="dlg" class="easyui-dialog" title="审核不通过" style="width: 400px; height: 200px; padding: 10px" closed="true">
-			<input id="remark" class="easyui-textbox" label="不通过原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
+		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 400px; height: 200px; padding: 10px" closed="true">
+			<div>
+				<span class="title-span">热重分析：</span>
+				<input id="tgLabe" name="tgLabe">
+			</div>
+			<div style="margin-top:5px;">
+				<span class="title-span">差热扫描： </span>
+				<input id="dtLab" name="dtLab">
+			</div>
+			<div style="margin-top:5px;">
+				<span class="title-span">红外光分析：</span>
+				<input id="infLab" name="infLab">
+			</div>
 			
 			<div align=center style="margin-top: 15px;">
 				<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
@@ -144,6 +155,11 @@
 			margin-left: 10px;
 			margin-bottom: 8px;
 			font-size: 14px;
+		}
+		
+		.title-span{
+			display: inline-block;
+			width: 80px;
 		}
 		
 		.info{
@@ -172,39 +188,107 @@
 	</style>
 	
 	<script type="text/javascript">
-		function examine(id, type, remark){
+		$(function(){
+			$('#tgLabe').combotree({
+				url: '${ctx}/org/getTreeByType?type=3',
+				multiple: false,
+				animate: true,
+				width: '250px'				
+			});
+			
+			// 只有最底层才能选择
+			var tgLabeTree = $('#tgLabe').combotree('tree');	
+			tgLabeTree.tree({
+			   onBeforeSelect: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
+			
+			$('#dtLab').combotree({
+				url: '${ctx}/org/getTreeByType?type=3',
+				multiple: false,
+				animate: true,
+				width: '250px'					
+			});
+			
+			// 只有最底层才能选择
+			var dtLabTree = $('#dtLab').combotree('tree');	
+			dtLabTree.tree({
+			   onBeforeSelect: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
+			
+			$('#infLab').combotree({
+				url: '${ctx}/org/getTreeByType?type=3',
+				multiple: false,
+				animate: true,
+                width: '250px'					
+			});
+			
+			// 只有最底层才能选择
+			var infLabTree = $('#infLab').combotree('tree');	
+			infLabTree.tree({
+			   onBeforeSelect: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
+		});
+		
+		
+		function doTransmit(){
+			$("#dlg").dialog("open");
+		}
+		
+		function doSubmit(){
+			var tgLabe = $("#tgLabe").combotree("getValue")
+			var dtLab = $("#dtLab").combotree("getValue")
+			var infLab = $("#infLab").combotree("getValue")
+			
+			if(isNull(tgLabe)){
+				errorMsg("请为热重分析选择实验室");
+				return false;
+			}
+			
+			if(isNull(dtLab)){
+				errorMsg("请为差热扫描选择实验室");
+				return false;
+			}
+			
+			if(isNull(infLab)){
+				errorMsg("请为红外光分析选择实验室");
+				return false;
+			}
+			
 			$.ajax({
-				url: "${ctx}/ots/examine",
+				url: "${ctx}/ots/transmit",
 				data: {
-					"id": id,
-					"type": type,
-					"remark": remark
+					"id": '${facadeBean.id}',
+					"tgLabe": tgLabe,
+					"dtLab": dtLab,
+					"infLab": infLab
 				},
 				success: function(data){
 					if(data.success){
+						$("#dlg").dialog("close");
 						closeDialog(data.msg);
 					}else{
 						errorMsg(data.msg);						
 					}
 				}
 			});
-		}
-		
-		function notPass(){
-			$("#remark").textbox("setValue", "");
-			$("#dlg").dialog("open");
-		}
-		
-		function doSubmit(){
-			var remark = $("#remark").textbox("getValue");
-			if(isNull(remark)){
-				errorMsg("请输入原因");
-				$("#remark").next('span').find('input').focus();
-				return false;
-			}
-			
-			examine("${facadeBean.id}", 2, remark);
-			$("#dlg").dialog("close");
 		}
 		
 		function doCancel(){

@@ -190,6 +190,16 @@ public class OrgController extends AbstractController {
 		List<TreeNode> areaTree = orgService.getTree(svalue, stype);
 		return areaTree;
 	}
+	
+	/**
+	 * 获取类型获取机构树
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTreeByType")
+	public List<TreeNode> getTreeByType(HttpServletRequest request, Model model, int type) {
+		List<TreeNode> areaTree = orgService.getTreeByType(type);
+		return areaTree;
+	}
 
 	/**
 	 * 机构信息

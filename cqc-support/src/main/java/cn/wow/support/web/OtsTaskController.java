@@ -33,9 +33,11 @@ import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.Task;
+import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
@@ -50,7 +52,12 @@ public class OtsTaskController extends AbstractController {
 	Logger logger = LoggerFactory.getLogger(PartsController.class);
 	
 	// 审核列表
-	private final static String EXAMINE_DEFAULT_PAGE_SIZE = "20";
+	private final static String EXAMINE_DEFAULT_PAGE_SIZE = "10";
+	// 下达任务列表
+	private final static String TRANSMIT_DEFAULT_PAGE_SIZE = "10";
+	// 任务记录列表
+	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
+	
 	
 	// 零部件图片上传图片
 	@Value("${info.parts.url}")
@@ -66,6 +73,8 @@ public class OtsTaskController extends AbstractController {
 	private InfoService infoService;
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private TaskRecordService taskRecordService;
 
 	/**
 	 * 首页
@@ -204,6 +213,7 @@ public class OtsTaskController extends AbstractController {
 	@RequestMapping(value = "/examineList")
 	public String examineList(HttpServletRequest request, HttpServletResponse response, Model model) {
 		model.addAttribute("defaultPageSize", EXAMINE_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		return "task/ots/examine_list";
 	}
 	
@@ -296,4 +306,144 @@ public class OtsTaskController extends AbstractController {
 		return vo;
 	}
 	
+	
+	/**
+	 * 任务下达列表
+	 */
+	@RequestMapping(value = "/transmitList")
+	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		return "task/ots/transmit_list";
+	}
+	
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/transmitListData")
+	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName) {
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", StandardTaskEnum.TRANSMIT.getState());
+		map.put("type", TaskTypeEnum.OTS.getState());
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+	
+	
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/transmitDetail")
+	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		if(id != null){
+			Task task = taskService.selectOne(id);
+			
+			model.addAttribute("facadeBean", task);
+		}
+		
+		model.addAttribute("resUrl", resUrl);
+		return "task/ots/transmit_detail";
+	}
+	
+	
+	/**
+	 * 下达任务结果
+	 * @param id      任务ID
+	 * @param tgLabe  热重分析实验室ID
+	 * @param dtLab   差热扫描实验室ID
+	 * @param infLab  红外光分析实验室ID
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/transmit")
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long tgLabe, Long dtLab, Long infLab){
+		AjaxVO vo = new AjaxVO();
+		
+		try{
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			infoService.transmit(account, id, tgLabe, dtLab, infLab);
+		}catch(Exception ex){
+			logger.error("OTS任务下达失败", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
+	/**
+	 * 任务记录列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/taskRecordListData")
+	public Map<String, Object> taskRecordListData(HttpServletRequest request, Model model, String code) {
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", RECORD_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "create_time ASC");
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+
+			List<TaskRecord> dataList = taskRecordService.selectAllList(map);
+
+			// 分页
+			Page<TaskRecord> pageList = (Page<TaskRecord>) dataList;
+
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			dataMap.put("total", pageList.getTotal());
+			dataMap.put("rows", pageList.getResult());
+			return dataMap;
+
+		} else {
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			dataMap.put("total", 0);
+			dataMap.put("rows", "");
+			return dataMap;
+		}
+	}
 }

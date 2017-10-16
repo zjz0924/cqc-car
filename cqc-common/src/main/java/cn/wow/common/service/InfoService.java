@@ -37,4 +37,14 @@ public interface InfoService {
      * @param state  任务状态
      */
     public void updateState(Long id, Integer state);
+    
+    /**
+     * 下达任务
+     * @param account   操作用户
+     * @param id        任务ID
+     * @param tgLabe    热重分析实验室ID
+	 * @param dtLab     差热扫描实验室ID
+	 * @param infLab    红外光分析实验室ID
+     */
+    public void transmit(Account account, Long id, Long tgLabe, Long dtLab, Long infLab);
 }

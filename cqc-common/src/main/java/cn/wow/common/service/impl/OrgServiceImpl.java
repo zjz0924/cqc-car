@@ -264,4 +264,70 @@ public class OrgServiceImpl implements OrgService{
 		}
 	}
 	
+	/**
+	 * 获取类型来获取机构树
+	 * @param type   1-通用五菱, 2-供应商, 3-实验室, 4-其它
+	 */
+	public List<TreeNode> getTreeByType(int type) {
+		Org rootOrg = orgDao.selectOne(1l);
+		TreeNode rootNode = new TreeNode();
+
+		List<TreeNode> tree = new ArrayList<TreeNode>();
+		if (rootOrg != null) {
+			rootNode.setId(rootOrg.getId().toString());
+			rootNode.setText(rootOrg.getName());
+
+			// 获取子集合
+			Iterator<Org> subList = rootOrg.getSubList().iterator();
+			if (subList.hasNext()) {
+				List<TreeNode> subNodeList = new ArrayList<TreeNode>();
+
+				// 遍历子节点
+				while (subList.hasNext()) {
+					Org subOrg = subList.next();
+					
+					if(subOrg.getType().intValue() == type){
+						TreeNode subOrgNode = new TreeNode();
+						subOrgNode.setId(subOrg.getId().toString());
+						subOrgNode.setText(subOrg.getName());
+
+						// 遍历子节点
+						addSonNode(subOrgNode, subOrg, type);
+						subNodeList.add(subOrgNode);
+					}
+				}
+				rootNode.setChildren(subNodeList);
+			}
+		}
+		tree.add(rootNode);
+
+		return tree;
+	}
+	
+	private void addSonNode(TreeNode subOrgNode, Org org, int type) {
+		// 获取子集合
+		Iterator<Org> subList = org.getSubList().iterator();
+
+		if (subList.hasNext()) {
+			List<TreeNode> subNodeList = new ArrayList<TreeNode>();
+
+			// 遍历子节点
+			while (subList.hasNext()) {
+				Org subOrg = subList.next();
+
+				if(subOrg.getType().intValue() == type){
+					TreeNode sonNode = new TreeNode();
+					sonNode.setId(subOrg.getId().toString());
+					sonNode.setText(subOrg.getName());
+
+					// 遍历子节点
+					addSonNode(sonNode, subOrg, type);
+					subNodeList.add(sonNode);
+				}
+				
+			}
+			subOrgNode.setChildren(subNodeList);
+		}
+	}
+	
 }

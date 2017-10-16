@@ -23,6 +23,12 @@ public interface OrgService {
      */
     public List<TreeNode> getTree(String svalue, String stype);
     
+    /**
+	 * 获取类型来获取机构树
+	 * @param type   1-通用五菱, 2-供应商, 3-实验室, 4-其它
+	 */
+    public List<TreeNode> getTreeByType(int type);
+    
     public int move(Org org, boolean update);
     
     public Org getByCode(String code);

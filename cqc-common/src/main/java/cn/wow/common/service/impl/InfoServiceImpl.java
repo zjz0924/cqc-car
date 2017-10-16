@@ -148,4 +148,25 @@ public class InfoServiceImpl implements InfoService {
 		}
 		taskRecordDao.insert(record);
 	}
+	
+	
+	/**
+	 * 下达任务
+	 */
+	public void transmit(Account account, Long id, Long tgLabe, Long dtLab, Long infLab) {
+		Task task = taskDao.selectOne(id);
+		task.setTgLabe(tgLabe);
+		task.setInfLab(infLab);
+		task.setDtLab(dtLab);
+		task.setState(StandardTaskEnum.APPROVE.getState());
+		taskDao.update(task);
+
+		// 操作记录
+		TaskRecord record = new TaskRecord();
+		record.setCreateTime(new Date());
+		record.setCode(task.getCode());
+		record.setaId(account.getId());
+		record.setState(StandardTaskRecordEnum.TRANSMIT.getState());
+		taskRecordDao.insert(record);
+	}
 }

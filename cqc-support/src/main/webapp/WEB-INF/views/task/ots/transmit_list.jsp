@@ -34,16 +34,15 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/examineListData?time=" + new Date();
-			var datagrid = "examineTable";
-			
-			var recordDatagrid = "taskRecordTable";
+			var getDataUrl = "${ctx}/ots/transmitListData?time=" + new Date();
 			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
+			var datagrid = "transmitTable";
+			var recordDatagrid = "taskRecordTable";
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
 			
-			
 			$(function(){
+				 // 任务列表
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
@@ -95,11 +94,11 @@
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
+							return '<a href="javascript:void(0)" onclick="transmitDetail('+ row.id +')">下达任务</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						examineDetail(rowData.id);
+						transmitDetail(rowData.id);
 					},
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
@@ -125,6 +124,7 @@
 						getData(datagrid, getDataUrl, data);
 					}
 				});
+				
 				
 				// 任务记录列表
 				$("#" + recordDatagrid).datagrid({
@@ -200,7 +200,8 @@
 						formatter : DateTimeFormatter
 					}  ] ]
 				});
-				
+				 
+				 
 				$("#" + recordDatagrid).datagrid('getPager').pagination({
 					pageSize : "${recordPageSize}",
 					pageNumber : 1,
@@ -214,6 +215,7 @@
 						getData(recordDatagrid, getRecordUrl, data);
 					}
 				});
+				
 			});
 		
 			function doSearch() {
@@ -246,23 +248,23 @@
 			// 关掉对话时回调
 			function closeDialog(msg) {
 				tipMsg(msg, function(){
-					$('#examineDetailDialog').dialog('close');
+					$('#transmitDetailDialog').dialog('close');
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
-			function examineDetail(id) {
-				$('#examineDetailDialog').dialog({
-					title : '审核信息',
+			function transmitDetail(id) {
+				$('#transmitDetailDialog').dialog({
+					title : '下达任务信息',
 					width : 900,
 					height : 765,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/examineDetail?id=" + id,
+					href : "${ctx}/ots/transmitDetail?id=" + id,
 					modal : true
 				});
-				$('#examineDetailDialog').window('center');
+				$('#transmitDetailDialog').window('center');
 			}
 			
 		</script>
@@ -293,13 +295,13 @@
 		</div>
 	
 		<div style="margin-top:10px;">
-			<table id="examineTable" style="height:auto;width:auto"></table>
+			<table id="transmitTable" style="height:auto;width:auto"></table>
 		</div>
 		
 		<div style="margin-top:10px;">
 			<table id="taskRecordTable" style="height:auto;width:auto"></table>
 		</div>
 		
-		<div id="examineDetailDialog"></div>
+		<div id="transmitDetailDialog"></div>
 	</body>	
 </html>
