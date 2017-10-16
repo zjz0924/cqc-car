@@ -2,6 +2,8 @@ package cn.wow.common.service;
 
 import java.util.List;
 import java.util.Map;
+
+import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
@@ -18,5 +20,21 @@ public interface InfoService {
 
     public List<Info> selectAllList(Map<String, Object> map);
     
-    public int insert(Vehicle vehicle, Parts parts, Material material, int type);
+    public int insert(Account account, Vehicle vehicle, Parts parts, Material material, int type);
+    
+    /**
+     * 审核
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param type     结果：1-通过，2-不通过
+     * @param remark   备注
+     */
+    public void examine(Account account, Long id, int type, String remark);
+    
+    /**
+     * 更新任务状态
+     * @param id     任务ID
+     * @param state  任务状态
+     */
+    public void updateState(Long id, Integer state);
 }

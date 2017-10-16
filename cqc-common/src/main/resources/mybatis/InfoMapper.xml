@@ -11,9 +11,9 @@
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		
-		<association property="vehicle" javaType="cn.wow.common.domain.Vehicle" column="role_id" select="cn.wow.common.dao.VehicleDao.selectOne"/>
-		<association property="parts" javaType="cn.wow.common.domain.Parts" column="role_id" select="cn.wow.common.dao.PartsDao.selectOne"/>
-		<association property="material" javaType="cn.wow.common.domain.Material" column="role_id" select="cn.wow.common.dao.MaterialDao.selectOne"/>
+		<association property="vehicle" javaType="cn.wow.common.domain.Vehicle" column="v_id" select="cn.wow.common.dao.VehicleDao.selectOne"/>
+		<association property="parts" javaType="cn.wow.common.domain.Parts" column="p_id" select="cn.wow.common.dao.PartsDao.selectOne"/>
+		<association property="material" javaType="cn.wow.common.domain.Material" column="m_id" select="cn.wow.common.dao.MaterialDao.selectOne"/>
 	</resultMap>
 	
 	<sql id="base_columns">

@@ -16,25 +16,32 @@ public class Task {
     private Long iId;
     
     private Info info;
-
     // 申请机构ID
     private Long orgId;
-
+    
+    private Org org;
+    // 申请人
+    private Long aId;
+    
+    private Account account;
+    
     // 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
     private Integer type;
-
-    // 状态
+    /** 
+     * 	状态：
+     *  OTS、材料研究所任务： 1-审核中，2-下达中，3-审批中，4-结果上传中，5-结果发送中，6-结果确认中，7-完成
+     *  PPAP、SOP： 1-下达中，2-审批中，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成
+     */
     private Integer state;
-
     // 热重实验室ID
     private Long tgLabe;
-
     // 红外实验室ID
     private Long infLab;
-
     // 差热实验室ID
     private Long dtLab;
-
+    // 结果确认失败次数
+    private Integer failNum;
+    
     private String remark;
 
     private Date createTime;
@@ -133,5 +140,37 @@ public class Task {
 
 	public void setInfo(Info info) {
 		this.info = info;
+	}
+
+	public Integer getFailNum() {
+		return failNum;
+	}
+
+	public void setFailNum(Integer failNum) {
+		this.failNum = failNum;
+	}
+
+	public Org getOrg() {
+		return org;
+	}
+
+	public void setOrg(Org org) {
+		this.org = org;
+	}
+
+	public Long getaId() {
+		return aId;
+	}
+
+	public void setaId(Long aId) {
+		this.aId = aId;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 }

@@ -2,7 +2,10 @@ package cn.wow.support.web;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,21 +26,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.Page;
 
+import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
+import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.StandardTaskEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Controller
 @RequestMapping(value = "ots")
 public class OtsTaskController extends AbstractController {
 	
 	Logger logger = LoggerFactory.getLogger(PartsController.class);
+	
+	// 审核列表
+	private final static String EXAMINE_DEFAULT_PAGE_SIZE = "20";
 	
 	// 零部件图片上传图片
 	@Value("${info.parts.url}")
@@ -51,6 +64,8 @@ public class OtsTaskController extends AbstractController {
 	private MenuService menuService;
 	@Autowired
 	private InfoService infoService;
+	@Autowired
+	private TaskService taskService;
 
 	/**
 	 * 首页
@@ -97,6 +112,9 @@ public class OtsTaskController extends AbstractController {
 		return "task/ots/require";
 	}
 	
+	/**
+	 * 任务申请保存
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String v_code, String v_type, String v_proTime,
@@ -164,7 +182,8 @@ public class OtsTaskController extends AbstractController {
 				material.setPic(pic);
 			}
 			
-			infoService.insert(vehicle, parts, material, Contants.STANDARD_TYPE);
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("OTS任务申请失败", ex);
@@ -177,4 +196,104 @@ public class OtsTaskController extends AbstractController {
 		vo.setMsg("保存成功");
 		return vo;
 	}
+	
+	
+	/**
+	 * 审核列表
+	 */
+	@RequestMapping(value = "/examineList")
+	public String examineList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		model.addAttribute("defaultPageSize", EXAMINE_DEFAULT_PAGE_SIZE);
+		return "task/ots/examine_list";
+	}
+	
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/examineListData")
+	public Map<String, Object> examineListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName) {
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", EXAMINE_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", StandardTaskEnum.EXAMINE.getState());
+		map.put("type", TaskTypeEnum.OTS.getState());
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+	
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/examineDetail")
+	public String examineDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		if(id != null){
+			Task task = taskService.selectOne(id);
+			
+			model.addAttribute("facadeBean", task);
+		}
+		
+		model.addAttribute("resUrl", resUrl);
+		return "task/ots/examine_detail";
+	}
+	
+	/**
+	 * 审核结果
+	 * @param id      任务ID
+	 * @param type    结果： 1-通过， 2-不通过
+	 * @param remark  备注
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/examine")
+	public AjaxVO examine(HttpServletRequest request, Model model, Long id, int type, String remark){
+		AjaxVO vo = new AjaxVO();
+		
+		try{
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			infoService.examine(account, id, type, remark);
+		}catch(Exception ex){
+			logger.error("OTS任务审核失败", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
 }

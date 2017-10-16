@@ -8,6 +8,7 @@
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<association property="account" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
@@ -23,7 +24,7 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.TaskRecord">
-		insert into task_record (id, code, a_id, state, remark, create_time)
+		insert into task_record (code, a_id, state, remark, create_time)
 			values (#{code,jdbcType=VARCHAR}, #{aId,jdbcType=BIGINT}, #{state,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
 		)
 	</insert>
