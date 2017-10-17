@@ -128,7 +128,57 @@
 		
 		<c:choose>
 			<c:when test="${type == 1}">
-			
+				<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
+				<div class="title">型式试验结果</div>
+				<div>
+					<table class="info">
+						<tr>
+							<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+							<td class="title-td"><span class="req-span">*</span>试验项目</td>
+							<td class="title-td"><span class="req-span">*</span>参考标准</td>
+							<td class="title-td"><span class="req-span">*</span>试验要求</td>
+							<td class="title-td"><span class="req-span">*</span>试验结果</td>
+							<td class="title-td"><span class="req-span">*</span>结果评价</td>
+							<td class="title-td">备注</td>
+						</tr>
+						
+						<c:forEach var="i" begin="1" end="2" varStatus="status">
+							<tr num="${status.index}">
+								<td style="background: #f5f5f5;padding-left:5px;">${status.index}</td>
+								<td class="value-td1">
+									<input id="project_${status.index}" name="project_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="project_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="standard_${status.index}" name="standard_${status.index}" class="easyui-textbox" style="width:95%">
+									<span id="standard_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="require_${status.index}" name="require_${status.index}" class="easyui-textbox" style="width:95%">
+									<span id="require_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="result_${status.index}" name="result_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="result_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="evaluate_${status.index}" name="evaluate_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="evaluate_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="remark_${status.index}" name="remark_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="remark_${status.index}_error" class="req-span"></span>
+								</td>
+							</tr>
+						</c:forEach>
+					</table>
+					
+					<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="patternError"></div>
+					<div align="center" style="margin-top:10px;">
+						<a href="javascript:void(0);"  onclick="upload()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">上传</a>
+						<a href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+					</div>
+				</div>
 			</c:when>
 			<c:otherwise>
 				<form method="POST" enctype="multipart/form-data" id="uploadForm">
@@ -175,7 +225,8 @@
 						</table>
 					</div>
 				
-					<div align="center" style="margin-top:25px;">
+					<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="atlasError"></div>
+					<div align="center" style="margin-top:10px;">
 						<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">上传</a>
 						<a href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 					</div>
@@ -186,6 +237,7 @@
 			
 	
 	<script type="text/javascript">
+		// 图谱结果保存
 		function doSubmit(){
 			// 热重分析图谱
 			var tgLabDir = $("#tgLab_pic").filebox("getValue");
@@ -245,7 +297,102 @@
 					if(data.success){
 						closeDialog(data.msg);
 					}else{
-						errorMsg(data.msg);
+						$("#atlasError").html(data.msg);
+					}
+				}
+			});
+		}
+		
+		// 型式试验结果上传
+		function upload(){
+			var dataArray = [];
+			var date = new Date();
+			var flag = true;
+			
+			$("tr[num]").each(function(){
+				var num = $(this).attr("num");
+				
+				// 实验项目
+				var project = $("#project_" + num).textbox("getValue");
+				if(isNull(project)){
+					$("#project_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#project_"+ num +"_error").html("");
+				}
+				
+				//参考标准
+				var standard = $("#standard_" + num).textbox("getValue");
+				if(isNull(standard)){
+					$("#standard_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#standard_"+ num +"_error").html("");
+				}
+				
+				// 试验要求
+				var require = $("#require_" + num).textbox("getValue");
+				if(isNull(require)){
+					$("#require_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#require_"+ num +"_error").html("");
+				}
+				
+				// 试验结果
+				var result = $("#result_" + num).textbox("getValue");
+				if(isNull(result)){
+					$("#result_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#result_"+ num +"_error").html("");
+				}
+				
+				// 结果评价
+				var evaluate = $("#evaluate_" + num).textbox("getValue");
+				if(isNull(evaluate)){
+					$("#evaluate_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#evaluate_"+ num +"_error").html("");
+				}
+				
+				var remark = $("#remark_" + num).textbox("getValue");
+				
+				var obj = new Object();
+				obj.project = project;
+				obj.standard = standard;
+				obj.require = require;
+				obj.result = result;
+				obj.evaluate = evaluate;
+				obj.remark = remark;
+				obj.tId = '${facadeBean.id}';
+				obj.createTime = date;
+				dataArray.push(obj);
+			});
+			
+			if(!flag){
+				return false;
+			}
+			
+			$.ajax({
+				url: "${ctx}/result/patternUpload?time=" + new Date(),
+				type:'post',
+                dataType:"json",
+				data: {
+					"taskId": '${facadeBean.id}',
+					"result": JSON.stringify(dataArray)  
+				},
+				success:function(data){
+					if(data.success){
+						closeDialog(data.msg);
+					}else{
+						$("#patternError").html(data.msg);
 					}
 				}
 			});
@@ -287,6 +434,11 @@
 		
 		.value-td{
 			width:32%;
+			background: #f5f5f5;
+			padding-left: 5px;
+		}
+		
+		.value-td1{
 			background: #f5f5f5;
 			padding-left: 5px;
 		}

@@ -21,15 +21,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.Menu;
+import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
-import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
@@ -61,9 +64,9 @@ public class ResultController extends AbstractController {
 	@Autowired
 	private TaskService taskService;
 	@Autowired
-	private InfoService infoService;
-	@Autowired
 	private AtlasResultService atlasResultService;
+	@Autowired
+	private PfResultService pfResultService;
 	
 	
 	/**
@@ -165,7 +168,7 @@ public class ResultController extends AbstractController {
 	}
 
 	/**
-	 * 审批结果
+	 * 图谱结果上传
 	 * 
 	 * @param taskId  任务ID
 	 * @param tgLab   热重分析描述
@@ -231,6 +234,40 @@ public class ResultController extends AbstractController {
 			return vo;
 		}
 
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
+	/**
+	 * 型式结果上传
+	 * 
+	 * @param taskId  任务ID
+	 * @param tgLab   热重分析描述
+	 * @param infLab  红外光分析描述
+	 * @param dtLab   差热扫描描述
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/patternUpload")
+	public AjaxVO patternUpload(HttpServletRequest request, Model model, Long taskId, String result){
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+	        List<PfResult> dataList = mapper.readValue(result,new TypeReference<List<PfResult>>() { });
+	        
+	        Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+	        pfResultService.upload(account, dataList, taskId);
+	        
+		}catch(Exception ex){
+			logger.error("型式结果上传失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;
