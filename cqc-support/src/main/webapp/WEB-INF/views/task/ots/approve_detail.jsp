@@ -123,14 +123,36 @@
 				</tr>
 			</table>
 		</div>
-
-		 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="examine(${facadeBean.id}, 1, '')" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">通过</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);"  onclick="notPass()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不通过</a>
+		
+		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		
+		<div class="title">试验信息</div>
+		<div>
+			<table class="info">
+				<tr>
+					<td class="title-td">试验名称</td>
+					<td class="title-td">分配实验室</td>
+				</tr>
+				
+				<tr>
+					<td class="value-td">图谱试验</td>
+					<td class="value-td">${facadeBean.atlas.name}</td>
+				</tr>
+				
+				<tr>
+					<td class="value-td">型式试验</td>
+					<td class="value-td">${facadeBean.pattern.name}</td>
+				</tr>
+			</table>
 		</div>
 
-		<div id="dlg" class="easyui-dialog" title="审核不通过" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
-			<input id="remark" class="easyui-textbox" label="不通过原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
+		 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
+			<a href="javascript:void(0);"  onclick="approve(${facadeBean.id}, 1, '')" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);"  onclick="notPass()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+		</div>
+
+		<div id="dlg" class="easyui-dialog" title="审批" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
+			<input id="remark" class="easyui-textbox" label="不同意原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
 			
 			<div align=center style="margin-top: 15px;">
 				<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
@@ -172,9 +194,9 @@
 	</style>
 	
 	<script type="text/javascript">
-		function examine(id, type, remark){
+		function approve(id, type, remark){
 			$.ajax({
-				url: "${ctx}/ots/examine",
+				url: "${ctx}/ots/approve",
 				data: {
 					"id": id,
 					"type": type,
@@ -203,7 +225,7 @@
 				return false;
 			}
 			
-			examine("${facadeBean.id}", 2, remark);
+			approve("${facadeBean.id}", 2, remark);
 			$("#dlg").dialog("close");
 		}
 		

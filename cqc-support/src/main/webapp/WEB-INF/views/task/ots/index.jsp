@@ -73,7 +73,11 @@
 		<%@include file="../../common/header.jsp"%>
 		
 		<!--banner-->
-		<div class="inbanner XSLR"></div>
+		<div class="inbanner XSLR">
+			<span style="font-size: 30px;font-weight: bold; margin-top: 70px; display: inline-block; margin-left: 80px;color: #4169E1">${menuName}</span>
+		</div>
+		
+		    
 		
 		<div style="width: auto;height: 900px; min-height: 650px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
 			<div id="systemTabs" style="width:100%;height:auto;" data-options="plain: true,pill: true, justified: true, narrow: false">

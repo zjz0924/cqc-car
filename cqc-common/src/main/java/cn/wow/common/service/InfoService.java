@@ -42,9 +42,18 @@ public interface InfoService {
      * 下达任务
      * @param account   操作用户
      * @param id        任务ID
-     * @param tgLabe    热重分析实验室ID
-	 * @param dtLab     差热扫描实验室ID
-	 * @param infLab    红外光分析实验室ID
+     * @param atlasLab    图谱实验室ID
+	 * @param patternLab  型式实验室ID
      */
-    public void transmit(Account account, Long id, Long tgLabe, Long dtLab, Long infLab);
+    public void transmit(Account account, Long id, Long atlasLab, Long patternLab);
+    
+    
+    /**
+     * 审批
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param type     结果：1-通过，2-不通过
+     * @param remark   备注
+     */
+    public void approve(Account account, Long id, int type, String remark);
 }

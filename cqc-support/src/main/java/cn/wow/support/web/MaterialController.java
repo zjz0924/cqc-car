@@ -130,7 +130,7 @@ public class MaterialController extends AbstractController {
 					material.setProducerAdd(producerAdd);
 					
 					if (file != null && !file.isEmpty()) {
-						String pic = uploadImg(file, materialUrl);
+						String pic = uploadImg(file, materialUrl, true);
 						material.setPic(pic);
 					}
 					
@@ -150,7 +150,7 @@ public class MaterialController extends AbstractController {
 				material.setCreateTime(new Date());
 				
 				if (file != null && !file.isEmpty()) {
-					String pic = uploadImg(file, materialUrl);
+					String pic = uploadImg(file, materialUrl, true);
 					material.setPic(pic);
 				}
 				materialService.save(getCurrentUserName(), material);

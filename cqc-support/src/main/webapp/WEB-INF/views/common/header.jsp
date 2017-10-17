@@ -97,9 +97,20 @@
 													   <a href="${ctx}/${subVo.url}">${subVo.name}</a>
 													   <ul>
 													   	  <c:forEach items="${subVo.subList}" var="tVo" varStatus="tst">
-													   	  	 <li class="subli">
-																<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
-															 </li>
+													   	  	 
+													   	  	 <c:choose>
+													   	  	 	<c:when test="${empty subVo.url}">
+													   	  	 		<li class="subli">
+																		<a href="${ctx}/${tVo.url}">${tVo.name}</a>
+																	</li>
+													   	  	 	</c:when>
+													   	  	 	<c:otherwise>
+													   	  	 		<li class="subli">
+																		<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
+																	</li>
+													   	  	 	</c:otherwise>
+													   	  	 </c:choose>
+													   	  	 
 													   	  </c:forEach>
 													   </ul>
 												</c:when>

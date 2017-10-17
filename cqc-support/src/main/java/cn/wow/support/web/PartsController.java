@@ -158,7 +158,7 @@ public class PartsController extends AbstractController {
 					parts.setName(name);
 					
 					if (file != null && !file.isEmpty()) {
-						String pic = uploadImg(file, partsUrl);
+						String pic = uploadImg(file, partsUrl, true);
 						parts.setPic(pic);
 					}
 					
@@ -196,7 +196,7 @@ public class PartsController extends AbstractController {
 				parts.setCreateTime(new Date());
 				
 				if (file != null && !file.isEmpty()) {
-					String pic = uploadImg(file, partsUrl);
+					String pic = uploadImg(file, partsUrl, true);
 					parts.setPic(pic);
 				}
 				partsService.save(getCurrentUserName(), parts);

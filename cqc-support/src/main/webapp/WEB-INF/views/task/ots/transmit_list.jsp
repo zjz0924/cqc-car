@@ -167,20 +167,28 @@
 								if(val == 1){
 									str = "基准信息录入";
 								}else if(val == 2){
-									str = "任务审核";
+									str = "审核通过";
 								}else if(val == 3){
-									str = "任务下达";
+									str = "审核不通过";
 								}else if(val == 4){
-									str = "任务审批"
+									str = "任务下达"
 								}else if(val == 5){
-									str = "结果上传";
+									str = "审批同意";
 								}else if(val == 6){
-									str = "结果发送";
+									str = "审批不同意";
 								}else if(val == 7){
-									str = "结果确认";
+									str = "图谱结果上传";
 								}else if(val == 8){
-									str = "基准保存";
+									str = "型式结果上传";
 								}else if(val == 9){
+									str = "结果发送";
+								}else if(val == 10){
+									str = "结果确认合格";
+								}else if(val == 11){
+									str = "结果确认不合格";
+								}else if(val == 12){
+									str = "基准保存";
+								}else if(val == 13){
 									str = "收费通知";
 								}
 								return "<span title='" + str + "'>" + str + "</span>";
@@ -275,13 +283,13 @@
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
-					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入单位：</span>
-					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 138px;">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入用户：</span>
-					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					
 					<span class="qlabel">录入时间：</span>

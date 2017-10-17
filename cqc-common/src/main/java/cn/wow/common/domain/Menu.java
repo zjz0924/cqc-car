@@ -15,9 +15,6 @@ public class Menu extends JpaEntity {
 
     private String url;
 
-    @JsonIgnore
-    private String logo;
-
     private Long pId;
 
     private Integer sortNum;
@@ -58,14 +55,6 @@ public class Menu extends JpaEntity {
 
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo == null ? null : logo.trim();
     }
 
     public Long getpId() {

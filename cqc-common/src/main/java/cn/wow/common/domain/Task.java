@@ -14,36 +14,37 @@ public class Task {
     private String code;
     // 信息ID
     private Long iId;
-    
     private Info info;
     // 申请机构ID
     private Long orgId;
-    
     private Org org;
     // 申请人
     private Long aId;
-    
     private Account account;
-    
     // 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
     private Integer type;
+    
     /** 
      * 	状态：
      *  OTS、材料研究所任务： 1-审核中，2-下达中，3-审批中，4-结果上传中，5-结果发送中，6-结果确认中，7-完成
      *  PPAP、SOP： 1-下达中，2-审批中，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成
      */
     private Integer state;
-    // 热重实验室ID
-    private Long tgLabe;
-    // 红外实验室ID
-    private Long infLab;
-    // 差热实验室ID
-    private Long dtLab;
+    // 图谱实验室ID
+    private Long atlasLab; 
+    private Org atlas;
+    // 图谱上传结果 (0-未上传，1-已上传)
+    private Integer atlasResult;
+    // 型式实验室ID
+    private Long patternLab;
+    private Org pattern;
+    // 型式上传结果(0-未上传，1-已上传) 
+    private Integer patternResult;
     // 结果确认失败次数
     private Integer failNum;
-    
+    // 备注
     private String remark;
-
+    // 创建时间
     private Date createTime;
 
     public Long getId() {
@@ -94,31 +95,23 @@ public class Task {
         this.state = state;
     }
 
-    public Long getTgLabe() {
-        return tgLabe;
-    }
+    public Long getAtlasLab() {
+		return atlasLab;
+	}
 
-    public void setTgLabe(Long tgLabe) {
-        this.tgLabe = tgLabe;
-    }
+	public void setAtlasLab(Long atlasLab) {
+		this.atlasLab = atlasLab;
+	}
 
-    public Long getInfLab() {
-        return infLab;
-    }
+	public Long getPatternLab() {
+		return patternLab;
+	}
 
-    public void setInfLab(Long infLab) {
-        this.infLab = infLab;
-    }
+	public void setPatternLab(Long patternLab) {
+		this.patternLab = patternLab;
+	}
 
-    public Long getDtLab() {
-        return dtLab;
-    }
-
-    public void setDtLab(Long dtLab) {
-        this.dtLab = dtLab;
-    }
-
-    public String getRemark() {
+	public String getRemark() {
         return remark;
     }
 
@@ -172,5 +165,37 @@ public class Task {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public Org getAtlas() {
+		return atlas;
+	}
+
+	public void setAtlas(Org atlas) {
+		this.atlas = atlas;
+	}
+
+	public Org getPattern() {
+		return pattern;
+	}
+
+	public void setPattern(Org pattern) {
+		this.pattern = pattern;
+	}
+
+	public Integer getAtlasResult() {
+		return atlasResult;
+	}
+
+	public void setAtlasResult(Integer atlasResult) {
+		this.atlasResult = atlasResult;
+	}
+
+	public Integer getPatternResult() {
+		return patternResult;
+	}
+
+	public void setPatternResult(Integer patternResult) {
+		this.patternResult = patternResult;
 	}
 }

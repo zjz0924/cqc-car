@@ -5,45 +5,18 @@
 	<head>
 		<meta charset="utf-8">
 		<title>SGMW</title>
-		<%@include file="../../common/source.jsp"%>
-		
-		<style type="text/css">
-			.datagrid-btable tr {
-				height: 30px;
-			}
-			
-			.datagrid-header {
-				background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
-			}
-			
-			.datagrid-header-row {
-				font-weight: bold;
-				height: 50px
-			}
-			
-			.datagrid-row-over, .datagrid-header td.datagrid-header-over {
-			    background: #e6e6e6;
-			    color: #00438a;
-			    cursor: default;
-			}
-			
-			.qlabel{
-				display: inline-block;
-				width: 63px;
-			}
-		</style>
+		<%@include file="../common/source.jsp"%>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/examineListData?time=" + new Date();
-			var datagrid = "examineTable";
-			
-			var recordDatagrid = "taskRecordTable";
+			var getDataUrl = "${ctx}/result/uploadListData?type=${type}";
 			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
+			var datagrid = "uploadTable";
+			var recordDatagrid = "taskRecordTable";
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
 			
-			
 			$(function(){
+				 // 任务列表
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
@@ -95,11 +68,11 @@
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="approveDetail('+ row.id +')">审核</a>';  	
+							return '<a href="javascript:void(0)" onclick="uploadDetail('+ row.id +')">上传结果</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						approveDetail(rowData.id);
+						uploadDetail(rowData.id);
 					},
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
@@ -125,6 +98,7 @@
 						getData(datagrid, getDataUrl, data);
 					}
 				});
+				
 				
 				// 任务记录列表
 				$("#" + recordDatagrid).datagrid({
@@ -208,7 +182,8 @@
 						formatter : DateTimeFormatter
 					}  ] ]
 				});
-				
+				 
+				 
 				$("#" + recordDatagrid).datagrid('getPager').pagination({
 					pageSize : "${recordPageSize}",
 					pageNumber : 1,
@@ -222,6 +197,7 @@
 						getData(recordDatagrid, getRecordUrl, data);
 					}
 				});
+				
 			});
 		
 			function doSearch() {
@@ -254,30 +230,37 @@
 			// 关掉对话时回调
 			function closeDialog(msg) {
 				tipMsg(msg, function(){
-					$('#approveDetailDialog').dialog('close');
+					$('#uploadDetailDialog').dialog('close');
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
-			function approveDetail(id) {
-				$('#approveDetailDialog').dialog({
-					title : '审核信息',
+			function uploadDetail(id) {
+				$('#uploadDetailDialog').dialog({
+					title : '结果上传信息',
 					width : 900,
 					height : 765,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/approveDetail?id=" + id,
+					href : "${ctx}/result/uploadDetail?id=" + id + "&type=${type}",
 					modal : true
 				});
-				$('#approveDetailDialog').window('center');
+				$('#uploadDetailDialog').window('center');
 			}
 			
 		</script>
 	</head>
 	
 	<body>
-		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
+		<%@include file="../common/header.jsp"%>
+		
+		<!--banner-->
+		<div class="inbanner XSLR">
+			<span style="font-size: 30px;font-weight: bold; margin-top: 70px; display: inline-block; margin-left: 80px;color: #4169E1">${menuName}</span>
+		</div>
+	
+		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;margin-left: 5%;margin-right: 5%;border: 1px solid #D3D3D3">
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
@@ -298,16 +281,44 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
 			</div>
-		</div>
-	
-		<div style="margin-top:10px;">
-			<table id="examineTable" style="height:auto;width:auto"></table>
-		</div>
+			
+			<div style="margin-top:10px;">
+				<table id="uploadTable" style="height:auto;width:auto"></table>
+			</div>
+			
+			<div style="margin-top:10px;">
+				<table id="taskRecordTable" style="height:auto;width:auto"></table>
+			</div>
+			
+			<div id="uploadDetailDialog"></div>
 		
-		<div style="margin-top:10px;">
-			<table id="taskRecordTable" style="height:auto;width:auto"></table>
 		</div>
+
 		
-		<div id="approveDetailDialog"></div>
+		<style type="text/css">
+			.datagrid-btable tr {
+				height: 30px;
+			}
+			
+			.datagrid-header {
+				background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
+			}
+			
+			.datagrid-header-row {
+				font-weight: bold;
+				height: 50px
+			}
+			
+			.datagrid-row-over, .datagrid-header td.datagrid-header-over {
+			    background: #e6e6e6;
+			    color: #00438a;
+			    cursor: default;
+			}
+			
+			.qlabel{
+				display: inline-block;
+				width: 63px;
+			}
+		</style>
 	</body>	
 </html>

@@ -123,20 +123,26 @@
 				</tr>
 			</table>
 		</div>
-
-		 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="examine(${facadeBean.id}, 1, '')" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">通过</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);"  onclick="notPass()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不通过</a>
-		</div>
-
-		<div id="dlg" class="easyui-dialog" title="审核不通过" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
-			<input id="remark" class="easyui-textbox" label="不通过原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
+		
+		
+		<c:choose>
+			<c:when test="${type == 1}">
 			
-			<div align=center style="margin-top: 15px;">
-				<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
-				<a href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
-			</div>
-		</div>
+			</c:when>
+			<c:otherwise>
+				<div>
+					<table class="info">
+						<tr>
+							<td class="title-td">图谱类型/td>
+							<td class="value-td">图谱描述</td>
+							<td class="value-td">选择图谱</td>
+							<td class="value-td">操作</td>
+						</tr>
+					</table>
+				</div>
+			
+			</c:otherwise>
+		</c:choose>
 	</div>
 			
 	<style type="text/css">
@@ -144,6 +150,11 @@
 			margin-left: 10px;
 			margin-bottom: 8px;
 			font-size: 14px;
+		}
+		
+		.title-span{
+			display: inline-block;
+			width: 80px;
 		}
 		
 		.info{
@@ -172,39 +183,12 @@
 	</style>
 	
 	<script type="text/javascript">
-		function examine(id, type, remark){
-			$.ajax({
-				url: "${ctx}/ots/examine",
-				data: {
-					"id": id,
-					"type": type,
-					"remark": remark
-				},
-				success: function(data){
-					if(data.success){
-						closeDialog(data.msg);
-					}else{
-						errorMsg(data.msg);						
-					}
-				}
-			});
-		}
-		
-		function notPass(){
-			$("#remark").textbox("setValue", "");
-			$("#dlg").dialog("open");
-		}
+		$(function(){
+
+		});
 		
 		function doSubmit(){
-			var remark = $("#remark").textbox("getValue");
-			if(isNull(remark)){
-				errorMsg("请输入原因");
-				$("#remark").next('span').find('input').focus();
-				return false;
-			}
-			
-			examine("${facadeBean.id}", 2, remark);
-			$("#dlg").dialog("close");
+	
 		}
 		
 		function doCancel(){

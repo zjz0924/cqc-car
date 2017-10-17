@@ -35,7 +35,7 @@ public class AbstractController {
 	/**
 	 * 普通照片上传
 	 */
-	public String uploadImg(MultipartFile multipartFile, String path) throws Exception {
+	public String uploadImg(MultipartFile multipartFile, String path, boolean isRename) throws Exception {
 		if (multipartFile != null && multipartFile.getSize() > 0) {
 			// 原始文件名
 			String sourceName = multipartFile.getOriginalFilename();
@@ -48,10 +48,11 @@ public class AbstractController {
 				uploadPathFile.mkdirs();
 			}
 
-			File srcFile = new File(uploadPath + newName);
-			multipartFile.transferTo(srcFile);
+			String fileName = isRename ? newName : sourceName;
 
-			return path + newName;
+			File srcFile = new File(uploadPath + fileName);
+			multipartFile.transferTo(srcFile);
+			return path + fileName;
 		}
 
 		return null;

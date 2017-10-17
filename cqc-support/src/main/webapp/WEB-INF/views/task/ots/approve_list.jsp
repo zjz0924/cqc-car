@@ -34,8 +34,8 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/examineListData?time=" + new Date();
-			var datagrid = "examineTable";
+			var getDataUrl = "${ctx}/ots/approveListData?time=" + new Date();
+			var datagrid = "approveTable";
 			
 			var recordDatagrid = "taskRecordTable";
 			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
@@ -95,7 +95,7 @@
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="approveDetail('+ row.id +')">审核</a>';  	
+							return '<a href="javascript:void(0)" onclick="approveDetail('+ row.id +')">审批</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
@@ -262,7 +262,7 @@
 			
 			function approveDetail(id) {
 				$('#approveDetailDialog').dialog({
-					title : '审核信息',
+					title : '审批信息',
 					width : 900,
 					height : 765,
 					closed : false,
@@ -301,7 +301,7 @@
 		</div>
 	
 		<div style="margin-top:10px;">
-			<table id="examineTable" style="height:auto;width:auto"></table>
+			<table id="approveTable" style="height:auto;width:auto"></table>
 		</div>
 		
 		<div style="margin-top:10px;">

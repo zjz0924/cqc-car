@@ -213,7 +213,7 @@ public class AccountController extends AbstractController {
 					
 					if(signType == 2){
 						if (file != null && !file.isEmpty()) {
-							String pic = uploadImg(file, signlUrl);
+							String pic = uploadImg(file, signlUrl, true);
 							account.setPic(pic);
 						}
 					}
@@ -250,7 +250,7 @@ public class AccountController extends AbstractController {
 					
 					if(signType == 2){
 						if (file != null && !file.isEmpty()) {
-							String pic = uploadImg(file, signlUrl);
+							String pic = uploadImg(file, signlUrl, true);
 							account.setPic(pic);
 						}
 					}

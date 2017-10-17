@@ -105,12 +105,14 @@ public class InfoServiceImpl implements InfoService {
 		Task task = new Task();
 		task.setCode(taskCode);
 		task.setCreateTime(date);
-		task.setiId(account.getId());
+		task.setiId(info.getId());
 		task.setOrgId(account.getOrgId());
 		task.setState(StandardTaskEnum.EXAMINE.getState());
 		task.setType(TaskTypeEnum.OTS.getState());
 		task.setFailNum(0);
 		task.setaId(account.getId());
+		task.setAtlasResult(0);
+		task.setPatternResult(0);
 		taskDao.insert(task);
 
 		// 操作记录
@@ -153,11 +155,10 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 下达任务
 	 */
-	public void transmit(Account account, Long id, Long tgLabe, Long dtLab, Long infLab) {
+	public void transmit(Account account, Long id, Long atlasLab, Long patternLab) {
 		Task task = taskDao.selectOne(id);
-		task.setTgLabe(tgLabe);
-		task.setInfLab(infLab);
-		task.setDtLab(dtLab);
+		task.setAtlasLab(atlasLab);
+		task.setPatternLab(patternLab);
 		task.setState(StandardTaskEnum.APPROVE.getState());
 		taskDao.update(task);
 
@@ -169,4 +170,29 @@ public class InfoServiceImpl implements InfoService {
 		record.setState(StandardTaskRecordEnum.TRANSMIT.getState());
 		taskRecordDao.insert(record);
 	}
+	
+	
+	/**
+     * 审批
+     */
+    public void approve(Account account, Long id, int type, String remark){
+    	Task task = taskDao.selectOne(id);
+		// 操作记录
+		TaskRecord record = new TaskRecord();
+		record.setCreateTime(new Date());
+		record.setCode(task.getCode());
+		record.setaId(account.getId());
+
+		if (type == 1) {
+			// 更新任务状态
+			this.updateState(task.getId(), StandardTaskEnum.UPLOADING.getState());
+			record.setState(StandardTaskRecordEnum.APPROVE_AGREE.getState());
+		} else {
+			// 审批不通过
+			this.updateState(task.getId(), StandardTaskEnum.TRANSMIT.getState());
+			record.setState(StandardTaskRecordEnum.APPROVE_DISAGREE.getState());
+			record.setRemark(remark);
+		}
+		taskRecordDao.insert(record);
+    }
 }

@@ -49,7 +49,7 @@ import cn.wow.common.utils.taskState.TaskTypeEnum;
 @RequestMapping(value = "ots")
 public class OtsTaskController extends AbstractController {
 	
-	Logger logger = LoggerFactory.getLogger(PartsController.class);
+	Logger logger = LoggerFactory.getLogger(OtsTaskController.class);
 	
 	// 审核列表
 	private final static String EXAMINE_DEFAULT_PAGE_SIZE = "10";
@@ -57,7 +57,8 @@ public class OtsTaskController extends AbstractController {
 	private final static String TRANSMIT_DEFAULT_PAGE_SIZE = "10";
 	// 任务记录列表
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
-	
+	// 任务审批列表
+	private final static String APPROVE_DEFAULT_PAGE_SIZE = "10";
 	
 	// 零部件图片上传图片
 	@Value("${info.parts.url}")
@@ -108,7 +109,9 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("menu", json);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-		}  
+		}
+        
+        model.addAttribute("menuName", menu.getName());
 		return "task/ots/index";
 	}
 	
@@ -169,7 +172,7 @@ public class OtsTaskController extends AbstractController {
 			parts.setCreateTime(date);
 			parts.setState(Contants.ONDOING_TYPE);
 			if (pfile != null && !pfile.isEmpty()) {
-				String pic = uploadImg(pfile, partsUrl);
+				String pic = uploadImg(pfile, partsUrl, true);
 				parts.setPic(pic);
 			}
 			
@@ -187,7 +190,7 @@ public class OtsTaskController extends AbstractController {
 			material.setState(Contants.ONDOING_TYPE);
 			
 			if (mfile != null && !mfile.isEmpty()) {
-				String pic = uploadImg(mfile, materialUrl);
+				String pic = uploadImg(mfile, materialUrl, true);
 				material.setPic(pic);
 			}
 			
@@ -383,19 +386,18 @@ public class OtsTaskController extends AbstractController {
 	
 	/**
 	 * 下达任务结果
-	 * @param id      任务ID
-	 * @param tgLabe  热重分析实验室ID
-	 * @param dtLab   差热扫描实验室ID
-	 * @param infLab  红外光分析实验室ID
+	 * @param id     	     任务ID
+	 * @param atlasLab    图谱实验室ID
+	 * @param patternLab  型式实验室ID
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long tgLabe, Long dtLab, Long infLab){
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long atlasLab, Long patternLab){
 		AjaxVO vo = new AjaxVO();
 		
 		try{
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.transmit(account, id, tgLabe, dtLab, infLab);
+			infoService.transmit(account, id, atlasLab, patternLab);
 		}catch(Exception ex){
 			logger.error("OTS任务下达失败", ex);
 			
@@ -445,5 +447,108 @@ public class OtsTaskController extends AbstractController {
 			dataMap.put("rows", "");
 			return dataMap;
 		}
+	}
+	
+	
+	/**
+	 * 任务审批列表
+	 */
+	@RequestMapping(value = "/approveList")
+	public String approveList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		return "task/ots/approve_list";
+	}
+	
+	
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/approveListData")
+	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName) {
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", APPROVE_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", StandardTaskEnum.APPROVE.getState());
+		map.put("type", TaskTypeEnum.OTS.getState());
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+	
+	
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/approveDetail")
+	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		if(id != null){
+			Task task = taskService.selectOne(id);
+			
+			model.addAttribute("facadeBean", task);
+		}
+		
+		model.addAttribute("resUrl", resUrl);
+		return "task/ots/approve_detail";
+	}
+	
+	
+	/**
+	 * 审批结果
+	 * @param id      任务ID
+	 * @param type    结果： 1-通过， 2-不通过
+	 * @param remark  备注
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/approve")
+	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int type, String remark){
+		AjaxVO vo = new AjaxVO();
+		
+		try{
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			infoService.approve(account, id, type, remark);
+		}catch(Exception ex){
+			logger.error("OTS任务审批失败", ex);
+			
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
 	}
 }

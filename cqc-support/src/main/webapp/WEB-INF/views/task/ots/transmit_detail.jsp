@@ -129,18 +129,14 @@
 			<a href="javascript:void(0);"  onclick="$('#transmitDetailDialog').dialog('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 		</div>
 
-		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 400px; height: 200px; padding: 10px" closed="true">
+		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
 			<div>
-				<span class="title-span">热重分析：</span>
-				<input id="tgLabe" name="tgLabe">
+				<span class="title-span">图谱试验：</span>
+				<input id="atlasLab" name="atlasLab">
 			</div>
 			<div style="margin-top:5px;">
-				<span class="title-span">差热扫描： </span>
-				<input id="dtLab" name="dtLab">
-			</div>
-			<div style="margin-top:5px;">
-				<span class="title-span">红外光分析：</span>
-				<input id="infLab" name="infLab">
+				<span class="title-span">型式试验： </span>
+				<input id="patternLab" name="patternLab">
 			</div>
 			
 			<div align=center style="margin-top: 15px;">
@@ -189,7 +185,7 @@
 	
 	<script type="text/javascript">
 		$(function(){
-			$('#tgLabe').combotree({
+			$('#atlasLab').combotree({
 				url: '${ctx}/org/getTreeByType?type=3',
 				multiple: false,
 				animate: true,
@@ -197,8 +193,8 @@
 			});
 			
 			// 只有最底层才能选择
-			var tgLabeTree = $('#tgLabe').combotree('tree');	
-			tgLabeTree.tree({
+			var atlasLabTree = $('#atlasLab').combotree('tree');	
+			atlasLabTree.tree({
 			   onBeforeSelect: function(node){
 				   if(isNull(node.children)){
 						return true;
@@ -208,7 +204,7 @@
 			   }
 			});
 			
-			$('#dtLab').combotree({
+			$('#patternLab').combotree({
 				url: '${ctx}/org/getTreeByType?type=3',
 				multiple: false,
 				animate: true,
@@ -216,27 +212,8 @@
 			});
 			
 			// 只有最底层才能选择
-			var dtLabTree = $('#dtLab').combotree('tree');	
-			dtLabTree.tree({
-			   onBeforeSelect: function(node){
-				   if(isNull(node.children)){
-						return true;
-				   }else{
-					   return false;
-				   }
-			   }
-			});
-			
-			$('#infLab').combotree({
-				url: '${ctx}/org/getTreeByType?type=3',
-				multiple: false,
-				animate: true,
-                width: '250px'					
-			});
-			
-			// 只有最底层才能选择
-			var infLabTree = $('#infLab').combotree('tree');	
-			infLabTree.tree({
+			var patternLabTree = $('#patternLab').combotree('tree');	
+			patternLabTree.tree({
 			   onBeforeSelect: function(node){
 				   if(isNull(node.children)){
 						return true;
@@ -249,26 +226,22 @@
 		
 		
 		function doTransmit(){
+			$("#atlasLab").combotree("setValue", "");
+			$("#patternLab").combotree("setValue", "");
 			$("#dlg").dialog("open");
 		}
 		
 		function doSubmit(){
-			var tgLabe = $("#tgLabe").combotree("getValue")
-			var dtLab = $("#dtLab").combotree("getValue")
-			var infLab = $("#infLab").combotree("getValue")
+			var atlasLab = $("#atlasLab").combotree("getValue");
+			var patternLab = $("#patternLab").combotree("getValue");
 			
-			if(isNull(tgLabe)){
-				errorMsg("请为热重分析选择实验室");
+			if(isNull(atlasLab)){
+				errorMsg("请为图谱试验选择实验室");
 				return false;
 			}
 			
-			if(isNull(dtLab)){
-				errorMsg("请为差热扫描选择实验室");
-				return false;
-			}
-			
-			if(isNull(infLab)){
-				errorMsg("请为红外光分析选择实验室");
+			if(isNull(patternLab)){
+				errorMsg("请为型式试验选择实验室");
 				return false;
 			}
 			
@@ -276,9 +249,8 @@
 				url: "${ctx}/ots/transmit",
 				data: {
 					"id": '${facadeBean.id}',
-					"tgLabe": tgLabe,
-					"dtLab": dtLab,
-					"infLab": infLab
+					"atlasLab": atlasLab,
+					"patternLab": patternLab
 				},
 				success: function(data){
 					if(data.success){
