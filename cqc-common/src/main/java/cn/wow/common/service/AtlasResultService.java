@@ -26,5 +26,12 @@ public interface AtlasResultService {
      * @param atlasResult
      */
     public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time);
+    
+    /**
+     * 获取试验次数
+     * @param taskId    任务ID
+     * @param catagory  种类：1-零部件，2-原材料
+     */
+    public int getExpNoByCatagory(Long taskId, int catagory);
 
 }

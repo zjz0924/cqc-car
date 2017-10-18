@@ -166,6 +166,8 @@
 			margin-left: 10px;
 			margin-bottom: 8px;
 			font-size: 14px;
+			color: #1874CD;
+    		font-weight: bold;
 		}
 		
 		.info{

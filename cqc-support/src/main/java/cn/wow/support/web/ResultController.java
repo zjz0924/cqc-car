@@ -171,58 +171,80 @@ public class ResultController extends AbstractController {
 	 * 图谱结果上传
 	 * 
 	 * @param taskId  任务ID
-	 * @param tgLab   热重分析描述
-	 * @param infLab  红外光分析描述
-	 * @param dtLab   差热扫描描述
+	 * @param p_tgLab   零部件热重分析描述
+	 * @param p_infLab  零部件红外光分析描述
+	 * @param p_dtLab   零部件差热扫描描述
+	 * @param m_tgLab   原材料热重分析描述
+	 * @param m_infLab  原材料红外光分析描述
+	 * @param m_dtLab   原材料差热扫描描述
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/atlasUpload")
-	public AjaxVO atlasUpload(HttpServletRequest request, Model model, Long taskId, String tgLab, String infLab,
-			String dtLab, @RequestParam(value = "tgLab_pic", required = false) MultipartFile tgfile,
-			@RequestParam(value = "infLab_pic", required = false) MultipartFile infile,
-			@RequestParam(value = "dtLab_pic", required = false) MultipartFile dtfile) {
+	public AjaxVO atlasUpload(HttpServletRequest request, Model model, Long taskId, 
+			String p_tgLab, String p_infLab, String p_dtLab, String m_tgLab, String m_infLab, String m_dtLab, 
+			@RequestParam(value = "p_tgLab_pic", required = false) MultipartFile p_tgfile,
+			@RequestParam(value = "p_infLab_pic", required = false) MultipartFile p_infile,
+			@RequestParam(value = "p_dtLab_pic", required = false) MultipartFile p_dtfile,
+			@RequestParam(value = "m_tgLab_pic", required = false) MultipartFile m_tgfile,
+			@RequestParam(value = "m_infLab_pic", required = false) MultipartFile m_infile,
+			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile) {
 		AjaxVO vo = new AjaxVO();
 		String pic = null;
 		
 		try {
 			Date date = new Date();
+			
+			// 零部件试验次数
+			int pNum = atlasResultService.getExpNoByCatagory(taskId, 1);
+			// 原材料试验次数
+			int mNum = atlasResultService.getExpNoByCatagory(taskId, 2);
+			
+			/**  零部件结果  **/
 			// 热重分析
-			AtlasResult tg = new AtlasResult();
-			if (tgfile != null && !tgfile.isEmpty()) {
-				pic = uploadImg(tgfile, atlasUrl + taskId + "/3/", false);
-				tg.setPic(pic);
+			if (p_tgfile != null && !p_tgfile.isEmpty()) {
+				pic = uploadImg(p_tgfile, atlasUrl + taskId + "/parts/tg/", false);
 			}
-			tg.setRemark(tgLab);
-			tg.setType(3);
-			tg.settId(taskId);
-			tg.setCreateTime(date);
+			AtlasResult p_tg = new AtlasResult(taskId, 3, pic, p_tgLab, 1, pNum + 1, date);
 			
 			// 红外光分析
-			AtlasResult inf = new AtlasResult();
-			if (infile != null && !infile.isEmpty()) {
-				pic = uploadImg(infile, atlasUrl + taskId + "/1/", false);
-				inf.setPic(pic);
+			if (p_infile != null && !p_infile.isEmpty()) {
+				pic = uploadImg(p_infile, atlasUrl + taskId + "/parts/inf/", false);
 			}
-			inf.setRemark(infLab);
-			inf.setType(1);
-			inf.settId(taskId);
-			inf.setCreateTime(date);
+			AtlasResult p_inf = new AtlasResult(taskId, 1, pic, p_infLab, 1, pNum + 1, date);
 			
 			// 差热扫描
-			AtlasResult dt = new AtlasResult();
-			if (dtfile != null && !dtfile.isEmpty()) {
-				pic = uploadImg(dtfile, atlasUrl + taskId + "/2/", false);
-				dt.setPic(pic);
+			if (p_dtfile != null && !p_dtfile.isEmpty()) {
+				pic = uploadImg(p_dtfile, atlasUrl + taskId + "/parts/dt/", false);
 			}
-			dt.setRemark(dtLab);
-			dt.setType(2);
-			dt.settId(taskId);
-			dt.setCreateTime(date);			
+			AtlasResult p_dt = new AtlasResult(taskId, 2, pic, p_dtLab, 1, pNum + 1, date);
+			
+			
+			/** 原材料结果  **/
+			// 热重分析
+			if (m_tgfile != null && !m_tgfile.isEmpty()) {
+				pic = uploadImg(m_tgfile, atlasUrl + taskId + "/material/tg/", false);
+			}
+			AtlasResult m_tg = new AtlasResult(taskId, 3, pic, m_tgLab, 2, mNum + 1, date);
+			
+			// 红外光分析
+			if (m_infile != null && !m_infile.isEmpty()) {
+				pic = uploadImg(m_infile, atlasUrl + taskId + "/material/inf/", false);
+			}
+			AtlasResult m_inf = new AtlasResult(taskId, 1, pic, m_infLab, 2, mNum + 1, date);
+			
+			// 差热扫描
+			if (m_dtfile != null && !m_dtfile.isEmpty()) {
+				pic = uploadImg(m_dtfile, atlasUrl + taskId + "/material/dt/", false);
+			}
+			AtlasResult m_dt = new AtlasResult(taskId, 2, pic, m_dtLab, 2, mNum + 1, date);
 			
 			List<AtlasResult> dataList = new ArrayList<AtlasResult>();
-			dataList.add(tg);
-			dataList.add(inf);
-			dataList.add(dt);
+			dataList.add(p_tg);
+			dataList.add(p_inf);
+			dataList.add(p_dt);
+			dataList.add(m_tg);
+			dataList.add(m_inf);
+			dataList.add(m_dt);
 			
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			atlasResultService.upload(account, dataList, taskId, date);

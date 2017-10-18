@@ -1,6 +1,7 @@
 package cn.wow.common.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -58,6 +59,13 @@ public class AtlasResultServiceImpl implements AtlasResultService{
     	atlasResultDao.batchAdd(list);
     }
     
+    // 获取试验次数
+    public int getExpNoByCatagory(Long taskId, int catagory){
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("taskId", taskId);
+    	map.put("catagory", catagory);
+    	return atlasResultDao.getExpNoByCatagory(map);
+    }
     
 	// 结果上传
 	public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time) {

@@ -8,10 +8,12 @@
 		<result column="pic" property="pic" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="catagory" property="catagory" jdbcType="INTEGER" />
+		<result column="exp_no" property="expNo" jdbcType="INTEGER" />
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, t_id, type, pic, remark, create_time
+		id, t_id, type, pic, remark, create_time, catagory, exp_no
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -23,8 +25,9 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.AtlasResult">
-		insert into atlas_result (t_id, type, pic, remark, create_time)
-			values (#{tId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+		insert into atlas_result (t_id, type, pic, remark, create_time, catagory, exp_no)
+			values (#{tId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{catagory,jdbcType=INTEGER},
+					#{expNo,jdbcType=INTEGER})
 	</insert>
 	
 	
@@ -45,6 +48,12 @@
 			</if>
 			<if test="createTime != null">
 				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="catagory != null">
+				catagory = #{catagory,jdbcType=INTEGER},
+			</if>
+			<if test="expNo != null">
+			 	exp_no = #{expNo,jdbcType=INTEGER}
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -67,6 +76,9 @@
 			<if test="endCreateTime != null and endCreateTime != ''">
 				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 			</if>
+			<if test="catagory != null">
+				and catagory = #{catagory,jdbcType=INTEGER}
+			</if>
 	      </where>
 	      
 		  <choose>
@@ -80,12 +92,18 @@
 	  </select>
 
 	<insert id="batchAdd" parameterType="java.util.List">
-		insert into atlas_result (t_id, type, pic, remark, create_time) values
+		insert into atlas_result (t_id, type, pic, remark, create_time, catagory, exp_no) values
 		<foreach collection="list" item="item" separator=",">
 			(#{item.tId,jdbcType=BIGINT}, #{item.type,jdbcType=INTEGER},
 			#{item.pic,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR},
-			#{item.createTime,jdbcType=TIMESTAMP})
+			#{item.createTime,jdbcType=TIMESTAMP}, #{item.catagory,jdbcType=INTEGER}, #{item.expNo,jdbcType=INTEGER})
 		</foreach>
 	</insert> 
+	
+	<!-- 获取试验次数 -->
+	<select id="getExpNoByCatagory"  resultType="int" parameterType="java.util.Map" >
+		select count(distinct exp_no) num from atlas_result where t_id = #{taskId} and catagory = #{catagory}
+	</select>
+	
 
 </mapper>

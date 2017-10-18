@@ -23,6 +23,10 @@ public class PfResult {
     private String remark;
     // 创建时间
     private Date createTime;
+    // 类型（1-零部件，2-原材料）
+    private Integer catagory;
+    // 实验序号
+    private Integer expNo;
 
     public Long getId() {
         return id;
@@ -95,4 +99,21 @@ public class PfResult {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+	public Integer getCatagory() {
+		return catagory;
+	}
+
+	public void setCatagory(Integer catagory) {
+		this.catagory = catagory;
+	}
+
+	public Integer getExpNo() {
+		return expNo;
+	}
+
+	public void setExpNo(Integer expNo) {
+		this.expNo = expNo;
+	}
+
 }
