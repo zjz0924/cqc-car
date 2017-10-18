@@ -86,10 +86,10 @@
 			<c:when test="${type == 1}">
 				<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
 				<div class="title" style="margin-top:15px;">
-					型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+					型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
 				</div>
 				<div>
-					<table class="info" id="pfTable">
+					<table class="info" id="p_pfTable">
 						<tr>
 							<td style="background: #F0F0F0;font-weight:bold;">序号</td>
 							<td class="title-td"><span class="req-span">*</span>试验项目</td>
@@ -101,45 +101,39 @@
 							<td style="background: #F0F0F0;font-weight:bold;">操作</td>
 						</tr>
 						
-						<c:forEach var="i" begin="1" end="2" varStatus="status">
-							<tr num="${status.index}">
+						<c:forEach var="i" begin="1" end="1" varStatus="status">
+							<tr p_num="p_${status.index}">
 								<td style="background: #f5f5f5;padding-left:5px;">${status.index}</td>
 								<td class="value-td1">
-									<input id="project_${status.index}" name="project_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="project_${status.index}_error" class="req-span"></span>
+									<input id="p_project_${status.index}" name="p_project_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="p_project_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="standard_${status.index}" name="standard_${status.index}" class="easyui-textbox" style="width:95%">
-									<span id="standard_${status.index}_error" class="req-span"></span>
+									<input id="p_standard_${status.index}" name="p_standard_${status.index}" class="easyui-textbox" style="width:95%">
+									<span id="p_standard_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="require_${status.index}" name="require_${status.index}" class="easyui-textbox" style="width:95%">
-									<span id="require_${status.index}_error" class="req-span"></span>
+									<input id="p_require_${status.index}" name="p_require_${status.index}" class="easyui-textbox" style="width:95%">
+									<span id="p_require_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="result_${status.index}" name="result_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="result_${status.index}_error" class="req-span"></span>
+									<input id="p_result_${status.index}" name="p_result_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="p_result_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="evaluate_${status.index}" name="evaluate_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="evaluate_${status.index}_error" class="req-span"></span>
+									<input id="p_evaluate_${status.index}" name="p_evaluate_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="p_evaluate_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="remark_${status.index}" name="remark_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="remark_${status.index}_error" class="req-span"></span>
+									<input id="p_remark_${status.index}" name="p_remark_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="p_remark_${status.index}_error" class="req-span"></span>
 								</td>
 								<td style="background: #f5f5f5;padding-left:5px;">
-									<a href="javascript:void(0);"  onclick="deleteResult(${status.index})"><i class="icon icon-cancel"></i></a>
+									<a href="javascript:void(0);"  onclick="deleteResult('p','p_${status.index}')"><i class="icon icon-cancel"></i></a>
 								</td>
 							</tr>
 						</c:forEach>
 					</table>
-					
-					<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="patternError"></div>
-					<div align="center" style="margin-top:10px;margin-bottom:15px;">
-						<a href="javascript:void(0);"  onclick="upload()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">上传</a>
-						<a href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
-					</div>
 				</div>
 			</c:when>
 			<c:otherwise>
@@ -235,10 +229,10 @@
 			<c:when test="${type == 1}">
 				<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
 				<div class="title" style="margin-top:15px;">
-					型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+					型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('m')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
 				</div>
 				<div>
-					<table class="info" id="pfTable">
+					<table class="info" id="m_pfTable">
 						<tr>
 							<td style="background: #F0F0F0;font-weight:bold;">序号</td>
 							<td class="title-td"><span class="req-span">*</span>试验项目</td>
@@ -250,35 +244,35 @@
 							<td style="background: #F0F0F0;font-weight:bold;">操作</td>
 						</tr>
 						
-						<c:forEach var="i" begin="1" end="2" varStatus="status">
-							<tr num="${status.index}">
+						<c:forEach var="i" begin="1" end="1" varStatus="status">
+							<tr m_num="m_${status.index}">
 								<td style="background: #f5f5f5;padding-left:5px;">${status.index}</td>
 								<td class="value-td1">
-									<input id="project_${status.index}" name="project_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="project_${status.index}_error" class="req-span"></span>
+									<input id="m_project_${status.index}" name="m_project_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="m_project_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="standard_${status.index}" name="standard_${status.index}" class="easyui-textbox" style="width:95%">
-									<span id="standard_${status.index}_error" class="req-span"></span>
+									<input id="m_standard_${status.index}" name="m_standard_${status.index}" class="easyui-textbox" style="width:95%">
+									<span id="m_standard_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="require_${status.index}" name="require_${status.index}" class="easyui-textbox" style="width:95%">
-									<span id="require_${status.index}_error" class="req-span"></span>
+									<input id="m_require_${status.index}" name="m_require_${status.index}" class="easyui-textbox" style="width:95%">
+									<span id="m_require_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="result_${status.index}" name="result_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="result_${status.index}_error" class="req-span"></span>
+									<input id="m_result_${status.index}" name="m_result_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="m_result_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="evaluate_${status.index}" name="evaluate_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="evaluate_${status.index}_error" class="req-span"></span>
+									<input id="m_evaluate_${status.index}" name="m_evaluate_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="m_evaluate_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="remark_${status.index}" name="remark_${status.index}" class="easyui-textbox" style="width:125px">
-									<span id="remark_${status.index}_error" class="req-span"></span>
+									<input id="m_remark_${status.index}" name="m_remark_${status.index}" class="easyui-textbox" style="width:125px">
+									<span id="m_remark_${status.index}_error" class="req-span"></span>
 								</td>
 								<td style="background: #f5f5f5;padding-left:5px;">
-									<a href="javascript:void(0);"  onclick="deleteResult(${status.index})"><i class="icon icon-cancel"></i></a>
+									<a href="javascript:void(0);"  onclick="deleteResult('m','m_${status.index}')"><i class="icon icon-cancel"></i></a>
 								</td>
 							</tr>
 						</c:forEach>
@@ -467,83 +461,28 @@
 			var date = new Date();
 			var flag = true;
 			
-			if($("tr[num]").length < 1){
-				$("#patternError").html("请添加试验结果");
+			if($("tr[p_num]").length < 1){
+				$("#patternError").html("请添加零部件试验结果");
 				return false;
 			}
 			$("#patternError").html("");
 			
-			$("tr[num]").each(function(){
-				var num = $(this).attr("num");
-				
-				// 实验项目
-				var project = $("#project_" + num).textbox("getValue");
-				if(isNull(project)){
-					$("#project_"+ num +"_error").html("必填");
-					flag = false;
-					return false;
-				}else{
-					$("#project_"+ num +"_error").html("");
-				}
-				
-				//参考标准
-				var standard = $("#standard_" + num).textbox("getValue");
-				if(isNull(standard)){
-					$("#standard_"+ num +"_error").html("必填");
-					flag = false;
-					return false;
-				}else{
-					$("#standard_"+ num +"_error").html("");
-				}
-				
-				// 试验要求
-				var require = $("#require_" + num).textbox("getValue");
-				if(isNull(require)){
-					$("#require_"+ num +"_error").html("必填");
-					flag = false;
-					return false;
-				}else{
-					$("#require_"+ num +"_error").html("");
-				}
-				
-				// 试验结果
-				var result = $("#result_" + num).textbox("getValue");
-				if(isNull(result)){
-					$("#result_"+ num +"_error").html("必填");
-					flag = false;
-					return false;
-				}else{
-					$("#result_"+ num +"_error").html("");
-				}
-				
-				// 结果评价
-				var evaluate = $("#evaluate_" + num).textbox("getValue");
-				if(isNull(evaluate)){
-					$("#evaluate_"+ num +"_error").html("必填");
-					flag = false;
-					return false;
-				}else{
-					$("#evaluate_"+ num +"_error").html("");
-				}
-				
-				var remark = $("#remark_" + num).textbox("getValue");
-				
-				var obj = new Object();
-				obj.project = project;
-				obj.standard = standard;
-				obj.require = require;
-				obj.result = result;
-				obj.evaluate = evaluate;
-				obj.remark = remark;
-				obj.tId = '${facadeBean.id}';
-				obj.createTime = date;
-				obj.state = 1;
-				dataArray.push(obj);
-			});
-			
-			if(!flag){
+			if($("tr[m_num]").length < 1){
+				$("#patternError").html("请添加原材料试验结果");
 				return false;
 			}
+			$("#patternError").html("");
+			
+			var p_result = assemble("p", date);
+			if(p_result == false){
+				return false;
+			}
+			
+			var m_result = assemble("m", date);
+			if(m_result == false){
+				return false;
+			}
+			dataArray = p_result.concat(m_result);
 			
 			$.ajax({
 				url: "${ctx}/result/patternUpload?time=" + new Date(),
@@ -567,60 +506,148 @@
 			$("#uploadDetailDialog").dialog("close");
 		}
 		
-		function addResult(){
+		/**
+		 *  添加试验结果
+		 *  @param type 种类: m-原材料， p-零部件
+		 */
+		function addResult(type){
 			var num;
 			for(var i = 1; i >= 1 ; i++){
-				var len = $("tr[num=" + i + "]").length;
+				var len = $("tr["+ type + "_num="+ type + "_" + i + "]").length;
 				if(len < 1){
 					num = i;
 					break;
 				}
 			}
 			
-			var str = "<tr num='"+ num +"'>"
+			var str = "<tr "+ type +"_num='"+ type + "_" + num +"'>"
 					+	 "<td style='background: #f5f5f5;padding-left:5px;'>"+ num + "</td>"
 					+	 "<td class='value-td1'>"
-					+		"<input id='project_"+ num +"' name='project_"+ num +"' class='easyui-textbox' style='width:125px'>"
-					+		"<span id='project_"+ num + "_error' class='req-span'></span>"
+					+		"<input id='"+ type + "_project_"+ num +"' name='"+ type + "_project_"+ num +"' class='easyui-textbox' style='width:125px'>"
+					+		"<span id='"+ type + "_project_"+ num + "_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='standard_"+ num +"' name='standard_"+ num +"' class='easyui-textbox' style='width:95%'>"
-					+	    "<span id='standard_"+ num +"_error' class='req-span'></span>"
+					+	    "<input id='"+ type + "_standard_"+ num +"' name='"+ type + "_standard_"+ num +"' class='easyui-textbox' style='width:95%'>"
+					+	    "<span id='"+ type + "_standard_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='require_"+ num +"' name='require_"+ num +"' class='easyui-textbox' style='width:95%'>"
-					+	    "<span id='require_"+ num +"_error' class='req-span'></span>"
+					+	    "<input id='"+ type + "_require_"+ num +"' name='"+ type + "_require_"+ num +"' class='easyui-textbox' style='width:95%'>"
+					+	    "<span id='"+ type + "_require_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='result_"+ num +"' name='result_"+ num +"' class='easyui-textbox' style='width:125px'>"
-					+	    "<span id='result_"+ num +"_error' class='req-span'></span>"
+					+	    "<input id='"+ type + "_result_"+ num +"' name='"+ type + "_result_"+ num +"' class='easyui-textbox' style='width:125px'>"
+					+	    "<span id='"+ type + "_result_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='evaluate_"+ num +"' name='evaluate_"+ num +"' class='easyui-textbox' style='width:125px'>"
-					+	    "<span id='evaluate_"+ num +"_error' class='req-span'></span>"
+					+	    "<input id='"+ type + "_evaluate_"+ num +"' name='"+ type + "_evaluate_"+ num +"' class='easyui-textbox' style='width:125px'>"
+					+	    "<span id='"+ type + "_evaluate_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='remark_"+ num +"' name='remark_"+ num +"' class='easyui-textbox' style='width:125px'>"
-					+	    "<span id='remark_"+ num +"_error' class='req-span'></span>"
+					+	    "<input id='"+ type + "_remark_"+ num +"' name='"+ type + "_remark_"+ num +"' class='easyui-textbox' style='width:125px'>"
+					+	    "<span id='"+ type + "_remark_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td style='background: #f5f5f5;padding-left:5px;'>"
-					+	    "<a href='javascript:void(0);'  onclick='deleteResult("+ num +")'><i class='icon icon-cancel'></i></a>"
+					+	    "<a href='javascript:void(0);'  onclick=\"deleteResult(\'"+ type + "\','"+ type +"_"+ num +"')\"><i class='icon icon-cancel'></i></a>"
 					+	 "</td>"
 					+"</tr>";
 			
-			$("#pfTable").append(str);
+			$("#"+ type + "_pfTable").append(str);
 			
 			// 渲染输入框
-			$.parser.parse($("#project_"+ num).parent());
-			$.parser.parse($("#standard_"+ num).parent());
-			$.parser.parse($("#require_"+ num).parent());
-			$.parser.parse($("#result_"+ num).parent());
-			$.parser.parse($("#evaluate_"+ num).parent());
-			$.parser.parse($("#remark_"+ num).parent());
+			$.parser.parse($("#"+ type + "_project_"+ num).parent());
+			$.parser.parse($("#"+ type + "_standard_"+ num).parent());
+			$.parser.parse($("#"+ type + "_require_"+ num).parent());
+			$.parser.parse($("#"+ type + "_result_"+ num).parent());
+			$.parser.parse($("#"+ type + "_evaluate_"+ num).parent());
+			$.parser.parse($("#"+ type + "_remark_"+ num).parent());
 		}
 		
-		function deleteResult(num){
-			$("tr[num='"+ num +"']").remove()
+		function deleteResult(type, num){
+			$("tr["+ type +"_num='"+ num +"']").remove();
+		}
+		
+		
+		// 组装数据
+		function assemble(type, date){
+			var dataArray = [];
+			var flag = true;
+			
+			$("tr[" + type + "_num]").each(function(){
+				var num = $(this).attr(type + "_num");
+				var array = num.split("_");
+				num = array[1];
+				
+				// 实验项目
+				var project = $("#"+ type +"_project_" + num).textbox("getValue");
+				if(isNull(project)){
+					$("#"+ type +"_project_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#"+ type +"_project_"+ num +"_error").html("");
+				}
+				
+				//参考标准
+				var standard = $("#"+ type +"_standard_" + num).textbox("getValue");
+				if(isNull(standard)){
+					$("#"+ type +"_standard_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#"+ type +"_standard_"+ num +"_error").html("");
+				}
+				
+				// 试验要求
+				var require = $("#"+ type +"_require_" + num).textbox("getValue");
+				if(isNull(require)){
+					$("#"+ type +"_require_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#"+ type +"_require_"+ num +"_error").html("");
+				}
+				
+				// 试验结果
+				var result = $("#"+ type +"_result_" + num).textbox("getValue");
+				if(isNull(result)){
+					$("#"+ type +"_result_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#"+ type +"_result_"+ num +"_error").html("");
+				}
+				
+				// 结果评价
+				var evaluate = $("#"+ type +"_evaluate_" + num).textbox("getValue");
+				if(isNull(evaluate)){
+					$("#"+ type +"_evaluate_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#"+ type +"_evaluate_"+ num +"_error").html("");
+				}
+				
+				var remark = $("#"+ type +"_remark_" + num).textbox("getValue");
+				
+				var obj = new Object();
+				obj.project = project;
+				obj.standard = standard;
+				obj.require = require;
+				obj.result = result;
+				obj.evaluate = evaluate;
+				obj.remark = remark;
+				obj.tId = '${facadeBean.id}';
+				obj.createTime = date;
+				obj.catagory = type == "p"? 1: 2;
+				obj.expNo = type == "p"? "${pNum}": "${mNum}";
+				dataArray.push(obj);
+			});
+			
+			if(flag == false){
+				return false;
+			}else{
+				return dataArray;
+			}
 		}
 	</script>	
 	

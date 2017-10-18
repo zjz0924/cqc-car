@@ -24,5 +24,13 @@ public interface PfResultService {
      * @param atlasResult
      */
     public void upload(Account account, List<PfResult> dataList, Long taskId);
+    
+    
+    /**
+     * 获取试验次数
+     * @param taskId    任务ID
+     * @param catagory  种类：1-零部件，2-原材料
+     */
+    public int getExpNoByCatagory(Long taskId, int catagory);
 
 }

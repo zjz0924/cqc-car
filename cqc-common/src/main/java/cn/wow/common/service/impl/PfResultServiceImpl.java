@@ -1,6 +1,7 @@
 package cn.wow.common.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -52,6 +53,14 @@ public class PfResultServiceImpl implements PfResultService{
     public List<PfResult> selectAllList(Map<String, Object> map){
     	PageHelperExt.startPage(map);
     	return pfResultDao.selectAllList(map);
+    }
+    
+    // 获取试验次数
+    public int getExpNoByCatagory(Long taskId, int catagory){
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("taskId", taskId);
+    	map.put("catagory", catagory);
+    	return pfResultDao.getExpNoByCatagory(map);
     }
     
     public void batchAdd(List<PfResult> list){

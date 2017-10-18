@@ -105,5 +105,10 @@
 			 #{item.catagory,jdbcType=INTEGER}, #{item.expNo,jdbcType=INTEGER})
 		</foreach>
 	</insert> 
+	
+	<!-- 获取试验次数 -->
+	<select id="getExpNoByCatagory"  resultType="int" parameterType="java.util.Map" >
+		select count(distinct exp_no) num from pf_result where t_id = #{taskId} and catagory = #{catagory}
+	</select>
 
 </mapper>

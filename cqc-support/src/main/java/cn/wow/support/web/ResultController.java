@@ -161,6 +161,16 @@ public class ResultController extends AbstractController {
 
 			model.addAttribute("facadeBean", task);
 		}
+		
+		if(type == 1){
+			// 零部件试验次数
+			int pNum = pfResultService.getExpNoByCatagory(id, 1);
+			// 原材料试验次数
+			int mNum = pfResultService.getExpNoByCatagory(id, 2);
+			
+			model.addAttribute("pNum", pNum + 1);
+			model.addAttribute("mNum", mNum + 1);
+		}
 
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("type", type);
