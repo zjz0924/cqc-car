@@ -33,12 +33,12 @@ public class Task {
     // 图谱实验室ID
     private Long atlasLab; 
     private Org atlas;
-    // 图谱上传结果 (0-未上传，1-已上传)
+    // 图谱上传结果 (0-未上传，1-已上传，2-已发送)
     private Integer atlasResult;
     // 型式实验室ID
     private Long patternLab;
     private Org pattern;
-    // 型式上传结果(0-未上传，1-已上传) 
+    // 型式上传结果(0-未上传，1-已上传，2-已发送) 
     private Integer patternResult;
     // 结果确认失败次数
     private Integer failNum;

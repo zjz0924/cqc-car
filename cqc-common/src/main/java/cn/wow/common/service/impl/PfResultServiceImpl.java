@@ -82,11 +82,6 @@ public class PfResultServiceImpl implements PfResultService{
 		record.setaId(account.getId());
 		taskRecordDao.insert(record);
 
-		// 检查图谱结果是否已经上传，如果已上传，修改任务状态
-		if (task.getAtlasResult().intValue() > 0) {
-			task.setState(StandardTaskEnum.SENDING.getState());
-		}
-
 		task.setPatternResult(1);
 		taskDao.update(task);
     }

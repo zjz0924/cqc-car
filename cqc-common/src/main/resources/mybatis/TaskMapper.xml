@@ -140,6 +140,10 @@
 			<if test="patternResult != null">
 				and t.pattern_result = #{patternResult,jdbcType=INTEGER}
 			</if>
+			
+			<if test="canSend != null">
+				and (t.atlas_result = 1 or t.pattern_result = 1)
+			</if>
 		      
 		      <if test="startCreateTime != null and startCreateTime != ''">  
 		    	and t.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}

@@ -87,7 +87,7 @@
 						<li class='base'><a class='base_a' style='' href='${ctx}/index'>首页</a></li>
 						
 						<c:forEach items="${currentMenuList}" var="vo">
-							<li class="base <c:if test='${vo.isAuthorized == false}'>nojuris</c:if>" _t_nav="YWGL">
+							<li class="base" _t_nav="YWGL">
 								<a href="${ctx}/${vo.url}" class="base_a">${vo.name}</a>
 								<ul>
 									<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
@@ -115,7 +115,16 @@
 													   </ul>
 												</c:when>
 												<c:otherwise>
-													<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+													
+													<c:choose>
+													   	<c:when test="${not empty vo.url}">
+													   		<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+													   	</c:when>
+													   	<c:otherwise>
+													   		<a href="${ctx}/${subVo.url}">${subVo.name}</a>
+													   	</c:otherwise>
+													</c:choose>
+													
 												</c:otherwise>
 											</c:choose>
 										</li>

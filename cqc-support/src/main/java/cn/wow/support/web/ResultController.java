@@ -52,6 +52,8 @@ public class ResultController extends AbstractController {
 
 	// 结果上传列表
 	private final static String UPLOAD_DEFAULT_PAGE_SIZE = "10";
+	// 结果发送列表
+	private final static String SEND_DEFAULT_PAGE_SIZE = "10";
 	// 任务记录列表
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
 		
@@ -305,4 +307,183 @@ public class ResultController extends AbstractController {
 		return vo;
 	}
 
+	
+	
+	/**
+	 * 结果发送列表
+	 */
+	@RequestMapping(value = "/sendList")
+	public String sendList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		Menu menu = menuService.selectByAlias("send");
+		
+		model.addAttribute("defaultPageSize", SEND_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("menuName", menu.getName());
+		return "result/send_list";
+	}
+
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/sendListData")
+	public Map<String, Object> sendListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName) {
+		
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", SEND_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", StandardTaskEnum.UPLOADING.getState());
+		map.put("canSend", "yes");
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+
+	
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/sendDetail")
+	public String sendDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		if (id != null) {
+			Task task = taskService.selectOne(id);
+
+			// 型式结果
+			if(task.getPatternResult() == 1){
+				Map<String, Object> pfMap = new HashMap<String, Object>();
+				pfMap.put("tId", id);
+				pfMap.put("custom_order_sql", "exp_no asc");
+				List<PfResult> pfDataList = pfResultService.selectAllList(pfMap);
+				
+				Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
+				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
+				assemblePfResult(pfDataList, pPfResult, mPfResult);
+				
+				model.addAttribute("pPfResult", pPfResult);
+				model.addAttribute("mPfResult", mPfResult);
+			}
+			
+			// 图谱结果
+			if(task.getAtlasResult() == 1){
+				Map<String, Object> atMap = new HashMap<String, Object>();
+				atMap.put("tId", id);
+				atMap.put("custom_order_sql", "exp_no asc");
+				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
+				
+				Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
+				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
+				assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
+				
+				model.addAttribute("pAtlasResult", pAtlasResult);
+				model.addAttribute("mAtlasResult", mAtlasResult);
+			}
+			
+			model.addAttribute("facadeBean", task);
+		}
+		
+		model.addAttribute("resUrl", resUrl);
+		return "result/send_detail";
+	}
+	
+	
+	/**
+	 * 组装型式结果
+	 * @param pfDataList  当前任务所有的型式结果记录
+	 * @param pPfResult   零部件的型式结果记录
+	 * @param mPfResult   原材料的型式结果记录
+	 */
+	public void assemblePfResult(List<PfResult> pfDataList, Map<Integer, List<PfResult>> pPfResult,
+			Map<Integer, List<PfResult>> mPfResult) {
+
+		if (pfDataList != null && pfDataList.size() > 0) {
+			for (PfResult pf : pfDataList) {
+				if (pf.getCatagory() == 1) { // 零部件
+					List<PfResult> list = pPfResult.get(pf.getExpNo());
+					if (list != null) {
+						list.add(pf);
+					} else {
+						list = new ArrayList<PfResult>();
+						list.add(pf);
+					}
+					pPfResult.put(pf.getExpNo(), list);
+				} else { // 原材料
+					List<PfResult> list = mPfResult.get(pf.getExpNo());
+					if (list != null) {
+						list.add(pf);
+					} else {
+						list = new ArrayList<PfResult>();
+						list.add(pf);
+					}
+					mPfResult.put(pf.getExpNo(), list);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * 组装图谱结果
+	 * @param pfDataList  当前任务所有的图谱结果记录
+	 * @param pPfResult   零部件的图谱结果记录
+	 * @param mPfResult   原材料的图谱结果记录
+	 */
+	public void assembleAtlasResult(List<AtlasResult> atDataList, Map<Integer, List<AtlasResult>> pAtlasResult,
+			Map<Integer, List<AtlasResult>> mAtlasResult) {
+
+		if (atDataList != null && atDataList.size() > 0) {
+			for (AtlasResult at : atDataList) {
+				if (at.getCatagory() == 1) { // 零部件
+					List<AtlasResult> list = pAtlasResult.get(at.getExpNo());
+					if (list != null) {
+						list.add(at);
+					} else {
+						list = new ArrayList<AtlasResult>();
+						list.add(at);
+					}
+					pAtlasResult.put(at.getExpNo(), list);
+				} else { // 原材料
+					List<AtlasResult> list = mAtlasResult.get(at.getExpNo());
+					if (list != null) {
+						list.add(at);
+					} else {
+						list = new ArrayList<AtlasResult>();
+						list.add(at);
+					}
+					mAtlasResult.put(at.getExpNo(), list);
+				}
+			}
+		}
+	}
+	
+	
 }

@@ -82,11 +82,6 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		record.setaId(account.getId());
 		taskRecordDao.insert(record);
 
-		// 检查型式结果是否已经上传，如果已上传，修改任务状态
-		if (task.getPatternResult().intValue() > 0) {
-			task.setState(StandardTaskEnum.SENDING.getState());
-		}
-
 		task.setAtlasResult(1);
 		taskDao.update(task);
 	}
