@@ -78,8 +78,9 @@ public class PfResultServiceImpl implements PfResultService{
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(dataList.get(0).getCreateTime());
 		record.setCode(task.getCode());
-		record.setState(StandardTaskRecordEnum.UPLOAD_PATTERN.getState());
+		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
 		record.setaId(account.getId());
+		record.setRemark("上传型式试验结果");
 		taskRecordDao.insert(record);
 
 		task.setPatternResult(1);

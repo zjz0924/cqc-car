@@ -143,7 +143,7 @@
 			// 只能选择最底层机构
 			var orgTree = $('#org').combotree('tree');	
 			orgTree.tree({
-			   onBeforeSelect: function(node){  console.info(node);
+			   onBeforeSelect: function(node){
 				   if(isNull(node.children)){
 						return true;
 				   }else{

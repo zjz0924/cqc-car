@@ -194,6 +194,11 @@
 			<artifactId>poi-scratchpad</artifactId>
 		</dependency>
 		
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<!-- 引入父项目中的version定义 -->

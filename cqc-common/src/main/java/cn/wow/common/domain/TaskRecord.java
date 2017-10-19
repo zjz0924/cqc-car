@@ -28,7 +28,19 @@ public class TaskRecord {
     private String remark;
 
     private Date createTime;
+    
+    public TaskRecord(){
+    	
+    }
 
+    public TaskRecord(String code, Long aId, Integer state, String remark, Date createTime){
+    	this.code = code;
+    	this.aId = aId;
+    	this.state = state;
+    	this.remark = remark;
+    	this.createTime = createTime;
+    }
+    
     public Long getId() {
         return id;
     }

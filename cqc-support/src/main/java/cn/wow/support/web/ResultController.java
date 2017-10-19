@@ -417,6 +417,34 @@ public class ResultController extends AbstractController {
 	
 	
 	/**
+	 * 结果发送
+	 * @param taskId  任务ID
+	 * @param orgs    要发送的机构
+	 * @param type    类型：1-图谱结果，2-型式结果，3-两者
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/sendResult")
+	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String orgs, int type){
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			taskService.sendResult(account, taskId, orgs, type);
+		}catch(Exception ex){
+			logger.error("结果发送失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
+	/**
 	 * 组装型式结果
 	 * @param pfDataList  当前任务所有的型式结果记录
 	 * @param pPfResult   零部件的型式结果记录

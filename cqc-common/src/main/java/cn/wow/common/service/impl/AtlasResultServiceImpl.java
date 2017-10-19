@@ -78,7 +78,8 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(time);
 		record.setCode(task.getCode());
-		record.setState(StandardTaskRecordEnum.UPLOAD_ATLAS.getState());
+		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
+		record.setRemark("上传图谱试验结果");
 		record.setaId(account.getId());
 		taskRecordDao.insert(record);
 

@@ -177,18 +177,14 @@
 								}else if(val == 6){
 									str = "审批不同意";
 								}else if(val == 7){
-									str = "图谱结果上传";
+									str = "结果上传";
 								}else if(val == 8){
-									str = "型式结果上传";
-								}else if(val == 9){
 									str = "结果发送";
+								}else if(val == 9){
+									str = "结果确认";
 								}else if(val == 10){
-									str = "结果确认合格";
-								}else if(val == 11){
-									str = "结果确认不合格";
-								}else if(val == 12){
 									str = "基准保存";
-								}else if(val == 13){
+								}else if(val == 11){
 									str = "收费通知";
 								}
 								return "<span title='" + str + "'>" + str + "</span>";

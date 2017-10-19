@@ -143,6 +143,14 @@
 	      <if test="orgId != null" >
 	        and org_id = #{orgId,jdbcType=BIGINT}
 	      </if>
+	      
+	      <if test="orgs != null">
+			and org_id in
+			<foreach collection="orgs" item="id" index="index" separator=","
+				open="(" close=")">
+				#{id}
+			</foreach>
+		  </if>
       </where>
       
 	  <choose>

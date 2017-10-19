@@ -61,6 +61,7 @@
 		<jmock.version>2.8.1</jmock.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<poi.version>3.9</poi.version>
+		<mail.version>1.4.7</mail.version>
 	</properties>
 
 	<prerequisites>
@@ -557,6 +558,14 @@
 			<artifactId>poi-scratchpad</artifactId>
 			<version>${poi.version}</version>
 		</dependency>
+		
+		<!-- java mail -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>${mail.version}</version>
+		</dependency>
+		
 			
 		</dependencies>
 	</dependencyManagement>

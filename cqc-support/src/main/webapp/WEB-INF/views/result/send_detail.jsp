@@ -272,37 +272,86 @@
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>
+		
+		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		<div class="title" style="margin-top:15px;">发送机构</div>
+		<div style="margin-left: 15px;">
+			<input id="org" name="org"/>
+		</div>
 				
 		<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="atlasError"></div>
 		<div align="center" style="margin-top:10px;margin-bottom: 20px;">
 			<c:choose>
 				<c:when test="${facadeBean.atlasResult == 1 and facadeBean.patternResult == 1}">
-					<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送结果</a>
+					<a href="javascript:void(0);"  onclick="doSubmit(3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送结果</a>
 				</c:when>
 				<c:when test="${facadeBean.atlasResult == 1 }">
-					<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送图谱结果</a>
+					<a href="javascript:void(0);"  onclick="doSubmit(1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送图谱结果</a>
 				</c:when>
 				<c:otherwise>   
-			        <a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送型式结果</a>
+			        <a href="javascript:void(0);"  onclick="doSubmit(2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送型式结果</a>
 			    </c:otherwise>   
 			</c:choose>
 			
 			<a href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 		</div>
-	
 	</div>
 			
 	
 	<script type="text/javascript">
-		// 发送结果保存
-		function doSubmit(){
+		$(function(){
+			$('#org').combotree({
+				url: '${ctx}/org/tree',
+				multiple: true,
+				animate: true,
+				width: '250px',
+				panelHeight: '150px'
+			});
+			
+			// 只有最底层才能选择
+			var t = $('#org').combotree('tree');	
+			t.tree({
+				checkbox: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
+		});
 	
+		// 发送结果保存
+		function doSubmit(type){
+			var orgs = $("#org").combotree("getValues");
+			if(isNull(orgs)){
+				$("#atlasError").html("请选择要发送的机构");
+				return false;
+			}
+			$("#atlasError").html("");
+			
+			$.ajax({
+				url: "${ctx}/result/sendResult?time=" + new Date(),
+				data: {
+					"taskId": '${facadeBean.id}',
+					"orgs": orgs.toString(),
+					"type": type
+				},
+				success: function(data){
+					if(data.success){
+						closeDialog(data.msg);
+					}else{
+						$("#atlasError").html(data.msg);						
+					}
+				}
+			});
 		}
 
-		function doCancel(){
-			$("#uploadDetailDialog").dialog("close");
+		function doCancel(type){
+			$("#sendDetailDialog").dialog("close");
 		}
 
+		
 	</script>	
 	
 	<style type="text/css">

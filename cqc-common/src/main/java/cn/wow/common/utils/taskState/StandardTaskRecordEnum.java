@@ -13,13 +13,11 @@ public enum StandardTaskRecordEnum {
 	TRANSMIT(4, "任务下达"), 
 	APPROVE_AGREE(5, "审批同意"), 
 	APPROVE_DISAGREE(6, "审批不同意"),
-	UPLOAD_ATLAS(7, "图谱结果上传"),
-	UPLOAD_PATTERN(8, "型式结果上传"), 
-	SEND(9, "结果发送"), 
-	CONFIRM_PASS(10, "结果确认合格"), 
-	CONFIRM_NOTPASS(11, "结果确认不合格"), 
-	SAVE(12, "基准保存"),
-	NOTICE(13, "收费通知");
+	UPLOAD(7, "结果上传"),
+	SEND(8, "结果发送"), 
+	CONFIRM(9, "结果确认"), 
+	SAVE(10, "基准保存"),
+	NOTICE(11, "收费通知");
 
 	private int state;
 
