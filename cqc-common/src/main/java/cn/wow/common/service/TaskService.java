@@ -34,5 +34,17 @@ public interface TaskService {
      * @param addr     接收人地址（多个邮件地址以";"分隔）
      */
     public boolean sendEmail(String subject, String content, String addr) throws Exception;
+    
+    
+    
+    /**
+	 * 结果确认
+	 * @param taskId  任务ID
+	 * @param result  结果：1-合格，2-不合格
+	 * @param type    类型：1-原料图谱结果，2-零部件图谱结果
+	 */
+    public void confirmResult(Account account, Long taskId, int result, int type);
+    
+    
 
 }

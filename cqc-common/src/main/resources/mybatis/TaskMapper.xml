@@ -16,6 +16,10 @@
 		<result column="fail_num" property="failNum" jdbcType="INTEGER" />
 		<result column="atlas_result" property="atlasResult" jdbcType="INTEGER" />
 		<result column="pattern_result" property="patternResult" jdbcType="INTEGER" />
+		
+		<result column="parts_result" property="partsResult" jdbcType="INTEGER" />
+		<result column="material_result" property="materialResult" jdbcType="INTEGER" />
+		
 		<association property="info" javaType="cn.wow.common.domain.Info" column="i_id" select="cn.wow.common.dao.InfoDao.selectOne"/> 
 		<association property="account" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
 		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
@@ -24,7 +28,8 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.atlas_lab, t.pattern_lab, t.remark, t.create_time, t.fail_num, t.a_id, t.atlas_result, t.pattern_result
+		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.atlas_lab, t.pattern_lab, t.remark, t.create_time, t.fail_num, t.a_id, t.atlas_result, t.pattern_result,
+        t.parts_result, t.material_result	
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -37,10 +42,11 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Task">
-		insert into task (code, i_id, org_id, type, state, atlas_lab, pattern_lab, remark, create_time, fail_num, a_id, atlas_result, pattern_result)
+		insert into task (code, i_id, org_id, type, state, atlas_lab, pattern_lab, remark, create_time, fail_num, a_id, atlas_result, pattern_result, parts_result, material_result)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
 					#{atlasLab,jdbcType=BIGINT}, #{patternLab,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{atlasResult,jdbcType=INTEGER}, #{patternResult,jdbcType=INTEGER})
+					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{atlasResult,jdbcType=INTEGER}, #{patternResult,jdbcType=INTEGER}, 
+					#{partsResult,jdbcType=INTEGER}, #{materialResult,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -83,7 +89,13 @@
 				atlas_result = #{atlasResult,jdbcType=INTEGER},
 			</if>
 			<if test="patternResult != null">
-				pattern_result = #{patternResult,jdbcType=INTEGER}
+				pattern_result = #{patternResult,jdbcType=INTEGER},
+			</if>
+			<if test="partsResult != null">
+				parts_result = #{partsResult,jdbcType=INTEGER},
+			</if>
+			<if test="materialResult != null">
+				material_result = #{materialResult,jdbcType=INTEGER}
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -139,6 +151,14 @@
 			
 			<if test="patternResult != null">
 				and t.pattern_result = #{patternResult,jdbcType=INTEGER}
+			</if>
+			
+			<if test="partsResult != null">
+				and t.parts_result = #{partsResult,jdbcType=INTEGER}
+			</if>
+			
+			<if test="materialResult != null">
+				and t.material_result = #{materialResult,jdbcType=INTEGER}
 			</if>
 			
 			<if test="canSend != null">

@@ -13,7 +13,8 @@ public enum StandardTaskEnum {
 	APPROVE(4, "审批中"), 
 	UPLOADING(5, "结果上传中"), 
 	CONFIRM(6, "结果确认中"), 
-	ACCOMPLISH(7, "完成");
+	NOTIFY(7, "收费通知中"),
+	ACCOMPLISH(8, "完成");
 
 	private int state;
 

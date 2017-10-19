@@ -56,7 +56,9 @@ public class ResultController extends AbstractController {
 	private final static String SEND_DEFAULT_PAGE_SIZE = "10";
 	// 任务记录列表
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
-		
+	// 结果确认列表
+	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";	
+	
 	// 图谱图片上传路径
 	@Value("${result.atlas.url}")
 	protected String atlasUrl;
@@ -70,6 +72,8 @@ public class ResultController extends AbstractController {
 	@Autowired
 	private PfResultService pfResultService;
 	
+	
+	//-----------------------------------    结果上传        ---------------------------------------------------------------
 	
 	/**
 	 * 结果上传列表
@@ -308,6 +312,7 @@ public class ResultController extends AbstractController {
 	}
 
 	
+	//-----------------------------------    结果发送        ---------------------------------------------------------------
 	
 	/**
 	 * 结果发送列表
@@ -443,6 +448,140 @@ public class ResultController extends AbstractController {
 		return vo;
 	}
 	
+	
+	//-----------------------------------    结果确认        ---------------------------------------------------------------
+	
+	/**
+	 * 结果确认列表
+	 * @param type  类型：1-原料图谱结果，2-零部件图谱结果
+	 */
+	@RequestMapping(value = "/confirmList")
+	public String confirmList(HttpServletRequest request, HttpServletResponse response, Model model, int type) {
+		Menu menu = null;
+		
+		if(type == 1){
+			menu = menuService.selectByAlias("materialConfirm");
+		}else{
+			menu = menuService.selectByAlias("partsConfirm");
+		}
+		
+		model.addAttribute("defaultPageSize", CONFIRM_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("menuName", menu.getName());
+		model.addAttribute("type", type);
+		return "result/confirm_list";
+	}
+
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/confirmListData")
+	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName, int type) {
+		
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", CONFIRM_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", StandardTaskEnum.CONFIRM.getState());
+		
+		if(type == 1){
+			map.put("materialResult", 0);
+		}else{
+			map.put("partsResult", 0);
+		}
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/confirmDetail")
+	public String confirmDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int type) {
+		if (id != null) {
+			Task task = taskService.selectOne(id);
+
+			// 图谱结果
+			Map<String, Object> atMap = new HashMap<String, Object>();
+			atMap.put("tId", id);
+			atMap.put("custom_order_sql", "exp_no asc");
+			List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
+			
+			Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
+			Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
+			assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
+			
+			model.addAttribute("pAtlasResult", pAtlasResult);
+			model.addAttribute("mAtlasResult", mAtlasResult);
+			model.addAttribute("facadeBean", task);
+		}
+		
+		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("type", type);
+		return "result/confirm_detail";
+	}
+	
+	
+	/**
+	 * 结果确认
+	 * @param taskId  任务ID
+	 * @param result  结果：1-合格，2-不合格
+	 * @param type    类型：1-原料图谱结果，2-零部件图谱结果
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/confirmResult")
+	public AjaxVO confirmResult(HttpServletRequest request, Model model, Long taskId, int result, int type){
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			taskService.confirmResult(account, taskId, result, type);
+		}catch(Exception ex){
+			logger.error("结果确认失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
+	//-----------------------------------    其它       ---------------------------------------------------------------
 	
 	/**
 	 * 组装型式结果

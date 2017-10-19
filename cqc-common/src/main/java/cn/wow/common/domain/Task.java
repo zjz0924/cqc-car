@@ -26,8 +26,8 @@ public class Task {
     
     /** 
      * 	状态：
-     *  OTS、材料研究所任务： 1-审核中，2-下达中，3-审批中，4-结果上传中，5-结果发送中，6-结果确认中，7-完成
-     *  PPAP、SOP： 1-下达中，2-审批中，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成
+     *  OTS、材料研究所任务： 1-审核中，2-下达中，3-审批中，4-结果上传中，5-结果发送中，6-结果确认中，7-收费通知中，8-完成
+     *  PPAP、SOP： 1-下达中，2-审批中，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-收费通知中，8-完成
      */
     private Integer state;
     // 图谱实验室ID
@@ -46,7 +46,11 @@ public class Task {
     private String remark;
     // 创建时间
     private Date createTime;
-
+    // 零部件图谱结果(0-未确认，1-合格，2不合格)
+    private Integer partsResult;
+    // 原材料图谱结果(0-未确认，1-合格，2不合格)
+    private Integer materialResult;
+    
     public Long getId() {
         return id;
     }
@@ -198,4 +202,21 @@ public class Task {
 	public void setPatternResult(Integer patternResult) {
 		this.patternResult = patternResult;
 	}
+
+	public Integer getPartsResult() {
+		return partsResult;
+	}
+
+	public void setPartsResult(Integer partsResult) {
+		this.partsResult = partsResult;
+	}
+
+	public Integer getMaterialResult() {
+		return materialResult;
+	}
+
+	public void setMaterialResult(Integer materialResult) {
+		this.materialResult = materialResult;
+	}
+	
 }

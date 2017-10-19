@@ -16,12 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.EmailRecordDao;
+import cn.wow.common.dao.InfoDao;
+import cn.wow.common.dao.MaterialDao;
+import cn.wow.common.dao.PartsDao;
 import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
+import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.EmailRecord;
+import cn.wow.common.domain.Info;
+import cn.wow.common.domain.Material;
+import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
+import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.mailSender.MailInfo;
 import cn.wow.common.utils.mailSender.MailSender;
@@ -69,6 +77,14 @@ public class TaskServiceImpl implements TaskService{
     private EmailRecordDao emailRecordDao;
     @Autowired
     private TaskRecordDao taskRecordDao;
+    @Autowired
+    private InfoDao infoDao;
+    @Autowired
+    private PartsDao partsDao;
+    @Autowired
+    private MaterialDao materialDao;
+    @Autowired
+    private VehicleDao vehicleDao;
 
     public Task selectOne(Long id){
     	return taskDao.selectOne(id);
@@ -197,5 +213,123 @@ public class TaskServiceImpl implements TaskService{
 		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SEND.getState(), remark, date);
 		taskRecordDao.insert(taskRecord);
     }
+    
+    
+    /**
+   	 * 结果确认
+   	 * @param taskId  任务ID
+   	 * @param result  结果：1-合格，2-不合格
+   	 * @param type    类型：1-原料图谱结果，2-零部件图谱结果
+   	 */
+	public void confirmResult(Account account, Long taskId, int result, int type) {
+		Task task = this.selectOne(taskId);
+    	
+    	if(result == 1){
+    		// 两项试验结果
+        	boolean isPass = false;
+    		String remark = "";
+    		
+    		if(type == 1){
+    			task.setMaterialResult(1);
+    			
+    			if(task.getPartsResult().intValue() == 1){
+    				isPass = true;
+    			}
+    			remark = "原料图谱结果确认合格";
+    		}else{
+    			task.setPartsResult(1);
+    			
+    			if(task.getMaterialResult().intValue() == 1){
+    				isPass = true;
+    			}
+    			remark = "零部件图谱结果结果确认合格";
+    		}
+    		
+    		// 任务记录
+    		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
+    		taskRecordDao.insert(taskRecord);
+    		
+    		// 合格
+    		if(isPass){
+    			task.setState(StandardTaskEnum.NOTIFY.getState());
+    			// 保存基准信息
+    			saveStandard(account, task);
+    		}
+    		
+    		taskDao.update(task);
+    	}else{
+    		
+    		// 两项试验结果
+        	boolean isNotPass = false;
+    		String remark = "";
+    		
+    		if(type == 1){
+    			task.setMaterialResult(2);
+    			
+    			// 结果已确认
+    			if(task.getPartsResult().intValue() != 0){
+    				isNotPass = true;
+    			}
+    			remark = "原料图谱结果确认不合格";
+    		}else{
+    			task.setPartsResult(2);
+    			
+    			// 结果已确认
+    			if(task.getMaterialResult().intValue() != 0){
+    				isNotPass = true;
+    			}
+    			remark = "零部件图谱结果结果确认不合格";
+    		}
+    		
+    		// 任务记录
+    		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
+    		taskRecordDao.insert(taskRecord);
+    		
+    		// 不合格
+    		if(isNotPass){
+    			task.setState(StandardTaskEnum.TRANSMIT.getState());
+    			task.setFailNum(task.getFailNum() + 1);
+    			
+    			// 重新再上传
+    			task.setAtlasResult(0);
+    			task.setPatternResult(0);
+    			task.setMaterialResult(0);
+    			task.setPartsResult(0);
+    		}
+    		
+    		taskDao.update(task);
+    	}
+	}
+	
+	/** 
+	 * 基准保存： 修改信息、零部件、原材料、整车信息的状态为已审核
+	 */
+	public void saveStandard(Account account, Task task) {
+		Integer state = 1;
+		
+		// 信息
+		Info info = infoDao.selectOne(task.getiId());
+		info.setState(state);
+		infoDao.update(info);
+		
+		// 原材料
+		Material material = materialDao.selectOne(info.getmId());
+		material.setState(state);
+		materialDao.update(material);
+		
+		// 整车
+		Parts parts = partsDao.selectOne(info.getpId());
+		parts.setState(state);
+		partsDao.update(parts);
+				
+		// 零部件
+		Vehicle vehicle = vehicleDao.selectOne(info.getvId());
+		vehicle.setState(state);
+		vehicleDao.update(vehicle);
+		
+		// 任务记录
+		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SAVE.getState(), "基准信息已保存", new Date());
+		taskRecordDao.insert(taskRecord);
+	}
 
 }

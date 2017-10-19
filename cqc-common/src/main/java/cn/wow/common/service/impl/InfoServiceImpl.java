@@ -113,6 +113,8 @@ public class InfoServiceImpl implements InfoService {
 		task.setaId(account.getId());
 		task.setAtlasResult(0);
 		task.setPatternResult(0);
+		task.setPartsResult(0);
+		task.setMaterialResult(0);
 		taskDao.insert(task);
 
 		// 操作记录
