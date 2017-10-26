@@ -128,6 +128,13 @@
 				$("#v_proTime").datebox('setValue',formatDate(row.proTime));
 				$("#v_proAddr").textbox("setValue", row.proAddr);
 				$("#v_remark").textbox("setValue", row.remark);
+				$("#v_id").val(row.id);
+				
+				$('#v_code').textbox('disable'); 
+				$('#v_type').textbox('disable'); 
+				$('#v_proTime').datebox('disable');
+				$('#v_proAddr').textbox('disable'); 
+				$('#v_remark').textbox('disable'); 
 			}
 			$('#vehicleDialog').dialog('close');
 		}

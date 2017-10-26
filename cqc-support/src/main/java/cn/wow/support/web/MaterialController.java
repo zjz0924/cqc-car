@@ -21,6 +21,7 @@ import com.github.pagehelper.Page;
 import cn.wow.common.domain.Material;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 
 /**
@@ -55,7 +56,7 @@ public class MaterialController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String type,
-			String proNo, String matName, String matNo, String matProducer) {
+			String proNo, String matName, String matNo, Long orgId) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -65,6 +66,7 @@ public class MaterialController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "mat_name asc");
+		map.put("state", Contants.FINISH_TYPE);
 
 		if (StringUtils.isNotBlank(type)) {
 			map.put("type", type);
@@ -78,8 +80,8 @@ public class MaterialController extends AbstractController {
 		if (StringUtils.isNotBlank(matNo)) {
 			map.put("matNo", matNo);
 		}
-		if (StringUtils.isNotBlank(matProducer)) {
-			map.put("matProducer", matProducer);
+		if (orgId != null) {
+			map.put("orgId", orgId);
 		}
 
 		List<Material> dataList = materialService.selectAllList(map);
@@ -106,66 +108,6 @@ public class MaterialController extends AbstractController {
 		}
 		model.addAttribute("resUrl", resUrl);
 		return "task/ots/material/material_detail";
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String producerAdd, Integer type, String remark, String proNo, 
-			String matName, String matNo, String matColor, String matProducer, @RequestParam(value = "pic", required = false) MultipartFile file) {
-		AjaxVO vo = new AjaxVO();
-		Material material = null;
-		
-		try {
-			if (StringUtils.isNotBlank(id)) {
-				material = materialService.selectOne(Long.parseLong(id));
-
-				if (material != null) {
-					material.setType(type);
-					material.setRemark(remark);
-					material.setProNo(proNo);
-					material.setMatName(matName);
-					material.setMatNo(matNo);
-					material.setMatColor(matColor);
-					material.setMatProducer(matProducer);
-					material.setProducerAdd(producerAdd);
-					
-					if (file != null && !file.isEmpty()) {
-						String pic = uploadImg(file, materialUrl, true);
-						material.setPic(pic);
-					}
-					
-					materialService.update(getCurrentUserName(), material);
-				}
-				vo.setMsg("编辑成功");
-			} else {
-				material = new Material();
-				material.setType(type);
-				material.setRemark(remark);
-				material.setProNo(proNo);
-				material.setMatName(matName);
-				material.setMatNo(matNo);
-				material.setMatColor(matColor);
-				material.setMatProducer(matProducer);
-				material.setProducerAdd(producerAdd);
-				material.setCreateTime(new Date());
-				
-				if (file != null && !file.isEmpty()) {
-					String pic = uploadImg(file, materialUrl, true);
-					material.setPic(pic);
-				}
-				materialService.save(getCurrentUserName(), material);
-
-				vo.setMsg("添加成功");
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-
-			logger.error("材料信息保存失败", ex);
-			vo.setMsg("保存失败，系统异常");
-			vo.setSuccess(false);
-			return vo;
-		}
-		return vo;
 	}
 
 	@ResponseBody

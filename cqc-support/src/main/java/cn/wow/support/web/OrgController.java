@@ -193,6 +193,7 @@ public class OrgController extends AbstractController {
 	
 	/**
 	 * 获取类型获取机构树
+	 * @param type   1-通用五菱, 2-供应商, 3-实验室, 4-其它
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getTreeByType")

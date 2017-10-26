@@ -50,6 +50,46 @@
 		</style>
 		
 		<script type="text/javascript">
+			$(function(){
+				$('#p_orgId').combotree({
+					url: '${ctx}/org/getTreeByType?type=2',
+					multiple: false,
+					animate: true,
+					width: '163px'
+				});
+				
+				// 只有最底层才能选择
+				var pOrgTree = $('#p_orgId').combotree('tree');	
+				pOrgTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+				
+				$('#m_orgId').combotree({
+					url: '${ctx}/org/getTreeByType?type=2',
+					multiple: false,
+					animate: true,
+					width: '163px'
+				});
+				
+				// 只有最底层才能选择
+				var mOrgTree = $('#m_orgId').combotree('tree');	
+				mOrgTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+			});
+		
 			function save(){
 				// 整车信息
 				if(!isRequire("v_code", "整车代码必填")){ return false; }
@@ -58,27 +98,17 @@
 				if(!isRequire("v_proAddr", "整车生产地址必填")){ return false; }
 				
 				// 零部件信息
-				if(!isRequire("p_code", "零部件代码必填")){ return false; }
+				if(!isRequire("p_code", "零部号必填")){ return false; }
 				if(!isRequire("p_name", "零部件名称必填")){ return false; }
-				if(!isRequire("p_producer", "零部件生产商必填")){ return false; }
+				if(!isRequire("p_orgId", "零部件生产商必填")){ return false; }
 				if(!isRequire("p_proTime", "零部件生产日期必填")){ return false; }
 				if(!isRequire("p_place", "零部件生产场地必填")){ return false; }
 				if(!isRequire("p_proNo", "零部件生产批号必填")){ return false; }
-				if(!isRequire("p_technology", "零部件生产工艺必填")){ return false; }
-				if(!isRequire("p_matName", "零部件材料名称必填")){ return false; }
-				if(!isRequire("p_matNo", "零部件材料牌号必填")){ return false; }
-				if(!isRequire("p_matColor", "零部件材料颜色必填")){ return false; }
-				if(!isRequire("p_matProducer", "零部件生产商必填")){ return false; }
-				
-				var fileDir = $("#p_pic").filebox("getValue");
-				if (!isNull(fileDir)) {
-					var suffix = fileDir.substr(fileDir.lastIndexOf("."));
-					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
-						errMsg("请选择图片格式文件导入！");
-						$("#p_pic").focus();
-						return false;
-					}
+				var isKey = $("#p_isKey").val();
+				if(isKey == 1){
+					if(!isRequire("p_keyCode", "零件型号必填")){ return false; }
 				}
+				
 				
 				// 原材料信息
 				if(!isRequire("m_matName", "原材料名称必填")){ return false; }
@@ -167,13 +197,57 @@
 				});
 				$('#partsDialog').window('center');
 			}
+			
+			// 新增整车信息
+			function addVehicle(){
+				$('#v_code').textbox('enable'); 
+				$('#v_type').textbox('enable'); 
+				$('#v_proTime').datebox('enable');
+				$('#v_proAddr').textbox('enable'); 
+				$('#v_remark').textbox('enable'); 
+				
+				$("#v_code").textbox("setValue", "");
+				$("#v_type").textbox("setValue", "");
+				$("#v_proTime").datebox('setValue', "");
+				$("#v_proAddr").textbox("setValue", "");
+				$("#v_remark").textbox("setValue", "");
+				$("#v_id").val("");
+			}
+			
+			// 新增整车信息
+			function addParts(){
+				$('#p_code').textbox('enable'); 
+				$('#p_name').textbox('enable'); 
+				$('#p_proTime').datebox('enable');
+				$('#p_place').textbox('enable'); 
+				$('#p_proNo').textbox('enable'); 
+				$('#p_remark').textbox('enable'); 
+				$('#p_keyCode').textbox('enable'); 
+				$("#p_isKey").combobox('enable');
+				$("#p_orgId").combotree('enable'); 
+				
+				$("#p_code").textbox("setValue", "");
+				$("#p_name").textbox("setValue", "");
+				$("#p_proTime").datebox('setValue', "");
+				$("#p_place").textbox("setValue", "");
+				$("#p_proNo").textbox("setValue", "");
+				$("#p_remark").textbox("setValue", "");
+				$("#p_keyCode").textbox("setValue", "");
+				$("#p_isKey").combobox('select', 0);
+				$("#p_orgId").combotree("setValue","");
+				$("#p_id").val("");
+			}
 		</script>
 	</head>
 	
 	<body>
 		<form method="POST" enctype="multipart/form-data" id="uploadForm">
 			<div style="margin-left: 10px;margin-top:20px;">
-				<div class="title">检索整车信息&nbsp;&nbsp;<a href="javascript:void(0)" onclick="vehicleInfo()"><i class="icon icon-search"></i></a></div>
+				<div class="title">整车信息&nbsp;&nbsp;
+					<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
+					<a href="javascript:void(0)" onclick="addVehicle()" title="新增"><i class="icon icon-edit"></i></a>
+				</div>
+				<input type="hidden" id="v_id" name="v_id">
 				<table class="info">
 					<tr>
 						<td>
@@ -203,11 +277,15 @@
 			</div>
 		
 			<div style="margin-left: 10px;margin-top:20px;">
-				<div class="title">检索零部件信息&nbsp;&nbsp;<a href="javascript:void(0)" onclick="partsInfo()"><i class="icon icon-search"></i></a></div>
+				<div class="title">零部件信息&nbsp;&nbsp;
+					<a href="javascript:void(0)" onclick="partsInfo()"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
+					<a href="javascript:void(0)" onclick="addParts()" title="新增"><i class="icon icon-edit"></i></a>
+				</div>
+				<input type="hidden" id="p_id" name="p_id">
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>代码：</span> 
+							<span class="title-span"><span class="req-span">*</span>零件号：</span> 
 							<input id="p_code" name="p_code" class="easyui-textbox">
 						</td>
 						<td>
@@ -216,47 +294,32 @@
 						</td>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-							<input id="p_producer" name="p_producer" class="easyui-textbox">
-						</td>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
-							<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产场地：</span> 
-							<input id="p_place" name="p_place" class="easyui-textbox">
+							<input id="p_orgId" name="p_orgId">
 						</td>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
 							<input id="p_proNo" name="p_proNo" class="easyui-textbox">
 						</td>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产工艺：</span> 
-							<input id="p_technology" name="p_technology" class="easyui-textbox">
-						</td>
-						<td>	
-							<span class="title-span">图片：</span> 
-							<input id="p_pic" name="p_pic" class="easyui-filebox" style="width:171px" data-options="buttonText: '选择'">
-						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>材料名称：</span> 
-							<input id="p_matName" name="p_matName" class="easyui-textbox">
+							<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
+							<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false">
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
-							<input id="p_matNo" name="p_matNo" class="easyui-textbox">
+							<span class="title-span"><span class="req-span">*</span>生产场地：</span> 
+							<input id="p_place" name="p_place" class="easyui-textbox">
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>材料颜色：</span> 
-							<input id="p_matColor" name="p_matColor" class="easyui-textbox">
+							<span class="title-span"><span class="req-span">*</span>关键零件：</span> 
+							<select id="p_isKey" name="p_isKey" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+								<option value="0">否</option>
+								<option value="1">是</option>
+							</select>
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>材料生产商：</span> 
-							<input id="p_matProducer" name="p_matProducer" class="easyui-textbox">
+							<span class="title-span">零件型号：</span> 
+							<input id="p_keyCode" name="p_keyCode" class="easyui-textbox">
 						</td>
 					</tr>
 					<tr>
@@ -269,7 +332,9 @@
 			</div>
 		
 			<div style="margin-left: 10px;margin-top:20px;">
-				<div class="title">检索原材料信息&nbsp;&nbsp;<a href="javascript:void(0)" onclick="materialInfo()"><i class="icon icon-search"></i></a></div>
+				<div class="title">原材料信息
+					<!--  &nbsp;&nbsp;<a href="javascript:void(0)" onclick="materialInfo()"><i class="icon icon-search"></i></a> -->
+				</div>
 				
 				<table class="info">
 					<tr>
@@ -283,18 +348,14 @@
 						</td>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>材料生产商：</span> 
-							<input id="m_matProducer" name="m_matProducer" class="easyui-textbox">
+							<input id="m_orgId" name="m_orgId">
 						</td>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产商地址：</span> 
-							<input id="m_producerAdd" name="m_producerAdd" class="easyui-textbox">
-						</td>
-					</tr>
-					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
 							<input id="m_matNo" name="m_matNo" class="easyui-textbox">
 						</td>
+					</tr>
+					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>材料颜色：</span> 
 							<input id="m_matColor" name="m_matColor" class="easyui-textbox">

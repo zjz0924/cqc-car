@@ -6,10 +6,17 @@
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
 				<div>
-					<span class="qlabel">材料名称：</span><input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					<span class="qlabel">生产批次：</span><input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					<span class="qlabel">材料牌号：</span><input id="q_matNo" name="q_matNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					<span class="qlabel">材料生产商：</span><input id="q_matProducer" name="q_matProducer" class="easyui-textbox" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">材料名称：</span>
+					<input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">生产批次：</span>
+					<input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">材料牌号：</span>
+					<input id="q_matNo" name="q_matNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">材料生产商：</span>
+					<input id="q_orgId" name="q_orgId" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 				
 				<div style="margin-top:10px;margin-right: 40px;">
@@ -29,6 +36,26 @@
 			var datagrid = "materialTable";
 			
 			$(function(){
+				 $('#q_orgId').combotree({
+					url: '${ctx}/org/getTreeByType?type=2',
+					multiple: false,
+					animate: true,
+					width: '140px'
+				});
+				
+				// 只有最底层才能选择
+				var pOrgTree = $('#q_orgId').combotree('tree');	
+				pOrgTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+				
+				
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
@@ -66,17 +93,15 @@
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
-						field : 'matProducer',
+						field : 'org',
 						title : '材料生产商',
 						width : '120',
 						align : 'center',
-						formatter : formatCellTooltip
-					}, {
-						field : 'producerAdd',
-						title : '材料生产商地址',
-						width : '170',
-						align : 'center',
-						formatter : formatCellTooltip
+						formatter: function(val){
+							if(val){
+								return "<span title="+ val.name+">"+ val.name + "</span>";
+							}
+						}
 					}, {
 						field : 'remark',
 						title : '备注',
@@ -104,7 +129,7 @@
 							'proNo' : $("#q_proNo").textbox("getValue"), 
 							'matName' : $("#q_matName").textbox("getValue"), 
 							'matNo' : $("#q_matNo").textbox("getValue"), 
-							'matProducer' : $("#q_matProducer").textbox("getValue"),
+							'orgId' : $("#q_orgId").combotree("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -118,7 +143,7 @@
 					'proNo' : $("#q_proNo").textbox("getValue"), 
 					'matName' : $("#q_matName").textbox("getValue"), 
 					'matNo' : $("#q_matNo").textbox("getValue"), 
-					'matProducer' : $("#q_matProducer").textbox("getValue")
+					'orgId' : $("#q_orgId").combotree("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -127,7 +152,7 @@
 				$("#q_proNo").textbox('clear');
 				$("#q_matName").textbox('clear');
 				$("#q_matNo").textbox('clear');
-				$("#q_matProducer").textbox('clear');
+				$("#q_orgId").combotree("setValue","");
 				getData(datagrid, getDataUrl, {});
 			}
 			
@@ -139,11 +164,19 @@
 				if (!isNull(row)) {
 					$("#m_matName").textbox("setValue", row.matName);
 					$("#m_proNo").textbox("setValue", row.proNo);
-					$("#m_matProducer").textbox("setValue", row.matProducer);
-					$("#m_producerAdd").textbox("setValue", row.producerAdd);
+					$("#m_orgId").combotree("setValue", row.org.id);
 					$("#m_matNo").textbox("setValue", row.matNo);
 					$("#m_matColor").textbox("setValue", row.matColor);
 					$("#m_remark").textbox("setValue", row.remark);
+					
+					// 不可编辑
+					$('#m_matName').textbox('disable'); 
+					$('#m_proNo').textbox('disable'); 
+					$('#m_matNo').datebox('disable');
+					$('#m_matColor').textbox('disable');
+					$('#m_remark').textbox('disable'); 					
+					$("#m_orgId").combotree('disable');
+					
 				}
 				
 				$('#materialDialog').dialog('close');

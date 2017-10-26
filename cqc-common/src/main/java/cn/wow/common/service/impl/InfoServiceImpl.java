@@ -88,8 +88,12 @@ public class InfoServiceImpl implements InfoService {
 		Date date = vehicle.getCreateTime();
 		String taskCode = sdf.format(date);
 		
-		vehicleDao.insert(vehicle);
-		partsDao.insert(parts);
+		if(vehicle.getId() == null){
+			vehicleDao.insert(vehicle);
+		}
+		if(parts.getId() == null){
+			partsDao.insert(parts);
+		}
 		materialDao.insert(material);
 
 		// 信息

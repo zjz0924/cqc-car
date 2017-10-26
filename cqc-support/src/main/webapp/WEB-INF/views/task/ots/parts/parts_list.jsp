@@ -6,22 +6,36 @@
 	<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 		<div>
 			<div>
-				<span class="qlabel">代码：</span><input id="p_q_code" name="p_q_code" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="qlabel">名称：</span><input id="p_q_name" name="p_q_name" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="qlabel">零件号：</span>
+				<input id="p_q_code" name="p_q_code" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<span class="qlabel">名称：</span>
+				<input id="p_q_name" name="p_q_name" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				
 				<span class="qlabel">生产时间：</span>
 				<input type="text" id="p_q_startProTime" name="p_q_startProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'p_q_endProTime\')}'})" class="textbox" style="line-height: 23px;width:140px;display:inline-block"/> - 
 			   	<input type="text" id="p_q_endProTime" name="p_q_endProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'p_q_startProTime\')}'})" class="textbox"  style="line-height: 23px;width:140px;display:inline-block;margin-right:60px;"/>
 			</div>
 			
 			<div style="margin-top:10px;">
-				<span class="qlabel">生产商：</span><input id="p_q_producer" name="p_q_producer" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="qlabel">生产批次：</span><input id="p_q_proNo" name="p_q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="qlabel">材料名称：</span><input id="p_q_matName" name="p_q_matName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="qlabel">材料牌号：</span><input id="p_q_matNo" name="p_q_matNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="qlabel">生产商：</span>
+				<input id="p_q_orgId" name="p_q_orgId" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<span class="qlabel">生产批次：</span>
+				<input id="p_q_proNo" name="p_q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<span class="qlabel">关键零件：</span>
+				<select id="p_q_isKey" name="p_q_isKey" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+					<option value="">全部</option>
+					<option value="0">否</option>
+					<option value="1">是</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 			
-			<div style="margin-top:10px;margin-right: 40px;">
-				<span class="qlabel">材料生产商：</span><input id="p_q_matProducer" name="p_q_matProducer" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+			<div style="margin-top:10px;">
+				<span class="qlabel">零件型号：</span>
+				<input id="p_q_keyCode" name="p_q_keyCode" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="p_doSearch()">查询</a>
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 			</div>
@@ -38,6 +52,25 @@
 		var datagrid = "partsTable";
 		
 		$(function(){
+			$('#p_q_orgId').combotree({
+				url: '${ctx}/org/getTreeByType?type=2',
+				multiple: false,
+				animate: true,
+				width: '140px'
+			});
+			
+			// 只有最底层才能选择
+			var pOrgTree = $('#p_q_orgId').combotree('tree');	
+			pOrgTree.tree({
+			   onBeforeSelect: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
+			
 			 $("#" + datagrid).datagrid({
 		        url : getDataUrl,
 		        singleSelect : true, /*是否选中一行*/
@@ -52,7 +85,7 @@
 		            hidden: 'true'
 		        }, {
 		            field : 'code',
-		            title : '代码',
+		            title : '零件号',
 		            width : '120',
 		            align : 'center',
 		            formatter: formatCellTooltip
@@ -63,11 +96,33 @@
 		            align : 'center',
 		            formatter: formatCellTooltip
 		        }, {
-		            field : 'producer',
+		            field : 'isKey',
+		            title : '关键零件',
+		            width : '120',
+		            align : 'center',
+		            formatter: function(val){
+	            		var tip = "否";
+	            		if(val == 1){
+	            			tip = "是";
+	            		}
+	            		return "<span title="+ tip +">" + tip + "</span>";
+		            }
+		        }, {
+		            field : 'keyCode',
+		            title : '零件型号',
+		            width : '120',
+		            align : 'center',
+		            formatter: formatCellTooltip
+		        }, {
+		            field : 'org',
 		            title : '生产商',
 		            width : '150',
 		            align : 'center',
-		            formatter: formatCellTooltip
+		            formatter: function(val){
+						if(val){
+							return "<span title="+ val.name+">"+ val.name + "</span>";
+						}
+					}
 		        }, {
 		            field : 'proTime',
 		            title : '生产时间',
@@ -84,36 +139,6 @@
 					field : 'proNo',
 					title : '生产批次',
 					width : '120',
-					align : 'center',
-					formatter : formatCellTooltip
-				}, {
-					field : 'technology',
-					title : '生产工艺',
-					width : '120',
-					align : 'center',
-					formatter : formatCellTooltip
-				}, {
-					field : 'matName',
-					title : '材料名称',
-					width : '120',
-					align : 'center',
-					formatter : formatCellTooltip
-				}, {
-					field : 'matNo',
-					title : '材料牌号',
-					width : '120',
-					align : 'center',
-					formatter : formatCellTooltip
-				}, {
-					field : 'matColor',
-					title : '材料颜色',
-					width : '120',
-					align : 'center',
-					formatter : formatCellTooltip
-				}, {
-					field : 'matProducer',
-					title : '材料生产商',
-					width : '150',
 					align : 'center',
 					formatter : formatCellTooltip
 				}, {
@@ -146,11 +171,10 @@
 						'name' : $("#p_q_name").textbox("getValue"), 
 						'startProTime' : $("#p_q_startProTime").val(),
 						'endProTime' : $("#p_q_endProTime").val(),
-						'producer' : $("#p_q_producer").textbox("getValue"), 
 						'proNo' : $("#p_q_proNo").textbox("getValue"), 
-						'matName' : $("#p_q_matName").textbox("getValue"), 
-						'matNo' : $("#p_q_matNo").textbox("getValue"), 
-						'matProducer' : $("#p_q_matProducer").textbox("getValue"),
+						'orgId' : $("#p_q_orgId").combotree("getValue"),
+						'isKey' : $("#p_q_isKey").combobox("getValue"),
+						'keyCode' : $("#p_q_keyCode").textbox("getValue"), 
 						'pageNum' : pageNumber,
 						'pageSize' : pageSize
 					}
@@ -165,11 +189,10 @@
 				'name' : $("#p_q_name").textbox("getValue"), 
 				'startProTime' : $("#p_q_startProTime").val(),
 				'endProTime' : $("#p_q_endProTime").val(),
-				'producer' : $("#p_q_producer").textbox("getValue"), 
 				'proNo' : $("#p_q_proNo").textbox("getValue"), 
-				'matName' : $("#p_q_matName").textbox("getValue"), 
-				'matNo' : $("#p_q_matNo").textbox("getValue"), 
-				'matProducer' : $("#p_q_matProducer").textbox("getValue")
+				'orgId' : $("#p_q_orgId").combotree("getValue"),
+				'isKey' : $("#p_q_isKey").combobox("getValue"),
+				'keyCode' : $("#p_q_keyCode").textbox("getValue")
 			}
 			getData(datagrid, getDataUrl, data);
 		}
@@ -179,11 +202,10 @@
 			$("#p_q_startProTime").val('');
 			$("#p_q_endProTime").val('');
 			$("#p_q_name").textbox('clear');
-			$("#p_q_producer").textbox('clear');
 			$("#p_q_proNo").textbox('clear');
-			$("#p_q_matName").textbox('clear');
-			$("#p_q_matNo").textbox('clear');
-			$("#p_q_matProducer").textbox('clear');
+			$("#p_q_keyCode").textbox('clear');
+			$("#p_q_isKey").combobox('select', "");
+			$("#p_q_orgId").combotree("setValue","");
 			getData(datagrid, getDataUrl, {});
 		}
 	
@@ -196,15 +218,24 @@
 				$("#p_code").textbox("setValue", row.code);
 				$("#p_name").textbox("setValue", row.name);
 				$("#p_proTime").datebox("setValue", formatDate(row.proTime));
-				$("#p_producer").textbox("setValue", row.producer);
 				$("#p_place").textbox("setValue", row.place);
 				$("#p_proNo").textbox("setValue", row.proNo);
-				$("#p_technology").textbox("setValue", row.technology);
-				$("#p_matName").textbox("setValue", row.matName);
-				$("#p_matNo").textbox("setValue", row.matNo);
-				$("#p_matColor").textbox("setValue", row.matColor);
-				$("#p_matProducer").textbox("setValue", row.matProducer);
-				$("#p_remark").textbox("setValue", row.remark);			
+				$("#p_remark").textbox("setValue", row.remark);	
+				$("#p_isKey").combobox('select', row.isKey);
+				$("#p_keyCode").textbox("setValue", row.keyCode);	
+				$("#p_orgId").combotree("setValue", row.org.id);
+				$("#p_id").val(row.id);
+				
+				// 不可编辑
+				$('#p_code').textbox('disable'); 
+				$('#p_name').textbox('disable'); 
+				$('#p_proTime').datebox('disable');
+				$('#p_place').textbox('disable'); 
+				$('#p_proNo').textbox('disable'); 
+				$('#p_remark').textbox('disable'); 
+				$('#p_keyCode').textbox('disable'); 
+				$("#p_isKey").combobox('disable');
+				$("#p_orgId").combotree('disable');
 			}
 			
 			$('#partsDialog').dialog('close');

@@ -37,8 +37,10 @@ import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.PartsService;
 import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
+import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
@@ -76,6 +78,10 @@ public class OtsTaskController extends AbstractController {
 	private TaskService taskService;
 	@Autowired
 	private TaskRecordService taskRecordService;
+	@Autowired
+	private VehicleService vehicleService;
+	@Autowired
+	private PartsService partsService;
 
 	/**
 	 * 首页
@@ -129,51 +135,65 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String v_code, String v_type, String v_proTime,
-			String v_proAddr, String v_remark, String p_code, String p_name, String p_producer, String p_proTime,
-			String p_place, String p_proNo, String p_technology, String p_matName, String p_matNo, String p_matColor,
-			String p_matProducer, String p_remark, String m_matName, String m_matColor, String m_proNo,
-			String m_matProducer, String m_matNo, String m_producerAdd, String m_remark,
-			@RequestParam(value = "p_pic", required = false) MultipartFile pfile,
+	public AjaxVO save(HttpServletRequest request, Model model, Long v_id, String v_code, String v_type, String v_proTime,
+			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime,
+			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId,
+			String p_remark, String m_matName, String m_matColor, String m_proNo,
+			Long m_orgId, String m_matNo, String m_remark,
 			@RequestParam(value = "m_pic", required = false) MultipartFile mfile) {
 		
 		AjaxVO vo = new AjaxVO();
 		
 		try {
 			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
 			// 整车信息
 			Vehicle vehicle = new Vehicle();
-			vehicle = new Vehicle();
-			vehicle.setType(v_type);
-			vehicle.setCode(v_code);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			vehicle.setProTime(sdf.parse(v_proTime));
-			vehicle.setProAddr(v_proAddr);
-			vehicle.setRemark(v_remark);
-			vehicle.setState(Contants.ONDOING_TYPE);
-			vehicle.setCreateTime(date);
+			if(v_id == null){
+				vehicle = new Vehicle();
+				vehicle.setType(v_type);
+				vehicle.setCode(v_code);
+				vehicle.setProTime(sdf.parse(v_proTime));
+				vehicle.setProAddr(v_proAddr);
+				vehicle.setRemark(v_remark);
+				vehicle.setState(Contants.ONDOING_TYPE);
+				vehicle.setCreateTime(date);
+				
+				Vehicle dbVehicle = vehicleService.selectByCode(vehicle.getCode());
+				if(dbVehicle != null){
+					vo.setSuccess(false);
+					vo.setMsg("整车信息已存在");
+					return vo;
+				}
+			}else{
+				vehicle.setId(v_id);
+			}
 			
 			// 零部件信息
 			Parts parts = new Parts();
-			parts.setType(Contants.STANDARD_TYPE);
-			parts.setProTime(sdf.parse(p_proTime));
-			parts.setRemark(p_remark);
-			parts.setProducer(p_matProducer);
-			parts.setPlace(p_place);
-			parts.setProNo(p_proNo);
-			parts.setTechnology(p_technology);
-			parts.setMatName(p_matName);
-			parts.setMatNo(p_matNo);
-			parts.setMatColor(p_matColor);
-			parts.setMatProducer(p_matProducer);
-			parts.setName(p_name);
-			parts.setCode(p_code);
-			parts.setCreateTime(date);
-			parts.setState(Contants.ONDOING_TYPE);
-			if (pfile != null && !pfile.isEmpty()) {
-				String pic = uploadImg(pfile, partsUrl, true);
-				parts.setPic(pic);
+			if(p_id == null){
+				parts.setType(Contants.STANDARD_TYPE);
+				parts.setProTime(sdf.parse(p_proTime));
+				parts.setRemark(p_remark);
+				parts.setPlace(p_place);
+				parts.setProNo(p_proNo);
+				parts.setName(p_name);
+				parts.setCode(p_code);
+				parts.setIsKey(p_isKey);
+				parts.setKeyCode(p_keyCode);
+				parts.setOrgId(p_orgId);
+				parts.setCreateTime(date);
+				parts.setState(Contants.ONDOING_TYPE);
+				
+				Parts dbParts = partsService.selectByCode(vehicle.getCode());
+				if(dbParts != null){
+					vo.setSuccess(false);
+					vo.setMsg("零部件信息已存在");
+					return vo;
+				}
+			}else{
+				parts.setId(p_id);
 			}
 			
 			// 原材料信息
@@ -184,8 +204,7 @@ public class OtsTaskController extends AbstractController {
 			material.setMatName(m_matName);
 			material.setMatNo(m_matNo);
 			material.setMatColor(m_matColor);
-			material.setMatProducer(m_matProducer);
-			material.setProducerAdd(m_producerAdd);
+			material.setOrgId(m_orgId);
 			material.setCreateTime(date);
 			material.setState(Contants.ONDOING_TYPE);
 			

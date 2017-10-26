@@ -5,7 +5,6 @@
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="url" property="url" jdbcType="VARCHAR" />
-		<result column="logo" property="logo" jdbcType="VARCHAR" />
 		<result column="p_id" property="pId" jdbcType="BIGINT" />
 		<result column="sort_num" property="sortNum" jdbcType="INTEGER" />
 		<result column="is_parent" property="isParent" jdbcType="CHAR" />
@@ -14,7 +13,7 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, name, url, logo, p_id, sort_num, is_parent,alias
+		id, name, url, p_id, sort_num, is_parent,alias
 	</sql>
 	
 	<select id="getMenuList" resultMap="BaseResultMap">

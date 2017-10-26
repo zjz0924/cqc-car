@@ -6,24 +6,20 @@
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="producer" property="producer" jdbcType="VARCHAR" />
+		<result column="org_id" property="orgId" jdbcType="BIGINT" />
+		<result column="is_key" property="isKey" jdbcType="INTEGER" />
+		<result column="key_code" property="keyCode" jdbcType="VARCHAR" />
 		<result column="pro_time" property="proTime" jdbcType="DATE" />
 		<result column="place" property="place" jdbcType="VARCHAR" />
 		<result column="pro_no" property="proNo" jdbcType="VARCHAR" />
-		<result column="technology" property="technology" jdbcType="VARCHAR" />
-		<result column="mat_name" property="matName" jdbcType="VARCHAR" />
-		<result column="mat_no" property="matNo" jdbcType="VARCHAR" />
-		<result column="mat_color" property="matColor" jdbcType="VARCHAR" />
-		<result column="mat_producer" property="matProducer" jdbcType="VARCHAR" />
-		<result column="pic" property="pic" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 	</resultMap>
 
 	<sql id="base_columns">
-		id, type, code, name, producer, pro_time, place, pro_no, technology, mat_name, mat_no,
-		mat_color, mat_producer, pic, remark, create_time, state
+		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -43,14 +39,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into parts (type, code, name, producer, pro_time, place, pro_no, technology,
-			mat_name, mat_no, mat_color, mat_producer, pic, remark, create_time, state)
-		values (#{type,jdbcType=INTEGER},
-		#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE},
-		#{place,jdbcType=VARCHAR}, #{proNo,jdbcType=VARCHAR}, #{technology,jdbcType=VARCHAR},
-		#{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR},
-		#{matProducer,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}
-		)
+		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code) values
+		(#{type,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{place,jdbcType=VARCHAR}, 
+		#{proNo,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER},
+		#{orgId,jdbcType=BIGINT}, #{isKey,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Parts">
@@ -62,11 +54,11 @@
 			<if test="code != null">
 				code = #{code,jdbcType=VARCHAR},
 			</if>
+			<if test="qcode != null">
+				code like concat('%', #{qcode,jdbcType=VARCHAR} ,'%'),
+			</if>
 			<if test="name != null">
 				name = #{name,jdbcType=VARCHAR},
-			</if>
-			<if test="producer != null">
-				producer = #{producer,jdbcType=VARCHAR},
 			</if>
 			<if test="proTime != null">
 				pro_time = #{proTime,jdbcType=DATE},
@@ -77,102 +69,87 @@
 			<if test="proNo != null">
 				pro_no = #{proNo,jdbcType=VARCHAR},
 			</if>
-			<if test="technology != null">
-				technology = #{technology,jdbcType=VARCHAR},
-			</if>
-			<if test="matName != null">
-				mat_name = #{matName,jdbcType=VARCHAR},
-			</if>
-			<if test="matNo != null">
-				mat_no = #{matNo,jdbcType=VARCHAR},
-			</if>
-			<if test="matColor != null">
-				mat_color = #{matColor,jdbcType=VARCHAR},
-			</if>
-			<if test="matProducer != null">
-				mat_producer = #{matProducer,jdbcType=VARCHAR},
-			</if>
 			<if test="state != null">
 				state = #{state,jdbcType=INTEGER},
 			</if>
-			<if test="pic != null">
-				pic = #{pic,jdbcType=VARCHAR},
-			</if>
+			<if test="orgId != null" >
+		        org_id = #{orgId,jdbcType=BIGINT},
+		    </if>
+		    <if test="isKey != null" >
+		    	is_key = #{isKey,jdbcType=INTEGER},
+		    </if>
+		    <if test="keyCode != null" >
+		   	 	key_code like concat('%', #{keyCode,jdbcType=VARCHAR} ,'%'),
+		    </if>
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	
-	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
-	  	select 
-	    <include refid="base_columns" />
-	      from parts
-	     <where>
-	     	   <if test="code != null and code != ''" >
-		        and code = #{code,jdbcType=VARCHAR}
-		      </if>
-	     
-		      <if test="qcode != null and qcode != ''" >
-		        and code like concat('%', #{qcode,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="name != null and name != ''" >
-		        and name like concat('%', #{name,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="type != null and type != ''" >
-		        and type = #{type,jdbcType=INTEGER}
-		      </if>
-		      
-		      <if test="state != null">
+	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="base_columns" /> from parts
+		<where>
+			<if test="code != null and code != ''">
+				and code = #{code,jdbcType=VARCHAR}
+			</if>
+	
+			<if test="qcode != null and qcode != ''">
+				and code like concat('%', #{qcode,jdbcType=VARCHAR}, '%')
+			</if>
+	
+			<if test="name != null and name != ''">
+				and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+			</if>
+	
+			<if test="type != null and type != ''">
+				and type = #{type,jdbcType=INTEGER}
+			</if>
+	
+			<if test="state != null">
 				and state = #{state,jdbcType=INTEGER}
 			</if>
-		      
-		     <if test="startProTime != null and startProTime != ''">  
-		    	and pro_time &gt;= #{startProTime, jdbcType=DATE}
-		      </if>
-		      
-		      <if test="endProTime != null and endProTime != ''">  
-		    	and pro_time &lt;= #{endProTime, jdbcType=DATE}
-		      </if>
-		      
-		      <if test="startCreateTime != null and startCreateTime != ''">  
-		    	and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
-		      </if>
-		      
-		      <if test="endCreateTime != null and endCreateTime != ''">  
-		    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
-		      </if>
-		      
-		      <if test="producer != null and producer != ''" >
-		        and producer like concat('%', #{producer,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="proNo != null and proNo != ''" >
-		        and pro_no like concat('%', #{proNo,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="matName != null and matName != ''" >
-		        and mat_name like concat('%', #{matName,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="matNo != null and matNo != ''" >
-		        and mat_no like concat('%', #{matNo,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		       <if test="matProducer != null and matProducer != ''" >
-		        and mat_producer like concat('%', #{matProducer,jdbcType=VARCHAR}, '%') 
-		      </if>
-	      </where>
-	      
-		  <choose>
-	  		<when test="custom_order_sql != null">
-	  			order by ${custom_order_sql}
-	  		</when>
-	  		<otherwise>
-	  			order by id desc
-	  		</otherwise>
-	 	 </choose>
-	  </select>
+	
+			<if test="startProTime != null and startProTime != ''">
+				and pro_time &gt;= #{startProTime, jdbcType=DATE}
+			</if>
+	
+			<if test="endProTime != null and endProTime != ''">
+				and pro_time &lt;= #{endProTime, jdbcType=DATE}
+			</if>
+	
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+			</if>
+	
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+	
+			<if test="proNo != null and proNo != ''">
+				and pro_no like concat('%', #{proNo,jdbcType=VARCHAR}, '%')
+			</if>
+	
+			<if test="orgId != null">
+				and org_id = #{orgId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="isKey != null">
+				and is_key = #{isKey,jdbcType=INTEGER}
+			</if>
+			
+			<if test="keyCode != null">
+				and key_code like concat('%', #{keyCode,jdbcType=VARCHAR}, '%')
+			</if>
+		</where>
+	
+		<choose>
+			<when test="custom_order_sql != null">
+				order by ${custom_order_sql}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+	</select>
 
 </mapper>

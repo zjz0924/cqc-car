@@ -24,9 +24,8 @@ public class Material extends JpaEntity{
     // 材料颜色
     private String matColor;
     // 材料生产商
-    private String matProducer;
-    // 生产商地址
-    private String producerAdd;
+    private Long orgId;
+    private Org org;
     // 生产批次
     private String proNo;
     // 图片
@@ -78,23 +77,23 @@ public class Material extends JpaEntity{
         this.matColor = matColor == null ? null : matColor.trim();
     }
 
-    public String getMatProducer() {
-        return matProducer;
-    }
+    public Long getOrgId() {
+		return orgId;
+	}
 
-    public void setMatProducer(String matProducer) {
-        this.matProducer = matProducer == null ? null : matProducer.trim();
-    }
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
 
-    public String getProducerAdd() {
-        return producerAdd;
-    }
+	public Org getOrg() {
+		return org;
+	}
 
-    public void setProducerAdd(String producerAdd) {
-        this.producerAdd = producerAdd == null ? null : producerAdd.trim();
-    }
+	public void setOrg(Org org) {
+		this.org = org;
+	}
 
-    public String getProNo() {
+	public String getProNo() {
         return proNo;
     }
 

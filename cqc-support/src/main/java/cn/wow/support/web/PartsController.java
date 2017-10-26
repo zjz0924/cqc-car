@@ -60,8 +60,7 @@ public class PartsController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String code, String type,
-			String startProTime, String endProTime, String name, String producer, String proNo, String matName,
-			String matNo, String matProducer) {
+			String startProTime, String endProTime, String name, Long orgId, String proNo, Integer isKey, String keyCode) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -86,22 +85,19 @@ public class PartsController extends AbstractController {
 		if (StringUtils.isNotBlank(name)) {
 			map.put("name", name);
 		}
-		if (StringUtils.isNotBlank(producer)) {
-			map.put("producer", producer);
+		if (isKey != null) {
+			map.put("isKey", isKey);
 		}
 		if (StringUtils.isNotBlank(proNo)) {
 			map.put("proNo", proNo);
 		}
-		if (StringUtils.isNotBlank(matName)) {
-			map.put("matName", matName);
+		if (StringUtils.isNotBlank(keyCode)) {
+			map.put("keyCode", keyCode);
 		}
-		if (StringUtils.isNotBlank(matNo)) {
-			map.put("matNo", matNo);
+		if(orgId != null){
+			map.put("orgId", orgId);
 		}
-		if (StringUtils.isNotBlank(matProducer)) {
-			map.put("matProducer", matProducer);
-		}
-
+		
 		List<Parts> dataList = partsService.selectAllList(map);
 
 		// 分页
@@ -128,91 +124,6 @@ public class PartsController extends AbstractController {
 		return "task/ots/parts/parts_detail";
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String name, Integer type, String proTime,
-			String remark, String producer, String place, String proNo, String technology,
-			String matName, String matNo, String matColor, String matProducer, @RequestParam(value = "pic", required = false) MultipartFile file) {
-		AjaxVO vo = new AjaxVO();
-		Parts parts = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		
-		try {
-			if (StringUtils.isNotBlank(id)) {
-				parts = partsService.selectOne(Long.parseLong(id));
-
-				if (parts != null) {
-					parts.setType(type);
-					if(StringUtils.isNotBlank(proTime)){
-						parts.setProTime(sdf.parse(proTime));
-					}
-					parts.setRemark(remark);
-					parts.setProducer(producer);
-					parts.setPlace(place);
-					parts.setProNo(proNo);
-					parts.setTechnology(technology);
-					parts.setMatName(matName);
-					parts.setMatNo(matNo);
-					parts.setMatColor(matColor);
-					parts.setMatProducer(matProducer);
-					parts.setName(name);
-					
-					if (file != null && !file.isEmpty()) {
-						String pic = uploadImg(file, partsUrl, true);
-						parts.setPic(pic);
-					}
-					
-					partsService.update(getCurrentUserName(), parts);
-				}
-				vo.setMsg("编辑成功");
-			} else {
-				if(type == Contants.STANDARD_TYPE){
-					Parts dbVehicle = partsService.selectByCodeAndType(code, type);
-					if (dbVehicle != null) {
-						vo.setData("code");
-						vo.setMsg("代码已存在");
-						vo.setSuccess(false);
-						return vo;
-					}
-				}
-				
-				parts = new Parts();
-				parts.setType(type);
-				
-				if(StringUtils.isNotBlank(proTime)){
-					parts.setProTime(sdf.parse(proTime));
-				}
-				parts.setRemark(remark);
-				parts.setProducer(matProducer);
-				parts.setPlace(place);
-				parts.setProNo(proNo);
-				parts.setTechnology(technology);
-				parts.setMatName(matName);
-				parts.setMatNo(matNo);
-				parts.setMatColor(matColor);
-				parts.setMatProducer(matProducer);
-				parts.setName(name);
-				parts.setCode(code);
-				parts.setCreateTime(new Date());
-				
-				if (file != null && !file.isEmpty()) {
-					String pic = uploadImg(file, partsUrl, true);
-					parts.setPic(pic);
-				}
-				partsService.save(getCurrentUserName(), parts);
-
-				vo.setMsg("添加成功");
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-
-			logger.error("零部件信息保存失败", ex);
-			vo.setMsg("保存失败，系统异常");
-			vo.setSuccess(false);
-			return vo;
-		}
-		return vo;
-	}
 
 	@ResponseBody
 	@RequestMapping(value = "/delete")
