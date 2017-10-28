@@ -20,7 +20,7 @@ public interface InfoService {
 
     public List<Info> selectAllList(Map<String, Object> map);
     
-    public int insert(Account account, Vehicle vehicle, Parts parts, Material material, int type);
+    public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, boolean update);
     
     /**
      * 审核

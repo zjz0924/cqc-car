@@ -62,12 +62,12 @@ public class InfoServiceImpl implements InfoService {
 	public int update(String userName, Info info) {
 		return infoDao.update(info);
 	}
-	
-	public void updateState(Long id, Integer state){
+
+	public void updateState(Long id, Integer state) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", id);
 		map.put("state", state);
-		
+
 		taskDao.updateState(map);
 	}
 
@@ -83,56 +83,81 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public int insert(Account account, Vehicle vehicle, Parts parts, Material material, int type) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, boolean update) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		Date date = vehicle.getCreateTime();
+		Date date = material.getCreateTime();
 		String taskCode = sdf.format(date);
-		
-		if(vehicle.getId() == null){
+
+		if (vehicle.getId() == null) {
 			vehicleDao.insert(vehicle);
+		} else {
+			if (vehicle.getState() == Contants.ONDOING_TYPE) {
+				vehicleDao.update(vehicle);
+			}
 		}
-		if(parts.getId() == null){
+
+		if (parts.getId() == null) {
 			partsDao.insert(parts);
+		} else {
+			if (parts.getState() == Contants.ONDOING_TYPE) {
+				partsDao.update(parts);
+			}
 		}
-		materialDao.insert(material);
+		
+		if(material.getId() == null){
+			materialDao.insert(material);
+		}else{
+			materialDao.update(material);
+		}
 
-		// 信息
-		Info info = new Info();
-		info.setCreateTime(date);
-		info.setmId(material.getId());
-		info.setpId(parts.getId());
-		info.setState(Contants.ONDOING_TYPE);
-		info.setvId(vehicle.getId());
-		info.setType(type);
+		if(!update){
+			// 信息
+			Info info = new Info();
+			info.setCreateTime(date);
+			info.setmId(material.getId());
+			info.setpId(parts.getId());
+			info.setState(Contants.ONDOING_TYPE);
+			info.setvId(vehicle.getId());
+			info.setType(type);
+			infoDao.insert(info);
 
-		// 任务
-		Task task = new Task();
-		task.setCode(taskCode);
-		task.setCreateTime(date);
-		task.setiId(info.getId());
-		task.setOrgId(account.getOrgId());
-		task.setState(StandardTaskEnum.EXAMINE.getState());
-		task.setType(TaskTypeEnum.OTS.getState());
-		task.setFailNum(0);
-		task.setaId(account.getId());
-		task.setAtlasResult(0);
-		task.setPatternResult(0);
-		task.setPartsResult(0);
-		task.setMaterialResult(0);
-		taskDao.insert(task);
+			// 任务
+			Task task = new Task();
+			task.setCode(taskCode);
+			task.setCreateTime(date);
+			task.setiId(info.getId());
+			task.setOrgId(account.getOrgId());
+			task.setState(StandardTaskEnum.EXAMINE.getState());
+			task.setType(TaskTypeEnum.OTS.getState());
+			task.setFailNum(0);
+			task.setaId(account.getId());
+			task.setAtlasResult(0);
+			task.setPatternResult(0);
+			task.setPartsResult(0);
+			task.setMaterialResult(0);
+			taskDao.insert(task);
 
-		// 操作记录
-		TaskRecord record = new TaskRecord();
-		record.setCreateTime(date);
-		record.setCode(taskCode);
-		record.setState(StandardTaskRecordEnum.ENTERING.getState());
-		record.setaId(account.getId());
-		taskRecordDao.insert(record);
-
-		return infoDao.insert(info);
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(date);
+			record.setCode(taskCode);
+			record.setState(StandardTaskRecordEnum.ENTERING.getState());
+			record.setaId(account.getId());
+			record.setRemark("填写信息");
+			taskRecordDao.insert(record);
+		}else{
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(date);
+			record.setCode(taskCode);
+			record.setState(StandardTaskRecordEnum.UPDATE.getState());
+			record.setaId(account.getId());
+			record.setRemark("更新信息");
+			taskRecordDao.insert(record);
+		}
+		
 	}
 
-	
 	/**
 	 * 审核
 	 */
@@ -156,8 +181,7 @@ public class InfoServiceImpl implements InfoService {
 		}
 		taskRecordDao.insert(record);
 	}
-	
-	
+
 	/**
 	 * 下达任务
 	 */
@@ -176,13 +200,12 @@ public class InfoServiceImpl implements InfoService {
 		record.setState(StandardTaskRecordEnum.TRANSMIT.getState());
 		taskRecordDao.insert(record);
 	}
-	
-	
+
 	/**
-     * 审批
-     */
-    public void approve(Account account, Long id, int type, String remark){
-    	Task task = taskDao.selectOne(id);
+	 * 审批
+	 */
+	public void approve(Account account, Long id, int type, String remark) {
+		Task task = taskDao.selectOne(id);
 		// 操作记录
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(new Date());
@@ -200,5 +223,5 @@ public class InfoServiceImpl implements InfoService {
 			record.setRemark(remark);
 		}
 		taskRecordDao.insert(record);
-    }
+	}
 }

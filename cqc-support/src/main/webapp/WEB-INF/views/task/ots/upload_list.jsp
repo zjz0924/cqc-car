@@ -164,6 +164,8 @@
 									str = "基准保存";
 								}else if(val == 13){
 									str = "收费通知";
+								}else if(val == 12){
+									str = "信息修改";
 								}
 								return "<span title='" + str + "'>" + str + "</span>";
 							}

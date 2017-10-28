@@ -133,6 +133,10 @@
 		      <if test="state != null">
 				and t.state = #{state,jdbcType=INTEGER}
 			 </if>
+			 
+			 <if test="examineState != null">
+				and (t.state = 1 or t.state = 2)
+			 </if>
 			
 			<if test="atlasLab != null">
 				and t.atlas_lab = #{atlasLab,jdbcType=BIGINT}

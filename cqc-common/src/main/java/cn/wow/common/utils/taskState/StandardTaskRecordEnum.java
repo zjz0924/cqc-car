@@ -17,7 +17,8 @@ public enum StandardTaskRecordEnum {
 	SEND(8, "结果发送"), 
 	CONFIRM(9, "结果确认"), 
 	SAVE(10, "基准保存"),
-	NOTICE(11, "收费通知");
+	NOTICE(11, "收费通知"),
+	UPDATE(12, "信息修改");
 
 	private int state;
 

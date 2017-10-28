@@ -54,9 +54,6 @@
 			<if test="code != null">
 				code = #{code,jdbcType=VARCHAR},
 			</if>
-			<if test="qcode != null">
-				code like concat('%', #{qcode,jdbcType=VARCHAR} ,'%'),
-			</if>
 			<if test="name != null">
 				name = #{name,jdbcType=VARCHAR},
 			</if>
@@ -79,7 +76,7 @@
 		    	is_key = #{isKey,jdbcType=INTEGER},
 		    </if>
 		    <if test="keyCode != null" >
-		   	 	key_code like concat('%', #{keyCode,jdbcType=VARCHAR} ,'%'),
+		   	 	key_code = #{keyCode,jdbcType=VARCHAR},
 		    </if>
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
