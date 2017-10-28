@@ -245,7 +245,7 @@
 				$('#transmitDetailDialog').dialog({
 					title : '下达任务信息',
 					width : 900,
-					height : 765,
+					height : 680,
 					closed : false,
 					cache : false,
 					href : "${ctx}/ots/transmitDetail?id=" + id,

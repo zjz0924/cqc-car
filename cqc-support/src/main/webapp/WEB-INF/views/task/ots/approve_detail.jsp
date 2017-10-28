@@ -123,26 +123,72 @@
 				<tr>
 					<td class="title-td">试验名称</td>
 					<td class="title-td">分配实验室</td>
+					<td class="title-td">操作</td>
 				</tr>
 				
 				<tr>
-					<td class="value-td">图谱试验</td>
-					<td class="value-td">${facadeBean.atlas.name}</td>
+					<td class="value-td">零部件图谱试验</td>
+					<td class="value-td">${facadeBean.partsAtl.name}</td>
+					<td>
+						<span id="partsAtl1" <c:if test="${facadeBean.partsAtlResult != 0}">style="display:none;"</c:if>>
+							<a href="javascript:void(0);"  onclick="approve(1,'', 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+							<a href="javascript:void(0);"  onclick="notPass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+						</span>
+						<span id="partsAtl2" style="color:green;display:none;">同意</span>
+						<span id="partsAtl3" style="color:red;display:none;">不同意</span>
+					</td>
 				</tr>
 				
 				<tr>
-					<td class="value-td">型式试验</td>
-					<td class="value-td">${facadeBean.pattern.name}</td>
+					<td class="value-td">原材料图谱试验</td>
+					<td class="value-td">${facadeBean.matAtl.name}</td>
+					<td>
+						<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
+							<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+							<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+						</span>
+						<span id="matAtl2" style="color:green;display:none;">同意</span>
+						<span id="matAtl3" style="color:red;display:none;">不同意</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="value-td">零部件型式试验</td>
+					<td class="value-td">${facadeBean.partsPat.name}</td>
+					<td>
+						<span id="partsPat1" <c:if test="${facadeBean.partsPatResult != 0}">style="display:none;"</c:if>>
+							<a href="javascript:void(0);"  onclick="approve(1,'', 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+							<a href="javascript:void(0);"  onclick="notPass(3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+						</span>
+						<span id="partsPat2" style="color:green;display:none;">同意</span>
+						<span id="partsPat3" style="color:red;display:none;">不同意</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="value-td">原材料型式试验</td>
+					<td class="value-td">${facadeBean.matPat.name}</td>
+					<td>
+						<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
+							<a href="javascript:void(0);"  onclick="approve(1,'', 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+							<a href="javascript:void(0);"  onclick="notPass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+						</span>
+						<span id="matPat2" style="color:green;display:none;">同意</span>
+						<span id="matPat3" style="color:red;display:none;">不同意</span>
+					</td>
 				</tr>
 			</table>
 		</div>
 
-		 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="approve(${facadeBean.id}, 1, '')" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);"  onclick="notPass()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-		</div>
+		<c:if test="${facadeBean.partsAtlResult == 0 and facadeBean.matAtlResult == 0 and facadeBean.partsPatResult ==0 and facadeBean.matPatResult == 0}">
+			 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
+				<a id="allAgree" href="javascript:void(0);"  onclick="approve(1,'', 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部同意</a>&nbsp;&nbsp;
+				<a id="allNotAgree" href="javascript:void(0);"  onclick="notPass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">全部不同意</a>
+			</div>
+		</c:if>
 
 		<div id="dlg" class="easyui-dialog" title="审批" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
+			<input type="hidden" id="catagory" name="catagory">
 			<input id="remark" class="easyui-textbox" label="不同意原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
 			
 			<div align=center style="margin-top: 15px;">
@@ -187,17 +233,97 @@
 	</style>
 	
 	<script type="text/javascript">
-		function approve(id, type, remark){
+		$(function(){
+			// 零部件图谱试验结果
+			var partsAtlResult = "${facadeBean.partsAtlResult}";
+			if(partsAtlResult == 2){
+				$("#partsAtl2").show();
+			}else if(partsAtlResult == 1){
+				$("#partsAtl3").show();
+			}
+			
+			// 原材料图谱试验结果
+			var matAtlResult = "${facadeBean.matAtlResult}";
+			if(matAtlResult == 2){
+				$("#matAtl2").show();
+			}else if(matAtlResult == 1){
+				$("#matAtl3").show();
+			}
+			
+			// 零部件型式试验结果
+			var partsPatResult = "${facadeBean.partsPatResult}";
+			if(partsPatResult == 2){
+				$("#partsPat2").show();
+			}else if(partsPatResult == 1){
+				$("#partsPat3").show();
+			}
+			
+			// 零部件型式试验结果
+			var matPatResult = "${facadeBean.matPatResult}";
+			if(matPatResult == 2){
+				$("#matPat2").show();
+			}else if(matPatResult == 1){
+				$("#matPat3").show();
+			}
+			
+		});
+	
+		function approve(result, remark, catagory){
 			$.ajax({
 				url: "${ctx}/ots/approve",
 				data: {
-					"id": id,
-					"type": type,
-					"remark": remark
+					"id": "${facadeBean.id}",
+					"result": result,
+					"remark": remark,
+					"catagory": catagory
 				},
 				success: function(data){
 					if(data.success){
-						closeDialog(data.msg);
+						
+						if(result == 1){
+							if(catagory == 1){
+								$("#partsAtl1").hide();
+								$("#partsAtl2").show();
+							}else if(catagory == 2){
+								$("#matAtl1").hide();
+								$("#matAtl2").show();
+							}else if(catagory == 3){
+								$("#partsPat1").hide();
+								$("#partsPat2").show();
+							}else if(catagory == 4){
+								$("#matPat1").hide();
+								$("#matPat2").show();
+							}else{
+								closeDialog(data.msg);
+							}
+						}else{
+							if(catagory == 1){
+								$("#partsAtl1").hide();
+								$("#partsAtl3").show();
+							}else if(catagory == 2){
+								$("#matAtl1").hide();
+								$("#matAtl3").show();
+							}else if(catagory == 3){
+								$("#partsPat1").hide();
+								$("#partsPat3").show();
+							}else if(catagory == 4){
+								$("#matPat1").hide();
+								$("#matPat3").show();
+							}else{
+								closeDialog(data.msg);
+							}
+						}
+						
+						// 隐藏 全部同意/全部不同意 按钮
+						if(catagory != 5){
+							$("#allAgree").hide();
+							$("#allNotAgree").hide();
+						}
+						
+						// 全部审批完
+						if($("#partsAtl1").is(":hidden") && $("#matAtl1").is(":hidden") && $("#partsPat1").is(":hidden") && $("#matPat1").is(":hidden")){
+							closeDialog("操作成功");
+						}
 					}else{
 						errorMsg(data.msg);						
 					}
@@ -205,20 +331,22 @@
 			});
 		}
 		
-		function notPass(){
+		function notPass(catagory){
+			$("#catagory").val(catagory);
 			$("#remark").textbox("setValue", "");
 			$("#dlg").dialog("open");
 		}
 		
 		function doSubmit(){
 			var remark = $("#remark").textbox("getValue");
+			var catagory = $("#catagory").val();
 			if(isNull(remark)){
 				errorMsg("请输入原因");
 				$("#remark").next('span').find('input').focus();
 				return false;
 			}
 			
-			approve("${facadeBean.id}", 2, remark);
+			approve(2, remark, catagory);
 			$("#dlg").dialog("close");
 		}
 		

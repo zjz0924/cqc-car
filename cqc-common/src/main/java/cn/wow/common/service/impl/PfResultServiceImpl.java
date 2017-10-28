@@ -83,7 +83,7 @@ public class PfResultServiceImpl implements PfResultService{
 		record.setRemark("上传型式试验结果");
 		taskRecordDao.insert(record);
 
-		task.setPatternResult(1);
+		task.setPartsPatResult(1);
 		taskDao.update(task);
     }
 

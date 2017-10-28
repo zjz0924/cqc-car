@@ -3,6 +3,36 @@
 
 <body>
 	<div style="margin-left: 10px;margin-top:20px;">
+		
+		<c:if test="${not empty recordList}">
+			<div style="margin-bottom: 20px;margin-left: 10px;">
+				<span style="font-weight:bold;color:red;">审批记录（不通过）：</span>
+				<c:forEach items="${recordList}" var="vo" varStatus="vst">
+       	    		<div style="margin-top:5px; margin-bottom: 5px;margin-left: 5px;">
+       	    			<fmt:formatDate value='${vo.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>&nbsp;&nbsp;&nbsp;&nbsp;
+						<c:choose>
+							<c:when test="${vo.catagory == 1}">
+								<span>零部件图谱试验</span>
+							</c:when>
+							<c:when test="${vo.catagory == 2}">
+								<span>原材料图谱试验</span>
+							</c:when>
+							<c:when test="${vo.catagory == 3}">
+								<span>零部件型式试验</span>
+							</c:when>
+							<c:when test="${vo.catagory == 4}">
+								<span>原材料型式试验</span>
+							</c:when>
+							<c:otherwise>   
+						        <span>所有试验</span>  
+						  </c:otherwise>
+						</c:choose>&nbsp;&nbsp;&nbsp;&nbsp;
+						审批意见：<span style="font-weight:bold;">${vo.remark}</span>
+       	    		</div>
+       	    	</c:forEach> 
+			</div>
+		</c:if>
+	
 		<div class="title">整车信息</div>
 		<div style="width: 98%;">
 			<table class="info">
@@ -121,22 +151,34 @@
 		</div>
 
 		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 500px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
-			<div>
-				<span class="title-span">零部件图谱试验：</span>
-				<input id="partsAtlId" name="partsAtlId">
-			</div>
-			<div style="margin-top:5px;">
-				<span class="title-span">原材料图谱试验： </span>
-				<input id="matAtlId" name="matAtlId">
-			</div>
-			<div style="margin-top:5px;">
-				<span class="title-span">零部件型式试验： </span>
-				<input id="partsPatId" name="partsPatId">
-			</div>
-			<div style="margin-top:5px;">
-				<span class="title-span">原材料型式试验： </span>
-				<input id="matPatId" name="matPatId">
-			</div>
+			
+			<c:if test="${empty facadeBean.partsAtlId}">
+				<div>
+					<span class="title-span">零部件图谱试验：</span>
+					<input id="partsAtlId" name="partsAtlId">
+				</div>
+			</c:if>
+			
+			<c:if test="${empty facadeBean.matAtlId}">
+				<div style="margin-top:5px;">
+					<span class="title-span">原材料图谱试验： </span>
+					<input id="matAtlId" name="matAtlId">
+				</div>
+			</c:if>
+			
+			<c:if test="${empty facadeBean.partsPatId}">
+				<div style="margin-top:5px;">
+					<span class="title-span">零部件型式试验： </span>
+					<input id="partsPatId" name="partsPatId">
+				</div>
+			</c:if>
+			
+			<c:if test="${empty facadeBean.matPatId}">
+				<div style="margin-top:5px;">
+					<span class="title-span">原材料型式试验： </span>
+					<input id="matPatId" name="matPatId">
+				</div>
+			</c:if>
 			
 			<div align=center style="margin-top: 15px;">
 				<a href="javascript:void(0);"  onclick="doSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
@@ -185,140 +227,161 @@
 	</style>
 	
 	<script type="text/javascript">
-		$(function(){
-			
-			// 零部件图谱
-			$('#partsAtlId').combotree({
-				url: '${ctx}/org/getTreeByType?type=3',
-				multiple: false,
-				animate: true,
-				width: '250px'				
-			});
-			
-			// 只有最底层才能选择
-			var partsAtlIdTree = $('#partsAtlId').combotree('tree');	
-			partsAtlIdTree.tree({
-			   onBeforeSelect: function(node){
-				   if(isNull(node.children)){
-						return true;
-				   }else{
-					   return false;
+		var partsAtlId;
+		var matAtlId;
+		var partsPatId;
+		var matPatId;
+		
+		$(function(){	
+			partsAtlId = "${facadeBean.partsAtlId}";
+			if(isNull(partsAtlId)){
+				// 零部件图谱
+				$('#partsAtlId').combotree({
+					url: '${ctx}/org/getTreeByType?type=3',
+					multiple: false,
+					animate: true,
+					width: '250px'				
+				});
+				
+				// 只有最底层才能选择
+				var partsAtlIdTree = $('#partsAtlId').combotree('tree');	
+				partsAtlIdTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
 				   }
-			   }
-			});
+				});
+			}
 			
-			// 原材料图谱
-			$('#matAtlId').combotree({
-				url: '${ctx}/org/getTreeByType?type=3',
-				multiple: false,
-				animate: true,
-				width: '250px'					
-			});
-			
-			// 只有最底层才能选择
-			var matAtlIdTree = $('#matAtlId').combotree('tree');	
-			matAtlIdTree.tree({
-			   onBeforeSelect: function(node){
-				   if(isNull(node.children)){
-						return true;
-				   }else{
-					   return false;
+			matAtlId = "${facadeBean.matAtlId}";
+			if(isNull(matAtlId)){
+				// 原材料图谱
+				$('#matAtlId').combotree({
+					url: '${ctx}/org/getTreeByType?type=3',
+					multiple: false,
+					animate: true,
+					width: '250px'					
+				});
+				
+				// 只有最底层才能选择
+				var matAtlIdTree = $('#matAtlId').combotree('tree');	
+				matAtlIdTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
 				   }
-			   }
-			});
+				});
+			}
 			
-			
-			// 零部件型式
-			$('#partsPatId').combotree({
-				url: '${ctx}/org/getTreeByType?type=3',
-				multiple: false,
-				animate: true,
-				width: '250px'				
-			});
-			
-			// 只有最底层才能选择
-			var partsPatIdTree = $('#partsPatId').combotree('tree');	
-			partsPatIdTree.tree({
-			   onBeforeSelect: function(node){
-				   if(isNull(node.children)){
-						return true;
-				   }else{
-					   return false;
+			partsPatId = "${facadeBean.partsPatId}";
+			if(isNull(partsPatId)){
+				// 零部件型式
+				$('#partsPatId').combotree({
+					url: '${ctx}/org/getTreeByType?type=3',
+					multiple: false,
+					animate: true,
+					width: '250px'				
+				});
+				
+				// 只有最底层才能选择
+				var partsPatIdTree = $('#partsPatId').combotree('tree');	
+				partsPatIdTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
 				   }
-			   }
-			});
+				});
+			}
 			
-			
-			// 原材料型式
-			$('#matPatId').combotree({
-				url: '${ctx}/org/getTreeByType?type=3',
-				multiple: false,
-				animate: true,
-				width: '250px'				
-			});
-			
-			// 只有最底层才能选择
-			var matPatIdTree = $('#matPatId').combotree('tree');	
-			matPatIdTree.tree({
-			   onBeforeSelect: function(node){
-				   if(isNull(node.children)){
-						return true;
-				   }else{
-					   return false;
+			matPatId = "${facadeBean.matPatId}";
+			if(isNull(matPatId)){
+				// 原材料型式
+				$('#matPatId').combotree({
+					url: '${ctx}/org/getTreeByType?type=3',
+					multiple: false,
+					animate: true,
+					width: '250px'				
+				});
+				
+				// 只有最底层才能选择
+				var matPatIdTree = $('#matPatId').combotree('tree');	
+				matPatIdTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
 				   }
-			   }
-			});
-			
-			// 默认选中CQC实验室
-			$("#partsAtlId").combotree("setValue", 20);
-			$("#matAtlId").combotree("setValue", 20);
-			$("#partsPatId").combotree("setValue", 20);
-			$("#matPatId").combotree("setValue", 20);
+				});
+			}
 		});
 		
 		
 		function doTransmit(){
-			$("#partsAtlId").combotree("setValue", "");
-			$("#matAtlId").combotree("setValue", "");
-			$("#partsPatId").combotree("setValue", "");
-			$("#matPatId").combotree("setValue", "");
+			// 默认选中CQC实验室
+			$("#partsAtlId").combotree("setValue", "20");
+			$("#matAtlId").combotree("setValue", "20");
+			$("#partsPatId").combotree("setValue", "20");
+			$("#matPatId").combotree("setValue", "20");
 			$("#dlg").dialog("open");
 		}
 		
 		function doSubmit(){
-			var partsAtlId = $("#partsAtlId").combotree("getValue");
-			var matAtlId = $("#matAtlId").combotree("getValue");
-			var partsPatId = $("#partsPatId").combotree("getValue");
-			var matPatId = $("#matPatId").combotree("getValue");
+			var partsAtlId_val;
+			var matAtlId_val;
+			var partsPatId_val;
+			var matPatId_val;
 			
 			if(isNull(partsAtlId)){
-				errorMsg("请为零部件图谱试验选择实验室");
-				return false;
+				partsAtlId_val = $("#partsAtlId").combotree("getValue");
+				if(isNull(partsAtlId_val)){
+					errorMsg("请为零部件图谱试验选择实验室");
+					return false;
+				}
 			}
 			
 			if(isNull(matAtlId)){
-				errorMsg("请为原材料图谱试验选择实验室");
-				return false;
+				matAtlId_val = $("#matAtlId").combotree("getValue");
+				if(isNull(matAtlId_val)){
+					errorMsg("请为原材料图谱试验选择实验室");
+					return false;
+				}
 			}
 			
 			if(isNull(partsPatId)){
-				errorMsg("请为零部件型式试验选择实验室");
-				return false;
+				partsPatId_val = $("#partsPatId").combotree("getValue");
+				if(isNull(partsPatId_val)){
+					errorMsg("请为零部件型式试验选择实验室");
+					return false;
+				}
 			}
 			
 			if(isNull(matPatId)){
-				errorMsg("请为原材料型式试验选择实验室");
-				return false;
+				matPatId_val = $("#matPatId").combotree("getValue");
+				if(isNull(matPatId_val)){
+					errorMsg("请为原材料型式试验选择实验室");
+					return false;
+				}
 			}
 			
 			$.ajax({
 				url: "${ctx}/ots/transmit",
 				data: {
 					"id": '${facadeBean.id}',
-					"partsAtlId": partsAtlId,
-					"matAtlId": matAtlId,
-					"partsPatId": partsPatId,
-					"matPatId": matPatId
+					"partsAtlId": partsAtlId_val,
+					"matAtlId": matAtlId_val,
+					"partsPatId": partsPatId_val,
+					"matPatId": matPatId_val
 				},
 				success: function(data){
 					if(data.success){

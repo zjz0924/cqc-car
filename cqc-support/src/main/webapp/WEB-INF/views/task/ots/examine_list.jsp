@@ -243,7 +243,7 @@
 				$('#examineDetailDialog').dialog({
 					title : '审核信息',
 					width : 900,
-					height : 660,
+					height : 680,
 					closed : false,
 					cache : false,
 					href : "${ctx}/ots/examineDetail?id=" + id,

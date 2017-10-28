@@ -54,8 +54,9 @@ public interface InfoService {
      * 审批
      * @param account  操作用户
      * @param id       任务ID
-     * @param type     结果：1-通过，2-不通过
+     * @param result   结果：1-通过，2-不通过
      * @param remark   备注
+     * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部
      */
-    public void approve(Account account, Long id, int type, String remark);
+    public void approve(Account account, Long id, int result, String remark, int catagory);
 }

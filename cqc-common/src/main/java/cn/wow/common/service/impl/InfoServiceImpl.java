@@ -179,13 +179,6 @@ public class InfoServiceImpl implements InfoService {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 		
-		// 操作记录
-		TaskRecord record = new TaskRecord();
-		record.setCreateTime(date);
-		record.setCode(task.getCode());
-		record.setaId(account.getId());
-		taskRecordDao.insert(record);
-
 		// 审核记录
 		ExamineRecord examineRecord = new ExamineRecord();
 		examineRecord.setaId(account.getId());
@@ -193,18 +186,27 @@ public class InfoServiceImpl implements InfoService {
 		examineRecord.setRemark(remark);
 		examineRecord.setState(type);
 		examineRecord.settId(id);
+		examineRecord.setType(1);
 		examineRecordDao.insert(examineRecord);
+		
+		// 操作记录
+		TaskRecord record = new TaskRecord();
+		record.setCreateTime(date);
+		record.setCode(task.getCode());
+		record.setaId(account.getId());
 		
 		if (type == 1) {
 			// 更新任务状态
-			this.updateState(task.getId(), StandardTaskEnum.TRANSMIT.getState());
+			this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
 			record.setState(StandardTaskRecordEnum.EXAMINE_PASS.getState());
+			record.setRemark("信息审核通过");
 		} else {
 			// 审核不通过
 			this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
 			record.setState(StandardTaskRecordEnum.EXAMINE_NOTPASS.getState());
 			record.setRemark(remark);
 		}
+		taskRecordDao.insert(record);
 	}
 
 	/**
@@ -218,11 +220,19 @@ public class InfoServiceImpl implements InfoService {
      */
 	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
 		Task task = taskDao.selectOne(id);
-		task.setPartsAtlId(partsAtlId);
-		task.setMatAtlId(matAtlId);
-		task.setPartsPatId(partsPatId);
-		task.setMatPatId(matPatId);
-		task.setState(StandardTaskEnum.APPROVE.getState());
+		
+		if(partsAtlId != null){
+			task.setPartsAtlId(partsAtlId);
+		}
+		if(matAtlId != null){
+			task.setMatAtlId(matAtlId);
+		}
+		if(partsPatId != null){
+			task.setPartsPatId(partsPatId);
+		}
+		if(matPatId != null){
+			task.setMatPatId(matPatId);
+		}
 		taskDao.update(task);
 
 		// 操作记录
@@ -231,30 +241,97 @@ public class InfoServiceImpl implements InfoService {
 		record.setCode(task.getCode());
 		record.setaId(account.getId());
 		record.setState(StandardTaskRecordEnum.TRANSMIT.getState());
+		record.setRemark("分配任务到实验室");
 		taskRecordDao.insert(record);
 	}
 
 	/**
-	 * 审批
-	 */
-	public void approve(Account account, Long id, int type, String remark) {
+     * 审批
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param result   结果：1-通过，2-不通过
+     * @param remark   备注
+     * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部
+     */
+	public void approve(Account account, Long id, int result, String remark, int catagory) {
 		Task task = taskDao.selectOne(id);
+		
+		// 审批记录
+		ExamineRecord examineRecord = new ExamineRecord(); 
+		examineRecord.setaId(account.getId());
+		examineRecord.setCatagory(catagory);
+		examineRecord.setCreateTime(new Date());
+		examineRecord.setRemark(remark);
+		examineRecord.setState(result);
+		examineRecord.settId(id);
+		examineRecord.setType(2);
+		examineRecordDao.insert(examineRecord);
+		
 		// 操作记录
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(new Date());
 		record.setCode(task.getCode());
 		record.setaId(account.getId());
 
-		if (type == 1) {
-			// 更新任务状态
-			this.updateState(task.getId(), StandardTaskEnum.UPLOADING.getState());
+		// 同意
+		if (result == 1) {
+			if(catagory == 1){
+				task.setPartsAtlResult(1);
+				remark = "零部件图谱试验审批通过";
+			}else if(catagory == 2){
+				task.setMatAtlResult(1);
+				remark = "原材料图谱试验审批通过";
+			}else if(catagory == 3){
+				task.setPartsPatResult(1);
+				remark = "零部件型式试验审批通过";
+			}else if(catagory == 4){
+				task.setMatPatResult(1);
+				remark = "原材料型式试验审批通过";
+			}else{
+				task.setMatAtlResult(1);
+				task.setMatPatResult(1);
+				task.setPartsAtlResult(1);
+				task.setPartsPatResult(1);
+				remark = "图谱和型式试验全部审批通过";
+			}
 			record.setState(StandardTaskRecordEnum.APPROVE_AGREE.getState());
 		} else {
-			// 审批不通过
-			this.updateState(task.getId(), StandardTaskEnum.TRANSMIT.getState());
+			
+			if(catagory == 1){
+				task.setPartsAtlResult(0);
+				task.setPartsAtlId(null);
+				remark = "零部件图谱试验审批不通过：" + remark;
+			}else if(catagory == 2){
+				task.setMatAtlResult(0);
+				task.setMatAtl(null);
+				remark = "原材料图谱试验审批不通过：" + remark;
+			}else if(catagory == 3){
+				task.setPartsPatResult(0);
+				task.setPartsPat(null);
+				remark = "零部件型式试验审批不通过：" + remark;
+			}else if(catagory == 4){
+				task.setMatPatResult(0);
+				task.setMatPat(null);
+				remark = "原材料型式试验审批不通过：" + remark;
+			}else{
+				task.setMatAtlResult(0);
+				task.setMatPatResult(0);
+				task.setPartsAtlResult(0);
+				task.setPartsPatResult(0);
+				
+				task.setPartsAtlId(null);
+				task.setMatAtlId(null);
+				task.setPartsPatId(null);
+				task.setMatPatId(null);
+				
+				remark = "图谱和型式试验全部审批不通过：" + remark;
+			}
 			record.setState(StandardTaskRecordEnum.APPROVE_DISAGREE.getState());
-			record.setRemark(remark);
 		}
+		
+		record.setRemark(remark);
 		taskRecordDao.insert(record);
+		
+		taskDao.update(task);
 	}
 }

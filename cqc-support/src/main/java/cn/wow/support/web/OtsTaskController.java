@@ -206,6 +206,7 @@ public class OtsTaskController extends AbstractController {
 			Map<String, Object> rMap = new PageMap(false);
 			rMap.put("taskId", id);
 			rMap.put("custom_order_sql", "create_time asc");
+			rMap.put("type", 1);
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 			
 			model.addAttribute("facadeBean", task);
@@ -493,7 +494,8 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.TRANSMIT.getState());
+		map.put("transimtTask", true);
+		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", TaskTypeEnum.OTS.getState());
 
 		if (StringUtils.isNotBlank(code)) {
@@ -531,8 +533,16 @@ public class OtsTaskController extends AbstractController {
 	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
+			
+			Map<String, Object> rMap = new PageMap(false);
+			rMap.put("taskId", id);
+			rMap.put("type", 2);
+			rMap.put("state", 2);
+			rMap.put("custom_order_sql", "create_time asc");
+			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
 			model.addAttribute("facadeBean", task);
+			model.addAttribute("recordList", recordList);
 		}
 
 		model.addAttribute("resUrl", resUrl);
@@ -632,7 +642,8 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.APPROVE.getState());
+		map.put("state", StandardTaskEnum.TESTING.getState());
+		map.put("approveTask", true);
 		map.put("type", TaskTypeEnum.OTS.getState());
 
 		if (StringUtils.isNotBlank(code)) {
@@ -679,23 +690,21 @@ public class OtsTaskController extends AbstractController {
 	}
 
 	/**
-	 * 审批结果
-	 * 
-	 * @param id
-	 *            任务ID
-	 * @param type
-	 *            结果： 1-通过， 2-不通过
-	 * @param remark
-	 *            备注
-	 */
+     * 审批结果
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param result   结果：1-通过，2-不通过
+     * @param remark   备注
+     * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部
+     */
 	@ResponseBody
 	@RequestMapping(value = "/approve")
-	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int type, String remark) {
+	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, int catagory, String remark) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.approve(account, id, type, remark);
+			infoService.approve(account, id, result, remark, catagory);
 		} catch (Exception ex) {
 			logger.error("OTS任务审批失败", ex);
 

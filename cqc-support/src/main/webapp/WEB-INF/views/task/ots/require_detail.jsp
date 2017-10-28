@@ -9,25 +9,27 @@
 		<input type="hidden" id="m_id" name="m_id" value="${facadeBean.info.material.id }">
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div style="margin-bottom: 20px;margin-left: 10px;">
-				当前状态： <c:choose>
-					       <c:when test="${facadeBean.state == 1}">
-					       		<span style="color:green; font-weight:bold;">审核中</span>
-					       </c:when>
-					       <c:otherwise>
-					       	    <span style="color:red; font-weight:bold;">审核不通过</span>
-					       	    
-					       	    <div style="border: 1px dashed #C9C9C9;width: 97%;margin-top: 10px;">
-					       	    	<c:forEach items="${recordList}" var="vo" varStatus="vst">
-					       	    		<div style="margin-top:5px; margin-bottom: 5px;margin-left: 5px;">
-					       	    			第&nbsp;<span style="font-weight:bold;">${vst.index + 1}</span>&nbsp;次审核&nbsp;&nbsp;&nbsp;&nbsp;<fmt:formatDate value='${vo.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>&nbsp;&nbsp;&nbsp;&nbsp;审核意见：<span style="font-weight:bold;">${vo.remark}</span>
-					       	    		</div>
-					       	    	</c:forEach> 
-					       	    </div>
-					       </c:otherwise>
-					   </c:choose>
-			</div>		
-		
+			
+			<c:if test="${not empty facadeBean.id }">
+				<div style="margin-bottom: 20px;margin-left: 10px;">
+					当前状态： <c:choose>
+						       <c:when test="${facadeBean.state == 1}">
+						       		<span style="color:green; font-weight:bold;">审核中</span>
+						       </c:when>
+						       <c:otherwise>
+						       	    <span style="color:red; font-weight:bold;">审核不通过</span>
+						       	    
+						       	    <div style="border: 1px dashed #C9C9C9;width: 97%;margin-top: 10px;">
+						       	    	<c:forEach items="${recordList}" var="vo" varStatus="vst">
+						       	    		<div style="margin-top:5px; margin-bottom: 5px;margin-left: 5px;">
+						       	    			第&nbsp;<span style="font-weight:bold;">${vst.index + 1}</span>&nbsp;次审核&nbsp;&nbsp;&nbsp;&nbsp;<fmt:formatDate value='${vo.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>&nbsp;&nbsp;&nbsp;&nbsp;审核意见：<span style="font-weight:bold;">${vo.remark}</span>
+						       	    		</div>
+						       	    	</c:forEach> 
+						       	    </div>
+						       </c:otherwise>
+						   </c:choose>
+				</div>		
+			</c:if>
 		
 			<div class="title">整车信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;

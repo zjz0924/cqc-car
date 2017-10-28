@@ -77,18 +77,10 @@
 			<if test="state != null">
 				state = #{state,jdbcType=INTEGER},
 			</if>
-			<if test="partsAtlId != null">
 				parts_atl_id = #{partsAtlId,jdbcType=BIGINT},
-			</if>
-			<if test="matAtlId != null">
 				mat_atl_id = #{matAtlId,jdbcType=BIGINT},
-			</if>
-			<if test="partsPatId != null">
 				parts_pat_id = #{partsPatId,jdbcType=BIGINT},
-			</if>
-			<if test="matPatId != null">
 				mat_pat_id = #{matPatId,jdbcType=BIGINT},
-			</if>
 			<if test="remark != null">
 				remark = #{remark,jdbcType=VARCHAR},
 			</if>
@@ -194,6 +186,17 @@
 		      <if test="endCreateTime != null and endCreateTime != ''">  
 		    	and t.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 		      </if>
+		      
+		      <!-- 任务下达列表 -->
+		      <if test="transimtTask != null">
+				and (t.parts_atl_id is null or t.mat_atl_id is null or t.parts_pat_id is null or t.mat_pat_id is null)		      
+		      </if>
+		      
+		      <!-- 审批列表 -->
+		      <if test="approveTask != null">
+				and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)		      
+		      </if>
+		      
 	      </where>
 	      
 		  <choose>

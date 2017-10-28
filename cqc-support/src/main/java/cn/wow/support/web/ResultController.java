@@ -384,7 +384,7 @@ public class ResultController extends AbstractController {
 			Task task = taskService.selectOne(id);
 
 			// 型式结果
-			if(task.getPatternResult() == 1){
+			if(task.getMatAtlResult() == 1){
 				Map<String, Object> pfMap = new HashMap<String, Object>();
 				pfMap.put("tId", id);
 				pfMap.put("custom_order_sql", "exp_no asc");
@@ -399,7 +399,7 @@ public class ResultController extends AbstractController {
 			}
 			
 			// 图谱结果
-			if(task.getAtlasResult() == 1){
+			if(task.getMatAtlResult() == 1){
 				Map<String, Object> atMap = new HashMap<String, Object>();
 				atMap.put("tId", id);
 				atMap.put("custom_order_sql", "exp_no asc");

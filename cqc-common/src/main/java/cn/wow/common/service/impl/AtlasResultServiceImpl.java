@@ -83,7 +83,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		record.setaId(account.getId());
 		taskRecordDao.insert(record);
 
-		task.setAtlasResult(1);
+		task.setMatPatResult(1);
 		taskDao.update(task);
 	}
 
