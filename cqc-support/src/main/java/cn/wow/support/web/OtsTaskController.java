@@ -29,12 +29,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
@@ -87,6 +89,8 @@ public class OtsTaskController extends AbstractController {
 	private PartsService partsService;
 	@Autowired
 	private MaterialService materialService;
+	@Autowired
+	private ExamineRecordService examineRecordService;
 
 	/**
 	 * 首页
@@ -197,7 +201,15 @@ public class OtsTaskController extends AbstractController {
 	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
 		if(id != null){
 			Task task = taskService.selectOne(id);
+			
+			// 审核记录
+			Map<String, Object> rMap = new PageMap(false);
+			rMap.put("taskId", id);
+			rMap.put("custom_order_sql", "create_time asc");
+			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
+			
 			model.addAttribute("facadeBean", task);
+			model.addAttribute("recordList", recordList);
 		}
 		
 		return "task/ots/require_detail";
@@ -339,11 +351,8 @@ public class OtsTaskController extends AbstractController {
 				}
 			}
 
-			// 是否更新
-			boolean update = t_id == null ? false: true;
-			
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, update);
+			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, t_id);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("OTS任务申请失败", ex);
@@ -433,12 +442,9 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审核结果
 	 * 
-	 * @param id
-	 *            任务ID
-	 * @param type
-	 *            结果： 1-通过， 2-不通过
-	 * @param remark
-	 *            备注
+	 * @param id     任务ID
+	 * @param type   结果： 1-通过， 2-不通过
+	 * @param remark 备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
@@ -536,21 +542,20 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 下达任务结果
 	 * 
-	 * @param id
-	 *            任务ID
-	 * @param atlasLab
-	 *            图谱实验室ID
-	 * @param patternLab
-	 *            型式实验室ID
+	 * @param id           任务ID
+	 * @param partsAtlId   零部件图谱实验室ID
+	 * @param matAtlId     原材料图谱实验室ID
+	 * @param partsPatId   零部件型式实验室ID
+	 * @param matPatId     原材料型式实验室ID
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long atlasLab, Long patternLab) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.transmit(account, id, atlasLab, patternLab);
+			infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId);
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
 

@@ -39,8 +39,13 @@
 		</div>
 		
 		<div class="info-div">
+			<span class="title-span">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址： </span>
+			<input id="addr" name="addr" value="${org.addr }" class="easyui-textbox">
+		</div>
+		
+		<div class="info-div">
 			<span class="title-span">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注： </span>
-			<input type="text" id="o_desc" name="o_desc" value="${area.desc}" class="easyui-textbox">
+			<input type="text" id="o_desc" name="o_desc" value="${org.desc}" class="easyui-textbox">
 		</div>
 		
 		<div style="text-align:center;margin-top:5px;" class="info-div">
@@ -67,6 +72,7 @@
 		function save(){
 			var name = $("#o_name").val();
 			var code = $("#o_code").val();
+			var addr = $("#addr").val();
 			var areaid = "";
 			
 			var tree = $('#oarea_id').combotree('tree');	
@@ -113,7 +119,8 @@
 					"id": "${id}",
 					"parentid": "${parentOrg.id}",
 					"areaid": areaid,
-					"type": type
+					"type": type,
+					"addr": addr
 				},
 				success:function(data){
 					if(data.success){

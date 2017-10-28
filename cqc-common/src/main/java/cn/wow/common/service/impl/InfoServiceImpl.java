@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
@@ -19,6 +20,7 @@ import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
@@ -50,6 +52,8 @@ public class InfoServiceImpl implements InfoService {
 	private TaskDao taskDao;
 	@Autowired
 	private TaskRecordDao taskRecordDao;
+	@Autowired
+	private ExamineRecordDao examineRecordDao;
 
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -83,7 +87,7 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, boolean update) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		Date date = material.getCreateTime();
 		String taskCode = sdf.format(date);
@@ -110,7 +114,7 @@ public class InfoServiceImpl implements InfoService {
 			materialDao.update(material);
 		}
 
-		if(!update){
+		if(taskId == null){
 			// 信息
 			Info info = new Info();
 			info.setCreateTime(date);
@@ -131,10 +135,10 @@ public class InfoServiceImpl implements InfoService {
 			task.setType(TaskTypeEnum.OTS.getState());
 			task.setFailNum(0);
 			task.setaId(account.getId());
-			task.setAtlasResult(0);
-			task.setPatternResult(0);
-			task.setPartsResult(0);
-			task.setMaterialResult(0);
+			task.setMatAtlResult(0);
+			task.setMatPatResult(0);
+			task.setPartsAtlResult(0);
+			task.setPartsPatResult(0);
 			taskDao.insert(task);
 
 			// 操作记录
@@ -146,6 +150,12 @@ public class InfoServiceImpl implements InfoService {
 			record.setRemark("填写信息");
 			taskRecordDao.insert(record);
 		}else{
+			Task task = taskDao.selectOne(taskId);
+			if(task.getState() == StandardTaskEnum.EXAMINE_NOTPASS.getState()){
+				// 更新任务状态
+				this.updateState(task.getId(), StandardTaskEnum.EXAMINE.getState());
+			}
+			
 			// 操作记录
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(date);
@@ -159,16 +169,32 @@ public class InfoServiceImpl implements InfoService {
 	}
 
 	/**
-	 * 审核
-	 */
+     * 审核
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param type     结果：1-通过，2-不通过
+     * @param remark   备注
+     */
 	public void examine(Account account, Long id, int type, String remark) {
 		Task task = taskDao.selectOne(id);
+		Date date = new Date();
+		
 		// 操作记录
 		TaskRecord record = new TaskRecord();
-		record.setCreateTime(new Date());
+		record.setCreateTime(date);
 		record.setCode(task.getCode());
 		record.setaId(account.getId());
+		taskRecordDao.insert(record);
 
+		// 审核记录
+		ExamineRecord examineRecord = new ExamineRecord();
+		examineRecord.setaId(account.getId());
+		examineRecord.setCreateTime(date);
+		examineRecord.setRemark(remark);
+		examineRecord.setState(type);
+		examineRecord.settId(id);
+		examineRecordDao.insert(examineRecord);
+		
 		if (type == 1) {
 			// 更新任务状态
 			this.updateState(task.getId(), StandardTaskEnum.TRANSMIT.getState());
@@ -179,16 +205,23 @@ public class InfoServiceImpl implements InfoService {
 			record.setState(StandardTaskRecordEnum.EXAMINE_NOTPASS.getState());
 			record.setRemark(remark);
 		}
-		taskRecordDao.insert(record);
 	}
 
 	/**
-	 * 下达任务
-	 */
-	public void transmit(Account account, Long id, Long atlasLab, Long patternLab) {
+     * 下达任务
+     * @param account   操作用户
+     * @param id        任务ID
+     * @param partsAtlId   零部件图谱实验室ID
+	 * @param matAtlId     原材料图谱实验室ID
+	 * @param partsPatId   零部件型式实验室ID
+	 * @param matPatId     原材料型式实验室ID
+     */
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
 		Task task = taskDao.selectOne(id);
-		task.setAtlasLab(atlasLab);
-		task.setPatternLab(patternLab);
+		task.setPartsAtlId(partsAtlId);
+		task.setMatAtlId(matAtlId);
+		task.setPartsPatId(partsPatId);
+		task.setMatPatId(matPatId);
 		task.setState(StandardTaskEnum.APPROVE.getState());
 		taskDao.update(task);
 

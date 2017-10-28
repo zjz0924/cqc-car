@@ -9,27 +9,34 @@
 		<result column="org_id" property="orgId" jdbcType="BIGINT" />
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="state" property="state" jdbcType="INTEGER" />
-		<result column="atlas_lab" property="atlasLab" jdbcType="BIGINT" />
-		<result column="pattern_lab" property="patternLab" jdbcType="BIGINT" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="fail_num" property="failNum" jdbcType="INTEGER" />
-		<result column="atlas_result" property="atlasResult" jdbcType="INTEGER" />
-		<result column="pattern_result" property="patternResult" jdbcType="INTEGER" />
 		
-		<result column="parts_result" property="partsResult" jdbcType="INTEGER" />
-		<result column="material_result" property="materialResult" jdbcType="INTEGER" />
+		<!-- 实验室ID -->
+		<result column="parts_atl_id" property="partsAtlId" jdbcType="BIGINT" />
+		<result column="mat_atl_id" property="matAtlId" jdbcType="BIGINT" />
+		<result column="parts_pat_id" property="partsPatId" jdbcType="BIGINT" />
+		<result column="mat_pat_id" property="matPatId" jdbcType="BIGINT" />
 		
+		<!-- 试验结果 -->
+		<result column="parts_atl_result" property="partsAtlResult" jdbcType="INTEGER" />
+		<result column="mat_atl_result" property="matAtlResult" jdbcType="INTEGER" />
+		<result column="parts_pat_result" property="partsPatResult" jdbcType="INTEGER" />
+		<result column="mat_pat_result" property="matPatResult" jdbcType="INTEGER" />
+		
+		<association property="partsAtl" javaType="cn.wow.common.domain.Org" column="parts_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
+		<association property="matAtl" javaType="cn.wow.common.domain.Org" column="mat_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
+		<association property="partsPat" javaType="cn.wow.common.domain.Org" column="parts_pat_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
+		<association property="matPat" javaType="cn.wow.common.domain.Org" column="mat_pat_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="info" javaType="cn.wow.common.domain.Info" column="i_id" select="cn.wow.common.dao.InfoDao.selectOne"/> 
 		<association property="account" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
 		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
-		<association property="atlas" javaType="cn.wow.common.domain.Org" column="atlas_lab" select="cn.wow.common.dao.OrgDao.selectOne"/> 
-		<association property="pattern" javaType="cn.wow.common.domain.Org" column="pattern_lab" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.atlas_lab, t.pattern_lab, t.remark, t.create_time, t.fail_num, t.a_id, t.atlas_result, t.pattern_result,
-        t.parts_result, t.material_result	
+		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.parts_atl_id, t.mat_atl_id, t.parts_pat_id, t.mat_pat_id ,t.remark, t.create_time, t.fail_num, t.a_id, t.parts_atl_result, t.mat_atl_result,
+        t.parts_pat_result, t.mat_pat_result	
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -42,11 +49,11 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Task">
-		insert into task (code, i_id, org_id, type, state, atlas_lab, pattern_lab, remark, create_time, fail_num, a_id, atlas_result, pattern_result, parts_result, material_result)
+		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
-					#{atlasLab,jdbcType=BIGINT}, #{patternLab,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{atlasResult,jdbcType=INTEGER}, #{patternResult,jdbcType=INTEGER}, 
-					#{partsResult,jdbcType=INTEGER}, #{materialResult,jdbcType=INTEGER})
+					#{partsAtlId,jdbcType=BIGINT}, #{matAtlId,jdbcType=BIGINT}, #{partsPatId,jdbcType=BIGINT}, #{matPatId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, 
+					#{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -70,11 +77,17 @@
 			<if test="state != null">
 				state = #{state,jdbcType=INTEGER},
 			</if>
-			<if test="atlasLab != null">
-				atlas_lab = #{atlasLab,jdbcType=BIGINT},
+			<if test="partsAtlId != null">
+				parts_atl_id = #{partsAtlId,jdbcType=BIGINT},
 			</if>
-			<if test="patternLab != null">
-				pattern_lab = #{patternLab,jdbcType=BIGINT},
+			<if test="matAtlId != null">
+				mat_atl_id = #{matAtlId,jdbcType=BIGINT},
+			</if>
+			<if test="partsPatId != null">
+				parts_pat_id = #{partsPatId,jdbcType=BIGINT},
+			</if>
+			<if test="matPatId != null">
+				mat_pat_id = #{matPatId,jdbcType=BIGINT},
 			</if>
 			<if test="remark != null">
 				remark = #{remark,jdbcType=VARCHAR},
@@ -85,17 +98,17 @@
 			<if test="failNum != null">
 				fail_num =  #{failNum,jdbcType=INTEGER},
 			</if>
-			<if test="atlasResult != null">
-				atlas_result = #{atlasResult,jdbcType=INTEGER},
+			<if test="partsAtlResult != null">
+				parts_atl_result = #{partsAtlResult,jdbcType=INTEGER},
 			</if>
-			<if test="patternResult != null">
-				pattern_result = #{patternResult,jdbcType=INTEGER},
+			<if test="matAtlResult != null">
+				mat_atl_result = #{matAtlResult,jdbcType=INTEGER},
 			</if>
-			<if test="partsResult != null">
-				parts_result = #{partsResult,jdbcType=INTEGER},
+			<if test="partsPatResult != null">
+				parts_pat_result = #{partsPatResult,jdbcType=INTEGER},
 			</if>
-			<if test="materialResult != null">
-				material_result = #{materialResult,jdbcType=INTEGER}
+			<if test="matPatResult != null">
+				mat_pat_result = #{matPatResult,jdbcType=INTEGER}
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -138,35 +151,40 @@
 				and (t.state = 1 or t.state = 2)
 			 </if>
 			
-			<if test="atlasLab != null">
-				and t.atlas_lab = #{atlasLab,jdbcType=BIGINT}
+			<if test="partsAtlId != null">
+				and t.parts_atl_id = #{partsAtlId,jdbcType=BIGINT}
 			</if>
-			<if test="patternLab != null">
-				and t.pattern_lab = #{patternLab,jdbcType=BIGINT}
+			<if test="matAtlId != null">
+				and t.mat_atl_id = #{matAtlId,jdbcType=BIGINT}
 			</if>
-			
+			<if test="partsPatId != null">
+				and parts_pat_id = #{partsPatId,jdbcType=BIGINT}
+			</if>
+			<if test="matPatId != null">
+				and mat_pat_id = #{matPatId,jdbcType=BIGINT}
+			</if>
 			<if test="failNum != null">
 				and t.fail_num &gt;= #{failNum,jdbcType=INTEGER}
 			</if>
 			
-			<if test="atlasResult != null">
-				and t.atlas_result = #{atlasResult,jdbcType=INTEGER}
+			<if test="partsAtlResult != null">
+				and t.parts_atl_result = #{partsAtlResult,jdbcType=INTEGER}
 			</if>
 			
-			<if test="patternResult != null">
-				and t.pattern_result = #{patternResult,jdbcType=INTEGER}
+			<if test="matAtlResult != null">
+				and t.mat_atl_result = #{matAtlResult,jdbcType=INTEGER}
 			</if>
 			
-			<if test="partsResult != null">
-				and t.parts_result = #{partsResult,jdbcType=INTEGER}
+			<if test="partsPatResult != null">
+				and t.parts_pat_result = #{partsPatResult,jdbcType=INTEGER}
 			</if>
 			
-			<if test="materialResult != null">
-				and t.material_result = #{materialResult,jdbcType=INTEGER}
+			<if test="matPatResult != null">
+				and t.mat_pat_result = #{matPatResult,jdbcType=INTEGER}
 			</if>
 			
 			<if test="canSend != null">
-				and (t.atlas_result = 1 or t.pattern_result = 1)
+				and (t.parts_atl_result = 1 or t.mat_atl_result = 1)
 			</if>
 		      
 		      <if test="startCreateTime != null and startCreateTime != ''">  

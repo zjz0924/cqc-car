@@ -7,6 +7,7 @@
 		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="areaid" property="areaid" jdbcType="BIGINT" />
 		<result column="desc" property="desc" jdbcType="VARCHAR" />
+		<result column="addr" property="addr" jdbcType="VARCHAR" />
 		<result column="parentid" property="parentid" jdbcType="BIGINT" />
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<association property="parent" javaType="cn.wow.common.domain.Org" column="parentid" select="cn.wow.common.dao.OrgDao.selectOne"/> 
@@ -15,7 +16,7 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, name, code, areaid, `desc`, parentid, type
+		id, name, code, areaid, `desc`, parentid, type, addr
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -40,8 +41,8 @@
 		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
 		    SELECT @@IDENTITY
 		</selectKey>
-		insert into org (name, code, areaid, `desc`, parentid, type)
-			values (#{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{areaid,jdbcType=BIGINT}, #{desc,jdbcType=VARCHAR}, #{parentid,jdbcType=BIGINT}, #{type,jdbcType=INTEGER})
+		insert into org (name, code, areaid, `desc`, parentid, type, addr)
+			values (#{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{areaid,jdbcType=BIGINT}, #{desc,jdbcType=VARCHAR}, #{parentid,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{addr,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Org">
@@ -61,7 +62,10 @@
 				parentid = #{parentid,jdbcType=BIGINT},
 			</if>
 			<if test="type != null">
-				type = #{type,jdbcType=INTEGER}
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="addr != null">
+				addr = #{addr,jdbcType=VARCHAR}
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}

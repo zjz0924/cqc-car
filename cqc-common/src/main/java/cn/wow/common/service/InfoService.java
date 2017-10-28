@@ -20,7 +20,7 @@ public interface InfoService {
 
     public List<Info> selectAllList(Map<String, Object> map);
     
-    public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, boolean update);
+    public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId);
     
     /**
      * 审核
@@ -42,10 +42,12 @@ public interface InfoService {
      * 下达任务
      * @param account   操作用户
      * @param id        任务ID
-     * @param atlasLab    图谱实验室ID
-	 * @param patternLab  型式实验室ID
+     * @param partsAtlId   零部件图谱实验室ID
+	 * @param matAtlId     原材料图谱实验室ID
+	 * @param partsPatId   零部件型式实验室ID
+	 * @param matPatId     原材料型式实验室ID
      */
-    public void transmit(Account account, Long id, Long atlasLab, Long patternLab);
+    public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId);
     
     
     /**

@@ -28,6 +28,8 @@ public class Org extends JpaEntity {
     private Org parent;
     // 机构类型 (1-通用五菱, 2-供应商, 3-实验室, 4-其它)
     private Integer type;
+    // 地址
+    private String addr;
     
     @JsonIgnore
     private List<Org> subList;
@@ -110,6 +112,14 @@ public class Org extends JpaEntity {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getAddr() {
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		this.addr = addr;
 	}
 
 	@JsonIgnore

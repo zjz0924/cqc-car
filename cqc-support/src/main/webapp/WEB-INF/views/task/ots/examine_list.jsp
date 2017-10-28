@@ -7,26 +7,7 @@
 		<title>SGMW</title>
 		<%@include file="../../common/source.jsp"%>
 		
-		<style type="text/css">
-			.datagrid-btable tr {
-				height: 30px;
-			}
-			
-			.datagrid-header {
-				background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
-			}
-			
-			.datagrid-header-row {
-				font-weight: bold;
-				height: 50px
-			}
-			
-			.datagrid-row-over, .datagrid-header td.datagrid-header-over {
-			    background: #e6e6e6;
-			    color: #00438a;
-			    cursor: default;
-			}
-			
+		<style type="text/css">			
 			.qlabel{
 				display: inline-block;
 				width: 63px;
@@ -95,11 +76,11 @@
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="approveDetail('+ row.id +')">审核</a>';  	
+							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						approveDetail(rowData.id);
+						examineDetail(rowData.id);
 					},
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
@@ -252,23 +233,23 @@
 			// 关掉对话时回调
 			function closeDialog(msg) {
 				tipMsg(msg, function(){
-					$('#approveDetailDialog').dialog('close');
+					$('#examineDetailDialog').dialog('close');
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
-			function approveDetail(id) {
-				$('#approveDetailDialog').dialog({
+			function examineDetail(id) {
+				$('#examineDetailDialog').dialog({
 					title : '审核信息',
 					width : 900,
-					height : 765,
+					height : 660,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/approveDetail?id=" + id,
+					href : "${ctx}/ots/examineDetail?id=" + id,
 					modal : true
 				});
-				$('#approveDetailDialog').window('center');
+				$('#examineDetailDialog').window('center');
 			}
 			
 		</script>
@@ -306,6 +287,6 @@
 			<table id="taskRecordTable" style="height:auto;width:auto"></table>
 		</div>
 		
-		<div id="approveDetailDialog"></div>
+		<div id="examineDetailDialog"></div>
 	</body>	
 </html>

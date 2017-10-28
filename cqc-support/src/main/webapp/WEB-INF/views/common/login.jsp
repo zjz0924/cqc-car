@@ -16,7 +16,7 @@
 	    <style type="text/css">
 	    	body{ background:#152652 url(${ctx}/resources/img/login/bg_31.png) repeat-x top;}
 
-			.wrap{ width:955px; height:567px; margin:0 auto; background:url(${ctx}/resources/img/login/bg_321.png) no-repeat center; margin-top:79px; position:relative;}
+			.wrap{ width:955px; height:567px; margin:0 auto; background:url(${ctx}/resources/img/login/bg_321.jpg) no-repeat center; margin-top:79px; position:relative;}
 			.wrap table{ position:absolute; top:203px; left:408px;}
 			.wrap table td input{ border:1px solid #a5b7ca; outline:none; padding-left:5px; width: 140px; line-height: 19px;}
 			.wrap table td{ height:24px; padding:5px; line-height:24px; vertical-align:middle;}

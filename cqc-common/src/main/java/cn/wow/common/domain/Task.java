@@ -30,26 +30,40 @@ public class Task {
      *  PPAP、SOP： 1-下达中，2-审批中，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-收费通知中，8-完成
      */
     private Integer state;
-    // 图谱实验室ID
-    private Long atlasLab; 
-    private Org atlas;
-    // 图谱上传结果 (0-未上传，1-已上传，2-已发送)
-    private Integer atlasResult;
-    // 型式实验室ID
-    private Long patternLab;
-    private Org pattern;
-    // 型式上传结果(0-未上传，1-已上传，2-已发送) 
-    private Integer patternResult;
+   
+    
+    // 零部件图谱实验室ID
+    private Long partsAtlId; 
+    private Org partsAtl;
+    
+    // 原材料图谱实验室ID
+    private Long matAtlId;
+    private Org matAtl;
+    
+    // 零部件型式实验室ID
+    private Long partsPatId;
+    private Org partsPat;
+    
+    // 原材料型式实验室ID
+    private Long matPatId;
+    private Org matPat;
+    
     // 结果确认失败次数
     private Integer failNum;
     // 备注
     private String remark;
     // 创建时间
     private Date createTime;
-    // 零部件图谱结果(0-未确认，1-合格，2不合格)
-    private Integer partsResult;
-    // 原材料图谱结果(0-未确认，1-合格，2不合格)
-    private Integer materialResult;
+    
+    // 零部件图谱结果(0-未上传，1-已上传，2-已发送，3-合格，4-不合格)
+    private Integer partsAtlResult;
+    // 原材料图谱结果(0-未上传，1-已上传，2-已发送，3-合格，4-不合格)
+    private Integer matAtlResult;
+    // 零部件型式结果 (0-未上传，1-已上传，2-已发送，3-合格，4-不合格)
+    private Integer partsPatResult;
+    // 原材料型式结果(0-未上传，1-已上传，2-已发送，3-合格，4-不合格) 
+    private Integer matPatResult;
+    
     
     public Long getId() {
         return id;
@@ -98,22 +112,6 @@ public class Task {
     public void setState(Integer state) {
         this.state = state;
     }
-
-    public Long getAtlasLab() {
-		return atlasLab;
-	}
-
-	public void setAtlasLab(Long atlasLab) {
-		this.atlasLab = atlasLab;
-	}
-
-	public Long getPatternLab() {
-		return patternLab;
-	}
-
-	public void setPatternLab(Long patternLab) {
-		this.patternLab = patternLab;
-	}
 
 	public String getRemark() {
         return remark;
@@ -171,52 +169,100 @@ public class Task {
 		this.account = account;
 	}
 
-	public Org getAtlas() {
-		return atlas;
+	public Integer getPartsAtlResult() {
+		return partsAtlResult;
 	}
 
-	public void setAtlas(Org atlas) {
-		this.atlas = atlas;
+	public void setPartsAtlResult(Integer partsAtlResult) {
+		this.partsAtlResult = partsAtlResult;
 	}
 
-	public Org getPattern() {
-		return pattern;
+	public Integer getMatAtlResult() {
+		return matAtlResult;
 	}
 
-	public void setPattern(Org pattern) {
-		this.pattern = pattern;
+	public void setMatAtlResult(Integer matAtlResult) {
+		this.matAtlResult = matAtlResult;
 	}
 
-	public Integer getAtlasResult() {
-		return atlasResult;
+	public Integer getPartsPatResult() {
+		return partsPatResult;
 	}
 
-	public void setAtlasResult(Integer atlasResult) {
-		this.atlasResult = atlasResult;
+	public void setPartsPatResult(Integer partsPatResult) {
+		this.partsPatResult = partsPatResult;
 	}
 
-	public Integer getPatternResult() {
-		return patternResult;
+	public Integer getMatPatResult() {
+		return matPatResult;
 	}
 
-	public void setPatternResult(Integer patternResult) {
-		this.patternResult = patternResult;
+	public void setMatPatResult(Integer matPatResult) {
+		this.matPatResult = matPatResult;
 	}
 
-	public Integer getPartsResult() {
-		return partsResult;
+	public Long getPartsAtlId() {
+		return partsAtlId;
 	}
 
-	public void setPartsResult(Integer partsResult) {
-		this.partsResult = partsResult;
+	public void setPartsAtlId(Long partsAtlId) {
+		this.partsAtlId = partsAtlId;
 	}
 
-	public Integer getMaterialResult() {
-		return materialResult;
+	public Org getPartsAtl() {
+		return partsAtl;
 	}
 
-	public void setMaterialResult(Integer materialResult) {
-		this.materialResult = materialResult;
+	public void setPartsAtl(Org partsAtl) {
+		this.partsAtl = partsAtl;
+	}
+
+	public Long getMatAtlId() {
+		return matAtlId;
+	}
+
+	public void setMatAtlId(Long matAtlId) {
+		this.matAtlId = matAtlId;
+	}
+
+	public Org getMatAtl() {
+		return matAtl;
+	}
+
+	public void setMatAtl(Org matAtl) {
+		this.matAtl = matAtl;
+	}
+
+	public Long getPartsPatId() {
+		return partsPatId;
+	}
+
+	public void setPartsPatId(Long partsPatId) {
+		this.partsPatId = partsPatId;
+	}
+
+	public Org getPartsPat() {
+		return partsPat;
+	}
+
+	public void setPartsPat(Org partsPat) {
+		this.partsPat = partsPat;
+	}
+
+	public Long getMatPatId() {
+		return matPatId;
+	}
+
+	public void setMatPatId(Long matPatId) {
+		this.matPatId = matPatId;
+	}
+
+	public Org getMatPat() {
+		return matPat;
+	}
+
+	public void setMatPat(Org matPat) {
+		this.matPat = matPat;
 	}
 	
 }

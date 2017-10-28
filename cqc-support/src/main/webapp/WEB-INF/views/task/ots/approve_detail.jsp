@@ -38,7 +38,7 @@
 				</tr>
 				<tr>
 					<td class="title-td">生产商：</td>
-					<td class="value-td">${facadeBean.info.parts.producer}</td>
+					<td class="value-td">${facadeBean.info.parts.org.name}</td>
 					<td class="title-td">生产批号：</td>
 					<td class="value-td">${facadeBean.info.parts.proNo}</td>
 				</tr>
@@ -49,30 +49,21 @@
 					<td class="value-td">${facadeBean.info.parts.place}</td>
 				</tr>
 				<tr>
-					<td class="title-td">生产工艺：</td>
-					<td class="value-td">${facadeBean.info.parts.technology}</td>
-					<td class="title-td">照片：</td>
+					<td class="title-td">关键零件：</td>
 					<td class="value-td">
-						<c:if test="${not empty facadeBean.info.parts.pic}">
-							<a target="_blank" href="${resUrl}/${facadeBean.info.parts.pic}">
-								<img src="${resUrl}/${facadeBean.info.parts.pic}" style="width: 100px;height: 50px;"></img>
-							</a>
-						</c:if>
+						<c:choose>
+							<c:when test="${facadeBean.info.parts.isKey == 0}">
+								否
+							</c:when>
+							<c:otherwise>
+								是
+							</c:otherwise>
+						</c:choose>
 					</td>
-				</tr>
-				
-				<tr>
-					<td class="title-td">材料名称：</td>
-					<td class="value-td">${facadeBean.info.parts.matName}</td>
-					<td class="title-td">材料牌号：</td>
-					<td class="value-td">${facadeBean.info.parts.matNo}</td>
-				</tr>
-				
-				<tr>
-					<td class="title-td">材料颜色：</td>
-					<td class="value-td">${facadeBean.info.parts.matColor}</td>
-					<td class="title-td">材料生产商：</td>
-					<td class="value-td">${facadeBean.info.parts.matProducer}</td>
+					<td class="title-td">零件型号</td>
+					<td class="value-td">
+						${facadeBean.info.parts.keyCode}
+					</td>
 				</tr>
 				
 				<tr>
@@ -96,10 +87,10 @@
 				</tr>
 				
 				<tr>
-					<td class="title-td">材料生产商：</td>
-					<td class="value-td">${facadeBean.info.material.matProducer}</td>
+					<td class="title-td">生产商：</td>
+					<td class="value-td">${facadeBean.info.material.org.name}</td>
 					<td class="title-td">生产商地址：</td>
-					<td class="value-td">${facadeBean.info.material.producerAdd}</td>
+					<td class="value-td">${facadeBean.info.material.org.addr}</td>
 				</tr>
 				
 				<tr>

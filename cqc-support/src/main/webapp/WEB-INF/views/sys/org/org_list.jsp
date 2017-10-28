@@ -63,6 +63,7 @@
 								$("#name_info").html(data.name);
 								$("#desc_info").html(data.desc);
 								$("#code_info").html(data.code);
+								$("#addr_info").html(data.addr);
 								
 								var type = data.type;
 								var typeName = "";
@@ -284,6 +285,11 @@
 				<div class="info">
 					<span class="info_title">区&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域：</span>
 					<span id="areaName_info"></span>
+				</div>
+				
+				<div class="info">
+					<span class="info_title">地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：</span>
+					<span id="addr_info"></span>
 				</div>
 				
 				<div class="info">

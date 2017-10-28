@@ -93,7 +93,7 @@ public class OrgController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc, String areaid, Integer type) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String parentid, String text, String desc, String areaid, Integer type, String addr) {
 		AjaxVO vo = new AjaxVO();
 		Org org = null;
 
@@ -125,6 +125,7 @@ public class OrgController extends AbstractController {
 					org.setDesc(desc);
 					org.setName(text);
 					org.setType(type);
+					org.setAddr(addr);
 					org.setParentid(Long.parseLong(parentid));
 					if(StringUtils.isNotBlank(areaid)){
 						org.setAreaid(Long.parseLong(areaid));
@@ -158,6 +159,7 @@ public class OrgController extends AbstractController {
 					org.setName(text);
 					org.setCode(code);
 					org.setType(type);
+					org.setAddr(addr);
 					org.setParentid(Long.parseLong(parentid));
 					if(StringUtils.isNotBlank(areaid)){
 						org.setAreaid(Long.parseLong(areaid));
