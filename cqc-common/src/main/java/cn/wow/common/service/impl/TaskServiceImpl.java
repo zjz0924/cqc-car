@@ -177,31 +177,39 @@ public class TaskServiceImpl implements TaskService{
    	 * 结果确认
    	 * @param taskId  任务ID
    	 * @param result  结果：1-合格，2-不合格
-   	 * @param type    类型：1-原料图谱结果，2-零部件图谱结果
+   	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
    	 */
 	public void confirmResult(Account account, Long taskId, int result, int type) {
 		Task task = this.selectOne(taskId);
     	
     	if(result == 1){
-    		// 两项试验结果
-        	boolean isPass = false;
-    		String remark = "";
     		
     		if(type == 1){
-    			task.setMaterialResult(1);
     			
-    			if(task.getPartsResult().intValue() == 1){
-    				isPass = true;
-    			}
-    			remark = "原料图谱结果确认合格";
+    		}else if(type == 2 ){
+    			
+    		}else if(type == 3){
+    			
+    		}else if(type == 4){
+    			
     		}else{
-    			task.setPartsResult(1);
-    			
-    			if(task.getMaterialResult().intValue() == 1){
-    				isPass = true;
+    			if(task.getMatAtlResult() != 4){
+    				task.setMatAtlResult(4);
     			}
-    			remark = "零部件图谱结果结果确认合格";
+    			
+    			if(task.getMatPatResult() != 4){
+    				task.setMatPatResult(4);
+    			}
+    			
+    			if(task.getPartsAtlResult() != 4){
+    				task.setPartsAtlResult(4);
+    			}
+    			
+    			if(task.getPartsPatResult() != 4){
+    				task.setPartsPatResult(4);
+    			}
     		}
+    		
     		
     		// 任务记录
     		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());

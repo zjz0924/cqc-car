@@ -42,7 +42,7 @@ public interface TaskService {
 	 * 结果确认
 	 * @param taskId  任务ID
 	 * @param result  结果：1-合格，2-不合格
-	 * @param type    类型：1-原料图谱结果，2-零部件图谱结果
+	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
 	 */
     public void confirmResult(Account account, Long taskId, int result, int type);
     

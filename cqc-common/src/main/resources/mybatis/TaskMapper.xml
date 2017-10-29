@@ -225,6 +225,16 @@
 			</if>
 
 
+			<!-- 结果确认：待上传列表 -->
+			<if test="confirmTask_wait != null">
+				and ((t.parts_pat_result = 3  or t.mat_pat_result = 3 or t.parts_atl_result = 3 or t.mat_atl_result = 3) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2))
+			</if>
+			
+			<!-- 结果确认：已上传列表 -->
+			<if test="confirmTask_finish != null">
+				and (t.parts_pat_result = 3  and t.mat_pat_result = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3)
+			</if>
+
 		</where>
 
 		<choose>

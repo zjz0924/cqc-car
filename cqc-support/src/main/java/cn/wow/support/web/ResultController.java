@@ -475,16 +475,16 @@ public class ResultController extends AbstractController {
 	
 	/**
 	 * 结果确认列表
-	 * @param type  类型：1-原料图谱结果，2-零部件图谱结果
+	 * @param type  类型：1-待上传结果，2-已上传结果
 	 */
 	@RequestMapping(value = "/confirmList")
 	public String confirmList(HttpServletRequest request, HttpServletResponse response, Model model, int type) {
 		Menu menu = null;
 		
 		if(type == 1){
-			menu = menuService.selectByAlias("materialConfirm");
+			menu = menuService.selectByAlias("waitConfirm");
 		}else{
-			menu = menuService.selectByAlias("partsConfirm");
+			menu = menuService.selectByAlias("finishConfirm");
 		}
 		
 		model.addAttribute("defaultPageSize", CONFIRM_DEFAULT_PAGE_SIZE);
@@ -496,6 +496,7 @@ public class ResultController extends AbstractController {
 
 	/**
 	 * 列表数据
+	 * @param type  类型：1-待上传结果，2-已上传结果
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/confirmListData")
@@ -513,9 +514,9 @@ public class ResultController extends AbstractController {
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		
 		if(type == 1){
-			map.put("materialResult", 0);
+			map.put("confirmTask_wait", true);
 		}else{
-			map.put("partsResult", 0);
+			map.put("confirmTask_finish", true);
 		}
 
 		if (StringUtils.isNotBlank(code)) {
@@ -554,18 +555,35 @@ public class ResultController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
+			// 性能结果
+			Map<String, Object> pfMap = new HashMap<String, Object>();
+			pfMap.put("tId", id);
+			pfMap.put("custom_order_sql", "exp_no asc");
+			List<PfResult> pfDataList = pfResultService.selectAllList(pfMap);
+
+			Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
+			Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
+			assemblePfResult(pfDataList, pPfResult, mPfResult);
+
 			// 图谱结果
 			Map<String, Object> atMap = new HashMap<String, Object>();
 			atMap.put("tId", id);
 			atMap.put("custom_order_sql", "exp_no asc");
 			List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
-			
+
 			Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 			Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 			assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
-			
-			model.addAttribute("pAtlasResult", pAtlasResult);
+
+			// 原材料图谱结果
 			model.addAttribute("mAtlasResult", mAtlasResult);
+			// 零部件图谱结果
+			model.addAttribute("pAtlasResult", pAtlasResult);
+			// 原材料型式结果
+			model.addAttribute("mPfResult", mPfResult);
+			// 零部件型式结果
+			model.addAttribute("pPfResult", pPfResult);
+						
 			model.addAttribute("facadeBean", task);
 		}
 		
@@ -579,7 +597,7 @@ public class ResultController extends AbstractController {
 	 * 结果确认
 	 * @param taskId  任务ID
 	 * @param result  结果：1-合格，2-不合格
-	 * @param type    类型：1-原料图谱结果，2-零部件图谱结果
+	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/confirmResult")
