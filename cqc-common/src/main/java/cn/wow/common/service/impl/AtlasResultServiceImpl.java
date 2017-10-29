@@ -67,23 +67,41 @@ public class AtlasResultServiceImpl implements AtlasResultService{
     	return atlasResultDao.getExpNoByCatagory(map);
     }
     
-	// 结果上传
+    /**
+     * 图谱结果上传
+     * @param account
+     * @param atlasResult
+     */
 	public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time) {
 		Task task = taskDao.selectOne(taskId);
-
+		String remark = "";
+		
 		// 批量添加
 		batchAdd(atlasResult);
+		
+		if(atlasResult != null && atlasResult.size() == 6){
+			task.setMatAtlResult(2);
+			task.setPartsAtlResult(2);
+			remark = "上传零部件和原材料图谱试验结果";
+		}else{
+			if(atlasResult.get(0).getCatagory() == 1){
+				task.setPartsAtlResult(2);
+				remark = "上传零部件图谱试验结果";
+			}else{
+				task.setMatAtlResult(2);
+				remark = "上传原材料图谱试验结果";
+			}
+		}
 
 		// 操作记录
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(time);
 		record.setCode(task.getCode());
 		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
-		record.setRemark("上传图谱试验结果");
+		record.setRemark(remark);
 		record.setaId(account.getId());
 		taskRecordDao.insert(record);
 
-		task.setMatPatResult(1);
 		taskDao.update(task);
 	}
 

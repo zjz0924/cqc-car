@@ -18,13 +18,14 @@ public interface TaskService {
     public List<Task> selectAllList(Map<String, Object> map);
     
     /**
-     * 发送结果
-     * @param account 操作用户
-     * @param taskId  任务ID
-     * @param orgs    要发送的机构
-     * @param type    类型：1-图谱结果，2-型式结果，3-两者
-     */
-    public void sendResult(Account account, Long taskId, String orgs, int type) throws Exception;
+	 * 结果发送
+	 * @param taskId  任务ID
+	 * @param pAtlOrgVal    零部件图谱
+	 * @param pPatOrgVal    零部件型式
+	 * @param mAtlOrgVal    原材料图谱
+	 * @param mPatOrgVal    原材料型式   
+	 */
+    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal) throws Exception;
     
     
     /**

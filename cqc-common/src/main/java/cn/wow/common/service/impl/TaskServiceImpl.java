@@ -59,15 +59,9 @@ public class TaskServiceImpl implements TaskService{
  	// 结果标题
  	@Value("${result.title}")
  	protected String title;
- 	// 图谱结果
- 	@Value("${result.atlas}")
- 	protected String atlasResult;
- 	// 型式结果
- 	@Value("${result.patern}")
- 	protected String paternResult;
- 	// 两种结果
- 	@Value("${result.both}")
- 	protected String bothResult;
+ 	// 结果内容
+ 	@Value("${result.content}")
+ 	protected String content;
  	
     @Autowired
     private TaskDao taskDao;
@@ -127,86 +121,50 @@ public class TaskServiceImpl implements TaskService{
 		return mailSender.sendTextMail(info, 3);
     }
     
-    
     /**
-     * 发送结果
-     * @param account 操作用户
-     * @param taskId  任务ID
-     * @param orgs    要发送的机构
-     * @param type    类型：1-图谱结果，2-型式结果，3-两者
-     * @throws Exception 
-     */
-    public void sendResult(Account account, Long taskId, String orgs, int type) throws Exception{
+	 * 结果发送
+	 * @param taskId  任务ID
+	 * @param pAtlOrgVal    零部件图谱
+	 * @param pPatOrgVal    零部件型式
+	 * @param mAtlOrgVal    原材料图谱
+	 * @param mPatOrgVal    原材料型式   
+	 */
+    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal) throws Exception{
+
     	Task task = this.selectOne(taskId);
     	Date date = new Date();
+    	String remark = "";
     	
-    	// 机构ID
-		String[] orgsList = orgs.split(",");
-		List<Long> orgIdList = new ArrayList<Long>();
-		for (String str : orgsList) {
-			if (StringUtils.isNotBlank(str)) {
-				orgIdList.add(Long.parseLong(str));
-			}
-		}
-		
-		// 用户列表
-		Map<String, Object> aMap = new PageMap(false);
-		aMap.put("orgs", orgIdList);
-		List<Account> accountList = accountDao.selectAllList(aMap);
-		
-		if (accountList != null && accountList.size() > 0) {
-			String addr = "";
-			for (Account ac : accountList) {
-				if (StringUtils.isNotBlank(ac.getEmail())) {
-					addr += ac.getEmail() + ";";
-				}
-			}
-			
-			if(StringUtils.isNotBlank(addr)){
-				addr = addr.substring(0, addr.length() - 1);
-			}
-			
-			String content = null;
-			if(type == 1){
-				content = MessageFormat.format(atlasResult, new Object[] { task.getCode() });		
-			}else if(type == 2){
-				content = MessageFormat.format(paternResult, new Object[] { task.getCode() });		
-			}else{
-				content = MessageFormat.format(bothResult, new Object[] { task.getCode() });		
-			}
-			
-			// 发送邮件
-			sendEmail(title, content, addr);
-			
-			// 邮件记录
-			EmailRecord emailRecord = new EmailRecord(title, content, addr, taskId, account.getId(), 1, 1, mailUser, date);
-			emailRecordDao.insert(emailRecord);
-		}
-		
+    	if(StringUtils.isNotBlank(pAtlOrgVal)){
+    		send(account, task, date, pAtlOrgVal, "零部件图谱试验");
+    		task.setPartsAtlResult(3);
+    		remark += "零部件图谱试验、";
+    	}
+    	
+    	if(StringUtils.isNotBlank(pPatOrgVal)){
+    		send(account, task, date, pPatOrgVal, "零部件型式试验");
+    		task.setPartsPatResult(3);
+    		remark += "零部件型式试验、";
+    	}
+    	
+    	if(StringUtils.isNotBlank(mAtlOrgVal)){
+    		send(account, task, date, mAtlOrgVal, "原材料图谱试验");
+    		task.setMatAtlResult(3);
+    		remark += "原材料图谱试验、";
+    	}
+    	
+    	if(StringUtils.isNotBlank(mPatOrgVal)){
+    		send(account, task, date, mPatOrgVal, "原材料型式试验");
+    		task.setMatPatResult(3);
+    		remark += "原材料型式试验、";
+    	}
+    	
+    	if(StringUtils.isNotBlank(remark)){
+    		remark = remark.substring(0, remark.length() - 1);
+    		remark = "发送" + remark + "结果";
+    	}
+    	
 		// 更新任务的结果情况
-		String remark = "";
-		if(type == 1){
-			task.setAtlasResult(2);
-			
-			// 检查型式结果是否已发送
-			if(task.getPatternResult().intValue() == 2){
-				task.setState(StandardTaskEnum.CONFIRM.getState());
-			}
-			remark = "发送图谱试验结果";
-		}else if(type == 2){
-			task.setPatternResult(2);
-			
-			// 检查图谱结果是否已发送
-			if(task.getAtlasResult().intValue() == 2){
-				task.setState(StandardTaskEnum.CONFIRM.getState());
-			}
-			remark = "发送型式试验结果";
-		}else{
-			task.setAtlasResult(2);
-			task.setPatternResult(2);
-			task.setState(StandardTaskEnum.CONFIRM.getState());
-			remark = "发送图谱和型式试验结果";
-		}
 		taskDao.update(task);
 		
 		// 任务记录
@@ -331,5 +289,45 @@ public class TaskServiceImpl implements TaskService{
 		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SAVE.getState(), "基准信息已保存", new Date());
 		taskRecordDao.insert(taskRecord);
 	}
+	
 
+	// 发送邮件
+	protected void send(Account account, Task task, Date date, String orgs, String tips) throws Exception{
+		// 机构ID
+		String[] orgsList = orgs.split(",");
+		List<Long> orgIdList = new ArrayList<Long>();
+		for (String str : orgsList) {
+			if (StringUtils.isNotBlank(str)) {
+				orgIdList.add(Long.parseLong(str));
+			}
+		}
+
+		// 用户列表
+		Map<String, Object> aMap = new PageMap(false);
+		aMap.put("orgs", orgIdList);
+		List<Account> accountList = accountDao.selectAllList(aMap);
+		
+		if (accountList != null && accountList.size() > 0) {
+			String addr = "";
+			for (Account ac : accountList) {
+				if (StringUtils.isNotBlank(ac.getEmail())) {
+					addr += ac.getEmail() + ";";
+				}
+			}
+			
+			if(StringUtils.isNotBlank(addr)){
+				addr = addr.substring(0, addr.length() - 1);
+			}
+			
+			content = MessageFormat.format(content, new Object[] { task.getCode(), tips });	
+			
+			// 发送邮件
+			sendEmail(title, content, addr);
+			
+			// 邮件记录
+			EmailRecord emailRecord = new EmailRecord(title, content, addr, task.getId(), account.getId(), 1, 1, mailUser, date);
+			emailRecordDao.insert(emailRecord);
+		}
+	}
+	
 }

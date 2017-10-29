@@ -109,104 +109,132 @@
 	<update id="updateState" parameterType="java.util.Map">
 		update task set state = #{state,jdbcType=INTEGER} where id = #{id,jdbcType=BIGINT}
 	</update>
-	
-	 <select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
-	  	select 
-	    <include refid="base_columns" />
-	      from task t LEFT JOIN account a on t.a_id = a.id
-	     <where>
-		      <if test="code != null and code != ''" >
-		        and t.code like concat('%', #{code,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="nickName != null and nickName != ''" >
-		        and a.nickname like concat('%', #{nickName,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="orgId != null">
+
+	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="base_columns" />
+		from task t LEFT JOIN account a on t.a_id = a.id
+		<where>
+			<if test="code != null and code != ''">
+				and t.code like concat('%', #{code,jdbcType=VARCHAR}, '%')
+			</if>
+
+			<if test="nickName != null and nickName != ''">
+				and a.nickname like concat('%', #{nickName,jdbcType=VARCHAR}, '%')
+			</if>
+
+			<if test="orgId != null">
 				and t.org_id = #{orgId,jdbcType=BIGINT}
-			 </if>
-			 
-			 <if test="iId != null">
+			</if>
+
+			<if test="iId != null">
 				and t.i_id = #{iId,jdbcType=BIGINT}
-			 </if>
-			 
-			 <if test="aId != null">
+			</if>
+
+			<if test="aId != null">
 				and t.a_id = #{iId,jdbcType=BIGINT}
-			 </if>
-		      
-		      <if test="state != null">
+			</if>
+
+			<if test="state != null">
 				and t.state = #{state,jdbcType=INTEGER}
-			 </if>
-			 
-			 <if test="examineState != null">
+			</if>
+
+			<if test="examineState != null">
 				and (t.state = 1 or t.state = 2)
-			 </if>
-			
+			</if>
+
 			<if test="partsAtlId != null">
 				and t.parts_atl_id = #{partsAtlId,jdbcType=BIGINT}
 			</if>
+			
 			<if test="matAtlId != null">
 				and t.mat_atl_id = #{matAtlId,jdbcType=BIGINT}
 			</if>
+			
 			<if test="partsPatId != null">
 				and parts_pat_id = #{partsPatId,jdbcType=BIGINT}
 			</if>
+			
 			<if test="matPatId != null">
 				and mat_pat_id = #{matPatId,jdbcType=BIGINT}
 			</if>
+			
 			<if test="failNum != null">
 				and t.fail_num &gt;= #{failNum,jdbcType=INTEGER}
 			</if>
-			
+
 			<if test="partsAtlResult != null">
-				and t.parts_atl_result = #{partsAtlResult,jdbcType=INTEGER}
+				and t.parts_atl_result =
+				#{partsAtlResult,jdbcType=INTEGER}
 			</if>
-			
+
 			<if test="matAtlResult != null">
 				and t.mat_atl_result = #{matAtlResult,jdbcType=INTEGER}
 			</if>
-			
+
 			<if test="partsPatResult != null">
 				and t.parts_pat_result = #{partsPatResult,jdbcType=INTEGER}
 			</if>
-			
+
 			<if test="matPatResult != null">
 				and t.mat_pat_result = #{matPatResult,jdbcType=INTEGER}
 			</if>
-			
-			<if test="canSend != null">
-				and (t.parts_atl_result = 1 or t.mat_atl_result = 1)
+
+			<if test="startCreateTime != null and startCreateTime != ''">
+				and t.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 			</if>
-		      
-		      <if test="startCreateTime != null and startCreateTime != ''">  
-		    	and t.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
-		      </if>
-		      
-		      <if test="endCreateTime != null and endCreateTime != ''">  
-		    	and t.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
-		      </if>
-		      
-		      <!-- 任务下达列表 -->
-		      <if test="transimtTask != null">
-				and (t.parts_atl_id is null or t.mat_atl_id is null or t.parts_pat_id is null or t.mat_pat_id is null)		      
-		      </if>
-		      
-		      <!-- 审批列表 -->
-		      <if test="approveTask != null">
-				and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)		      
-		      </if>
-		      
-	      </where>
-	      
-		  <choose>
-	  		<when test="custom_order_sql != null">
-	  			order by ${custom_order_sql}
-	  		</when>
-	  		<otherwise>
-	  			order by t.id desc
-	  		</otherwise>
-	 	 </choose>
-	  </select>
+
+			<if test="endCreateTime != null and endCreateTime != ''">
+				and t.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<!-- 任务下达列表 -->
+			<if test="transimtTask != null">
+				and (t.parts_atl_id is null or t.mat_atl_id is null or t.parts_pat_id is null or t.mat_pat_id is null)
+			</if>
+
+			<!-- 审批列表 -->
+			<if test="approveTask != null">
+				and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)
+			</if>
+
+			<!-- 图谱结果上传 -->
+			<if test="atlasTask != null">
+				and ((t.parts_atl_id = #{atlasTask, jdbcType=BIGINT} and t.parts_atl_result = 1 ) or (t.mat_atl_id = #{atlasTask, jdbcType=BIGINT} and t.mat_atl_result = 1))
+			</if>
+
+			<if test="atlasTask_admin != null">
+				and ( t.parts_atl_result = 1 or t.mat_atl_result = 1 )
+			</if>
+
+			<!-- 型式结果上传 -->
+			<if test="patternTask != null">
+				and ((t.parts_pat_id = #{patternTask, jdbcType=BIGINT} and t.parts_pat_result = 1 ) or (t.mat_pat_id = #{patternTask, jdbcType=BIGINT} and t.mat_pat_result = 1))
+			</if>
+
+			<if test="patternTask_admin != null">
+				and ( t.parts_pat_result = 1 or t.mat_pat_result = 1)
+			</if>
+
+			<!-- 结果发送列表 -->
+			<if test="sendTask != null">
+				and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
+			</if>
+			
+			<if test="sendTask_admin != null">
+				and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
+			</if>
+
+
+		</where>
+
+		<choose>
+			<when test="custom_order_sql != null">
+				order by ${custom_order_sql}
+			</when>
+			<otherwise>
+				order by t.id desc
+			</otherwise>
+		</choose>
+	</select>
 	
 </mapper>

@@ -77,6 +77,7 @@ public class ResultController extends AbstractController {
 	
 	/**
 	 * 结果上传列表
+	 * @param type  类型：1-型式结果上传 2-图谱结果上传
 	 */
 	@RequestMapping(value = "/uploadList")
 	public String uploadList(HttpServletRequest request, HttpServletResponse response, Model model, int type) {
@@ -112,21 +113,21 @@ public class ResultController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.UPLOADING.getState());
+		map.put("state", StandardTaskEnum.TESTING.getState());
 		
 		// 超级管理员具有所有的权限
 		if(account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())){
 			if(type == 1){  //型式结果
-				map.put("patternLab", account.getOrgId() == null ? -1: account.getOrgId());
+				map.put("patternTask", account.getOrgId() == null ? -1: account.getOrgId());
 			}else{   // 图谱结果
-				map.put("atlasLab", account.getOrgId() == null ? -1: account.getOrgId());
+				map.put("atlasTask", account.getOrgId() == null ? -1: account.getOrgId());
 			}
-		}
-		
-		if(type == 1){
-			map.put("patternResult", 0);
 		}else{
-			map.put("atlasResult", 0);
+			if(type == 1){
+				map.put("patternTask_admin", true);
+			}else{
+				map.put("atlasTask_admin", true);
+			}
 		}
 
 		if (StringUtils.isNotBlank(code)) {
@@ -180,6 +181,7 @@ public class ResultController extends AbstractController {
 
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("type", type);
+		model.addAttribute("superRoleCole", Contants.SUPER_ROLE_CODE);
 		return "result/upload_detail";
 	}
 
@@ -209,58 +211,63 @@ public class ResultController extends AbstractController {
 		
 		try {
 			Date date = new Date();
-			
-			// 零部件试验次数
-			int pNum = atlasResultService.getExpNoByCatagory(taskId, 1);
-			// 原材料试验次数
-			int mNum = atlasResultService.getExpNoByCatagory(taskId, 2);
+			List<AtlasResult> dataList = new ArrayList<AtlasResult>();
 			
 			/**  零部件结果  **/
-			// 热重分析
-			if (p_tgfile != null && !p_tgfile.isEmpty()) {
-				pic = uploadImg(p_tgfile, atlasUrl + taskId + "/parts/tg/", false);
+			if(p_tgfile != null){
+				// 零部件试验次数
+				int pNum = atlasResultService.getExpNoByCatagory(taskId, 1);
+				
+				// 热重分析
+				if (p_tgfile != null && !p_tgfile.isEmpty()) {
+					pic = uploadImg(p_tgfile, atlasUrl + taskId + "/parts/tg/", false);
+				}
+				AtlasResult p_tg = new AtlasResult(taskId, 3, pic, p_tgLab, 1, pNum + 1, date);
+				
+				// 红外光分析
+				if (p_infile != null && !p_infile.isEmpty()) {
+					pic = uploadImg(p_infile, atlasUrl + taskId + "/parts/inf/", false);
+				}
+				AtlasResult p_inf = new AtlasResult(taskId, 1, pic, p_infLab, 1, pNum + 1, date);
+				
+				// 差热扫描
+				if (p_dtfile != null && !p_dtfile.isEmpty()) {
+					pic = uploadImg(p_dtfile, atlasUrl + taskId + "/parts/dt/", false);
+				}
+				AtlasResult p_dt = new AtlasResult(taskId, 2, pic, p_dtLab, 1, pNum + 1, date);
+				
+				dataList.add(p_tg);
+				dataList.add(p_inf);
+				dataList.add(p_dt);
 			}
-			AtlasResult p_tg = new AtlasResult(taskId, 3, pic, p_tgLab, 1, pNum + 1, date);
-			
-			// 红外光分析
-			if (p_infile != null && !p_infile.isEmpty()) {
-				pic = uploadImg(p_infile, atlasUrl + taskId + "/parts/inf/", false);
-			}
-			AtlasResult p_inf = new AtlasResult(taskId, 1, pic, p_infLab, 1, pNum + 1, date);
-			
-			// 差热扫描
-			if (p_dtfile != null && !p_dtfile.isEmpty()) {
-				pic = uploadImg(p_dtfile, atlasUrl + taskId + "/parts/dt/", false);
-			}
-			AtlasResult p_dt = new AtlasResult(taskId, 2, pic, p_dtLab, 1, pNum + 1, date);
-			
 			
 			/** 原材料结果  **/
-			// 热重分析
-			if (m_tgfile != null && !m_tgfile.isEmpty()) {
-				pic = uploadImg(m_tgfile, atlasUrl + taskId + "/material/tg/", false);
+			if(m_tgfile != null){
+				// 原材料试验次数
+				int mNum = atlasResultService.getExpNoByCatagory(taskId, 2);
+				
+				// 热重分析
+				if (m_tgfile != null && !m_tgfile.isEmpty()) {
+					pic = uploadImg(m_tgfile, atlasUrl + taskId + "/material/tg/", false);
+				}
+				AtlasResult m_tg = new AtlasResult(taskId, 3, pic, m_tgLab, 2, mNum + 1, date);
+				
+				// 红外光分析
+				if (m_infile != null && !m_infile.isEmpty()) {
+					pic = uploadImg(m_infile, atlasUrl + taskId + "/material/inf/", false);
+				}
+				AtlasResult m_inf = new AtlasResult(taskId, 1, pic, m_infLab, 2, mNum + 1, date);
+				
+				// 差热扫描
+				if (m_dtfile != null && !m_dtfile.isEmpty()) {
+					pic = uploadImg(m_dtfile, atlasUrl + taskId + "/material/dt/", false);
+				}
+				AtlasResult m_dt = new AtlasResult(taskId, 2, pic, m_dtLab, 2, mNum + 1, date);
+				
+				dataList.add(m_tg);
+				dataList.add(m_inf);
+				dataList.add(m_dt);
 			}
-			AtlasResult m_tg = new AtlasResult(taskId, 3, pic, m_tgLab, 2, mNum + 1, date);
-			
-			// 红外光分析
-			if (m_infile != null && !m_infile.isEmpty()) {
-				pic = uploadImg(m_infile, atlasUrl + taskId + "/material/inf/", false);
-			}
-			AtlasResult m_inf = new AtlasResult(taskId, 1, pic, m_infLab, 2, mNum + 1, date);
-			
-			// 差热扫描
-			if (m_dtfile != null && !m_dtfile.isEmpty()) {
-				pic = uploadImg(m_dtfile, atlasUrl + taskId + "/material/dt/", false);
-			}
-			AtlasResult m_dt = new AtlasResult(taskId, 2, pic, m_dtLab, 2, mNum + 1, date);
-			
-			List<AtlasResult> dataList = new ArrayList<AtlasResult>();
-			dataList.add(p_tg);
-			dataList.add(p_inf);
-			dataList.add(p_dt);
-			dataList.add(m_tg);
-			dataList.add(m_inf);
-			dataList.add(m_dt);
 			
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			atlasResultService.upload(account, dataList, taskId, date);
@@ -335,6 +342,8 @@ public class ResultController extends AbstractController {
 	public Map<String, Object> sendListData(HttpServletRequest request, Model model, String code, String orgId,
 			String startCreateTime, String endCreateTime, String nickName) {
 		
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -343,8 +352,14 @@ public class ResultController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.UPLOADING.getState());
-		map.put("canSend", "yes");
+		map.put("state", StandardTaskEnum.TESTING.getState());
+		
+		// 超级管理员具有所有的权限
+		if(account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())){
+			map.put("sendTask", account.getOrgId());
+		}else{
+			map.put("sendTask_admin", true);
+		}
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -383,40 +398,45 @@ public class ResultController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			// 型式结果
-			if(task.getMatAtlResult() == 1){
+			// 性能结果
+			if (task.getMatPatResult() == 2 || task.getPartsPatResult() == 2) {
 				Map<String, Object> pfMap = new HashMap<String, Object>();
 				pfMap.put("tId", id);
 				pfMap.put("custom_order_sql", "exp_no asc");
 				List<PfResult> pfDataList = pfResultService.selectAllList(pfMap);
-				
+
 				Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
 				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
 				assemblePfResult(pfDataList, pPfResult, mPfResult);
-				
-				model.addAttribute("pPfResult", pPfResult);
+
+				// 原材料型式结果
 				model.addAttribute("mPfResult", mPfResult);
+				// 零部件型式结果
+				model.addAttribute("pPfResult", pPfResult);
 			}
-			
+
 			// 图谱结果
-			if(task.getMatAtlResult() == 1){
+			if (task.getMatAtlResult() == 2 || task.getPartsAtlResult() == 2) {
 				Map<String, Object> atMap = new HashMap<String, Object>();
 				atMap.put("tId", id);
 				atMap.put("custom_order_sql", "exp_no asc");
 				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
-				
+
 				Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 				assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
-				
-				model.addAttribute("pAtlasResult", pAtlasResult);
+
+				// 原材料图谱结果
 				model.addAttribute("mAtlasResult", mAtlasResult);
+				// 零部件图谱结果
+				model.addAttribute("pAtlasResult", pAtlasResult);
 			}
-			
+
 			model.addAttribute("facadeBean", task);
 		}
-		
+
 		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("superRoleCole", Contants.SUPER_ROLE_CODE);
 		return "result/send_detail";
 	}
 	
@@ -424,17 +444,19 @@ public class ResultController extends AbstractController {
 	/**
 	 * 结果发送
 	 * @param taskId  任务ID
-	 * @param orgs    要发送的机构
-	 * @param type    类型：1-图谱结果，2-型式结果，3-两者
+	 * @param pAtlOrgVal    零部件图谱
+	 * @param pPatOrgVal    零部件型式
+	 * @param mAtlOrgVal    原材料图谱
+	 * @param mPatOrgVal    原材料型式   
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/sendResult")
-	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String orgs, int type){
+	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal){
 		AjaxVO vo = new AjaxVO();
 		
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			taskService.sendResult(account, taskId, orgs, type);
+			taskService.sendResult(account, taskId, pAtlOrgVal, pPatOrgVal, mAtlOrgVal, mPatOrgVal);
 		}catch(Exception ex){
 			logger.error("结果发送失败", ex);
 
@@ -488,7 +510,7 @@ public class ResultController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.CONFIRM.getState());
+		map.put("state", StandardTaskEnum.TESTING.getState());
 		
 		if(type == 1){
 			map.put("materialResult", 0);
