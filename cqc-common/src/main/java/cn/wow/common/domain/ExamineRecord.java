@@ -20,7 +20,7 @@ public class ExamineRecord{
     private String remark;
     // 审核时间
     private Date createTime;
-    // 类型：1-审核记录，2-审批记录
+    // 类型：1-审核记录，2-审批记录，3-确认记录
     private Integer type;
     // 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（审批记录有效）
     private Integer catagory;

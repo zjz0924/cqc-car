@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.EmailRecordDao;
+import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
@@ -24,6 +25,7 @@ import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.EmailRecord;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
@@ -79,6 +81,8 @@ public class TaskServiceImpl implements TaskService{
     private MaterialDao materialDao;
     @Autowired
     private VehicleDao vehicleDao;
+    @Autowired
+    private ExamineRecordDao examineRecordDao;
 
     public Task selectOne(Long id){
     	return taskDao.selectOne(id);
@@ -181,17 +185,23 @@ public class TaskServiceImpl implements TaskService{
    	 */
 	public void confirmResult(Account account, Long taskId, int result, int type) {
 		Task task = this.selectOne(taskId);
+    	boolean isPass = false;
+    	String remark = "";
+    	Date date = new Date();
     	
     	if(result == 1){
-    		
     		if(type == 1){
-    			
+    			task.setPartsAtlResult(4);
+    			remark += "零部件图谱试验、";
     		}else if(type == 2 ){
-    			
+    			task.setPartsPatResult(4);
+    			remark += "零部件型式试验、";
     		}else if(type == 3){
-    			
+    			task.setMatAtlResult(4);
+    			remark += "原材料图谱试验、";
     		}else if(type == 4){
-    			
+    			task.setMatPatResult(4);
+    			remark += "原材料型式试验、";
     		}else{
     			if(task.getMatAtlResult() != 4){
     				task.setMatAtlResult(4);
@@ -208,60 +218,106 @@ public class TaskServiceImpl implements TaskService{
     			if(task.getPartsPatResult() != 4){
     				task.setPartsPatResult(4);
     			}
+    			
+    			isPass = true;
+    			remark += "零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验、";
     		}
     		
+    		if(StringUtils.isNotBlank(remark)){
+    			remark = remark.substring(0, remark.length() - 1);
+    			remark = remark + "结果确认合格";
+    		}
     		
-    		// 任务记录
-    		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
-    		taskRecordDao.insert(taskRecord);
+    		// 所有实验已确认
+    		if(task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getPartsAtlResult() == 4 && task.getPartsPatResult() == 4){
+    			isPass = true;
+    		}
     		
-    		// 合格
     		if(isPass){
     			task.setState(StandardTaskEnum.NOTIFY.getState());
     			// 保存基准信息
     			saveStandard(account, task);
     		}
-    		
     		taskDao.update(task);
+    		
+    		// 确认记录
+    		ExamineRecord examineRecord = new ExamineRecord();
+    		examineRecord.setaId(account.getId());
+    		examineRecord.setCreateTime(date);
+    		examineRecord.setRemark(remark);
+    		examineRecord.setState(result);
+    		examineRecord.settId(taskId);
+    		examineRecord.setType(3);
+    		examineRecord.setCatagory(type);
+    		examineRecordDao.insert(examineRecord);
+    		
+    		// 任务记录
+    		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, date);
+    		taskRecordDao.insert(taskRecord);
+    		
     	}else{
     		
-    		// 两项试验结果
-        	boolean isNotPass = false;
-    		String remark = "";
-    		
     		if(type == 1){
-    			task.setMaterialResult(2);
-    			
-    			// 结果已确认
-    			if(task.getPartsResult().intValue() != 0){
-    				isNotPass = true;
-    			}
-    			remark = "原料图谱结果确认不合格";
+    			task.setPartsAtlResult(0);
+    			task.setPartsAtlId(null);
+    			remark += "零部件图谱试验、";
+    		}else if(type == 2){
+    			task.setPartsPatResult(0);
+    			task.setPartsPatId(null);
+    			remark += "零部件型式试验、";
+    		}else if(type == 3){
+    			task.setMatAtlResult(0);
+    			task.setMatAtlId(null);
+    			remark += "原材料图谱试验、";
+    		}else if(type == 4){
+    			task.setMatPatResult(0);
+    			task.setMatPatId(null);
+    			remark += "原材料型式试验、";
     		}else{
-    			task.setPartsResult(2);
-    			
-    			// 结果已确认
-    			if(task.getMaterialResult().intValue() != 0){
-    				isNotPass = true;
+    			if(task.getPartsAtlResult() == 3){
+    				task.setPartsAtlResult(0);
+        			task.setPartsAtlId(null);
+        			remark += "零部件图谱试验、";
     			}
-    			remark = "零部件图谱结果结果确认不合格";
+    			
+    			if(task.getPartsPatResult() == 3){
+    				task.setPartsPatResult(0);
+        			task.setPartsPatId(null);
+        			remark += "零部件型式试验、";
+    			}
+    			
+    			if(task.getMatAtlResult() == 3){
+    				task.setMatAtlResult(0);
+        			task.setMatAtlId(null);
+        			remark += "原材料图谱试验、";
+    			}
+    			
+    			if(task.getMatPatResult() == 3){
+    				task.setMatPatResult(0);
+        			task.setMatPatId(null);
+        			remark += "原材料型式试验、";
+    			}
+    		}
+    		
+    		if(StringUtils.isNotBlank(remark)){
+    			remark = remark.substring(0, remark.length() - 1);
+    			remark = remark + "结果确认不合格";
     		}
     		
     		// 任务记录
     		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
     		taskRecordDao.insert(taskRecord);
     		
-    		// 不合格
-    		if(isNotPass){
-    			task.setState(StandardTaskEnum.TRANSMIT.getState());
-    			task.setFailNum(task.getFailNum() + 1);
-    			
-    			// 重新再上传
-    			task.setAtlasResult(0);
-    			task.setPatternResult(0);
-    			task.setMaterialResult(0);
-    			task.setPartsResult(0);
-    		}
+    		// 确认记录
+    		ExamineRecord examineRecord = new ExamineRecord();
+    		examineRecord.setaId(account.getId());
+    		examineRecord.setCreateTime(date);
+    		examineRecord.setRemark(remark);
+    		examineRecord.setState(result);
+    		examineRecord.settId(taskId);
+    		examineRecord.setType(3);
+    		examineRecord.setCatagory(type);
+    		examineRecordDao.insert(examineRecord);
     		
     		taskDao.update(task);
     	}
@@ -280,18 +336,24 @@ public class TaskServiceImpl implements TaskService{
 		
 		// 原材料
 		Material material = materialDao.selectOne(info.getmId());
-		material.setState(state);
-		materialDao.update(material);
+		if(material.getState() == 0){
+			material.setState(state);
+			materialDao.update(material);
+		}
 		
 		// 整车
 		Parts parts = partsDao.selectOne(info.getpId());
-		parts.setState(state);
-		partsDao.update(parts);
+		if(parts.getState() == 0){
+			parts.setState(state);
+			partsDao.update(parts);
+		}
 				
 		// 零部件
 		Vehicle vehicle = vehicleDao.selectOne(info.getvId());
-		vehicle.setState(state);
-		vehicleDao.update(vehicle);
+		if(vehicle.getState() == 0){
+			vehicle.setState(state);
+			vehicleDao.update(vehicle);
+		}
 		
 		// 任务记录
 		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SAVE.getState(), "基准信息已保存", new Date());
