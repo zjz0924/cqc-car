@@ -7,10 +7,9 @@ package cn.wow.common.utils.taskState;
  */
 public enum SamplingTaskRecordEnum {
 	
-	APPLY(1, "任务申请"), 
-	TRANSMIT(2, "任务下达"), 
-	APPROVE_AGREE(5, "审批同意"), 
-	APPROVE_DISAGREE(6, "审批不同意"), 
+	TRANSMIT(1, "任务下达"), 
+	APPROVE_AGREE(2, "审批同意"), 
+	APPROVE_DISAGREE(3, "审批不同意"), 
 	UPLOAD(4, "结果上传"), 
 	COMPARISON_NORMAL(5, "结果比对正常"),
 	COMPARISON_ABNORMAL(6, "结果比对异常"),

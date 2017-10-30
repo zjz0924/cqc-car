@@ -168,6 +168,11 @@
 					$("#m_matNo").textbox("setValue", row.matNo);
 					$("#m_matColor").textbox("setValue", row.matColor);
 					$("#m_remark").textbox("setValue", row.remark);
+					$("#m_orgName").textbox("setValue", row.org.name);
+					$("#m_pic_span").show();
+					$("#m_pic_a").attr("href", "${resUrl}/" + row.pic);
+					$("#m_pic").attr("src", "${resUrl}/" + row.pic);
+					$("#m_id").val(row.id);
 					
 					// 不可编辑
 					$('#m_matName').textbox('disable'); 
@@ -186,24 +191,6 @@
 		
 		
 		<style style="text/css">
-			.datagrid-btable tr {
-				height: 30px;
-			}
-			
-			.datagrid-header {
-				background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
-			}
-			
-			.datagrid-header-row {
-				font-weight: bold;
-				height: 50px
-			}
-			
-			.datagrid-row-over, .datagrid-header td.datagrid-header-over {
-			    background: #e6e6e6;
-			    color: #00438a;
-			    cursor: default;
-			}
 			
 			.lock-unlock {
 				display: inline-block;

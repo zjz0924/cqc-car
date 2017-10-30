@@ -30,6 +30,9 @@ import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.SamplingTaskEnum;
+import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
@@ -88,9 +91,8 @@ public class InfoServiceImpl implements InfoService {
 	 * 添加信息
 	 */
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		Date date = material.getCreateTime();
-		String taskCode = sdf.format(date);
+		String taskCode = generateTaskCode(date);
 
 		if (vehicle.getId() == null) {
 			vehicleDao.insert(vehicle);
@@ -210,7 +212,7 @@ public class InfoServiceImpl implements InfoService {
 	}
 
 	/**
-     * 下达任务
+     * 下达任务（OTO任务）
      * @param account   操作用户
      * @param id        任务ID
      * @param partsAtlId   零部件图谱实验室ID
@@ -244,9 +246,101 @@ public class InfoServiceImpl implements InfoService {
 		record.setRemark("分配任务到实验室");
 		taskRecordDao.insert(record);
 	}
+	
+	
+   /**
+	 * 下达任务（PPAP）
+	 * 
+	 * @param t_id         任务ID
+	 * @param v_id         整车信息ID
+	 * @param p_id         零部件信息ID
+	 * @param m_id         原材料信息ID
+	 * @param partsAtlId   零部件图谱实验室ID
+	 * @param matAtlId     原材料图谱实验室ID
+	 * @param partsPatId   零部件型式实验室ID
+	 * @param matPatId     原材料型式实验室ID
+	 */
+	public boolean transmit(Account account, Long t_id, Long v_id, Long p_id, Long m_id, Long partsAtlId, Long matAtlId,
+			Long partsPatId, Long matPatId) {
+
+		if (t_id == null) {
+			Date date = new Date();
+			String code = generateTaskCode(date);
+
+			// 检查当前信息是否已有任务
+			Map<String, Object> iMap = new PageMap(false);
+			iMap.put("vId", v_id);
+			iMap.put("pId", p_id);
+			iMap.put("mId", m_id);
+			iMap.put("type", TaskTypeEnum.PPAP.getState());
+			List<Info> infoList = infoDao.selectAllList(iMap);
+			if (infoList != null && infoList.size() > 0) {
+				return false;
+			}
+
+			// 信息
+			Info info = new Info();
+			info.setCreateTime(date);
+			info.setmId(m_id);
+			info.setpId(p_id);
+			info.setState(Contants.FINISH_TYPE);
+			info.setvId(v_id);
+			info.setType(TaskTypeEnum.PPAP.getState());
+			infoDao.insert(info);
+
+			Task task = new Task();
+			task.setCode(code);
+			task.setCreateTime(date);
+			task.setiId(info.getId());
+			task.setOrgId(account.getOrgId());
+			task.setState(SamplingTaskEnum.APPROVE.getState());
+			task.setType(TaskTypeEnum.PPAP.getState());
+			task.setFailNum(0);
+			task.setaId(account.getId());
+			task.setMatAtlResult(0);
+			task.setMatPatResult(0);
+			task.setPartsAtlResult(0);
+			task.setPartsPatResult(0);
+			task.setPartsAtlId(partsAtlId);
+			task.setPartsPatId(partsPatId);
+			task.setMatAtlId(matAtlId);
+			task.setMatPatId(matPatId);
+			
+			taskDao.insert(task);
+
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(date);
+			record.setCode(code);
+			record.setState(SamplingTaskRecordEnum.TRANSMIT.getState());
+			record.setaId(account.getId());
+			record.setRemark("下达试验任务");
+			taskRecordDao.insert(record);
+
+		} else {
+			Task task = taskDao.selectOne(t_id);
+			task.setPartsAtlId(partsAtlId);
+			task.setMatAtlId(matAtlId);
+			task.setState(SamplingTaskEnum.APPROVE.getState());
+			taskDao.update(task);
+
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(new Date());
+			record.setCode(task.getCode());
+			record.setState(SamplingTaskRecordEnum.TRANSMIT.getState());
+			record.setaId(account.getId());
+			record.setRemark("下达试验任务");
+			taskRecordDao.insert(record);
+		}
+
+		return true;
+	}
+	    
+	
 
 	/**
-     * 审批
+     * 审批（OTS）
      * @param account  操作用户
      * @param id       任务ID
      * @param result   结果：1-通过，2-不通过
@@ -255,12 +349,13 @@ public class InfoServiceImpl implements InfoService {
      */
 	public void approve(Account account, Long id, int result, String remark, int catagory) {
 		Task task = taskDao.selectOne(id);
+		Date date = new Date();
 		
 		// 审批记录
 		ExamineRecord examineRecord = new ExamineRecord(); 
 		examineRecord.setaId(account.getId());
 		examineRecord.setCatagory(catagory);
-		examineRecord.setCreateTime(new Date());
+		examineRecord.setCreateTime(date);
 		examineRecord.setRemark(remark);
 		examineRecord.setState(result);
 		examineRecord.settId(id);
@@ -269,7 +364,7 @@ public class InfoServiceImpl implements InfoService {
 		
 		// 操作记录
 		TaskRecord record = new TaskRecord();
-		record.setCreateTime(new Date());
+		record.setCreateTime(date);
 		record.setCode(task.getCode());
 		record.setaId(account.getId());
 
@@ -333,5 +428,63 @@ public class InfoServiceImpl implements InfoService {
 		taskRecordDao.insert(record);
 		
 		taskDao.update(task);
+	}
+	
+	
+	 /**
+     * 审批（PPAP）
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param result   结果：1-通过，2-不通过
+     * @param remark   备注
+     */
+    public void approve(Account account, Long id, int result, String remark){
+    	Task task = taskDao.selectOne(id);
+    	Date date = new Date();
+    	
+		// 审批记录
+		ExamineRecord examineRecord = new ExamineRecord(); 
+		examineRecord.setaId(account.getId());
+		examineRecord.setCreateTime(date);
+		examineRecord.setRemark(remark);
+		examineRecord.setState(result);
+		examineRecord.settId(id);
+		examineRecord.setType(2);
+		examineRecordDao.insert(examineRecord);
+		
+		// 操作记录
+		TaskRecord record = new TaskRecord();
+		record.setCreateTime(date);
+		record.setCode(task.getCode());
+		record.setaId(account.getId());
+		
+		if (result == 1) {
+			task.setState(SamplingTaskEnum.UPLOAD.getState());
+			task.setMatAtlResult(1);
+			task.setPartsAtlResult(1);
+
+			record.setRemark("审批通过");
+			record.setState(SamplingTaskRecordEnum.APPROVE_AGREE.getState());
+		} else {
+			task.setState(SamplingTaskEnum.APPROVE_NOTPASS.getState());
+
+			record.setState(SamplingTaskRecordEnum.APPROVE_DISAGREE.getState());
+			record.setRemark("审批不通过：" + remark);
+		}
+		
+		taskDao.update(task);
+		taskRecordDao.insert(record);
+    }
+	
+	
+	
+	/**
+	 * 生成订单编码
+	 */
+	String generateTaskCode(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String taskCode = sdf.format(date);
+
+		return taskCode;
 	}
 }

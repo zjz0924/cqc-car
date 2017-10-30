@@ -39,7 +39,7 @@ public interface InfoService {
     public void updateState(Long id, Integer state);
     
     /**
-     * 下达任务
+     * 下达任务（OTS）
      * @param account   操作用户
      * @param id        任务ID
      * @param partsAtlId   零部件图谱实验室ID
@@ -51,7 +51,22 @@ public interface InfoService {
     
     
     /**
-     * 审批
+	 * 下达任务（PPAP）
+	 * 
+	 * @param t_id         任务ID
+	 * @param v_id         整车信息ID
+	 * @param p_id         零部件信息ID
+	 * @param m_id         原材料信息ID
+	 * @param partsAtlId   零部件图谱实验室ID
+	 * @param matAtlId     原材料图谱实验室ID
+	 * @param partsPatId   零部件型式实验室ID
+	 * @param matPatId     原材料型式实验室ID
+	 */
+    public boolean transmit(Account account, Long t_id, Long v_id, Long p_id,  Long m_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId);
+    
+    
+    /**
+     * 审批（OTS）
      * @param account  操作用户
      * @param id       任务ID
      * @param result   结果：1-通过，2-不通过
@@ -59,4 +74,14 @@ public interface InfoService {
      * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部
      */
     public void approve(Account account, Long id, int result, String remark, int catagory);
+    
+    
+    /**
+     * 审批（PPAP）
+     * @param account  操作用户
+     * @param id       任务ID
+     * @param result   结果：1-通过，2-不通过
+     * @param remark   备注
+     */
+    public void approve(Account account, Long id, int result, String remark);
 }

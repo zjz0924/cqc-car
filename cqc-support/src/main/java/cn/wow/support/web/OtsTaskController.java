@@ -50,6 +50,12 @@ import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
+
+/**
+ * OTS任务
+ * @author zhenjunzhuo
+ * 2017-10-30
+ */
 @Controller
 @RequestMapping(value = "ots")
 public class OtsTaskController extends AbstractController {

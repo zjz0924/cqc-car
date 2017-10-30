@@ -46,6 +46,12 @@ public interface TaskService {
 	 */
     public void confirmResult(Account account, Long taskId, int result, int type);
     
+    /**
+	 * 结果对比
+	 * @param taskId  任务ID
+	 * @param result  结果：1-正常，2-异常
+	 */
+    public void compareResult(Account account, Long taskId, int result);
     
 
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
 import cn.wow.common.dao.AtlasResultDao;
@@ -92,6 +93,15 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 				remark = "上传原材料图谱试验结果";
 			}
 		}
+		
+		// PPAP任务
+		if (task.getType() == 2) {
+			// 已上传完
+			if (task.getMatAtlResult() == 2 && task.getPartsAtlResult() == 2) {
+				task.setState(SamplingTaskEnum.COMPARE.getState());
+			}
+		}
+		
 
 		// 操作记录
 		TaskRecord record = new TaskRecord();
@@ -105,4 +115,22 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		taskDao.update(task);
 	}
 
+	
+	/**
+     * 获取零部件基准图谱结果
+     * @param id   零部件ID
+     */
+    public List<AtlasResult> getStandardPartsAtlResult(Long id){
+    	return atlasResultDao.getStandardPartsAtlResult(id);
+    }
+	
+    
+    /**
+     * 获取原材料基准图谱结果
+     * @param id   原材料ID
+     */
+	public List<AtlasResult> getStandardMatAtlResult(Long id){
+		return atlasResultDao.getStandardMatAtlResult(id);
+	}
+	
 }

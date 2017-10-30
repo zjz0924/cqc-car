@@ -33,5 +33,18 @@ public interface AtlasResultService {
      * @param catagory  种类：1-零部件，2-原材料
      */
     public int getExpNoByCatagory(Long taskId, int catagory);
+    
+    /**
+     * 获取零部件基准图谱结果
+     * @param id   零部件ID
+     */
+    public List<AtlasResult> getStandardPartsAtlResult(Long id);
+	
+    
+    /**
+     * 获取原材料基准图谱结果
+     * @param id   原材料ID
+     */
+	public List<AtlasResult> getStandardMatAtlResult(Long id);
 
 }

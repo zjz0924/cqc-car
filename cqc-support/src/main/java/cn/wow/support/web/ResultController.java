@@ -27,6 +27,7 @@ import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
@@ -37,6 +38,7 @@ import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 
 /**
@@ -57,7 +59,9 @@ public class ResultController extends AbstractController {
 	// 任务记录列表
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
 	// 结果确认列表
-	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";	
+	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";
+	// 结果对比列表
+	private final static String COMPARE_DEFAULT_PAGE_SIZE = "10";
 	
 	// 图谱图片上传路径
 	@Value("${result.atlas.url}")
@@ -160,6 +164,7 @@ public class ResultController extends AbstractController {
 
 	/**
 	 * 详情列表
+	 * @param type  类型：1-型式结果上传 2-图谱结果上传
 	 */
 	@RequestMapping(value = "/uploadDetail")
 	public String uploadDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int type) {
@@ -621,6 +626,135 @@ public class ResultController extends AbstractController {
 	}
 	
 	
+	//-----------------------------------    结果对比       ---------------------------------------------------------------
+	
+	/**
+	 * 结果对比列表
+	 */
+	@RequestMapping(value = "/compareList")
+	public String compareList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		Menu menu = menuService.selectByAlias("compare");
+		
+		model.addAttribute("defaultPageSize", COMPARE_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("menuName", menu.getName());
+		return "result/compare_list";
+	}
+
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/compareListData")
+	public Map<String, Object> compareListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName) {
+		
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", COMPARE_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", SamplingTaskEnum.COMPARE.getState());
+		map.put("type", 2);
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/compareDetail")
+	public String compareDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		if (id != null) {
+			Task task = taskService.selectOne(id);
+
+			// 基准图谱结果
+			List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardPartsAtlResult(task.getInfo().getpId());
+			List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardMatAtlResult(task.getInfo().getmId());
+			
+			// 抽样图谱结果
+			Map<String, Object> atMap = new HashMap<String, Object>();
+			atMap.put("tId", id);
+			atMap.put("custom_order_sql", "exp_no desc limit 6");
+			List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
+
+			List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();
+			List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
+			groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
+			
+			// 零部件图谱结果
+			Map<Integer, CompareVO> pAtlasResult = assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
+			// 原材料图谱结果
+			Map<Integer, CompareVO> mAtlasResult = assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
+
+			// 原材料图谱结果
+			model.addAttribute("mAtlasResult", mAtlasResult);
+			// 零部件图谱结果
+			model.addAttribute("pAtlasResult", pAtlasResult);
+						
+			model.addAttribute("facadeBean", task);
+		}
+		
+		model.addAttribute("resUrl", resUrl);
+		return "result/compare_detail";
+	}
+	
+	
+	/**
+	 * 结果对比
+	 * @param taskId  任务ID
+	 * @param result  结果：1-合格，2-不合格
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/compareResult")
+	public AjaxVO compareResult(HttpServletRequest request, Model model, Long taskId, int result){
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			taskService.compareResult(account, taskId, result);
+		}catch(Exception ex){
+			logger.error("结果对比失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
 	//-----------------------------------    其它       ---------------------------------------------------------------
 	
 	/**
@@ -692,5 +826,43 @@ public class ResultController extends AbstractController {
 		}
 	}
 	
+	
+	/**
+	 * 分组
+	 * @param atDataList
+	 * @param pAtlasResult
+	 * @param mAtlasResult
+	 */
+	public void groupAtlasResult(List<AtlasResult> arDataList, List<AtlasResult> pAtlasResult,  List<AtlasResult> mAtlasResult) {
+		for (AtlasResult ar : arDataList) {
+			if (ar.getCatagory() == 1) {
+				pAtlasResult.add(ar);
+			} else {
+				mAtlasResult.add(ar);
+			}
+		}
+	}
+	
+	/**
+	 * 组装图谱对比
+	 * @param sd_atlasResult  基准图谱
+	 * @param sl_atlasResult  抽样图谱
+	 */
+	public Map<Integer, CompareVO> assembleCompareAtlas(List<AtlasResult> sd_atlasResult, List<AtlasResult> sl_atlasResult) {
+		Map<Integer, CompareVO> map = new HashMap<Integer, CompareVO>();
+
+		for (AtlasResult ar : sd_atlasResult) {
+			CompareVO vo = new CompareVO();
+			vo.setStandard_pic(ar.getPic());
+			map.put(ar.getType(), vo);
+		}
+
+		for (AtlasResult ar : sl_atlasResult) {
+			CompareVO vo = map.get(ar.getType());
+			vo.setSampling_pic(ar.getPic());
+			map.put(ar.getType(), vo);
+		}
+		return map;
+	}
 	
 }

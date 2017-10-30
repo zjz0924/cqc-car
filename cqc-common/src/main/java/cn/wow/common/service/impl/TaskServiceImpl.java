@@ -37,6 +37,8 @@ import cn.wow.common.utils.mailSender.MailInfo;
 import cn.wow.common.utils.mailSender.MailSender;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.SamplingTaskEnum;
+import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
 
@@ -322,6 +324,47 @@ public class TaskServiceImpl implements TaskService{
     		taskDao.update(task);
     	}
 	}
+	
+	/**
+	 * 结果对比
+	 * @param taskId  任务ID
+	 * @param result  结果：1-正常，2-异常
+	 */
+    public void compareResult(Account account, Long taskId, int result){
+    	Task task = taskDao.selectOne(taskId);
+    	Date date = new Date();
+    	String remark = "";
+    	Integer recordState = null;
+    	
+    	if(result == 1){
+    		task.setState(SamplingTaskEnum.SENDING.getState());
+    		remark = "结果正常";
+    		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
+    	}else{
+    		task.setState(SamplingTaskEnum.UPLOAD.getState());
+    		task.setPartsAtlResult(1);
+    		task.setMatAtlResult(1);
+    		remark = "结果异常，需要重新上传";
+    		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
+    	}
+    	taskDao.update(task);
+    	
+    	// 操作记录
+    	TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), recordState, remark, new Date());
+		taskRecordDao.insert(taskRecord);
+    	
+    	// 确认记录
+		ExamineRecord examineRecord = new ExamineRecord();
+		examineRecord.setaId(account.getId());
+		examineRecord.setCreateTime(date);
+		examineRecord.setRemark(remark);
+		examineRecord.setState(result);
+		examineRecord.settId(taskId);
+		examineRecord.setType(4);
+		examineRecordDao.insert(examineRecord);
+    	
+    }
+	
 	
 	/** 
 	 * 基准保存： 修改信息、零部件、原材料、整车信息的状态为已审核

@@ -10,4 +10,8 @@ public interface AtlasResultDao extends SqlDao{
 	public void batchAdd(List<AtlasResult> list);
 	
 	public int getExpNoByCatagory(Map<String, Object> map);
+	
+	public List<AtlasResult> getStandardPartsAtlResult(Long id);
+	
+	public List<AtlasResult> getStandardMatAtlResult(Long id);
 }

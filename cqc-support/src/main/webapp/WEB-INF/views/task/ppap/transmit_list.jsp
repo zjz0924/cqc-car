@@ -6,7 +6,6 @@
 		<meta charset="utf-8">
 		<title>SGMW</title>
 		<%@include file="../../common/source.jsp"%>
-		<script src="${ctx}/resources/js/jquery.form.js"></script>
 		
 		<style type="text/css">
 			.qlabel{
@@ -16,8 +15,8 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/requireListData?time=" + new Date();
-			var datagrid = "requireTable";
+			var getDataUrl = "${ctx}/ppap/transmitListData?time=" + new Date();
+			var datagrid = "transmitTable";
 		
 			var toolbar = [{
 		           text:'新增',
@@ -61,9 +60,9 @@
 						align : 'center',
 						formatter : function(val){
 							if(val == 1){
-								return "<span title='等待审核'>等待审核</span>";
+								return "<span title='等待审批'>等待审批</span>";
 							}else if(val == 2){
-								return "<span style='color:red;' title='审核不通过'>审核不通过</span>";
+								return "<span style='color:red;' title='审批不通过'>审批不通过</span>";
 							}
 						}
 					}, {
@@ -87,7 +86,7 @@
 					displayMsg : '当前显示 {from} - {to} 条记录    共  {total} 条记录',
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
-							'state': $("#q_state").combobox('getValue'),
+							'code' : $("#q_code").textbox("getValue"), 
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
 							'pageNum' : pageNumber,
@@ -100,7 +99,7 @@
 	
 			function doSearch() {
 				var data = {
-					'state' : $("#q_state").combobox("getValue"), 
+					'code' : $("#q_code").textbox("getValue"), 
 					'startCreateTime' : $("#q_startCreateTime").val(),
 					'endCreateTime' : $("#q_endCreateTime").val()
 				}
@@ -108,31 +107,29 @@
 			}
 			
 			function doClear() {
-				$("#q_state").combobox('select', "");
+				$("#q_code").textbox('clear');
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
 				getData(datagrid, getDataUrl, {});
 			}
 			
 			function detail(id) {
-				var url = "${ctx}/ots/requireDetail";
+				var url = "${ctx}/ppap/transmitDetail";
 				if(!isNull(id)){
 					url += "?id=" + id;
 				}
 				
-				$('#requireDialog').dialog({
+				$('#transmitDialog').dialog({
 					title : '详情',
 					width : 1200,
-					height : 580,
+					height : 660,
 					closed : false,
 					cache : false,
 					href : url,
 					modal : true
 				});
-				$('#requireDialog').window('center');
+				$('#transmitDialog').window('center');
 			}
-			
-		
 		</script>
 	</head>
 	
@@ -140,12 +137,8 @@
 		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
 				<div>
-					<span class="qlabel">状态：</span>
-					<select id="q_state" name="q_state" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
-						<option value="">全部</option>
-						<option value="0">不通过</option>
-						<option value="1">通过</option>
-					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">任务号：</span>
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">申请时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;display:inline-block"/> - 
@@ -159,9 +152,9 @@
 		
 		
 		<div style="margin-top:10px;">
-			<table id="requireTable" style="height:auto;width:auto"></table>
+			<table id="transmitTable" style="height:auto;width:auto"></table>
 		</div>
 		
-		<div id="requireDialog"></div>
+		<div id="transmitDialog"></div>
 	</body>
 </html>
