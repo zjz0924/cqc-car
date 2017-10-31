@@ -7,7 +7,7 @@ import java.util.Date;
  * @author zhenjunzhuo
  * 2017-10-28
  */
-public class ExamineRecord{
+public class ExamineRecord implements Comparable<ExamineRecord>{
     private Long id;
 
     // 任务ID
@@ -25,13 +25,15 @@ public class ExamineRecord{
     // 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（针对审批记录）
     //     1-零部件红外，2-零部件差热，3-零部件热重，4-零部件结论，5-原材料红外，6-原材料差热，7-原材料热重，8-原材料结论，9-异常，重新上传（针对结果对比）
     private Integer catagory;
+    // 任务类型：1-OTS、2-PPAP、3-SOP、4-材料研究所任务
+    private Integer taskType;
     
     public ExamineRecord(){
     	
     }
     
 	public ExamineRecord(Long tId, Long aId, Integer state, String remark, Integer type, Integer catagory,
-			Date createTime) {
+			Date createTime, Integer taskType) {
 		this.tId = tId;
 		this.aId = aId;
 		this.state = state;
@@ -39,6 +41,7 @@ public class ExamineRecord{
 		this.type = type;
 		this.catagory = catagory;
 		this.createTime = createTime;
+		this.taskType = taskType;
 	}
 
     public Long getId() {
@@ -104,5 +107,17 @@ public class ExamineRecord{
 	public void setCatagory(Integer catagory) {
 		this.catagory = catagory;
 	}
-    
+	
+	public int compareTo(ExamineRecord record) {
+		return this.getCatagory().compareTo(record.getCatagory());
+	}
+
+	public Integer getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(Integer taskType) {
+		this.taskType = taskType;
+	}
+	
 }

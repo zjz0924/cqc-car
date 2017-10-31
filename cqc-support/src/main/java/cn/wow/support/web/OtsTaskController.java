@@ -213,6 +213,7 @@ public class OtsTaskController extends AbstractController {
 			rMap.put("taskId", id);
 			rMap.put("custom_order_sql", "create_time asc");
 			rMap.put("type", 1);
+			rMap.put("taskType", TaskTypeEnum.OTS);
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 			
 			model.addAttribute("facadeBean", task);
@@ -545,6 +546,7 @@ public class OtsTaskController extends AbstractController {
 			rMap.put("type", 2);
 			rMap.put("state", 2);
 			rMap.put("custom_order_sql", "create_time asc");
+			rMap.put("taskType", TaskTypeEnum.OTS);
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
 			model.addAttribute("facadeBean", task);

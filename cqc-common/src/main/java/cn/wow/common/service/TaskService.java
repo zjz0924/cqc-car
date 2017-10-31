@@ -44,8 +44,10 @@ public interface TaskService {
 	 * @param taskId  任务ID
 	 * @param result  结果：1-合格，2-不合格
 	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
+	 * @param remark  不合格的理由
+	 * @param orgs    发送警告书的机构
 	 */
-    public void confirmResult(Account account, Long taskId, int result, int type);
+    public void confirmResult(Account account, Long taskId, int result, int type, String remark, String orgs) throws Exception;
     
     /**
 	 * 结果对比

@@ -41,6 +41,7 @@ import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Service
 @Transactional
@@ -66,6 +67,12 @@ public class TaskServiceImpl implements TaskService{
  	// 结果内容
  	@Value("${result.content}")
  	protected String content;
+ 	// 警告书标题
+  	@Value("${alarm.title}")
+  	protected String alarmTitle;
+  	// 警告书内容
+  	@Value("${alarm.content}")
+  	protected String alarmContent;
  	
     @Autowired
     private TaskDao taskDao;
@@ -142,25 +149,25 @@ public class TaskServiceImpl implements TaskService{
     	String remark = "";
     	
     	if(StringUtils.isNotBlank(pAtlOrgVal)){
-    		send(account, task, date, pAtlOrgVal, "零部件图谱试验");
+    		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content);
     		task.setPartsAtlResult(3);
     		remark += "零部件图谱试验、";
     	}
     	
     	if(StringUtils.isNotBlank(pPatOrgVal)){
-    		send(account, task, date, pPatOrgVal, "零部件型式试验");
+    		send(account, task, date, pPatOrgVal, "零部件型式试验", title, content);
     		task.setPartsPatResult(3);
     		remark += "零部件型式试验、";
     	}
     	
     	if(StringUtils.isNotBlank(mAtlOrgVal)){
-    		send(account, task, date, mAtlOrgVal, "原材料图谱试验");
+    		send(account, task, date, mAtlOrgVal, "原材料图谱试验", title, content);
     		task.setMatAtlResult(3);
     		remark += "原材料图谱试验、";
     	}
     	
     	if(StringUtils.isNotBlank(mPatOrgVal)){
-    		send(account, task, date, mPatOrgVal, "原材料型式试验");
+    		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content);
     		task.setMatPatResult(3);
     		remark += "原材料型式试验、";
     	}
@@ -188,147 +195,194 @@ public class TaskServiceImpl implements TaskService{
    	 * 结果确认
    	 * @param taskId  任务ID
    	 * @param result  结果：1-合格，2-不合格
-   	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
+   	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部 （针对OTS任务类型）
+	 * @param remark  不合格的理由
+	 * @param orgs    发送警告书的机构
    	 */
-	public void confirmResult(Account account, Long taskId, int result, int type) {
+	public void confirmResult(Account account, Long taskId, int result, int type, String remark, String orgs) throws Exception {
 		Task task = this.selectOne(taskId);
-    	boolean isPass = false;
-    	String remark = "";
+
+		// OTS 任务
+		if (task.getType() == TaskTypeEnum.OTS.getState()) {
+			OtsResultConfirm(task, account, taskId, result, type, remark);
+		} else if (task.getType() == TaskTypeEnum.PPAP.getState()) {
+			PpapResultConfirm(task, account, taskId, result, remark, orgs);
+		}
+	}
+	
+	/**
+	 * OTS 结果确认
+	 */
+	void OtsResultConfirm(Task task, Account account, Long taskId, int result, int type, String remark) {
+		boolean isPass = false;
     	Date date = new Date();
     	
-    	if(result == 1){
-    		if(type == 1){
-    			task.setPartsAtlResult(4);
-    			remark += "零部件图谱试验、";
-    		}else if(type == 2 ){
-    			task.setPartsPatResult(4);
-    			remark += "零部件型式试验、";
-    		}else if(type == 3){
-    			task.setMatAtlResult(4);
-    			remark += "原材料图谱试验、";
-    		}else if(type == 4){
-    			task.setMatPatResult(4);
-    			remark += "原材料型式试验、";
-    		}else{
-    			if(task.getMatAtlResult() != 4){
-    				task.setMatAtlResult(4);
-    			}
-    			
-    			if(task.getMatPatResult() != 4){
-    				task.setMatPatResult(4);
-    			}
-    			
-    			if(task.getPartsAtlResult() != 4){
-    				task.setPartsAtlResult(4);
-    			}
-    			
-    			if(task.getPartsPatResult() != 4){
-    				task.setPartsPatResult(4);
-    			}
-    			
-    			isPass = true;
-    			remark += "零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验、";
-    		}
-    		
-    		if(StringUtils.isNotBlank(remark)){
-    			remark = remark.substring(0, remark.length() - 1);
-    			remark = remark + "结果确认合格";
-    		}
-    		
-    		// 所有实验已确认
-    		if(task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getPartsAtlResult() == 4 && task.getPartsPatResult() == 4){
-    			isPass = true;
-    		}
-    		
-    		if(isPass){
-    			task.setState(StandardTaskEnum.NOTIFY.getState());
-    			// 保存基准信息
-    			saveStandard(account, task);
-    		}
-    		taskDao.update(task);
-    		
-    		// 确认记录
-    		ExamineRecord examineRecord = new ExamineRecord();
-    		examineRecord.setaId(account.getId());
-    		examineRecord.setCreateTime(date);
-    		examineRecord.setRemark(remark);
-    		examineRecord.setState(result);
-    		examineRecord.settId(taskId);
-    		examineRecord.setType(3);
-    		examineRecord.setCatagory(type);
-    		examineRecordDao.insert(examineRecord);
-    		
-    		// 任务记录
-    		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, date);
-    		taskRecordDao.insert(taskRecord);
-    		
-    	}else{
-    		
-    		if(type == 1){
-    			task.setPartsAtlResult(0);
-    			task.setPartsAtlId(null);
-    			remark += "零部件图谱试验、";
-    		}else if(type == 2){
-    			task.setPartsPatResult(0);
-    			task.setPartsPatId(null);
-    			remark += "零部件型式试验、";
-    		}else if(type == 3){
-    			task.setMatAtlResult(0);
-    			task.setMatAtlId(null);
-    			remark += "原材料图谱试验、";
-    		}else if(type == 4){
-    			task.setMatPatResult(0);
-    			task.setMatPatId(null);
-    			remark += "原材料型式试验、";
-    		}else{
-    			if(task.getPartsAtlResult() == 3){
-    				task.setPartsAtlResult(0);
-        			task.setPartsAtlId(null);
-        			remark += "零部件图谱试验、";
-    			}
-    			
-    			if(task.getPartsPatResult() == 3){
-    				task.setPartsPatResult(0);
-        			task.setPartsPatId(null);
-        			remark += "零部件型式试验、";
-    			}
-    			
-    			if(task.getMatAtlResult() == 3){
-    				task.setMatAtlResult(0);
-        			task.setMatAtlId(null);
-        			remark += "原材料图谱试验、";
-    			}
-    			
-    			if(task.getMatPatResult() == 3){
-    				task.setMatPatResult(0);
-        			task.setMatPatId(null);
-        			remark += "原材料型式试验、";
-    			}
-    		}
-    		
-    		if(StringUtils.isNotBlank(remark)){
-    			remark = remark.substring(0, remark.length() - 1);
-    			remark = remark + "结果确认不合格";
-    		}
-    		
-    		// 任务记录
-    		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
-    		taskRecordDao.insert(taskRecord);
-    		
-    		// 确认记录
-    		ExamineRecord examineRecord = new ExamineRecord();
-    		examineRecord.setaId(account.getId());
-    		examineRecord.setCreateTime(date);
-    		examineRecord.setRemark(remark);
-    		examineRecord.setState(result);
-    		examineRecord.settId(taskId);
-    		examineRecord.setType(3);
-    		examineRecord.setCatagory(type);
-    		examineRecordDao.insert(examineRecord);
-    		
-    		taskDao.update(task);
-    	}
+		if (result == 1) {
+			if (type == 1) {
+				task.setPartsAtlResult(4);
+				remark += "零部件图谱试验、";
+			} else if (type == 2) {
+				task.setPartsPatResult(4);
+				remark += "零部件型式试验、";
+			} else if (type == 3) {
+				task.setMatAtlResult(4);
+				remark += "原材料图谱试验、";
+			} else if (type == 4) {
+				task.setMatPatResult(4);
+				remark += "原材料型式试验、";
+			} else {
+				if (task.getMatAtlResult() != 4) {
+					task.setMatAtlResult(4);
+				}
+
+				if (task.getMatPatResult() != 4) {
+					task.setMatPatResult(4);
+				}
+
+				if (task.getPartsAtlResult() != 4) {
+					task.setPartsAtlResult(4);
+				}
+
+				if (task.getPartsPatResult() != 4) {
+					task.setPartsPatResult(4);
+				}
+
+				isPass = true;
+				remark += "零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验、";
+			}
+
+			if (StringUtils.isNotBlank(remark)) {
+				remark = remark.substring(0, remark.length() - 1);
+				remark = remark + "结果确认合格";
+			}
+
+			// 所有实验已确认
+			if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getPartsAtlResult() == 4
+					&& task.getPartsPatResult() == 4) {
+				isPass = true;
+			}
+
+			if (isPass) {
+				task.setState(StandardTaskEnum.NOTIFY.getState());
+				// 保存基准信息
+				saveStandard(account, task);
+			}
+			taskDao.update(task);
+
+			// 确认记录
+			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, remark, 3, type, date, TaskTypeEnum.OTS.getState());
+			examineRecordDao.insert(examineRecord);
+
+			// 任务记录
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, date);
+			taskRecordDao.insert(taskRecord);
+
+		} else {
+			String temp = "";
+			if (type == 1) {
+				task.setPartsAtlResult(0);
+				task.setPartsAtlId(null);
+				temp += "零部件图谱试验、";
+			} else if (type == 2) {
+				task.setPartsPatResult(0);
+				task.setPartsPatId(null);
+				temp += "零部件型式试验、";
+			} else if (type == 3) {
+				task.setMatAtlResult(0);
+				task.setMatAtlId(null);
+				temp += "原材料图谱试验、";
+			} else if (type == 4) {
+				task.setMatPatResult(0);
+				task.setMatPatId(null);
+				temp += "原材料型式试验、";
+			} else {
+				task.setPartsAtlResult(0);
+				task.setPartsAtlId(null);
+				temp += "零部件图谱试验、";
+
+				task.setPartsPatResult(0);
+				task.setPartsPatId(null);
+				temp += "零部件型式试验、";
+
+				task.setMatAtlResult(0);
+				task.setMatAtlId(null);
+				temp += "原材料图谱试验、";
+
+				task.setMatPatResult(0);
+				task.setMatPatId(null);
+				temp += "原材料型式试验、";
+			}
+
+			if (StringUtils.isNotBlank(temp)) {
+				temp = temp.substring(0, temp.length() - 1);
+				temp = temp + "结果确认不合格";
+			}
+			remark = temp + ",不合格原因：" + remark;
+			
+			// 任务记录
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
+			taskRecordDao.insert(taskRecord);
+
+			// 确认记录
+			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, remark, 3, type, date, TaskTypeEnum.OTS.getState());
+			examineRecordDao.insert(examineRecord);
+
+			taskDao.update(task);
+		}
 	}
+	
+	/**
+	 *  PPAP 任务结果确认
+	 */
+	void PpapResultConfirm(Task task, Account account, Long taskId, int result, String remark, String orgs) throws Exception{
+		Date date = new Date();
+		
+		if(result == 1){
+			task.setState(SamplingTaskEnum.PASS.getState());
+			taskDao.update(task);
+			
+			// 确认记录
+			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "结果合格", 3, null, date, TaskTypeEnum.PPAP.getState());
+			examineRecordDao.insert(examineRecord);
+			
+			// 任务记录
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.SAVE.getState(), "结果留存", date);
+			taskRecordDao.insert(taskRecord);
+		}else{
+			// 第一次失败（重新进行第2次抽样）
+			if(task.getFailNum() == 0){
+				task.setState(SamplingTaskEnum.UPLOAD.getState());
+				task.setMatAtlResult(1);
+				task.setPartsAtlResult(1);
+				task.setFailNum(task.getFailNum() + 1);
+				taskDao.update(task);
+				
+				// 确认记录
+				ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "第一次抽样结果不合格，原因：" + remark, 3, null, date, TaskTypeEnum.PPAP.getState());
+				examineRecordDao.insert(examineRecord);
+				
+				// 任务记录
+				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.REORDER.getState(), "结果不合格，进行第2次抽样，不合格原因：" + remark, date);
+				taskRecordDao.insert(taskRecord);
+			}else{  // 第二次失败
+				task.setState(SamplingTaskEnum.NOTPASS.getState());
+				task.setFailNum(task.getFailNum() + 1);
+				taskDao.update(task);
+				
+				// 发送警告书
+				send(account, task, date, orgs, remark, alarmTitle, alarmContent);
+				
+				// 确认记录
+				ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "第二次抽样结果不合格，原因：" + remark, 3, null, date, TaskTypeEnum.PPAP.getState());
+				examineRecordDao.insert(examineRecord);
+				
+				// 任务记录
+				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.ALARM.getState(), "结果不合格，发送警告书，不合格原因：" + remark, date);
+				taskRecordDao.insert(taskRecord);
+			}
+		}
+	}
+	
 	
 	/**
 	 * 结果对比
@@ -356,14 +410,7 @@ public class TaskServiceImpl implements TaskService{
     		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
     		
     		// 确认记录
-    		ExamineRecord examineRecord = new ExamineRecord();
-    		examineRecord.setaId(account.getId());
-    		examineRecord.setCreateTime(date);
-    		examineRecord.setRemark(remark);
-    		examineRecord.setState(state);
-    		examineRecord.settId(taskId);
-    		examineRecord.setType(4);
-    		examineRecord.setCatagory(9);
+    		ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), state, remark, 4, 9, date, TaskTypeEnum.PPAP.getState());
     		examineRecordDao.insert(examineRecord);
     	}
     	taskDao.update(task);
@@ -413,7 +460,7 @@ public class TaskServiceImpl implements TaskService{
 	
 
 	// 发送邮件
-	protected void send(Account account, Task task, Date date, String orgs, String tips) throws Exception{
+	protected void send(Account account, Task task, Date date, String orgs, String tips, String title, String content) throws Exception{
 		// 机构ID
 		String[] orgsList = orgs.split(",");
 		List<Long> orgIdList = new ArrayList<Long>();

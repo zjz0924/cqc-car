@@ -189,6 +189,7 @@ public class InfoServiceImpl implements InfoService {
 		examineRecord.setState(type);
 		examineRecord.settId(id);
 		examineRecord.setType(1);
+		examineRecord.setTaskType(TaskTypeEnum.OTS.getState());
 		examineRecordDao.insert(examineRecord);
 		
 		// 操作记录
@@ -360,6 +361,7 @@ public class InfoServiceImpl implements InfoService {
 		examineRecord.setState(result);
 		examineRecord.settId(id);
 		examineRecord.setType(2);
+		examineRecord.setTaskType(task.getType());
 		examineRecordDao.insert(examineRecord);
 		
 		// 操作记录
@@ -450,6 +452,7 @@ public class InfoServiceImpl implements InfoService {
 		examineRecord.setState(result);
 		examineRecord.settId(id);
 		examineRecord.setType(2);
+		examineRecord.setTaskType(task.getType());
 		examineRecordDao.insert(examineRecord);
 		
 		// 操作记录

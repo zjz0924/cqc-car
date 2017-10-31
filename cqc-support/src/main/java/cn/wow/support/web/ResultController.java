@@ -1,6 +1,7 @@
 package cn.wow.support.web;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskService;
@@ -77,6 +79,8 @@ public class ResultController extends AbstractController {
 	private AtlasResultService atlasResultService;
 	@Autowired
 	private PfResultService pfResultService;
+	@Autowired
+	private ExamineRecordService examineRecordService;
 	
 	
 	//-----------------------------------    结果上传        ---------------------------------------------------------------
@@ -609,14 +613,12 @@ public class ResultController extends AbstractController {
 				Map<Integer, CompareVO> pAtlasResult = assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
 				// 原材料图谱结果
 				Map<Integer, CompareVO> mAtlasResult = assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
-
-				// 原材料图谱结果
+				// 对比结果
+				Map<String, List<ExamineRecord>> compareResult = assembleCompareResult(id);
+				
 				model.addAttribute("mAtlasResult", mAtlasResult);
-				// 零部件图谱结果
 				model.addAttribute("pAtlasResult", pAtlasResult);
-				
-				
-				
+				model.addAttribute("compareResult", compareResult);
 			}
 						
 			model.addAttribute("facadeBean", task);
@@ -632,16 +634,18 @@ public class ResultController extends AbstractController {
 	 * 结果确认
 	 * @param taskId  任务ID
 	 * @param result  结果：1-合格，2-不合格
-	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
+	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部  （针对OTS任务类型）
+	 * @param remark  不合格的理由
+	 * @param orgs    发送警告书的机构
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/confirmResult")
-	public AjaxVO confirmResult(HttpServletRequest request, Model model, Long taskId, int result, int type){
+	public AjaxVO confirmResult(HttpServletRequest request, Model model, Long taskId, int result, int type, String remark, String orgs){
 		AjaxVO vo = new AjaxVO();
 		
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			taskService.confirmResult(account, taskId, result, type);
+			taskService.confirmResult(account, taskId, result, type, remark, orgs);
 		}catch(Exception ex){
 			logger.error("结果确认失败", ex);
 
@@ -796,14 +800,14 @@ public class ResultController extends AbstractController {
 			List<ExamineRecord> resultList = new ArrayList<ExamineRecord>();
 
 			if (state == 1) {
-				ExamineRecord record1 = new ExamineRecord(taskId, account.getId(), p_inf, p_inf_remark, 4, 1, date);
-				ExamineRecord record2 = new ExamineRecord(taskId, account.getId(), p_dt, p_dt_remark, 4, 2, date);
-				ExamineRecord record3 = new ExamineRecord(taskId, account.getId(), p_tg, p_tg_remark, 4, 3, date);
-				ExamineRecord record4 = new ExamineRecord(taskId, account.getId(), p_result, p_result_remark, 4, 4, date);
-				ExamineRecord record5 = new ExamineRecord(taskId, account.getId(), m_inf, m_inf_remark, 4, 5, date);
-				ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date);
-				ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date);
-				ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date);
+				ExamineRecord record1 = new ExamineRecord(taskId, account.getId(), p_inf, p_inf_remark, 4, 1, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record2 = new ExamineRecord(taskId, account.getId(), p_dt, p_dt_remark, 4, 2, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record3 = new ExamineRecord(taskId, account.getId(), p_tg, p_tg_remark, 4, 3, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record4 = new ExamineRecord(taskId, account.getId(), p_result, p_result_remark, 4, 4, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record5 = new ExamineRecord(taskId, account.getId(), m_inf, m_inf_remark, 4, 5, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date, TaskTypeEnum.PPAP.getState());
 
 				resultList.add(record1);
 				resultList.add(record2);
@@ -938,6 +942,40 @@ public class ResultController extends AbstractController {
 			map.put(ar.getType(), vo);
 		}
 		return map;
+	}
+	
+	/**
+	 * 组装对比结果
+	 */
+	public Map<String, List<ExamineRecord>> assembleCompareResult(Long taskId) {
+		Map<String, List<ExamineRecord>> result = new HashMap<String, List<ExamineRecord>>();
+
+		Map<String, Object> erMap = new PageMap(false);
+		erMap.put("taskId", taskId);
+		erMap.put("type", 4);
+		erMap.put("catagorys", 8);
+		erMap.put("custom_order_sql", "create_time desc, catagory asc limit 8");
+		List<ExamineRecord> erList = examineRecordService.selectAllList(erMap);
+
+		// 零部件结果
+		List<ExamineRecord> pList = new ArrayList<ExamineRecord>();
+		// 原材料结果
+		List<ExamineRecord> mList = new ArrayList<ExamineRecord>();
+
+		for (ExamineRecord er : erList) {
+			if (er.getCatagory() <= 4) {
+				pList.add(er);
+			} else {
+				mList.add(er);
+			}
+		}
+
+		Collections.sort(pList);
+		Collections.sort(mList);
+		result.put("零部件", pList);
+		result.put("原材料", mList);
+
+		return result;
 	}
 	
 }

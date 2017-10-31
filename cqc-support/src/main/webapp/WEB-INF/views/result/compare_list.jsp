@@ -301,6 +301,8 @@
 		
 		</div>
 
+		<!-- footer -->
+		<%@include file="../common/footer.jsp"%>
 		
 		<style type="text/css">
 			.qlabel{

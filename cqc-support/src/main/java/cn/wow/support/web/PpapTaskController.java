@@ -184,6 +184,7 @@ public class PpapTaskController extends AbstractController {
 			rMap.put("taskId", id);
 			rMap.put("type", 2);
 			rMap.put("state", 2);
+			rMap.put("taskType", TaskTypeEnum.PPAP);
 			rMap.put("custom_order_sql", "create_time asc");
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
