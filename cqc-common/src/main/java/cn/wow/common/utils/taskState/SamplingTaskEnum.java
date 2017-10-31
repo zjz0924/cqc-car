@@ -12,7 +12,8 @@ public enum SamplingTaskEnum {
 	UPLOAD(3, "结果上传中"), 
 	COMPARE(4, "对比中"),
 	SENDING(5, "结果发送中"),
-	ACCOMPLISH(6, "结果发送中");
+	COMFIRM(6, "结果确认中"),
+	ACCOMPLISH(7, "结果发送中");
 
 	private int state;
 

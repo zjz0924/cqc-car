@@ -221,11 +221,11 @@
 
 			<!-- 结果发送列表 -->
 			<if test="sendTask != null">
-				and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
+			    and ((state =3 and type = 1) or (state = 5 and type = 2 )) and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
 			</if>
 			
 			<if test="sendTask_admin != null">
-				and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
+				and ((state =3 and type = 1) or (state = 5 and type = 2 )) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
 			</if>
 
 
@@ -236,7 +236,7 @@
 			
 			<!-- 结果确认：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				and (t.parts_pat_result = 3  and t.mat_pat_result = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3)
+				and ((t.type = 1 and t.state = 3 and t.parts_pat_result = 3  and t.mat_pat_result = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3) or (t.state = 6 and t.type = 2))
 			</if>
 
 		</where>

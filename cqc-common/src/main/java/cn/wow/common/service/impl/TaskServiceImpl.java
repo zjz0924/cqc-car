@@ -170,6 +170,11 @@ public class TaskServiceImpl implements TaskService{
     		remark = "发送" + remark + "结果";
     	}
     	
+		// PPAP任务发送结果后，进入结果确认阶段
+		if (task.getType() == 2) {
+			task.setState(SamplingTaskEnum.COMFIRM.getState());
+		}
+    	
 		// 更新任务的结果情况
 		taskDao.update(task);
 		
@@ -328,41 +333,44 @@ public class TaskServiceImpl implements TaskService{
 	/**
 	 * 结果对比
 	 * @param taskId  任务ID
-	 * @param result  结果：1-正常，2-异常
+	 * @param result  对比结果
+	 * @param state   状态：1-正常，2-异常
 	 */
-    public void compareResult(Account account, Long taskId, int result){
+    public void compareResult(Account account, Long taskId, List<ExamineRecord> result, int state){
     	Task task = taskDao.selectOne(taskId);
     	Date date = new Date();
     	String remark = "";
     	Integer recordState = null;
     	
-    	if(result == 1){
+    	if(state == 1){
     		task.setState(SamplingTaskEnum.SENDING.getState());
-    		remark = "结果正常";
+    		remark = "提交对比结果";
     		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
+    		
+    		examineRecordDao.batchAdd(result);
     	}else{
     		task.setState(SamplingTaskEnum.UPLOAD.getState());
     		task.setPartsAtlResult(1);
     		task.setMatAtlResult(1);
     		remark = "结果异常，需要重新上传";
     		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
+    		
+    		// 确认记录
+    		ExamineRecord examineRecord = new ExamineRecord();
+    		examineRecord.setaId(account.getId());
+    		examineRecord.setCreateTime(date);
+    		examineRecord.setRemark(remark);
+    		examineRecord.setState(state);
+    		examineRecord.settId(taskId);
+    		examineRecord.setType(4);
+    		examineRecord.setCatagory(9);
+    		examineRecordDao.insert(examineRecord);
     	}
     	taskDao.update(task);
     	
     	// 操作记录
     	TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), recordState, remark, new Date());
 		taskRecordDao.insert(taskRecord);
-    	
-    	// 确认记录
-		ExamineRecord examineRecord = new ExamineRecord();
-		examineRecord.setaId(account.getId());
-		examineRecord.setCreateTime(date);
-		examineRecord.setRemark(remark);
-		examineRecord.setState(result);
-		examineRecord.settId(taskId);
-		examineRecord.setType(4);
-		examineRecordDao.insert(examineRecord);
-    	
     }
 	
 	

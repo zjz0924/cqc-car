@@ -239,90 +239,160 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		<div class="title" style="margin-top:15px;">结果确认</div>
-		<div style="margin-left: 15px;">
 		
-			<div style="margin-bottom: 5px;">零部件图谱试验结果：
-				<c:choose>
-					<c:when test="${facadeBean.partsAtlResult == 3 }">
-						<span id="partsAtl1">
-							<a href="javascript:void(0);"  onclick="doSubmit(1, 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
-							<a href="javascript:void(0);"  onclick="doSubmit(2, 1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不全格</a>
-						</span>
-						<span id="partsAtl2" style="color:green;display:none;">合格</span>
-						<span id="partsAtl3" style="color:red;display:none;">不合格</span>
-					</c:when>
-					<c:when test="${facadeBean.partsAtlResult == 4 }">
-						<span style="color:green;">合格</span>
-					</c:when>
-					<c:otherwise>
-						试验进行中
-					</c:otherwise>
-				</c:choose>
+		<!-- OTS 结果确认  -->
+		<c:if test="${facadeBean.type == 1}">
+			<div style="margin-left: 15px;">
+				<div style="margin-bottom: 5px;">零部件图谱试验结果：
+					<c:choose>
+						<c:when test="${facadeBean.partsAtlResult == 3 }">
+							<span id="partsAtl1">
+								<a href="javascript:void(0);"  onclick="doSubmit(1, 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  onclick="doSubmit(2, 1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不全格</a>
+							</span>
+							<span id="partsAtl2" style="color:green;display:none;">合格</span>
+							<span id="partsAtl3" style="color:red;display:none;">不合格</span>
+						</c:when>
+						<c:when test="${facadeBean.partsAtlResult == 4 }">
+							<span style="color:green;">合格</span>
+						</c:when>
+						<c:otherwise>
+							试验进行中
+						</c:otherwise>
+					</c:choose>
+				</div>
+				
+				<div style="margin-bottom: 5px;">零部件型式试验结果：
+					<c:choose>
+						<c:when test="${facadeBean.partsPatResult == 3}">
+							<span id="partsPat1">
+								<a href="javascript:void(0);"  onclick="doSubmit(1, 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  onclick="doSubmit(2, 2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不全格</a>
+							</span>
+							<span id="partsPat2" style="color:green;display:none;">合格</span>
+							<span id="partsPat3" style="color:red;display:none;">不合格</span>
+						</c:when>
+						<c:when test="${facadeBean.partsPatResult == 4 }">
+							<span style="color:green;">合格</span>
+						</c:when>
+						<c:otherwise>
+							试验进行中
+						</c:otherwise>
+					</c:choose>
+				</div>
+				
+				<div style="margin-bottom: 5px;">原材料图谱试验结果：
+					<c:choose>
+						<c:when test="${facadeBean.matAtlResult == 3}">
+							<span id="matAtl1">
+								<a href="javascript:void(0);"  onclick="doSubmit(1, 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  onclick="doSubmit(2, 3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不全格</a>
+							</span>
+							<span id="matAtl2" style="color:green;display:none;">合格</span>
+							<span id="matAtl3" style="color:red;display:none;">不合格</span>
+						</c:when>
+						<c:when test="${facadeBean.matAtlResult == 4 }">
+							<span style="color:green;">合格</span>
+						</c:when>
+						<c:otherwise>
+							试验进行中
+						</c:otherwise>
+					</c:choose>
+				</div>
+				
+				<div style="margin-bottom: 5px;">原材料型式试验结果：
+					<c:choose>
+						<c:when test="${facadeBean.matPatResult == 3}">
+							<span id="matPat1">
+								<a href="javascript:void(0);"  onclick="doSubmit(1, 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  onclick="doSubmit(2, 4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不合格</a>
+							</span>
+							<span id="matPat2" style="color:green;display:none;">合格</span>
+							<span id="matPat3" style="color:red;display:none;">不合格</span>
+						</c:when>
+						<c:when test="${facadeBean.matPatResult == 4 }">
+							<span style="color:green;">合格</span>
+						</c:when>
+						<c:otherwise>
+							试验进行中
+						</c:otherwise>
+					</c:choose>
+				</div>
 			</div>
 			
-			<div style="margin-bottom: 5px;">零部件型式试验结果：
-				<c:choose>
-					<c:when test="${facadeBean.partsPatResult == 3}">
-						<span id="partsPat1">
-							<a href="javascript:void(0);"  onclick="doSubmit(1, 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
-							<a href="javascript:void(0);"  onclick="doSubmit(2, 2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不全格</a>
-						</span>
-						<span id="partsPat2" style="color:green;display:none;">合格</span>
-						<span id="partsPat3" style="color:red;display:none;">不合格</span>
-					</c:when>
-					<c:when test="${facadeBean.partsPatResult == 4 }">
-						<span style="color:green;">合格</span>
-					</c:when>
-					<c:otherwise>
-						试验进行中
-					</c:otherwise>
-				</c:choose>
+			<div style="margin-top:15px;font-weight:bold;color:red;" align="center" id="errorMsg"></div>
+			<div align="center" style="margin-top:10px;margin-bottom: 20px;">
+				<a href="javascript:void(0);"  onclick="doSubmit(1, 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部合格</a>
+				<a href="javascript:void(0);"  onclick="doSubmit(2, 5)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">全部不合格</a>
 			</div>
-			
-			<div style="margin-bottom: 5px;">原材料图谱试验结果：
-				<c:choose>
-					<c:when test="${facadeBean.matAtlResult == 3}">
-						<span id="matAtl1">
-							<a href="javascript:void(0);"  onclick="doSubmit(1, 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
-							<a href="javascript:void(0);"  onclick="doSubmit(2, 3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不全格</a>
-						</span>
-						<span id="matAtl2" style="color:green;display:none;">合格</span>
-						<span id="matAtl3" style="color:red;display:none;">不合格</span>
-					</c:when>
-					<c:when test="${facadeBean.matAtlResult == 4 }">
-						<span style="color:green;">合格</span>
-					</c:when>
-					<c:otherwise>
-						试验进行中
-					</c:otherwise>
-				</c:choose>
-			</div>
-			
-			<div style="margin-bottom: 5px;">原材料型式试验结果：
-				<c:choose>
-					<c:when test="${facadeBean.matPatResult == 3}">
-						<span id="matPat1">
-							<a href="javascript:void(0);"  onclick="doSubmit(1, 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全格</a>&nbsp;&nbsp;
-							<a href="javascript:void(0);"  onclick="doSubmit(2, 4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不合格</a>
-						</span>
-						<span id="matPat2" style="color:green;display:none;">合格</span>
-						<span id="matPat3" style="color:red;display:none;">不合格</span>
-					</c:when>
-					<c:when test="${facadeBean.matPatResult == 4 }">
-						<span style="color:green;">合格</span>
-					</c:when>
-					<c:otherwise>
-						试验进行中
-					</c:otherwise>
-				</c:choose>
-			</div>
-		</div>
+		</c:if>
 		
-		<div style="margin-top:15px;font-weight:bold;color:red;" align="center" id="errorMsg"></div>
-		<div align="center" style="margin-top:10px;margin-bottom: 20px;">
-			<a href="javascript:void(0);"  onclick="doSubmit(1, 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部合格</a>
-			<a href="javascript:void(0);"  onclick="doSubmit(2, 5)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">全部不合格</a>
-		</div>
+		<!-- PPAP 对比结果确认 -->
+		<c:if test="${facadeBean.type == 2}">
+			<div style="margin-left: 15px;">
+				<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
+					<c:forEach items="${pAtlasResult}" var="m">
+						<div style="margin-bottom: 10px;">
+							<c:choose>
+								<c:when test="${m.key == 1}">
+									<div class="title1">红外光分析图谱</div>
+								</c:when>
+								<c:when test="${m.key == 2}">
+									<div class="title1">差热分析图谱</div>
+								</c:when>
+								<c:otherwise>
+									<div class="title1">热重分析图谱</div>
+								</c:otherwise>
+							</c:choose>
+							
+							<table>
+								<tr>
+									<td style="padding-left: 15px;">
+										<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+									</td>
+									<td style="padding-left: 35px;">
+										<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</c:forEach>
+					
+					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+					
+					<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
+					<c:forEach items="${mAtlasResult}" var="m">
+						<div style="margin-bottom: 10px;">
+							<c:choose>
+								<c:when test="${m.key == 1}">
+									<div class="title1">红外光分析图谱</div>
+								</c:when>
+								<c:when test="${m.key == 2}">
+									<div class="title1">差热分析图谱</div>
+								</c:when>
+								<c:otherwise>
+									<div class="title1">热重分析图谱</div>
+								</c:otherwise>
+							</c:choose>
+							
+							<table>
+								<tr>
+									<td style="padding-left: 15px;">
+										<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
+									</td>
+									<td style="padding-left: 35px;">
+										<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</c:forEach>
+			
+			
+			
+			</div>
+		</c:if>
+		
 	</div>
 			
 	<script type="text/javascript">

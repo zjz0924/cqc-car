@@ -22,8 +22,24 @@ public class ExamineRecord{
     private Date createTime;
     // 类型：1-审核记录，2-审批记录，3-确认记录，4-结果对比
     private Integer type;
-    // 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（审批记录有效）
+    // 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（针对审批记录）
+    //     1-零部件红外，2-零部件差热，3-零部件热重，4-零部件结论，5-原材料红外，6-原材料差热，7-原材料热重，8-原材料结论，9-异常，重新上传（针对结果对比）
     private Integer catagory;
+    
+    public ExamineRecord(){
+    	
+    }
+    
+	public ExamineRecord(Long tId, Long aId, Integer state, String remark, Integer type, Integer catagory,
+			Date createTime) {
+		this.tId = tId;
+		this.aId = aId;
+		this.state = state;
+		this.remark = remark;
+		this.type = type;
+		this.catagory = catagory;
+		this.createTime = createTime;
+	}
 
     public Long getId() {
         return id;

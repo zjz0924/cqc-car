@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Task;
 
 public interface TaskService {
@@ -49,9 +50,10 @@ public interface TaskService {
     /**
 	 * 结果对比
 	 * @param taskId  任务ID
-	 * @param result  结果：1-正常，2-异常
+	 * @param result  对比结果
+	 * @param state   状态：1-正常，2-异常
 	 */
-    public void compareResult(Account account, Long taskId, int result);
+    public void compareResult(Account account, Long taskId, List<ExamineRecord> result, int state);
     
 
 }

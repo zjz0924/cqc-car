@@ -94,5 +94,13 @@
 	 	 </choose>
 	  </select>
 	
+	  <insert id="batchAdd" parameterType="java.util.List">
+		insert into examine_record (t_id, a_id, state, remark, create_time, type, catagory) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.tId,jdbcType=BIGINT}, #{item.aId,jdbcType=BIGINT}, #{item.state,jdbcType=INTEGER},
+			 #{item.remark,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.type,jdbcType=INTEGER}, #{item.catagory,jdbcType=INTEGER})
+		</foreach>
+	 </insert> 
+	
 	
 </mapper>

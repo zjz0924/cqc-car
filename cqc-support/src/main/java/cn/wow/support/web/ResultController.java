@@ -28,6 +28,7 @@ import com.github.pagehelper.Page;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
@@ -40,6 +41,7 @@ import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 /**
  * 结果控制器
@@ -357,7 +359,6 @@ public class ResultController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.TESTING.getState());
 		
 		// 超级管理员具有所有的权限
 		if(account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())){
@@ -516,7 +517,6 @@ public class ResultController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.TESTING.getState());
 		
 		if(type == 1){
 			map.put("confirmTask_wait", true);
@@ -560,34 +560,64 @@ public class ResultController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			// 性能结果
-			Map<String, Object> pfMap = new HashMap<String, Object>();
-			pfMap.put("tId", id);
-			pfMap.put("custom_order_sql", "exp_no asc");
-			List<PfResult> pfDataList = pfResultService.selectAllList(pfMap);
+			if(task.getType() == TaskTypeEnum.OTS.getState()){   // OTS 结果确认
+				// 性能结果
+				Map<String, Object> pfMap = new HashMap<String, Object>();
+				pfMap.put("tId", id);
+				pfMap.put("custom_order_sql", "exp_no asc");
+				List<PfResult> pfDataList = pfResultService.selectAllList(pfMap);
 
-			Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
-			Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
-			assemblePfResult(pfDataList, pPfResult, mPfResult);
+				Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
+				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
+				assemblePfResult(pfDataList, pPfResult, mPfResult);
 
-			// 图谱结果
-			Map<String, Object> atMap = new HashMap<String, Object>();
-			atMap.put("tId", id);
-			atMap.put("custom_order_sql", "exp_no asc");
-			List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
+				// 图谱结果
+				Map<String, Object> atMap = new HashMap<String, Object>();
+				atMap.put("tId", id);
+				atMap.put("custom_order_sql", "exp_no asc");
+				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
 
-			Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
-			Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
-			assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
+				Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
+				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
+				assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
 
-			// 原材料图谱结果
-			model.addAttribute("mAtlasResult", mAtlasResult);
-			// 零部件图谱结果
-			model.addAttribute("pAtlasResult", pAtlasResult);
-			// 原材料型式结果
-			model.addAttribute("mPfResult", mPfResult);
-			// 零部件型式结果
-			model.addAttribute("pPfResult", pPfResult);
+				// 原材料图谱结果
+				model.addAttribute("mAtlasResult", mAtlasResult);
+				// 零部件图谱结果
+				model.addAttribute("pAtlasResult", pAtlasResult);
+				// 原材料型式结果
+				model.addAttribute("mPfResult", mPfResult);
+				// 零部件型式结果
+				model.addAttribute("pPfResult", pPfResult);
+			}else if(task.getType() == TaskTypeEnum.PPAP.getState()){
+				
+				// 基准图谱结果
+				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardPartsAtlResult(task.getInfo().getpId());
+				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardMatAtlResult(task.getInfo().getmId());
+				
+				// 抽样图谱结果
+				Map<String, Object> atMap = new HashMap<String, Object>();
+				atMap.put("tId", id);
+				atMap.put("custom_order_sql", "exp_no desc limit 6");
+				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
+
+				List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();
+				List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
+				groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
+				
+				// 零部件图谱结果
+				Map<Integer, CompareVO> pAtlasResult = assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
+				// 原材料图谱结果
+				Map<Integer, CompareVO> mAtlasResult = assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
+
+				// 原材料图谱结果
+				model.addAttribute("mAtlasResult", mAtlasResult);
+				// 零部件图谱结果
+				model.addAttribute("pAtlasResult", pAtlasResult);
+				
+				
+				
+			}
 						
 			model.addAttribute("facadeBean", task);
 		}
@@ -731,24 +761,69 @@ public class ResultController extends AbstractController {
 	/**
 	 * 结果对比
 	 * @param taskId  任务ID
-	 * @param result  结果：1-合格，2-不合格
+	 * @param p_inf             零部件红外光一致性
+	 * @param p_inf_remark      零部件红外光结论
+	 * @param p_dt 				零部件差热一致性
+	 * @param p_dt_remark       零部件差热结论
+	 * @param p_tg              零部件热重一致性
+	 * @param p_tg_remark       零部件热重光结论
+	 * @param p_result          零部件结论一致性
+	 * @param p_result_remark   零部件结论
+	 * @param m_inf             原材料红外光一致性
+	 * @param m_inf_remark      原材料红外光结论
+	 * @param m_dt              原材料差热一致性
+	 * @param m_dt_remark       原材料差热结论
+	 * @param m_tg              原材料热重一致性
+	 * @param m_tg_remark       原材料热重光结论
+	 * @param m_result          原材料结论一致性
+	 * @param m_result_remark   原材料结论
+	 * @param state             状态：1-正常，2-异常
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/compareResult")
-	public AjaxVO compareResult(HttpServletRequest request, Model model, Long taskId, int result){
+	public AjaxVO compareResult(HttpServletRequest request, Model model, Long taskId, int p_inf, String p_inf_remark,
+			int p_dt, String p_dt_remark, int p_tg, String p_tg_remark, int p_result, String p_result_remark, int m_inf,
+			String m_inf_remark, int m_dt, String m_dt_remark, int m_tg, String m_tg_remark, int m_result,
+			String m_result_remark, int state) {
+
 		AjaxVO vo = new AjaxVO();
-		
+
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			taskService.compareResult(account, taskId, result);
-		}catch(Exception ex){
+			Date date = new Date();
+
+			// 对比结果
+			List<ExamineRecord> resultList = new ArrayList<ExamineRecord>();
+
+			if (state == 1) {
+				ExamineRecord record1 = new ExamineRecord(taskId, account.getId(), p_inf, p_inf_remark, 4, 1, date);
+				ExamineRecord record2 = new ExamineRecord(taskId, account.getId(), p_dt, p_dt_remark, 4, 2, date);
+				ExamineRecord record3 = new ExamineRecord(taskId, account.getId(), p_tg, p_tg_remark, 4, 3, date);
+				ExamineRecord record4 = new ExamineRecord(taskId, account.getId(), p_result, p_result_remark, 4, 4, date);
+				ExamineRecord record5 = new ExamineRecord(taskId, account.getId(), m_inf, m_inf_remark, 4, 5, date);
+				ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date);
+				ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date);
+				ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date);
+
+				resultList.add(record1);
+				resultList.add(record2);
+				resultList.add(record3);
+				resultList.add(record4);
+				resultList.add(record5);
+				resultList.add(record6);
+				resultList.add(record7);
+				resultList.add(record8);
+			}
+
+			taskService.compareResult(account, taskId, resultList, state);
+		} catch (Exception ex) {
 			logger.error("结果对比失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");
 			return vo;
 		}
-		
+
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;

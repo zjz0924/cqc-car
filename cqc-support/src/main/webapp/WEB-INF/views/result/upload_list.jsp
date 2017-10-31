@@ -34,9 +34,33 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '200',
 						align : 'center',
 						formatter : formatCellTooltip
+					}, {
+						field : 'type',
+						title : '任务类型',
+						width : '150',
+						align : 'center',
+						formatter : function(val){
+							var str = "材料研究所任务"
+							if(val == 1){
+								str = "OTS阶段任务";
+							}else if(val == 2){
+								str = "PPAP阶段任务";
+							}else if(val == 3){
+								str = "SOP阶段任务";
+							}
+							return "<span title='" + str + "'>" + str + "</span>";
+						}
+					}, {
+						field : 'failNum',
+						title : '实验次数',
+						width : '120',
+						align : 'center',
+						formatter : function(val){
+							return "<span title='" + (val + 1) + "'>第" + (val+1) + "次</span>";
+						}
 					}, {
 						field : 'org',
 						title : '录入单位',
@@ -50,7 +74,7 @@
 					}, {
 						field : 'account',
 						title : '录入用户',
-						width : '200',
+						width : '120',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -60,7 +84,7 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '250',
+						width : '150',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
