@@ -11,6 +11,7 @@
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP" />
 		<result column="fail_num" property="failNum" jdbcType="INTEGER" />
 		
 		<!-- 实验室ID -->
@@ -25,6 +26,12 @@
 		<result column="parts_pat_result" property="partsPatResult" jdbcType="INTEGER" />
 		<result column="mat_pat_result" property="matPatResult" jdbcType="INTEGER" />
 		
+		<!-- 试验次数 -->
+		<result column="parts_atl_times" property="partsAtlTimes" jdbcType="INTEGER" />
+		<result column="mat_atl_times" property="matAtlTimes" jdbcType="INTEGER" />
+		<result column="parts_pat_times" property="partsPatTimes" jdbcType="INTEGER" />
+		<result column="mat_pat_times" property="matPatTimes" jdbcType="INTEGER" />
+		
 		<association property="partsAtl" javaType="cn.wow.common.domain.Org" column="parts_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="matAtl" javaType="cn.wow.common.domain.Org" column="mat_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="partsPat" javaType="cn.wow.common.domain.Org" column="parts_pat_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
@@ -36,7 +43,7 @@
 	
 	<sql id="base_columns">
 		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.parts_atl_id, t.mat_atl_id, t.parts_pat_id, t.mat_pat_id ,t.remark, t.create_time, t.fail_num, t.a_id, t.parts_atl_result, t.mat_atl_result,
-        t.parts_pat_result, t.mat_pat_result	
+        t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -49,11 +56,11 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Task">
-		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result)
+		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
 					#{partsAtlId,jdbcType=BIGINT}, #{matAtlId,jdbcType=BIGINT}, #{partsPatId,jdbcType=BIGINT}, #{matPatId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, 
-					#{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER})
+					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, #{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER}, 
+					#{partsAtlTimes,jdbcType=INTEGER}, #{matAtlTimes,jdbcType=INTEGER}, #{partsPatTimes,jdbcType=INTEGER}, #{matPatTimes,jdbcType=INTEGER}, #{confirmTime,jdbcType=TIMESTAMP})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -100,7 +107,22 @@
 				parts_pat_result = #{partsPatResult,jdbcType=INTEGER},
 			</if>
 			<if test="matPatResult != null">
-				mat_pat_result = #{matPatResult,jdbcType=INTEGER}
+				mat_pat_result = #{matPatResult,jdbcType=INTEGER},
+			</if>
+			<if test="partsAtlTimes != null">
+				parts_atl_times = #{partsAtlTimes,jdbcType=INTEGER}, 
+			</if>
+			<if test="matAtlTimes != null">
+				mat_atl_times = #{matAtlTimes,jdbcType=INTEGER}, 
+			</if>
+			<if test="partsPatTimes != null">
+				parts_pat_times = #{partsPatTimes,jdbcType=INTEGER}, 
+			</if>
+			<if test="matPatTimes != null">
+				mat_pat_times = #{matPatTimes,jdbcType=INTEGER},
+			</if>
+			<if test="confirmTime != null">
+				confirm_time = #{confirmTime,jdbcType=TIMESTAMP}
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -155,11 +177,27 @@
 			</if>
 			
 			<if test="partsPatId != null">
-				and parts_pat_id = #{partsPatId,jdbcType=BIGINT}
+				and t.parts_pat_id = #{partsPatId,jdbcType=BIGINT}
 			</if>
 			
 			<if test="matPatId != null">
-				and mat_pat_id = #{matPatId,jdbcType=BIGINT}
+				and t.mat_pat_id = #{matPatId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="partsAtlTimes != null">
+				and t.parts_atl_times = #{partsAtlTimes,jdbcType=INTEGER}
+			</if>
+			
+			<if test="matAtlTimes != null">
+				and t.mat_atl_times = #{matAtlTimes,jdbcType=INTEGER}
+			</if>
+			
+			<if test="partsPatTimes != null">
+				and t.parts_pat_times = #{partsPatTimes,jdbcType=INTEGER}
+			</if>
+			
+			<if test="matPatTimes != null">
+				and t.mat_pat_times = #{matPatTimes,jdbcType=INTEGER}
 			</if>
 			
 			<if test="failNum != null">
@@ -167,8 +205,7 @@
 			</if>
 
 			<if test="partsAtlResult != null">
-				and t.parts_atl_result =
-				#{partsAtlResult,jdbcType=INTEGER}
+				and t.parts_atl_result = #{partsAtlResult,jdbcType=INTEGER}
 			</if>
 
 			<if test="matAtlResult != null">
@@ -189,6 +226,14 @@
 
 			<if test="endCreateTime != null and endCreateTime != ''">
 				and t.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+			
+			<if test="startConfirmTime != null and startConfirmTime != ''">
+				and t.confirm_time &gt;= #{startConfirmTime, jdbcType=TIMESTAMP}
+			</if>
+
+			<if test="endConfirmTime != null and endConfirmTime != ''">
+				and t.confirm_time &lt;= #{endConfirmTime, jdbcType=TIMESTAMP}
 			</if>
 
 			<!-- 任务下达列表 -->

@@ -141,6 +141,10 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatPatResult(0);
 			task.setPartsAtlResult(0);
 			task.setPartsPatResult(0);
+			task.setPartsAtlTimes(0);
+			task.setPartsPatTimes(0);
+			task.setMatAtlTimes(0);
+			task.setMatPatTimes(0);
 			taskDao.insert(task);
 
 			// 操作记录

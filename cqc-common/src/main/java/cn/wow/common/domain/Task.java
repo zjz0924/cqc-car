@@ -54,6 +54,8 @@ public class Task {
     private String remark;
     // 创建时间
     private Date createTime;
+    // 确认时间
+    private Date confirmTime;
     
     // 零部件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-合格，5-不合格)
     private Integer partsAtlResult;
@@ -63,6 +65,15 @@ public class Task {
     private Integer partsPatResult;
     // 原材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-合格，5-不合格) 
     private Integer matPatResult;
+    
+    // 零部件图谱实验次数
+    private Integer partsAtlTimes;
+    // 原材料图谱实验次数
+    private Integer matAtlTimes;
+    // 零部件型式实验次数
+    private Integer partsPatTimes;
+    // 原材料型式实验次数
+    private Integer matPatTimes;
     
     
     public Long getId() {
@@ -264,5 +275,44 @@ public class Task {
 	public void setMatPat(Org matPat) {
 		this.matPat = matPat;
 	}
-	
+
+	public Integer getPartsAtlTimes() {
+		return partsAtlTimes;
+	}
+
+	public void setPartsAtlTimes(Integer partsAtlTimes) {
+		this.partsAtlTimes = partsAtlTimes;
+	}
+
+	public Integer getMatAtlTimes() {
+		return matAtlTimes;
+	}
+
+	public void setMatAtlTimes(Integer matAtlTimes) {
+		this.matAtlTimes = matAtlTimes;
+	}
+
+	public Integer getPartsPatTimes() {
+		return partsPatTimes;
+	}
+
+	public void setPartsPatTimes(Integer partsPatTimes) {
+		this.partsPatTimes = partsPatTimes;
+	}
+
+	public Integer getMatPatTimes() {
+		return matPatTimes;
+	}
+
+	public void setMatPatTimes(Integer matPatTimes) {
+		this.matPatTimes = matPatTimes;
+	}
+
+	public Date getConfirmTime() {
+		return confirmTime;
+	}
+
+	public void setConfirmTime(Date confirmTime) {
+		this.confirmTime = confirmTime;
+	}
 }

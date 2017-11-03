@@ -10,8 +10,7 @@ public enum StandardTaskEnum {
 	EXAMINE(1, "审核中"), 
 	EXAMINE_NOTPASS(2, "审核不通过"), 
 	TESTING(3, "试验中"), 
-	NOTIFY(4, "收费通知中"),
-	ACCOMPLISH(5, "完成");
+	ACCOMPLISH(4, "完成");
 
 	private int state;
 

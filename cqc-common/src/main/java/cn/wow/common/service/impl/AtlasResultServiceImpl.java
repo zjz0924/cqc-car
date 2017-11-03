@@ -81,15 +81,22 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		batchAdd(atlasResult);
 		
 		if(atlasResult != null && atlasResult.size() == 6){
+			// 实验结果
 			task.setMatAtlResult(2);
 			task.setPartsAtlResult(2);
+			// 实验次数
+			task.setPartsAtlTimes(task.getPartsAtlTimes() + 1);
+			task.setMatAtlTimes(task.getMatAtlTimes() + 1);
+			
 			remark = "上传零部件和原材料图谱试验结果";
 		}else{
 			if(atlasResult.get(0).getCatagory() == 1){
 				task.setPartsAtlResult(2);
+				task.setPartsAtlTimes(task.getPartsAtlTimes() + 1);
 				remark = "上传零部件图谱试验结果";
 			}else{
 				task.setMatAtlResult(2);
+				task.setMatAtlTimes(task.getMatAtlTimes() + 1);
 				remark = "上传原材料图谱试验结果";
 			}
 		}

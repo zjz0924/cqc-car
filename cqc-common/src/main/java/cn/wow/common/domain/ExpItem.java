@@ -3,15 +3,15 @@ package cn.wow.common.domain;
 import java.util.Date;
 
 /**
- * 报价单
+ * 实验项目
  * @author zhenjunzhuo 2017-10-20
  *
  */
-public class Quotation {
+public class ExpItem {
 	
     private Long id;
-    // 任务ID
-    private Long tId;
+    // 费用记录ID
+    private Long cId;
     // 操作人
     private Long aId;
     // 试验项目
@@ -37,15 +37,15 @@ public class Quotation {
         this.id = id;
     }
 
-    public Long gettId() {
-        return tId;
-    }
+    public Long getcId() {
+		return cId;
+	}
 
-    public void settId(Long tId) {
-        this.tId = tId;
-    }
+	public void setcId(Long cId) {
+		this.cId = cId;
+	}
 
-    public Long getaId() {
+	public Long getaId() {
         return aId;
     }
 

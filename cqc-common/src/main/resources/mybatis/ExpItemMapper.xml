@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.wow.common.dao.QuotationDao">
-	<resultMap id="BaseResultMap" type="cn.wow.common.domain.Quotation">
+<mapper namespace="cn.wow.common.dao.ExpItemDao">
+	<resultMap id="BaseResultMap" type="cn.wow.common.domain.ExpItem">
 		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="t_id" property="tId" jdbcType="BIGINT" />
+		<result column="c_id" property="cId" jdbcType="BIGINT" />
 		<result column="a_id" property="aId" jdbcType="BIGINT" />
 		<result column="project" property="project" jdbcType="VARCHAR" />
 		<result column="standard" property="standard" jdbcType="VARCHAR" />
@@ -15,29 +15,29 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, t_id, a_id, project, standard, price, num, total, remark, create_time
+		id, c_id, a_id, project, standard, price, num, total, remark, create_time
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="base_columns" /> from quotation where id = #{id,jdbcType=BIGINT}
+		select <include refid="base_columns" /> from exp_item where id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from quotation where id = #{id,jdbcType=BIGINT}
+		delete from exp_item where id = #{id,jdbcType=BIGINT}
 	</delete>
 	
-	<insert id="insert" parameterType="cn.wow.common.domain.Quotation">
-		insert into quotation (t_id, a_id, project, standard, price, num, total, remark, create_time)
-			values (#{tId,jdbcType=BIGINT}, #{aId,jdbcType=BIGINT}, #{project,jdbcType=VARCHAR},
+	<insert id="insert" parameterType="cn.wow.common.domain.ExpItem">
+		insert into exp_item (c_id, a_id, project, standard, price, num, total, remark, create_time)
+			values (#{cId,jdbcType=BIGINT}, #{aId,jdbcType=BIGINT}, #{project,jdbcType=VARCHAR},
 					#{standard,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE},
 					#{num,jdbcType=INTEGER}, #{total,jdbcType=DOUBLE}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
 	</insert>
 	
-	<update id="update" parameterType="cn.wow.common.domain.Quotation">
-		update quotation
+	<update id="update" parameterType="cn.wow.common.domain.ExpItem">
+		update exp_item
 		<set>
-			<if test="tId != null">
-				t_id = #{tId,jdbcType=BIGINT},
+			<if test="cId != null">
+				c_id = #{cId,jdbcType=BIGINT},
 			</if>
 			<if test="aId != null">
 				a_id = #{aId,jdbcType=BIGINT},
@@ -68,10 +68,10 @@
 	</update>
 	
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select <include refid="base_columns" /> from quotation
+		select <include refid="base_columns" /> from exp_item
 		<where>
-			<if test="tId != null">
-				and t_id = #{tId,jdbcType=BIGINT}
+			<if test="cId != null">
+				and c_id = #{tId,jdbcType=BIGINT}
 			</if>
 	
 			<if test="aId != null">

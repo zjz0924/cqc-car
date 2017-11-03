@@ -80,14 +80,21 @@ public class PfResultServiceImpl implements PfResultService{
     	
     	List<Integer> catagory = getCatagory(dataList);
     	if(catagory.size() == 2){
+    		// 结果
     		task.setPartsPatResult(2);
     		task.setMatPatResult(2);
+    		
+    		// 实验次数
+    		task.setPartsPatTimes(task.getPartsPatTimes() + 1);
+			task.setMatPatTimes(task.getMatPatTimes() + 1);
     	}else{
     		if(catagory.get(0) == 1){
 				task.setPartsPatResult(2);
+				task.setPartsPatTimes(task.getPartsPatTimes() + 1);
 				remark = "上传零部件型式试验结果";
 			}else{
 				task.setMatPatResult(2);
+				task.setMatPatTimes(task.getMatPatTimes() + 1);
 				remark = "上传原材料型式试验结果";
 			}
     	}

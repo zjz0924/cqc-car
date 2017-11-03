@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.AccountDao;
+import cn.wow.common.dao.CostRecordDao;
 import cn.wow.common.dao.EmailRecordDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
@@ -24,6 +25,7 @@ import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.CostRecord;
 import cn.wow.common.domain.EmailRecord;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
@@ -92,6 +94,8 @@ public class TaskServiceImpl implements TaskService{
     private VehicleDao vehicleDao;
     @Autowired
     private ExamineRecordDao examineRecordDao;
+    @Autowired
+    private CostRecordDao costRecordDao;
 
     public Task selectOne(Long id){
     	return taskDao.selectOne(id);
@@ -263,7 +267,8 @@ public class TaskServiceImpl implements TaskService{
 			}
 
 			if (isPass) {
-				task.setState(StandardTaskEnum.NOTIFY.getState());
+				task.setState(StandardTaskEnum.ACCOMPLISH.getState());
+				task.setConfirmTime(new Date());
 				// 保存基准信息
 				saveStandard(account, task);
 			}
@@ -329,6 +334,18 @@ public class TaskServiceImpl implements TaskService{
 
 			taskDao.update(task);
 		}
+		
+		// 费用记录
+		List<CostRecord> costRecordList = new ArrayList<CostRecord>();
+		if (type != 5) {
+			costRecordList.add(getCostRecord(account, date, task, type, result));
+		} else {
+			costRecordList.add(getCostRecord(account, date, task, 1, result));
+			costRecordList.add(getCostRecord(account, date, task, 2, result));
+			costRecordList.add(getCostRecord(account, date, task, 3, result));
+			costRecordList.add(getCostRecord(account, date, task, 4, result));
+		}
+		costRecordDao.batchAdd(costRecordList);
 	}
 	
 	/**
@@ -339,6 +356,7 @@ public class TaskServiceImpl implements TaskService{
 		
 		if(result == 1){
 			task.setState(SamplingTaskEnum.PASS.getState());
+			task.setConfirmTime(new Date());
 			taskDao.update(task);
 			
 			// 确认记录
@@ -355,6 +373,7 @@ public class TaskServiceImpl implements TaskService{
 				task.setMatAtlResult(1);
 				task.setPartsAtlResult(1);
 				task.setFailNum(task.getFailNum() + 1);
+				task.setConfirmTime(new Date());
 				taskDao.update(task);
 				
 				// 确认记录
@@ -381,6 +400,12 @@ public class TaskServiceImpl implements TaskService{
 				taskRecordDao.insert(taskRecord);
 			}
 		}
+		
+		// 费用记录
+		List<CostRecord> costRecordList = new ArrayList<CostRecord>();
+		costRecordList.add(getCostRecord(account, date, task, 1, result));
+		costRecordList.add(getCostRecord(account, date, task, 3, result));
+		costRecordDao.batchAdd(costRecordList);
 	}
 	
 	
@@ -498,4 +523,42 @@ public class TaskServiceImpl implements TaskService{
 		}
 	}
 	
+	/**
+	 *  组装费用记录
+	 * @param account   操作人
+	 * @param date      时间
+	 * @param task      任务
+	 * @param type      类型： 1-零部件图谱，2-零部件型式，3-原材料图谱，4-原材料型式
+	 * @param result    实验结果（1-合格，2-不合格）
+	 */
+	CostRecord getCostRecord(Account account, Date date, Task task, int type, int result){
+		Long labId = null;
+		int times = 0;
+		
+		if(type == 1){
+			labId = task.getPartsAtlId();
+			times = task.getPartsAtlTimes();
+		}else if(type == 2){
+			labId = task.getPartsPatId();
+			times = task.getPartsPatTimes();
+		}else if(type == 3){
+			labId = task.getMatAtlId();
+			times = task.getMatAtlTimes();
+		}else if(type == 4){
+			labId = task.getMatPatId();
+			times = task.getMatPatTimes();
+		}
+		
+		CostRecord costRecord = new CostRecord();
+		costRecord.setaId(account.getId());
+		costRecord.setCreateTime(date);
+		costRecord.setLabId(labId);
+		costRecord.setLabType(type);
+		costRecord.setState(0);
+		costRecord.settId(task.getId());
+		costRecord.setTimes(times);
+		costRecord.setLabResult(result);
+		
+		return costRecord;
+	}
 }
