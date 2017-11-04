@@ -417,7 +417,7 @@ public class ResultController extends AbstractController {
 
 				Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
 				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
-				assemblePfResult(pfDataList, pPfResult, mPfResult);
+				pfResultService.assemblePfResult(pfDataList, pPfResult, mPfResult);
 
 				// 原材料型式结果
 				model.addAttribute("mPfResult", mPfResult);
@@ -434,7 +434,7 @@ public class ResultController extends AbstractController {
 
 				Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
-				assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
+				atlasResultService.assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
 
 				// 原材料图谱结果
 				model.addAttribute("mAtlasResult", mAtlasResult);
@@ -573,7 +573,7 @@ public class ResultController extends AbstractController {
 
 				Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
 				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
-				assemblePfResult(pfDataList, pPfResult, mPfResult);
+				pfResultService.assemblePfResult(pfDataList, pPfResult, mPfResult);
 
 				// 图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();
@@ -583,7 +583,7 @@ public class ResultController extends AbstractController {
 
 				Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
-				assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
+				atlasResultService.assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
 
 				// 原材料图谱结果
 				model.addAttribute("mAtlasResult", mAtlasResult);
@@ -610,11 +610,11 @@ public class ResultController extends AbstractController {
 				groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
 				
 				// 零部件图谱结果
-				Map<Integer, CompareVO> pAtlasResult = assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
+				Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
 				// 原材料图谱结果
-				Map<Integer, CompareVO> mAtlasResult = assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
+				Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
 				// 对比结果
-				Map<String, List<ExamineRecord>> compareResult = assembleCompareResult(id);
+				Map<String, List<ExamineRecord>> compareResult = atlasResultService.assembleCompareResult(id);
 				
 				model.addAttribute("mAtlasResult", mAtlasResult);
 				model.addAttribute("pAtlasResult", pAtlasResult);
@@ -745,9 +745,9 @@ public class ResultController extends AbstractController {
 			groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
 			
 			// 零部件图谱结果
-			Map<Integer, CompareVO> pAtlasResult = assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
+			Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
 			// 原材料图谱结果
-			Map<Integer, CompareVO> mAtlasResult = assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
+			Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
 
 			// 原材料图谱结果
 			model.addAttribute("mAtlasResult", mAtlasResult);
@@ -836,75 +836,6 @@ public class ResultController extends AbstractController {
 	
 	//-----------------------------------    其它       ---------------------------------------------------------------
 	
-	/**
-	 * 组装型式结果
-	 * @param pfDataList  当前任务所有的型式结果记录
-	 * @param pPfResult   零部件的型式结果记录
-	 * @param mPfResult   原材料的型式结果记录
-	 */
-	public void assemblePfResult(List<PfResult> pfDataList, Map<Integer, List<PfResult>> pPfResult,
-			Map<Integer, List<PfResult>> mPfResult) {
-
-		if (pfDataList != null && pfDataList.size() > 0) {
-			for (PfResult pf : pfDataList) {
-				if (pf.getCatagory() == 1) { // 零部件
-					List<PfResult> list = pPfResult.get(pf.getExpNo());
-					if (list != null) {
-						list.add(pf);
-					} else {
-						list = new ArrayList<PfResult>();
-						list.add(pf);
-					}
-					pPfResult.put(pf.getExpNo(), list);
-				} else { // 原材料
-					List<PfResult> list = mPfResult.get(pf.getExpNo());
-					if (list != null) {
-						list.add(pf);
-					} else {
-						list = new ArrayList<PfResult>();
-						list.add(pf);
-					}
-					mPfResult.put(pf.getExpNo(), list);
-				}
-			}
-		}
-	}
-	
-	
-	/**
-	 * 组装图谱结果
-	 * @param pfDataList  当前任务所有的图谱结果记录
-	 * @param pPfResult   零部件的图谱结果记录
-	 * @param mPfResult   原材料的图谱结果记录
-	 */
-	public void assembleAtlasResult(List<AtlasResult> atDataList, Map<Integer, List<AtlasResult>> pAtlasResult,
-			Map<Integer, List<AtlasResult>> mAtlasResult) {
-
-		if (atDataList != null && atDataList.size() > 0) {
-			for (AtlasResult at : atDataList) {
-				if (at.getCatagory() == 1) { // 零部件
-					List<AtlasResult> list = pAtlasResult.get(at.getExpNo());
-					if (list != null) {
-						list.add(at);
-					} else {
-						list = new ArrayList<AtlasResult>();
-						list.add(at);
-					}
-					pAtlasResult.put(at.getExpNo(), list);
-				} else { // 原材料
-					List<AtlasResult> list = mAtlasResult.get(at.getExpNo());
-					if (list != null) {
-						list.add(at);
-					} else {
-						list = new ArrayList<AtlasResult>();
-						list.add(at);
-					}
-					mAtlasResult.put(at.getExpNo(), list);
-				}
-			}
-		}
-	}
-	
 	
 	/**
 	 * 分组
@@ -920,62 +851,6 @@ public class ResultController extends AbstractController {
 				mAtlasResult.add(ar);
 			}
 		}
-	}
-	
-	/**
-	 * 组装图谱对比
-	 * @param sd_atlasResult  基准图谱
-	 * @param sl_atlasResult  抽样图谱
-	 */
-	public Map<Integer, CompareVO> assembleCompareAtlas(List<AtlasResult> sd_atlasResult, List<AtlasResult> sl_atlasResult) {
-		Map<Integer, CompareVO> map = new HashMap<Integer, CompareVO>();
-
-		for (AtlasResult ar : sd_atlasResult) {
-			CompareVO vo = new CompareVO();
-			vo.setStandard_pic(ar.getPic());
-			map.put(ar.getType(), vo);
-		}
-
-		for (AtlasResult ar : sl_atlasResult) {
-			CompareVO vo = map.get(ar.getType());
-			vo.setSampling_pic(ar.getPic());
-			map.put(ar.getType(), vo);
-		}
-		return map;
-	}
-	
-	/**
-	 * 组装对比结果
-	 */
-	public Map<String, List<ExamineRecord>> assembleCompareResult(Long taskId) {
-		Map<String, List<ExamineRecord>> result = new HashMap<String, List<ExamineRecord>>();
-
-		Map<String, Object> erMap = new PageMap(false);
-		erMap.put("taskId", taskId);
-		erMap.put("type", 4);
-		erMap.put("catagorys", 8);
-		erMap.put("custom_order_sql", "create_time desc, catagory asc limit 8");
-		List<ExamineRecord> erList = examineRecordService.selectAllList(erMap);
-
-		// 零部件结果
-		List<ExamineRecord> pList = new ArrayList<ExamineRecord>();
-		// 原材料结果
-		List<ExamineRecord> mList = new ArrayList<ExamineRecord>();
-
-		for (ExamineRecord er : erList) {
-			if (er.getCatagory() <= 4) {
-				pList.add(er);
-			} else {
-				mList.add(er);
-			}
-		}
-
-		Collections.sort(pList);
-		Collections.sort(mList);
-		result.put("零部件", pList);
-		result.put("原材料", mList);
-
-		return result;
 	}
 	
 }

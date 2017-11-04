@@ -71,7 +71,7 @@
 		select <include refid="base_columns" /> from exp_item
 		<where>
 			<if test="cId != null">
-				and c_id = #{tId,jdbcType=BIGINT}
+				and c_id = #{cId,jdbcType=BIGINT}
 			</if>
 	
 			<if test="aId != null">
@@ -96,6 +96,14 @@
 			</otherwise>
 		</choose>
 	</select>
-		
+	
+	<insert id="batchAdd" parameterType="java.util.List">
+		insert into exp_item (c_id, a_id, project, standard, price, num, total, remark, create_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.cId,jdbcType=BIGINT}, #{item.aId,jdbcType=BIGINT}, #{item.project,jdbcType=VARCHAR},
+			 #{item.standard,jdbcType=VARCHAR}, #{item.price,jdbcType=DOUBLE},
+			 #{item.num,jdbcType=INTEGER}, #{item.total,jdbcType=DOUBLE}, #{item.remark,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP})
+		</foreach>
+	</insert> 
 	
 </mapper>

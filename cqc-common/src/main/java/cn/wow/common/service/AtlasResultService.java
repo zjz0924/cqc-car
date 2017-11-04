@@ -6,6 +6,8 @@ import java.util.Map;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CompareVO;
+import cn.wow.common.domain.ExamineRecord;
 
 public interface AtlasResultService {
     public AtlasResult selectOne(Long id);
@@ -46,5 +48,24 @@ public interface AtlasResultService {
      * @param id   原材料ID
      */
 	public List<AtlasResult> getStandardMatAtlResult(Long id);
+	
+	/**
+	 * 组装图谱对比
+	 * @param sd_atlasResult  基准图谱
+	 * @param sl_atlasResult  抽样图谱
+	 */
+	public Map<Integer, CompareVO> assembleCompareAtlas(List<AtlasResult> sd_atlasResult, List<AtlasResult> sl_atlasResult);
+	
+	/**
+	 * 组装图谱结果
+	 * @param pfDataList  当前任务所有的图谱结果记录
+	 * @param pPfResult   零部件的图谱结果记录
+	 * @param mPfResult   原材料的图谱结果记录
+	 */
+	public void assembleAtlasResult(List<AtlasResult> atDataList, Map<Integer, List<AtlasResult>> pAtlasResult, Map<Integer, List<AtlasResult>> mAtlasResult);
 
+	/**
+	 * 组装对比结果
+	 */
+	public Map<String, List<ExamineRecord>> assembleCompareResult(Long taskId);
 }

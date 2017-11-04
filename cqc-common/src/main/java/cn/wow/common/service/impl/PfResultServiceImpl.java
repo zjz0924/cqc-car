@@ -124,4 +124,38 @@ public class PfResultServiceImpl implements PfResultService{
 		return list;
 	}
 
+	
+	/**
+	 * 组装型式结果
+	 * @param pfDataList  当前任务所有的型式结果记录
+	 * @param pPfResult   零部件的型式结果记录
+	 * @param mPfResult   原材料的型式结果记录
+	 */
+	public void assemblePfResult(List<PfResult> pfDataList, Map<Integer, List<PfResult>> pPfResult,
+			Map<Integer, List<PfResult>> mPfResult) {
+
+		if (pfDataList != null && pfDataList.size() > 0) {
+			for (PfResult pf : pfDataList) {
+				if (pf.getCatagory() == 1) { // 零部件
+					List<PfResult> list = pPfResult.get(pf.getExpNo());
+					if (list != null) {
+						list.add(pf);
+					} else {
+						list = new ArrayList<PfResult>();
+						list.add(pf);
+					}
+					pPfResult.put(pf.getExpNo(), list);
+				} else { // 原材料
+					List<PfResult> list = mPfResult.get(pf.getExpNo());
+					if (list != null) {
+						list.add(pf);
+					} else {
+						list = new ArrayList<PfResult>();
+						list.add(pf);
+					}
+					mPfResult.put(pf.getExpNo(), list);
+				}
+			}
+		}
+	}
 }

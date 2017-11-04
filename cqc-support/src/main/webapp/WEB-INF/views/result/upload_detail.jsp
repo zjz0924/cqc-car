@@ -293,7 +293,7 @@
 					<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matAtlResult == 1) }">
 						<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
 						<div>
-							<table class="info" id="id="m_arTable"">
+							<table class="info" id="m_arTable">
 								<tr>
 									<td class="title-td">图谱类型</td>
 									<td class="title-td">图谱描述</td>

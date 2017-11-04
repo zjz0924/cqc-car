@@ -18,6 +18,7 @@ import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.CostRecordDao;
 import cn.wow.common.dao.EmailRecordDao;
 import cn.wow.common.dao.ExamineRecordDao;
+import cn.wow.common.dao.ExpItemDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
@@ -28,6 +29,7 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.CostRecord;
 import cn.wow.common.domain.EmailRecord;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.ExpItem;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
@@ -75,6 +77,12 @@ public class TaskServiceImpl implements TaskService{
   	// 警告书内容
   	@Value("${alarm.content}")
   	protected String alarmContent;
+  	// 费用清单标题
+   	@Value("${cost.title}")
+   	protected String costTitle;
+   	// 费用清单内容
+   	@Value("${cost.content}")
+   	protected String costContent;
  	
     @Autowired
     private TaskDao taskDao;
@@ -96,6 +104,8 @@ public class TaskServiceImpl implements TaskService{
     private ExamineRecordDao examineRecordDao;
     @Autowired
     private CostRecordDao costRecordDao;
+    @Autowired
+    private ExpItemDao expItemDao;
 
     public Task selectOne(Long id){
     	return taskDao.selectOne(id);
@@ -123,8 +133,9 @@ public class TaskServiceImpl implements TaskService{
      * @param subject  主题
      * @param content  内容
      * @param addr     接收人地址（多个邮件地址以";"分隔）
+     * @param type     1:text 2:html
      */
-    public boolean sendEmail(String subject, String content, String addr) throws Exception{
+    public boolean sendEmail(String subject, String content, String addr, int type) throws Exception{
     	MailSender mailSender = MailSender.getInstance();
 		
 		MailInfo info = new MailInfo();
@@ -135,7 +146,12 @@ public class TaskServiceImpl implements TaskService{
 		info.setNotifyTo(addr);
 		info.setSubject(subject);
 		info.setContent(content);
-		return mailSender.sendTextMail(info, 3);
+		
+		if(type == 1){
+			return mailSender.sendTextMail(info, 3);
+		}else{
+			return mailSender.sendHtmlMail(info, 3);
+		}
     }
     
     /**
@@ -515,13 +531,83 @@ public class TaskServiceImpl implements TaskService{
 			content = MessageFormat.format(content, new Object[] { task.getCode(), tips });	
 			
 			// 发送邮件
-			sendEmail(title, content, addr);
+			sendEmail(title, content, addr, 1);
 			
 			// 邮件记录
 			EmailRecord emailRecord = new EmailRecord(title, content, addr, task.getId(), account.getId(), 1, 1, mailUser, date);
 			emailRecordDao.insert(emailRecord);
 		}
 	}
+	
+	
+	/**
+	 * 发送费用清单
+	 * @param account     操作用户
+	 * @param costRecord  费用清单
+	 * @param orgs        发送机构
+	 */
+	public void sendCost(Account account, String orgs, CostRecord costRecord, List<ExpItem> itemList) throws Exception {
+		Date date = new Date();
+		
+		// 机构ID
+		String[] orgsList = orgs.split(",");
+		List<Long> orgIdList = new ArrayList<Long>();
+		for (String str : orgsList) {
+			if (StringUtils.isNotBlank(str)) {
+				orgIdList.add(Long.parseLong(str));
+			}
+		}
+
+		// 用户列表
+		Map<String, Object> aMap = new PageMap(false);
+		aMap.put("orgs", orgIdList);
+		List<Account> accountList = accountDao.selectAllList(aMap);
+
+		if (accountList != null && accountList.size() > 0) {
+			String addr = "";
+			for (Account ac : accountList) {
+				if (StringUtils.isNotBlank(ac.getEmail())) {
+					addr += ac.getEmail() + ";";
+				}
+			}
+
+			if (StringUtils.isNotBlank(addr)) {
+				addr = addr.substring(0, addr.length() - 1);
+			}
+
+			String labType = "";
+			if(costRecord.getLabType() == 1){
+				labType = "零部件图谱试验";
+			}else if(costRecord.getLabType() == 2){
+				labType = "零部件型式试验";
+			}else if(costRecord.getLabType() == 3){
+				labType = "原材料图谱试验";
+			}else{
+				labType = "原材料型式试验";
+			}
+			
+			costContent = MessageFormat.format(costContent, new Object[] { costRecord.getTask().getCode(), labType });
+			
+			// 费用列表
+			String tempContent = "<div><table style='margin-left: 5px;font-size: 14px;'><tr style='height: 30px'><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>序号</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>试验项目</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>参考标准</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>单价（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>数量</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>价格（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>备注</td></tr>";
+
+			if (itemList != null && itemList.size() > 0) {
+				for (int i = 0; i < itemList.size(); i++) {
+					ExpItem item = itemList.get(i);
+					tempContent += "<tr style='height: 30px'><td style='background: #f5f5f5;padding-left: 5px;'>" + (i + 1) + "</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getProject() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getStandard() +"</td><td>"+ item.getPrice() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getNum() +"</td><td>"+ item.getTotal() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getRemark() +"</td></tr>";
+				}
+			}
+			tempContent += "</table></div>";
+
+			// 发送邮件
+			sendEmail(costTitle, costContent + tempContent, addr, 2);
+
+			// 邮件记录
+			EmailRecord emailRecord = new EmailRecord(costTitle, costContent + tempContent, addr, costRecord.getTask().getId(), account.getId(), 1, 1, mailUser, date);
+			emailRecordDao.insert(emailRecord);
+		}
+	}
+	
 	
 	/**
 	 *  组装费用记录

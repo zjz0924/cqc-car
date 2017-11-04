@@ -138,7 +138,7 @@ public class MailSender {
 			multiPart.addBodyPart(bodyPart);
 
 			// 添加附件
-			if (mailInfo.getAttachFileNames().length != 0) {
+			if (mailInfo.getAttachFileNames() != null && mailInfo.getAttachFileNames().length != 0) {
 				for (String attachFile : mailInfo.getAttachFileNames()) {
 					bodyPart = new MimeBodyPart();
 					FileDataSource fds = new FileDataSource(attachFile); // 得到数据源

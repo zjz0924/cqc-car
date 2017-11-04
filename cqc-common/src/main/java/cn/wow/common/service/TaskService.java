@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.CostRecord;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.ExpItem;
 import cn.wow.common.domain.Task;
 
 public interface TaskService {
@@ -34,9 +36,19 @@ public interface TaskService {
      * @param subject  主题
      * @param content  内容
      * @param addr     接收人地址（多个邮件地址以";"分隔）
+     * @param type     类型：1-text 2-html
      */
-    public boolean sendEmail(String subject, String content, String addr) throws Exception;
+    public boolean sendEmail(String subject, String content, String addr, int type) throws Exception;
     
+    
+    /**
+	 * 发送费用清单
+	 * @param account     操作用户
+	 * @param costRecord  费用清单
+	 * @param orgs        发送机构
+	 * @param itemList    试验项目
+	 */
+	public void sendCost(Account account, String orgs, CostRecord costRecord, List<ExpItem> itemList) throws Exception;
     
     
     /**

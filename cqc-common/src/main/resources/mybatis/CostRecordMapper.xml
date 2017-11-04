@@ -19,12 +19,12 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, t_id, a_id, lab_id, orgs, state, remark, create_time, times,
-		lab_type, lab_result, send_time
+		c.id, c.t_id, c.a_id, c.lab_id, c.orgs, c.state, c.remark, c.create_time, c.times,
+		c.lab_type, c.lab_result, c.send_time
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="base_columns" /> from cost_record where id = #{id,jdbcType=BIGINT}
+		select <include refid="base_columns" /> from cost_record c left join task t on t.id = c.t_id where c.id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -90,37 +90,40 @@
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
 	  	select 
 	    <include refid="base_columns" />
-	      from cost_record
+	      from cost_record c left join task t on t.id = c.t_id
 	     <where>
 			<if test="tId != null">
-				and t_id = #{tId,jdbcType=BIGINT}
+				and c.t_id = #{tId,jdbcType=BIGINT}
+			</if>
+			<if test="code != null">
+				and t.code like concat('%', #{code,jdbcType=VARCHAR} ,'%')
 			</if>
 			<if test="aId != null">
-				and a_id = #{aId,jdbcType=BIGINT}
+				and c.a_id = #{aId,jdbcType=BIGINT}
 			</if>
 			<if test="labId != null">
-				and lab_id = #{labId,jdbcType=BIGINT}
+				and c.lab_id = #{labId,jdbcType=BIGINT}
 			</if>
 			<if test="orgs != null">
 				and find_in_set(#{orgs,jdbcType=VARCHAR}, orgs)
 			</if>
 			<if test="state != null">
-				and state = #{state,jdbcType=INTEGER}
+				and c.state = #{state,jdbcType=INTEGER}
 			</if>
 			<if test="labResult != null">
-			 	and lab_result = #{labResult,jdbcType=INTEGER}
+			 	and c.lab_result = #{labResult,jdbcType=INTEGER}
 			</if>
 			<if test="startCreateTime != null and startCreateTime != ''">
-				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+				and c.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 			</if> 
 			<if test="endCreateTime != null and endCreateTime != ''">
-				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+				and c.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="startSendTime != null and startSendTime != ''">
-				and send_time &gt;= #{startSendTime, jdbcType=TIMESTAMP}
+				and c.send_time &gt;= #{startSendTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="endSendTime != null and endSendTime != ''">
-				and send_time &lt;= #{endSendTime, jdbcType=TIMESTAMP}
+				and c.send_time &lt;= #{endSendTime, jdbcType=TIMESTAMP}
 			</if>
 	      </where>
 	      
@@ -129,7 +132,7 @@
 	  			order by ${custom_order_sql}
 	  		</when>
 	  		<otherwise>
-	  			order by id desc
+	  			order by c.id desc
 	  		</otherwise>
 	 	 </choose>
 	  </select>

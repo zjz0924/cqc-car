@@ -1,5 +1,7 @@
 package cn.wow.common.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
-import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
 import cn.wow.common.dao.AtlasResultDao;
+import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CompareVO;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.service.AtlasResultService;
@@ -34,6 +39,9 @@ public class AtlasResultServiceImpl implements AtlasResultService{
     private TaskRecordDao taskRecordDao;
     @Autowired
     private TaskDao taskDao;
+    @Autowired
+    private ExamineRecordDao examineRecordDao;
+    
 
     public AtlasResult selectOne(Long id){
     	return atlasResultDao.selectOne(id);
@@ -138,6 +146,98 @@ public class AtlasResultServiceImpl implements AtlasResultService{
      */
 	public List<AtlasResult> getStandardMatAtlResult(Long id){
 		return atlasResultDao.getStandardMatAtlResult(id);
+	}
+	
+	/**
+	 * 组装图谱对比
+	 * @param sd_atlasResult  基准图谱
+	 * @param sl_atlasResult  抽样图谱
+	 */
+	public Map<Integer, CompareVO> assembleCompareAtlas(List<AtlasResult> sd_atlasResult, List<AtlasResult> sl_atlasResult){
+		Map<Integer, CompareVO> map = new HashMap<Integer, CompareVO>();
+
+		for (AtlasResult ar : sd_atlasResult) {
+			CompareVO vo = new CompareVO();
+			vo.setStandard_pic(ar.getPic());
+			map.put(ar.getType(), vo);
+		}
+
+		for (AtlasResult ar : sl_atlasResult) {
+			CompareVO vo = map.get(ar.getType());
+			vo.setSampling_pic(ar.getPic());
+			map.put(ar.getType(), vo);
+		}
+		return map;
+	}
+	
+	
+	/**
+	 * 组装图谱结果
+	 * @param pfDataList  当前任务所有的图谱结果记录
+	 * @param pPfResult   零部件的图谱结果记录
+	 * @param mPfResult   原材料的图谱结果记录
+	 */
+	public void assembleAtlasResult(List<AtlasResult> atDataList, Map<Integer, List<AtlasResult>> pAtlasResult,
+			Map<Integer, List<AtlasResult>> mAtlasResult) {
+
+		if (atDataList != null && atDataList.size() > 0) {
+			for (AtlasResult at : atDataList) {
+				if (at.getCatagory() == 1) { // 零部件
+					List<AtlasResult> list = pAtlasResult.get(at.getExpNo());
+					if (list != null) {
+						list.add(at);
+					} else {
+						list = new ArrayList<AtlasResult>();
+						list.add(at);
+					}
+					pAtlasResult.put(at.getExpNo(), list);
+				} else { // 原材料
+					List<AtlasResult> list = mAtlasResult.get(at.getExpNo());
+					if (list != null) {
+						list.add(at);
+					} else {
+						list = new ArrayList<AtlasResult>();
+						list.add(at);
+					}
+					mAtlasResult.put(at.getExpNo(), list);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * 组装对比结果
+	 */
+	public Map<String, List<ExamineRecord>> assembleCompareResult(Long taskId) {
+		Map<String, List<ExamineRecord>> result = new HashMap<String, List<ExamineRecord>>();
+
+		Map<String, Object> erMap = new PageMap(false);
+		erMap.put("taskId", taskId);
+		erMap.put("type", 4);
+		erMap.put("catagorys", 8);
+		erMap.put("custom_order_sql", "create_time desc, catagory asc limit 8");
+		List<ExamineRecord> erList = examineRecordDao.selectAllList(erMap);
+
+		// 零部件结果
+		List<ExamineRecord> pList = new ArrayList<ExamineRecord>();
+		// 原材料结果
+		List<ExamineRecord> mList = new ArrayList<ExamineRecord>();
+
+		for (ExamineRecord er : erList) {
+			if (er.getCatagory() <= 4) {
+				pList.add(er);
+			} else {
+				mList.add(er);
+			}
+		}
+
+		Collections.sort(pList);
+		Collections.sort(mList);
+		result.put("零部件", pList);
+		result.put("原材料", mList);
+
+		return result;
 	}
 	
 }
