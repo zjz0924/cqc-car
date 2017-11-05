@@ -89,47 +89,50 @@
 						<c:forEach items="${currentMenuList}" var="vo">
 							<li class="base" _t_nav="YWGL">
 								<a href="${ctx}/${vo.url}" class="base_a">${vo.name}</a>
-								<ul>
-									<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
-										<li class="subli  <c:if test="${not empty subVo.subList}">hasitemli</c:if>">
-											<c:choose>
-												<c:when test="${not empty subVo.subList}">	
-													   <a href="${ctx}/${subVo.url}">${subVo.name}</a>
-													   <ul>
-													   	  <c:forEach items="${subVo.subList}" var="tVo" varStatus="tst">
-													   	  	 
-													   	  	 <c:choose>
-													   	  	 	<c:when test="${empty subVo.url}">
-													   	  	 		<li class="subli">
-																		<a href="${ctx}/${tVo.url}">${tVo.name}</a>
-																	</li>
-													   	  	 	</c:when>
-													   	  	 	<c:otherwise>
-													   	  	 		<li class="subli">
-																		<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
-																	</li>
-													   	  	 	</c:otherwise>
-													   	  	 </c:choose>
-													   	  	 
-													   	  </c:forEach>
-													   </ul>
-												</c:when>
-												<c:otherwise>
-													
-													<c:choose>
-													   	<c:when test="${not empty vo.url}">
-													   		<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
-													   	</c:when>
-													   	<c:otherwise>
-													   		<a href="${ctx}/${subVo.url}">${subVo.name}</a>
-													   	</c:otherwise>
-													</c:choose>
-													
-												</c:otherwise>
-											</c:choose>
-										</li>
-									</c:forEach>
-								</ul>
+								
+								<c:if test="${not empty vo.subList}">
+									<ul>
+										<c:forEach items="${vo.subList}" var="subVo" varStatus="vst">
+											<li class="subli  <c:if test="${not empty subVo.subList}">hasitemli</c:if>">
+												<c:choose>
+													<c:when test="${not empty subVo.subList}">	
+														   <a href="${ctx}/${subVo.url}">${subVo.name}</a>
+														   <ul>
+														   	  <c:forEach items="${subVo.subList}" var="tVo" varStatus="tst">
+														   	  	 
+														   	  	 <c:choose>
+														   	  	 	<c:when test="${empty subVo.url}">
+														   	  	 		<li class="subli">
+																			<a href="${ctx}/${tVo.url}">${tVo.name}</a>
+																		</li>
+														   	  	 	</c:when>
+														   	  	 	<c:otherwise>
+														   	  	 		<li class="subli">
+																			<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
+																		</li>
+														   	  	 	</c:otherwise>
+														   	  	 </c:choose>
+														   	  	 
+														   	  </c:forEach>
+														   </ul>
+													</c:when>
+													<c:otherwise>
+														
+														<c:choose>
+														   	<c:when test="${not empty vo.url}">
+														   		<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+														   	</c:when>
+														   	<c:otherwise>
+														   		<a href="${ctx}/${subVo.url}">${subVo.name}</a>
+														   	</c:otherwise>
+														</c:choose>
+														
+													</c:otherwise>
+												</c:choose>
+											</li>
+										</c:forEach>
+									</ul>
+								</c:if>
 							</li>
 						</c:forEach>
 					</ul>

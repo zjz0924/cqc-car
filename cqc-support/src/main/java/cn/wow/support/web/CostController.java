@@ -83,7 +83,9 @@ public class CostController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
 	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startCreateTime, String endCreateTime, String code, int type) {
-
+		
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -103,11 +105,18 @@ public class CostController extends AbstractController {
 			map.put("endCreateTime", endCreateTime);
 		}
 		
-		
-		if(type == 1){
+		if (type == 1) {
 			map.put("state", 0);
-		}else{
+
+			if (account.getRole() != null && !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+				map.put("labId", account.getOrgId());
+			}
+		} else {
 			map.put("state", 1);
+
+			if (account.getRole() != null && !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+				map.put("orgs", account.getOrgId());
+			}
 		}
 
 		List<CostRecord> dataList = costRecordService.selectAllList(map);
