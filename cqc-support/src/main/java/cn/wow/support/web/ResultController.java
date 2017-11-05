@@ -79,8 +79,6 @@ public class ResultController extends AbstractController {
 	private AtlasResultService atlasResultService;
 	@Autowired
 	private PfResultService pfResultService;
-	@Autowired
-	private ExamineRecordService examineRecordService;
 	
 	
 	//-----------------------------------    结果上传        ---------------------------------------------------------------
