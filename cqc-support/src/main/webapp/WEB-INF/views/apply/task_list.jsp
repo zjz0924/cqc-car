@@ -54,14 +54,6 @@
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
-						field : 'failNum',
-						title : '实验次数',
-						width : '120',
-						align : 'center',
-						formatter : function(val){
-							return "<span title='" + (val + 1) + "'>第" + (val+1) + "次</span>";
-						}
-					}, {
 						field : 'org',
 						title : '录入单位',
 						width : '250',
@@ -87,17 +79,29 @@
 						width : '150',
 						align : 'center',
 						formatter : DateTimeFormatter
+					},{
+						field : 'confirmTime',
+						title : '确认时间',
+						width : '150',
+						align : 'center',
+						formatter : DateTimeFormatter
 					}, {
 						field : '_operation',
 						title : '操作',
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="taskDetail('+ row.id +')">修改信息</a><a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';  	
+							if(row.infoApply == 1){
+								return '<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+							}else if(row.resultApply == 1){
+								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>';
+							}else{
+								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+							}
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						taskDetail(rowData.id);
+						infoDetail(rowData.id);
 					},
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
@@ -250,24 +254,25 @@
 			
 			// 关掉对话时回调
 			function closeDialog(msg) {
-				$('#taskDetailDialog').dialog('close');
+				$('#infoDetailDialog').dialog('close');
+				$('#labDetailDialog').dialog('close');
 				tipMsg(msg, function(){
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
-			function taskDetail(id) {
-				$('#taskDetailDialog').dialog({
+			function infoDetail(id) {
+				$('#infoDetailDialog').dialog({
 					title : '信息',
 					width : 1000,
 					height : 660,
 					closed : false,
 					cache : false,
-					href : "${ctx}/apply/taskDetail?id=" + id,
+					href : "${ctx}/apply/infoDetail?id=" + id,
 					modal : true
 				});
-				$('#taskDetailDialog').window('center');
+				$('#infoDetailDialog').window('center');
 			}
 			
 			function labDetail(id) {
@@ -324,7 +329,7 @@
 				<table id="taskRecordTable" style="height:auto;width:auto"></table>
 			</div>
 			
-			<div id="taskDetailDialog"></div>
+			<div id="infoDetailDialog"></div>
 			<div id="labDetailDialog"></div>
 		</div>
 

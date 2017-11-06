@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
+import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
 
 public interface InfoService {
@@ -84,4 +87,25 @@ public interface InfoService {
      * @param remark   备注
      */
     public void approve(Account account, Long id, int result, String remark);
+    
+    
+    /**
+     * 申请信息修改
+     * @param account
+     * @param vehicle    整车信息
+     * @param parts      零部件信息
+     * @param material   原材料信息
+     * @param task       任务
+     */
+    public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material);
+    
+    /**
+     * 申请结果修改
+     * @param account
+     * @param taskId    任务ID
+     * @param pfResultList    性能结果
+     * @param atlResultList   图谱结果
+     */
+    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList);
+    
 }

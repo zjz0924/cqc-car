@@ -13,8 +13,7 @@ public enum SamplingTaskEnum {
 	COMPARE(4, "对比中"),
 	SENDING(5, "结果发送中"),
 	COMFIRM(6, "结果确认中"),
-	PASS(7, "结果合格"),
-	NOTPASS(8, "结果不合格");
+	ACCOMPLISH(7, "结果合格");
 
 	private int state;
 

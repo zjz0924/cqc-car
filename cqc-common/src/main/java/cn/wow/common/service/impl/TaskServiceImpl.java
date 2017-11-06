@@ -371,7 +371,7 @@ public class TaskServiceImpl implements TaskService{
 		Date date = new Date();
 		
 		if(result == 1){
-			task.setState(SamplingTaskEnum.PASS.getState());
+			task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
 			task.setConfirmTime(new Date());
 			taskDao.update(task);
 			
@@ -400,7 +400,7 @@ public class TaskServiceImpl implements TaskService{
 				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.REORDER.getState(), "结果不合格，进行第2次抽样，不合格原因：" + remark, date);
 				taskRecordDao.insert(taskRecord);
 			}else{  // 第二次失败
-				task.setState(SamplingTaskEnum.NOTPASS.getState());
+				task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
 				task.setFailNum(task.getFailNum() + 1);
 				taskDao.update(task);
 				

@@ -85,6 +85,9 @@
 			<if test="catagory != null">
 				and catagory = #{catagory,jdbcType=INTEGER}
 			</if>
+			<if test="expNo != null">
+			 	and exp_no = #{expNo,jdbcType=INTEGER}
+			</if>
 		</where>
 
 		<choose>

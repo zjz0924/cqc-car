@@ -75,6 +75,10 @@ public class Task {
     // 原材料型式实验次数
     private Integer matPatTimes;
     
+    // 是否申请修改信息（0-否，1-是）
+    private Integer infoApply;
+    // 是否申请修改试验结果（0-否，1-是）
+    private Integer resultApply;
     
     public Long getId() {
         return id;
@@ -315,4 +319,22 @@ public class Task {
 	public void setConfirmTime(Date confirmTime) {
 		this.confirmTime = confirmTime;
 	}
+
+	public Integer getInfoApply() {
+		return infoApply;
+	}
+
+	public void setInfoApply(Integer infoApply) {
+		this.infoApply = infoApply;
+	}
+
+	public Integer getResultApply() {
+		return resultApply;
+	}
+
+	public void setResultApply(Integer resultApply) {
+		this.resultApply = resultApply;
+	}
+	
+	
 }

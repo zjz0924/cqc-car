@@ -1,6 +1,5 @@
 package cn.wow.common.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import cn.wow.common.domain.Account;

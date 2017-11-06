@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.MaterialDao;
@@ -20,10 +21,13 @@ import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ApplyRecord;
+import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
+import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
@@ -57,6 +61,8 @@ public class InfoServiceImpl implements InfoService {
 	private TaskRecordDao taskRecordDao;
 	@Autowired
 	private ExamineRecordDao examineRecordDao;
+	@Autowired
+	private ApplyRecordDao applyRecordDao;
 
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -145,6 +151,8 @@ public class InfoServiceImpl implements InfoService {
 			task.setPartsPatTimes(0);
 			task.setMatAtlTimes(0);
 			task.setMatPatTimes(0);
+			task.setInfoApply(0);
+			task.setResultApply(0);
 			taskDao.insert(task);
 
 			// 操作记录
@@ -310,7 +318,12 @@ public class InfoServiceImpl implements InfoService {
 			task.setPartsPatId(partsPatId);
 			task.setMatAtlId(matAtlId);
 			task.setMatPatId(matPatId);
-			
+			task.setPartsAtlTimes(0);
+			task.setPartsPatTimes(0);
+			task.setMatAtlTimes(0);
+			task.setMatPatTimes(0);
+			task.setInfoApply(0);
+			task.setResultApply(0);
 			taskDao.insert(task);
 
 			// 操作记录
@@ -482,7 +495,59 @@ public class InfoServiceImpl implements InfoService {
 		taskDao.update(task);
 		taskRecordDao.insert(record);
     }
-	
+
+    
+    
+    /**
+     * 申请信息修改
+     * @param account
+     * @param vehicle    整车信息
+     * @param parts      零部件信息
+     * @param material   原材料信息
+     * @param task       任务
+     */
+    public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material){
+		task.setInfoApply(1);
+		taskDao.update(task);
+
+		ApplyRecord applyRecord = new ApplyRecord();
+		applyRecord.setaId(account.getId());
+		applyRecord.setCreateTime(vehicle.getCreateTime());
+		applyRecord.setState(0);
+		applyRecord.settId(task.getId());
+		applyRecord.setType(1);
+		
+		if(vehicle != null){
+			vehicleDao.insert(vehicle);
+			applyRecord.setvId(vehicle.getId());
+		}
+		if(parts != null){
+			partsDao.insert(parts);
+			applyRecord.setpId(parts.getId());
+		}
+		if(material != null){
+			materialDao.insert(material);
+			applyRecord.setmId(material.getId());
+		}
+		
+		applyRecordDao.insert(applyRecord);
+    }
+    
+    
+    
+    /**
+     * 申请结果修改
+     * @param account
+     * @param taskId    任务ID
+     * @param pfResultList    性能结果
+     * @param atlResultList   图谱结果
+     */
+    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList){
+    	
+    	Task task = taskDao.selectOne(taskId);
+    	
+    	
+    }
 	
 	
 	/**

@@ -296,7 +296,7 @@ public class OtsTaskController extends AbstractController {
 				parts.setCreateTime(date);
 				parts.setState(Contants.ONDOING_TYPE);
 
-				Parts dbParts = partsService.selectByCode(vehicle.getCode());
+				Parts dbParts = partsService.selectByCode(parts.getCode());
 				if (dbParts != null) {
 					vo.setSuccess(false);
 					vo.setMsg("零部件号已存在");
@@ -316,7 +316,7 @@ public class OtsTaskController extends AbstractController {
 					parts.setOrgId(p_orgId);
 
 					if (!p_code.equals(parts.getCode())) {
-						Parts dbParts = partsService.selectByCode(vehicle.getCode());
+						Parts dbParts = partsService.selectByCode(parts.getCode());
 						if (dbParts != null) {
 							vo.setSuccess(false);
 							vo.setMsg("零部件号已存在");
