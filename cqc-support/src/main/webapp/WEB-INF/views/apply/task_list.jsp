@@ -253,9 +253,9 @@
 			}
 			
 			// 关掉对话时回调
-			function closeDialog(msg) {
-				$('#infoDetailDialog').dialog('close');
-				$('#labDetailDialog').dialog('close');
+			function closeDialog(msg, dialog) {
+				$('#' + dialog).dialog('close');
+				
 				tipMsg(msg, function(){
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');

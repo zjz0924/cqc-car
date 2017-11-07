@@ -29,18 +29,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ApplyRecord;
+import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
+import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.ApplyRecordService;
+import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PartsService;
+import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.service.VehicleService;
@@ -50,11 +56,10 @@ import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
-
 /**
  * OTS任务
- * @author zhenjunzhuo
- * 2017-10-30
+ * 
+ * @author zhenjunzhuo 2017-10-30
  */
 @Controller
 @RequestMapping(value = "ots")
@@ -97,6 +102,12 @@ public class OtsTaskController extends AbstractController {
 	private MaterialService materialService;
 	@Autowired
 	private ExamineRecordService examineRecordService;
+	@Autowired
+	private ApplyRecordService applyRecordService;
+	@Autowired
+	private AtlasResultService atlasResultService;
+	@Autowired
+	private PfResultService pfResultService;
 
 	/**
 	 * 首页
@@ -145,16 +156,16 @@ public class OtsTaskController extends AbstractController {
 		return "task/ots/require_list";
 	}
 
-	
 	/**
 	 * 列表数据
 	 * 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/requireListData")
-	public Map<String, Object> requireListData(HttpServletRequest request, Model model, String startCreateTime, String endCreateTime, Integer state) {
+	public Map<String, Object> requireListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, Integer state) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -163,10 +174,10 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		
-		if(state == null){
+
+		if (state == null) {
 			map.put("examineState", true);
-		}else{
+		} else {
 			map.put("state", state);
 		}
 		map.put("type", TaskTypeEnum.OTS.getState());
@@ -177,7 +188,7 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime);
 		}
-		
+
 		// 除了超级管理员，其它用户只能查看自己录入的申请记录
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
 			map.put("aId", account.getId());
@@ -205,9 +216,9 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@RequestMapping(value = "/requireDetail")
 	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
-		if(id != null){
+		if (id != null) {
 			Task task = taskService.selectOne(id);
-			
+
 			// 审核记录
 			Map<String, Object> rMap = new PageMap(false);
 			rMap.put("taskId", id);
@@ -215,11 +226,11 @@ public class OtsTaskController extends AbstractController {
 			rMap.put("type", 1);
 			rMap.put("taskType", TaskTypeEnum.OTS.getState());
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
-			
+
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
 		}
-		
+
 		return "task/ots/require_detail";
 	}
 
@@ -231,8 +242,8 @@ public class OtsTaskController extends AbstractController {
 	public AjaxVO save(HttpServletRequest request, Model model, Long v_id, String v_code, String v_type,
 			String v_proTime, String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime,
 			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
-			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark,
-			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id) {
+			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
+			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -304,7 +315,7 @@ public class OtsTaskController extends AbstractController {
 				}
 			} else {
 				parts = partsService.selectOne(p_id);
-				if(parts.getState().intValue() == 0){
+				if (parts.getState().intValue() == 0) {
 					parts.setProTime(sdf.parse(p_proTime));
 					parts.setRemark(p_remark);
 					parts.setPlace(p_place);
@@ -328,7 +339,7 @@ public class OtsTaskController extends AbstractController {
 
 			// 原材料信息
 			Material material = null;
-			if(m_id == null){
+			if (m_id == null) {
 				material = new Material();
 				material.setType(Contants.STANDARD_TYPE);
 				material.setRemark(m_remark);
@@ -344,7 +355,7 @@ public class OtsTaskController extends AbstractController {
 					String pic = uploadImg(mfile, materialUrl, false);
 					material.setPic(pic);
 				}
-			}else{
+			} else {
 				material = materialService.selectOne(m_id);
 				material.setRemark(m_remark);
 				material.setProNo(m_proNo);
@@ -450,9 +461,12 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审核结果
 	 * 
-	 * @param id     任务ID
-	 * @param type   结果： 1-通过， 2-不通过
-	 * @param remark 备注
+	 * @param id
+	 *            任务ID
+	 * @param type
+	 *            结果： 1-通过， 2-不通过
+	 * @param remark
+	 *            备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
@@ -540,7 +554,7 @@ public class OtsTaskController extends AbstractController {
 	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
-			
+
 			Map<String, Object> rMap = new PageMap(false);
 			rMap.put("taskId", id);
 			rMap.put("type", 2);
@@ -560,15 +574,21 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 下达任务结果
 	 * 
-	 * @param id           任务ID
-	 * @param partsAtlId   零部件图谱实验室ID
-	 * @param matAtlId     原材料图谱实验室ID
-	 * @param partsPatId   零部件型式实验室ID
-	 * @param matPatId     原材料型式实验室ID
+	 * @param id
+	 *            任务ID
+	 * @param partsAtlId
+	 *            零部件图谱实验室ID
+	 * @param matAtlId
+	 *            原材料图谱实验室ID
+	 * @param partsPatId
+	 *            零部件型式实验室ID
+	 * @param matPatId
+	 *            原材料型式实验室ID
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long partsAtlId, Long matAtlId,
+			Long partsPatId, Long matPatId) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
@@ -650,7 +670,6 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("approveTask", true);
 		map.put("type", TaskTypeEnum.OTS.getState());
 
@@ -687,24 +706,94 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@RequestMapping(value = "/approveDetail")
 	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		int approveType = 3;
+
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
+			if (task.getInfoApply() == 1 && task.gettId() == null) { // 申请修改信息
+				approveType = 1;
+				ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
+				
+				if(applyRecord != null){
+					if (applyRecord.getpId() != null) {
+						Parts newParts = partsService.selectOne(applyRecord.getpId());
+						model.addAttribute("newParts", newParts);
+					}
+
+					if (applyRecord.getvId() != null) {
+						Vehicle newVehicle = vehicleService.selectOne(applyRecord.getvId());
+						model.addAttribute("newVehicle", newVehicle);
+					}
+
+					if (applyRecord.getmId() != null) {
+						Material newMaterial = materialService.selectOne(applyRecord.getvId());
+						model.addAttribute("newMaterial", newMaterial);
+					}
+				}
+				
+			} else if (task.getResultApply() == 1 && task.gettId() != null) { // 申请修改试验结果
+				approveType = 2;
+				
+				/** ---------  原结果  ----------- */
+				// 零部件-性能结果（只取最后一次实验）
+				List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
+
+				// 原材料-性能结果（只取最后一次实验结果）
+				List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
+				
+				// 零部件-图谱结果（只取最后一次实验）
+				List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
+				
+				// 原材料-图谱结果（只取最后一次实验）
+				List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
+				
+				/** ---------  修改之后的结果  ----------- */
+				// 零部件-性能结果（只取最后一次实验）
+				List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
+
+				// 原材料-性能结果（只取最后一次实验结果）
+				List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
+				
+				// 零部件-图谱结果（只取最后一次实验）
+				List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
+				
+				// 原材料-图谱结果（只取最后一次实验）
+				List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
+				
+				
+				model.addAttribute("pPfResult_old", pPfResult_old);
+				model.addAttribute("mPfResult_old", mPfResult_old);
+				model.addAttribute("pAtlasResult_old", pAtlasResult_old);
+				model.addAttribute("mAtlasResult_old", mAtlasResult_old);
+				model.addAttribute("pPfResult_new", pPfResult_new);
+				model.addAttribute("mPfResult_new", mPfResult_new);
+				model.addAttribute("pAtlasResult_new", pAtlasResult_new);
+				model.addAttribute("mAtlasResult_new", mAtlasResult_new);
+			}
+
+			model.addAttribute("approveType", approveType);
 			model.addAttribute("facadeBean", task);
 		}
 
 		model.addAttribute("resUrl", resUrl);
-		return "task/ots/approve_detail";
+
+		if (approveType == 1) {
+			return "task/ots/approve_info_detail";
+		} else {
+			return "task/ots/approve_detail";
+		}
 	}
 
 	/**
-     * 审批结果
-     * @param account  操作用户
-     * @param id       任务ID
-     * @param result   结果：1-通过，2-不通过
-     * @param remark   备注
-     * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部
-     */
+	 * 审批结果
+	 * 
+	 * @param account  操作用户
+	 * @param id       任务ID
+	 * @param result   结果：1-通过，2-不通过
+	 * @param remark   备注
+	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/approve")
 	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, int catagory, String remark) {

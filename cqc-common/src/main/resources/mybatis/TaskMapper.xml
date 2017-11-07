@@ -6,6 +6,7 @@
 		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="i_id" property="iId" jdbcType="BIGINT" />
 		<result column="a_id" property="aId" jdbcType="BIGINT" />
+		<result column="t_id" property="tId" jdbcType="BIGINT" />
 		<result column="org_id" property="orgId" jdbcType="BIGINT" />
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="state" property="state" jdbcType="INTEGER" />
@@ -46,7 +47,7 @@
 	
 	<sql id="base_columns">
 		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.parts_atl_id, t.mat_atl_id, t.parts_pat_id, t.mat_pat_id ,t.remark, t.create_time, t.fail_num, t.a_id, t.parts_atl_result, t.mat_atl_result,
-        t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time, t.info_apply, t.result_apply
+        t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time, t.info_apply, t.result_apply, t.t_id
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -59,12 +60,16 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.Task">
-		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply)
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+			SELECT @@IDENTITY
+		</selectKey>
+	
+		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
 					#{partsAtlId,jdbcType=BIGINT}, #{matAtlId,jdbcType=BIGINT}, #{partsPatId,jdbcType=BIGINT}, #{matPatId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
 					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, #{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER}, 
 					#{partsAtlTimes,jdbcType=INTEGER}, #{matAtlTimes,jdbcType=INTEGER}, #{partsPatTimes,jdbcType=INTEGER}, #{matPatTimes,jdbcType=INTEGER}, #{confirmTime,jdbcType=TIMESTAMP},
-					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER})
+					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER}, #{tId,jdbcType=BIGINT})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -125,14 +130,15 @@
 			<if test="matPatTimes != null">
 				mat_pat_times = #{matPatTimes,jdbcType=INTEGER},
 			</if>
-			<if test="confirmTime != null">
 				confirm_time = #{confirmTime,jdbcType=TIMESTAMP},
-			</if>
 			<if test="infoApply != null">
 				info_apply = #{infoApply,jdbcType=INTEGER},
 			</if>
 			<if test="resultApply != null">
-				result_apply = #{resultApply,jdbcType=INTEGER}
+				result_apply = #{resultApply,jdbcType=INTEGER},
+			</if>
+			<if test="tId != null">
+				t_id = #{tId,jdbcType=BIGINT},
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -164,6 +170,10 @@
 
 			<if test="aId != null">
 				and t.a_id = #{iId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="tId != null">
+				and t.t_id = #{tId,jdbcType=BIGINT}
 			</if>
 
 			<if test="state != null">
@@ -260,7 +270,7 @@
 
 			<!-- 审批列表 -->
 			<if test="approveTask != null">
-				and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)
+				and ((t.state = 3 and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
 			</if>
 
 			<!-- 图谱结果上传 -->
@@ -303,12 +313,12 @@
 
 			<!-- 所有已完成的任务 -->
 			<if test="accomplishTask != null">
-				and (((t.type = 1 and t.state = 4) or (t.type = 2 and t.state = 7)) and (t.info_apply = 0 or result_apply = 0)) 
+				and (((t.type = 1 and t.state = 4) or (t.type = 2 and t.state = 7)) and (((t.info_apply = 0 or result_apply = 0) and t.t_id is null) or (t.result_apply != 1 and t.t_id is not null))) 
 			</if>
 			
 			<!-- 只能看到分配自己实验室的任务 -->
 			<if test="accomplishTask_lab != null">
-				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT})
+				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and (((t.info_apply = 0 or result_apply = 0) and t.t_id is null) or (t.result_apply != 1 and t.t_id is not null))
 			</if>
 		</where>
 

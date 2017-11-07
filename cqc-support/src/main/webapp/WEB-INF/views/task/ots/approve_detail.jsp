@@ -117,75 +117,331 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">试验信息</div>
-		<div>
-			<table class="info">
-				<tr>
-					<td class="title-td">试验名称</td>
-					<td class="title-td">分配实验室</td>
-					<td class="title-td">操作</td>
-				</tr>
+		<c:choose>
+			<c:when test="${approveType == 3}">
+				<div class="title">试验信息</div>
+				<div>
+					<table class="info">
+						<tr>
+							<td class="title-td">试验名称</td>
+							<td class="title-td">分配实验室</td>
+							<td class="title-td">操作</td>
+						</tr>
+						
+						<tr>
+							<td class="value-td">零部件图谱试验</td>
+							<td class="value-td">${facadeBean.partsAtl.name}</td>
+							<td>
+								<span id="partsAtl1" <c:if test="${facadeBean.partsAtlResult != 0}">style="display:none;"</c:if>>
+									<a href="javascript:void(0);"  onclick="approve(1,'', 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+									<a href="javascript:void(0);"  onclick="notPass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+								</span>
+								<span id="partsAtl2" style="color:green;display:none;">同意</span>
+								<span id="partsAtl3" style="color:red;display:none;">不同意</span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="value-td">原材料图谱试验</td>
+							<td class="value-td">${facadeBean.matAtl.name}</td>
+							<td>
+								<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
+									<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+									<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+								</span>
+								<span id="matAtl2" style="color:green;display:none;">同意</span>
+								<span id="matAtl3" style="color:red;display:none;">不同意</span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="value-td">零部件型式试验</td>
+							<td class="value-td">${facadeBean.partsPat.name}</td>
+							<td>
+								<span id="partsPat1" <c:if test="${facadeBean.partsPatResult != 0}">style="display:none;"</c:if>>
+									<a href="javascript:void(0);"  onclick="approve(1,'', 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+									<a href="javascript:void(0);"  onclick="notPass(3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+								</span>
+								<span id="partsPat2" style="color:green;display:none;">同意</span>
+								<span id="partsPat3" style="color:red;display:none;">不同意</span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="value-td">原材料型式试验</td>
+							<td class="value-td">${facadeBean.matPat.name}</td>
+							<td>
+								<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
+									<a href="javascript:void(0);"  onclick="approve(1,'', 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+									<a href="javascript:void(0);"  onclick="notPass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+								</span>
+								<span id="matPat2" style="color:green;display:none;">同意</span>
+								<span id="matPat3" style="color:red;display:none;">不同意</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+		
+				<c:if test="${facadeBean.partsAtlResult == 0 and facadeBean.matAtlResult == 0 and facadeBean.partsPatResult ==0 and facadeBean.matPatResult == 0}">
+					 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
+						<a id="allAgree" href="javascript:void(0);"  onclick="approve(1,'', 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部同意</a>&nbsp;&nbsp;
+						<a id="allNotAgree" href="javascript:void(0);"  onclick="notPass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">全部不同意</a>
+					</div>
+				</c:if>
+			</c:when>
+			<c:when test="${approveType == 2}">  
+				<div class="title">试验结果</div>
 				
-				<tr>
-					<td class="value-td">零部件图谱试验</td>
-					<td class="value-td">${facadeBean.partsAtl.name}</td>
-					<td>
-						<span id="partsAtl1" <c:if test="${facadeBean.partsAtlResult != 0}">style="display:none;"</c:if>>
-							<a href="javascript:void(0);"  onclick="approve(1,'', 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-							<a href="javascript:void(0);"  onclick="notPass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-						</span>
-						<span id="partsAtl2" style="color:green;display:none;">同意</span>
-						<span id="partsAtl3" style="color:red;display:none;">不同意</span>
-					</td>
-				</tr>
+				<div class="title">零部件试验结果</div>
+				<table class="info">
+					<tr>
+						<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+						<td class="title-td">试验项目</td>
+						<td class="title-td">参考标准</td>
+						<td class="title-td">试验要求</td>
+						<td class="title-td">试验结果</td>
+						<td class="title-td">结果评价</td>
+						<td class="title-td">备注</td>
+					</tr>
 				
-				<tr>
-					<td class="value-td">原材料图谱试验</td>
-					<td class="value-td">${facadeBean.matAtl.name}</td>
-					<td>
-						<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
-							<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-							<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-						</span>
-						<span id="matAtl2" style="color:green;display:none;">同意</span>
-						<span id="matAtl3" style="color:red;display:none;">不同意</span>
-					</td>
-				</tr>
+					<c:forEach items="${pPfResult_old}" var="vo" varStatus="status">
+						<tr>
+							<td style="background: #f5f5f5;padding-left:5px;">${status.index + 1}</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.project}">${vo.project}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.standard}">${vo.standard}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.require}">${vo.require}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.result}">${vo.result}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.evaluate}">${vo.evaluate}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.remark}">${vo.remark}</span>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
 				
-				<tr>
-					<td class="value-td">零部件型式试验</td>
-					<td class="value-td">${facadeBean.partsPat.name}</td>
-					<td>
-						<span id="partsPat1" <c:if test="${facadeBean.partsPatResult != 0}">style="display:none;"</c:if>>
-							<a href="javascript:void(0);"  onclick="approve(1,'', 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-							<a href="javascript:void(0);"  onclick="notPass(3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-						</span>
-						<span id="partsPat2" style="color:green;display:none;">同意</span>
-						<span id="partsPat3" style="color:red;display:none;">不同意</span>
-					</td>
-				</tr>
+				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
+				<table class="info">
+					<tr>
+						<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+						<td class="title-td">试验项目</td>
+						<td class="title-td">参考标准</td>
+						<td class="title-td">试验要求</td>
+						<td class="title-td">试验结果</td>
+						<td class="title-td">结果评价</td>
+						<td class="title-td">备注</td>
+					</tr>
 				
-				<tr>
-					<td class="value-td">原材料型式试验</td>
-					<td class="value-td">${facadeBean.matPat.name}</td>
-					<td>
-						<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
-							<a href="javascript:void(0);"  onclick="approve(1,'', 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-							<a href="javascript:void(0);"  onclick="notPass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-						</span>
-						<span id="matPat2" style="color:green;display:none;">同意</span>
-						<span id="matPat3" style="color:red;display:none;">不同意</span>
-					</td>
-				</tr>
-			</table>
-		</div>
-
-		<c:if test="${facadeBean.partsAtlResult == 0 and facadeBean.matAtlResult == 0 and facadeBean.partsPatResult ==0 and facadeBean.matPatResult == 0}">
-			 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
-				<a id="allAgree" href="javascript:void(0);"  onclick="approve(1,'', 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部同意</a>&nbsp;&nbsp;
-				<a id="allNotAgree" href="javascript:void(0);"  onclick="notPass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">全部不同意</a>
-			</div>
-		</c:if>
+					<c:forEach items="${pPfResult_new}" var="vo" varStatus="status">
+						<tr>
+							<td style="background: #f5f5f5;padding-left:5px;">${status.index + 1}</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.project}">${vo.project}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.standard}">${vo.standard}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.require}">${vo.require}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.result}">${vo.result}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.evaluate}">${vo.evaluate}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.remark}">${vo.remark}</span>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+				
+				<table class="info">
+					<tr>
+						<td class="title-td">图谱类型</td>
+						<td class="title-td">图谱描述</td>
+						<td class="title-td">选择图谱</td>
+					</tr>
+				
+					<c:forEach items="${pAtlasResult_old}" var="vo" varStatus="vst">
+						<tr>
+							<td class="value-td">
+								<c:if test="${vo.type == 1}">红外光分析</c:if>
+								<c:if test="${vo.type == 2}">差热扫描</c:if>
+								<c:if test="${vo.type == 3}">热重分析</c:if>
+							</td>
+							<td class="value-td">${vo.remark }</td>
+							<td class="value-td">
+								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
+				<table class="info">
+					<tr>
+						<td class="title-td">图谱类型</td>
+						<td class="title-td">图谱描述</td>
+						<td class="title-td">选择图谱</td>
+					</tr>
+				
+					<c:forEach items="${pAtlasResult_new}" var="vo" varStatus="vst">
+						<tr>
+							<td class="value-td">
+								<c:if test="${vo.type == 1}">红外光分析</c:if>
+								<c:if test="${vo.type == 2}">差热扫描</c:if>
+								<c:if test="${vo.type == 3}">热重分析</c:if>
+							</td>
+							<td class="value-td">${vo.remark }</td>
+							<td class="value-td">
+								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				<div class="title" style="margin-top: 10px;">原材料试验结果</div>
+				<table class="info">
+					<tr>
+						<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+						<td class="title-td">试验项目</td>
+						<td class="title-td">参考标准</td>
+						<td class="title-td">试验要求</td>
+						<td class="title-td">试验结果</td>
+						<td class="title-td">结果评价</td>
+						<td class="title-td">备注</td>
+					</tr>
+				
+					<c:forEach items="${mPfResult_old}" var="vo" varStatus="status">
+						<tr>
+							<td style="background: #f5f5f5;padding-left:5px;">${status.index + 1}</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.project}">${vo.project}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.standard}">${vo.standard}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.require}">${vo.require}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.result}">${vo.result}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.evaluate}">${vo.evaluate}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.remark}">${vo.remark}</span>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
+				<table class="info">
+					<tr>
+						<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+						<td class="title-td">试验项目</td>
+						<td class="title-td">参考标准</td>
+						<td class="title-td">试验要求</td>
+						<td class="title-td">试验结果</td>
+						<td class="title-td">结果评价</td>
+						<td class="title-td">备注</td>
+					</tr>
+				
+					<c:forEach items="${mPfResult_new}" var="vo" varStatus="status">
+						<tr>
+							<td style="background: #f5f5f5;padding-left:5px;">${status.index + 1}</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.project}">${vo.project}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.standard}">${vo.standard}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.require}">${vo.require}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.result}">${vo.result}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.evaluate}">${vo.evaluate}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.remark}">${vo.remark}</span>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+				
+				<table class="info">
+					<tr>
+						<td class="title-td">图谱类型</td>
+						<td class="title-td">图谱描述</td>
+						<td class="title-td">选择图谱</td>
+					</tr>
+				
+					<c:forEach items="${mAtlasResult_old}" var="vo" varStatus="vst">
+						<tr>
+							<td class="value-td">
+								<c:if test="${vo.type == 1}">红外光分析</c:if>
+								<c:if test="${vo.type == 2}">差热扫描</c:if>
+								<c:if test="${vo.type == 3}">热重分析</c:if>
+							</td>
+							<td class="value-td">${vo.remark }</td>
+							<td class="value-td">
+								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
+				<table class="info">
+					<tr>
+						<td class="title-td">图谱类型</td>
+						<td class="title-td">图谱描述</td>
+						<td class="title-td">选择图谱</td>
+					</tr>
+				
+					<c:forEach items="${mAtlasResult_new}" var="vo" varStatus="vst">
+						<tr>
+							<td class="value-td">
+								<c:if test="${vo.type == 1}">红外光分析</c:if>
+								<c:if test="${vo.type == 2}">差热扫描</c:if>
+								<c:if test="${vo.type == 3}">热重分析</c:if>
+							</td>
+							<td class="value-td">${vo.remark }</td>
+							<td class="value-td">
+								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+				
+				 <div style="text-align:center;margin-top:15px;margin-bottom: 15px;" class="data-row">
+					<a href="javascript:void(0);"  onclick="approve(1,'', 7)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>&nbsp;&nbsp;
+					<a href="javascript:void(0);"  onclick="notPass(7)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+				 </div>
+				
+			</c:when>
+		</c:choose>
+		
 
 		<div id="dlg" class="easyui-dialog" title="审批" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
 			<input type="hidden" id="catagory" name="catagory">
@@ -230,44 +486,55 @@
 			padding-left: 5px;
 		}
 		
+		.red-color{
+			color: red;
+			font-weight: bold;
+		}
+		
 	</style>
 	
 	<script type="text/javascript">
 		$(function(){
-			// 零部件图谱试验结果
-			var partsAtlResult = "${facadeBean.partsAtlResult}";
-			if(partsAtlResult == 2){
-				$("#partsAtl2").show();
-			}else if(partsAtlResult == 1){
-				$("#partsAtl3").show();
-			}
 			
-			// 原材料图谱试验结果
-			var matAtlResult = "${facadeBean.matAtlResult}";
-			if(matAtlResult == 2){
-				$("#matAtl2").show();
-			}else if(matAtlResult == 1){
-				$("#matAtl3").show();
-			}
+			var approveType = "${approveType}";
 			
-			// 零部件型式试验结果
-			var partsPatResult = "${facadeBean.partsPatResult}";
-			if(partsPatResult == 2){
-				$("#partsPat2").show();
-			}else if(partsPatResult == 1){
-				$("#partsPat3").show();
+			// 正常流程
+			if(approveType == 3){
+				// 零部件图谱试验结果
+				var partsAtlResult = "${facadeBean.partsAtlResult}";
+				if(partsAtlResult == 2){
+					$("#partsAtl2").show();
+				}else if(partsAtlResult == 1){
+					$("#partsAtl3").show();
+				}
+				
+				// 原材料图谱试验结果
+				var matAtlResult = "${facadeBean.matAtlResult}";
+				if(matAtlResult == 2){
+					$("#matAtl2").show();
+				}else if(matAtlResult == 1){
+					$("#matAtl3").show();
+				}
+				
+				// 零部件型式试验结果
+				var partsPatResult = "${facadeBean.partsPatResult}";
+				if(partsPatResult == 2){
+					$("#partsPat2").show();
+				}else if(partsPatResult == 1){
+					$("#partsPat3").show();
+				}
+				
+				// 零部件型式试验结果
+				var matPatResult = "${facadeBean.matPatResult}";
+				if(matPatResult == 2){
+					$("#matPat2").show();
+				}else if(matPatResult == 1){
+					$("#matPat3").show();
+				}
 			}
-			
-			// 零部件型式试验结果
-			var matPatResult = "${facadeBean.matPatResult}";
-			if(matPatResult == 2){
-				$("#matPat2").show();
-			}else if(matPatResult == 1){
-				$("#matPat3").show();
-			}
-			
 		});
 	
+		
 		function approve(result, remark, catagory){
 			$.ajax({
 				url: "${ctx}/ots/approve",
@@ -279,50 +546,56 @@
 				},
 				success: function(data){
 					if(data.success){
+						var approveType = "${approveType}";
 						
-						if(result == 1){
-							if(catagory == 1){
-								$("#partsAtl1").hide();
-								$("#partsAtl2").show();
-							}else if(catagory == 2){
-								$("#matAtl1").hide();
-								$("#matAtl2").show();
-							}else if(catagory == 3){
-								$("#partsPat1").hide();
-								$("#partsPat2").show();
-							}else if(catagory == 4){
-								$("#matPat1").hide();
-								$("#matPat2").show();
+						// 正常流程
+						if(approveType == 3){
+							if(result == 1){
+								if(catagory == 1){
+									$("#partsAtl1").hide();
+									$("#partsAtl2").show();
+								}else if(catagory == 2){
+									$("#matAtl1").hide();
+									$("#matAtl2").show();
+								}else if(catagory == 3){
+									$("#partsPat1").hide();
+									$("#partsPat2").show();
+								}else if(catagory == 4){
+									$("#matPat1").hide();
+									$("#matPat2").show();
+								}else{
+									closeDialog(data.msg);
+								}
 							}else{
-								closeDialog(data.msg);
+								if(catagory == 1){
+									$("#partsAtl1").hide();
+									$("#partsAtl3").show();
+								}else if(catagory == 2){
+									$("#matAtl1").hide();
+									$("#matAtl3").show();
+								}else if(catagory == 3){
+									$("#partsPat1").hide();
+									$("#partsPat3").show();
+								}else if(catagory == 4){
+									$("#matPat1").hide();
+									$("#matPat3").show();
+								}else{
+									closeDialog(data.msg);
+								}
+							}
+							
+							// 隐藏 全部同意/全部不同意 按钮
+							if(catagory != 5){
+								$("#allAgree").hide();
+								$("#allNotAgree").hide();
+							}
+							
+							// 全部审批完
+							if($("#partsAtl1").is(":hidden") && $("#matAtl1").is(":hidden") && $("#partsPat1").is(":hidden") && $("#matPat1").is(":hidden")){
+								closeDialog("操作成功");
 							}
 						}else{
-							if(catagory == 1){
-								$("#partsAtl1").hide();
-								$("#partsAtl3").show();
-							}else if(catagory == 2){
-								$("#matAtl1").hide();
-								$("#matAtl3").show();
-							}else if(catagory == 3){
-								$("#partsPat1").hide();
-								$("#partsPat3").show();
-							}else if(catagory == 4){
-								$("#matPat1").hide();
-								$("#matPat3").show();
-							}else{
-								closeDialog(data.msg);
-							}
-						}
-						
-						// 隐藏 全部同意/全部不同意 按钮
-						if(catagory != 5){
-							$("#allAgree").hide();
-							$("#allNotAgree").hide();
-						}
-						
-						// 全部审批完
-						if($("#partsAtl1").is(":hidden") && $("#matAtl1").is(":hidden") && $("#partsPat1").is(":hidden") && $("#matPat1").is(":hidden")){
-							closeDialog("操作成功");
+							closeDialog(data.msg);
 						}
 					}else{
 						errorMsg(data.msg);						

@@ -42,5 +42,13 @@ public interface PfResultService {
 	 */
 	public void assemblePfResult(List<PfResult> pfDataList, Map<Integer, List<PfResult>> pPfResult,
 			Map<Integer, List<PfResult>> mPfResult);
+	
+	
+	/**
+	 * 获取最后一次试验结果
+	 * @param type     类型（1-零部件，2-原材料）
+	 * @param taskId   任务ID
+	 */
+	public List<PfResult> getLastResult(int type, Long taskId);
 
 }

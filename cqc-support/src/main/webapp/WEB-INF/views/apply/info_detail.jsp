@@ -355,7 +355,7 @@
 					success:function(msg){
 						var data = eval('(' + msg + ')');
 						if(data.success){
-							closeDialog(data.msg);
+							closeDialog(data.msg, "infoDetailDialog");
 						}else{
 							$("#exception_error").html(data.msg);
 						}

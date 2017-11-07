@@ -24,6 +24,9 @@ public class Task {
     // 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
     private Integer type;
     
+    // 父任务ID
+    private Long tId;
+    
     /** 
      * 	状态：
      *  OTS、材料研究所任务： 1-审核中，2-审核不通过，3-试验中，4-收费通知中，5-完成
@@ -75,9 +78,9 @@ public class Task {
     // 原材料型式实验次数
     private Integer matPatTimes;
     
-    // 是否申请修改信息（0-否，1-是）
+    // 是否申请修改信息（0-否， 1-等待审批）
     private Integer infoApply;
-    // 是否申请修改试验结果（0-否，1-是）
+    // 是否申请修改试验结果（0-否，1-等待审批）
     private Integer resultApply;
     
     public Long getId() {
@@ -335,6 +338,12 @@ public class Task {
 	public void setResultApply(Integer resultApply) {
 		this.resultApply = resultApply;
 	}
-	
-	
+
+	public Long gettId() {
+		return tId;
+	}
+
+	public void settId(Long tId) {
+		this.tId = tId;
+	}
 }

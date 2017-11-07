@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.ApplyRecordDao;
+import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
+import cn.wow.common.dao.PfResultDao;
 import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
@@ -31,6 +33,7 @@ import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageHelperExt;
@@ -63,7 +66,13 @@ public class InfoServiceImpl implements InfoService {
 	private ExamineRecordDao examineRecordDao;
 	@Autowired
 	private ApplyRecordDao applyRecordDao;
-
+	@Autowired
+	private PfResultDao pfResultDao;
+	@Autowired
+	private AtlasResultDao atlasResultDao;
+	@Autowired
+	private ApplyRecordService applyRecordService;
+	
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
 	}
@@ -363,7 +372,7 @@ public class InfoServiceImpl implements InfoService {
      * @param id       任务ID
      * @param result   结果：1-通过，2-不通过
      * @param remark   备注
-     * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部
+     * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，，5-全部（试验），6-信息修改申请，7-试验结果修改申请
      */
 	public void approve(Account account, Long id, int result, String remark, int catagory) {
 		Task task = taskDao.selectOne(id);
@@ -381,72 +390,154 @@ public class InfoServiceImpl implements InfoService {
 		examineRecord.setTaskType(task.getType());
 		examineRecordDao.insert(examineRecord);
 		
-		// 操作记录
-		TaskRecord record = new TaskRecord();
-		record.setCreateTime(date);
-		record.setCode(task.getCode());
-		record.setaId(account.getId());
-
-		// 同意
-		if (result == 1) {
-			if(catagory == 1){
-				task.setPartsAtlResult(1);
-				remark = "零部件图谱试验审批通过";
-			}else if(catagory == 2){
-				task.setMatAtlResult(1);
-				remark = "原材料图谱试验审批通过";
-			}else if(catagory == 3){
-				task.setPartsPatResult(1);
-				remark = "零部件型式试验审批通过";
-			}else if(catagory == 4){
-				task.setMatPatResult(1);
-				remark = "原材料型式试验审批通过";
-			}else{
-				task.setMatAtlResult(1);
-				task.setMatPatResult(1);
-				task.setPartsAtlResult(1);
-				task.setPartsPatResult(1);
-				remark = "图谱和型式试验全部审批通过";
-			}
-			record.setState(StandardTaskRecordEnum.APPROVE_AGREE.getState());
-		} else {
+		if(catagory == 6){
+			ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
 			
-			if(catagory == 1){
-				task.setPartsAtlResult(0);
-				task.setPartsAtlId(null);
-				remark = "零部件图谱试验审批不通过：" + remark;
-			}else if(catagory == 2){
-				task.setMatAtlResult(0);
-				task.setMatAtl(null);
-				remark = "原材料图谱试验审批不通过：" + remark;
-			}else if(catagory == 3){
-				task.setPartsPatResult(0);
-				task.setPartsPat(null);
-				remark = "零部件型式试验审批不通过：" + remark;
-			}else if(catagory == 4){
-				task.setMatPatResult(0);
-				task.setMatPat(null);
-				remark = "原材料型式试验审批不通过：" + remark;
-			}else{
-				task.setMatAtlResult(0);
-				task.setMatPatResult(0);
-				task.setPartsAtlResult(0);
-				task.setPartsPatResult(0);
+			if(applyRecord != null){
+				if (result == 1) {
+					Info info = task.getInfo();
+					
+					if (applyRecord.getpId() != null) {
+						Parts oldParts = info.getParts();
+						oldParts.setState(2);
+						partsDao.update(oldParts);
+						
+						Parts parts = partsDao.selectOne(applyRecord.getpId());
+						parts.setState(1);
+						partsDao.update(parts);
+						
+						info.setpId(applyRecord.getpId());
+					}
+
+					if (applyRecord.getvId() != null) {
+						Vehicle oldVehicle = info.getVehicle();
+						oldVehicle.setState(2);
+						vehicleDao.update(oldVehicle);
+						
+						Vehicle vehicle = vehicleDao.selectOne(applyRecord.getvId());
+						vehicle.setState(1);
+						vehicleDao.update(vehicle);
+						
+						info.setvId(applyRecord.getvId());
+					}
+
+					if (applyRecord.getmId() != null) {
+						Material oldMaterial = info.getMaterial();
+						oldMaterial.setState(2);
+						materialDao.update(oldMaterial);
+						
+						Material material = materialDao.selectOne(applyRecord.getmId());
+						material.setState(1);
+						materialDao.update(material);
+						
+						info.setmId(applyRecord.getmId());
+					}
+					infoDao.update(info);
+					
+				} else {
+					task.setFailNum(1);
+					task.setRemark(remark);
+					applyRecord.setRemark(remark);
+				}
 				
-				task.setPartsAtlId(null);
-				task.setMatAtlId(null);
-				task.setPartsPatId(null);
-				task.setMatPatId(null);
+				applyRecord.setState(result);
+				applyRecord.setConfirmTime(date);
+				applyRecordDao.update(applyRecord);
 				
-				remark = "图谱和型式试验全部审批不通过：" + remark;
+				task.setInfoApply(0);
+				taskDao.update(task);
 			}
-			record.setState(StandardTaskRecordEnum.APPROVE_DISAGREE.getState());
+		}else if(catagory == 7){
+			
+			ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 2);
+			
+			if (result == 2) {
+				task.setFailNum(1);
+				task.setRemark(remark);
+				applyRecord.setRemark(remark);
+			}
+
+			applyRecord.setState(result);
+			applyRecord.setConfirmTime(date);
+			applyRecordDao.update(applyRecord);
+
+			// 父任务
+			Task pTask = taskDao.selectOne(task.gettId());
+			pTask.setResultApply(0);
+			taskDao.update(pTask);
+
+			task.setResultApply(0);
+			task.setConfirmTime(date);
+			taskDao.update(task);
+			
+		}else{
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(date);
+			record.setCode(task.getCode());
+			record.setaId(account.getId());
+
+			// 同意
+			if (result == 1) {
+				if(catagory == 1){
+					task.setPartsAtlResult(1);
+					remark = "零部件图谱试验审批通过";
+				}else if(catagory == 2){
+					task.setMatAtlResult(1);
+					remark = "原材料图谱试验审批通过";
+				}else if(catagory == 3){
+					task.setPartsPatResult(1);
+					remark = "零部件型式试验审批通过";
+				}else if(catagory == 4){
+					task.setMatPatResult(1);
+					remark = "原材料型式试验审批通过";
+				}else{
+					task.setMatAtlResult(1);
+					task.setMatPatResult(1);
+					task.setPartsAtlResult(1);
+					task.setPartsPatResult(1);
+					remark = "图谱和型式试验全部审批通过";
+				}
+				record.setState(StandardTaskRecordEnum.APPROVE_AGREE.getState());
+			} else {
+				
+				if(catagory == 1){
+					task.setPartsAtlResult(0);
+					task.setPartsAtlId(null);
+					remark = "零部件图谱试验审批不通过：" + remark;
+				}else if(catagory == 2){
+					task.setMatAtlResult(0);
+					task.setMatAtl(null);
+					remark = "原材料图谱试验审批不通过：" + remark;
+				}else if(catagory == 3){
+					task.setPartsPatResult(0);
+					task.setPartsPat(null);
+					remark = "零部件型式试验审批不通过：" + remark;
+				}else if(catagory == 4){
+					task.setMatPatResult(0);
+					task.setMatPat(null);
+					remark = "原材料型式试验审批不通过：" + remark;
+				}else{
+					task.setMatAtlResult(0);
+					task.setMatPatResult(0);
+					task.setPartsAtlResult(0);
+					task.setPartsPatResult(0);
+					
+					task.setPartsAtlId(null);
+					task.setMatAtlId(null);
+					task.setPartsPatId(null);
+					task.setMatPatId(null);
+					
+					remark = "图谱和型式试验全部审批不通过：" + remark;
+				}
+				record.setState(StandardTaskRecordEnum.APPROVE_DISAGREE.getState());
+			}
+			
+			record.setRemark(remark);
+			taskRecordDao.insert(record);
+			
+			taskDao.update(task);
 		}
-		
-		record.setRemark(remark);
-		taskRecordDao.insert(record);
-		
-		taskDao.update(task);
 	}
 	
 	
@@ -543,10 +634,75 @@ public class InfoServiceImpl implements InfoService {
      * @param atlResultList   图谱结果
      */
     public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList){
+    	Date date = new Date();
     	
     	Task task = taskDao.selectOne(taskId);
+    	task.setResultApply(1);
+    	taskDao.update(task);
     	
+		Info info = new Info();
+		info.setCreateTime(date);
+		info.setmId(task.getInfo().getmId());
+		info.setpId(task.getInfo().getpId());
+		info.setRemark(task.getInfo().getRemark());
+		info.setState(0);
+		info.setType(task.getInfo().getType());
+		info.setvId(task.getInfo().getvId());
+    	infoDao.insert(info);
     	
+    	// 查看子任务的数量
+		Map<String, Object> tMap = new PageMap(false);
+		tMap.put("tId", task.getId());
+		List<Task> taskList = taskDao.selectAllList(tMap);
+
+		int taskNum = 1;
+		if (taskList != null && taskList.size() > 0) {
+			taskNum = taskList.size() + 1;
+		}
+    	
+		// 创建新的子订单
+    	task.setaId(account.getId());
+    	task.setOrgId(account.getOrgId());
+    	task.setFailNum(0);
+    	task.setCreateTime(date);
+    	task.setInfoApply(0);
+    	task.setResultApply(1);
+    	task.setiId(info.getId());
+    	task.setConfirmTime(null);
+    	task.settId(task.getId());
+    	task.setCode(task.getCode() + "-R" + taskNum);
+    	task.setId(null);
+    	taskDao.insert(task);
+    	
+		// 型式结果
+		if (pfResultList != null && pfResultList.size() > 0) {
+			for (PfResult pf : pfResultList) {
+				pf.setCreateTime(date);
+				pf.setExpNo(1);
+				pf.settId(task.getId());
+			}
+			pfResultDao.batchAdd(pfResultList);
+		}
+    	
+		// 图谱结果
+		if (atlResultList != null && atlResultList.size() > 0) {
+			for (AtlasResult at : atlResultList) {
+				at.settId(task.getId());
+				at.setExpNo(1);
+				at.setCreateTime(date);
+			}
+			atlasResultDao.batchAdd(atlResultList);
+		}
+		
+		// 申请记录
+		ApplyRecord applyRecord = new ApplyRecord();
+		applyRecord.setaId(account.getId());
+		applyRecord.setCreateTime(date);
+		applyRecord.setState(0);
+		applyRecord.settId(task.getId());
+		applyRecord.setType(2);
+		applyRecordDao.insert(applyRecord);
+		
     }
 	
 	

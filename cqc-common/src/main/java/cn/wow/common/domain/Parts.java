@@ -36,7 +36,7 @@ public class Parts extends JpaEntity{
     private String proNo;
     // 备注
     private String remark;
-    // 状态(0-审批中, 1-完成)
+    // 状态(0-审批中, 1-完成，2-弃用)
     private Integer state;
     
     private Date createTime;

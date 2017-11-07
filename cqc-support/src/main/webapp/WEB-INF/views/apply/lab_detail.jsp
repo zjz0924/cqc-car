@@ -466,7 +466,7 @@
 				success:function(msg){
 					var data = eval('(' + msg + ')');
 					if(data.success){
-						closeDialog(data.msg);
+						closeDialog(data.msg, "labDetailDialog");
 					}else{
 						$("#atlasError").html(data.msg);
 					}

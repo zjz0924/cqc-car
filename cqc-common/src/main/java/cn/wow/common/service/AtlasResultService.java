@@ -68,4 +68,12 @@ public interface AtlasResultService {
 	 * 组装对比结果
 	 */
 	public Map<String, List<ExamineRecord>> assembleCompareResult(Long taskId);
+	
+	
+	/**
+	 * 获取最后一次试验结果
+	 * @param type    类型（1-零部件，2-原材料）
+	 * @param taskId  任务ID
+	 */
+	public List<AtlasResult> getLastResult(int type, Long taskId);
 }

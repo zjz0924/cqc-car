@@ -21,7 +21,7 @@
 	</select>
 	
 	<select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-		select <include refid="base_columns" /> from vehicle where code = #{code,jdbcType=VARCHAR}
+		select <include refid="base_columns" /> from vehicle where code = #{code,jdbcType=VARCHAR} and state != 2
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

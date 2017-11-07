@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.service.ApplyRecordService;
@@ -42,4 +43,17 @@ public class ApplyRecordServiceImpl implements ApplyRecordService{
     	return applyRecordDao.selectAllList(map);
     }
 
+	public ApplyRecord getRecordByTaskId(Long taskId, int type) {
+		Map<String, Object> tMap = new PageMap(false);
+		tMap.put("taskId", taskId);
+		tMap.put("type", type);
+
+		List<ApplyRecord> list = applyRecordDao.getRecordByTaskId(tMap);
+
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
 }

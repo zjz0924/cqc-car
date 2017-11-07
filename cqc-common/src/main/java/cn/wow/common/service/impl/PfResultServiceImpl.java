@@ -158,4 +158,19 @@ public class PfResultServiceImpl implements PfResultService{
 			}
 		}
 	}
+	
+	
+	/**
+	 * 获取最后一次试验结果
+	 * @param type     类型（1-零部件，2-原材料）
+	 * @param taskId   任务ID
+	 */
+	public List<PfResult> getLastResult(int type, Long taskId) {
+		Map<String, Object> pfMap = new HashMap<String, Object>();
+		pfMap.put("tId", taskId);
+		pfMap.put("expNo", this.getExpNoByCatagory(taskId, type));
+		pfMap.put("catagory", type);
+
+		return this.selectAllList(pfMap);
+	}
 }

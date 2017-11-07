@@ -240,4 +240,18 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		return result;
 	}
 	
+	
+	/**
+	 * 获取最后一次试验结果
+	 * @param type    类型（1-零部件，2-原材料）
+	 * @param taskId  任务ID
+	 */
+	public List<AtlasResult> getLastResult(int type, Long taskId) {
+		Map<String, Object> pAtMap = new HashMap<String, Object>();
+		pAtMap.put("tId", taskId);
+		pAtMap.put("expNo", this.getExpNoByCatagory(taskId, type));
+		pAtMap.put("catagory", type);
+		return this.selectAllList(pAtMap);
+	}
+	
 }

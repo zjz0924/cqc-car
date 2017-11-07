@@ -14,5 +14,7 @@ public interface ApplyRecordService {
     public int deleteByPrimaryKey(String userName, ApplyRecord applyRecord);
 
     public List<ApplyRecord> selectAllList(Map<String, Object> map);
+    
+    public ApplyRecord getRecordByTaskId(Long taskId, int type);
 
 }

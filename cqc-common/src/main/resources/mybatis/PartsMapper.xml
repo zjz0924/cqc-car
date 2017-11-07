@@ -27,7 +27,7 @@
 	</select>
 	
 	<select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select <include refid="base_columns" /> from parts where code = #{code,jdbcType=VARCHAR}
+		select <include refid="base_columns" /> from parts where code = #{code,jdbcType=VARCHAR} and state != 2
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

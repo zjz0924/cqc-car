@@ -170,32 +170,16 @@ public class ApplyController extends AbstractController {
 			Task task = taskService.selectOne(id);
 			
 			// 零部件-性能结果（只取最后一次实验）
-			Map<String, Object> pfMap = new HashMap<String, Object>();
-			pfMap.put("tId", id);
-			pfMap.put("expNo", pfResultService.getExpNoByCatagory(id, 1));
-			pfMap.put("catagory", 1);
-			List<PfResult> pPfResult = pfResultService.selectAllList(pfMap);
+			List<PfResult> pPfResult = pfResultService.getLastResult(1, id);
 
 			// 原材料-性能结果（只取最后一次实验结果）
-			Map<String, Object> mPfMap = new HashMap<String, Object>();
-			mPfMap.put("tId", id);
-			mPfMap.put("expNo", pfResultService.getExpNoByCatagory(id, 2));
-			mPfMap.put("catagory", 2);
-			List<PfResult> mPfResult = pfResultService.selectAllList(mPfMap);
+			List<PfResult> mPfResult = pfResultService.getLastResult(2, id);
 			
 			// 零部件-图谱结果（只取最后一次实验）
-			Map<String, Object> pAtMap = new HashMap<String, Object>();
-			pAtMap.put("tId", id);
-			pAtMap.put("expNo", atlasResultService.getExpNoByCatagory(id, 1));
-			pAtMap.put("catagory", 1);
-			List<AtlasResult> pAtlasResult = atlasResultService.selectAllList(pAtMap);
+			List<AtlasResult> pAtlasResult = atlasResultService.getLastResult(1, id);
 			
 			// 原材料-图谱结果（只取最后一次实验）
-			Map<String, Object> mAtMap = new HashMap<String, Object>();
-			mAtMap.put("tId", id);
-			mAtMap.put("catagory", 2);
-			mAtMap.put("expNo", atlasResultService.getExpNoByCatagory(id, 2));
-			List<AtlasResult> mAtlasResult = atlasResultService.selectAllList(mAtMap);
+			List<AtlasResult> mAtlasResult = atlasResultService.getLastResult(2, id);
 
 			// 零部件-性能结果
 			model.addAttribute("pPfResult", pPfResult);
@@ -247,7 +231,7 @@ public class ApplyController extends AbstractController {
 			if (isUpdateVehicleInfo(v_code, v_type, v_proTime, v_proAddr, v_remark)) {
 				vehicle = vehicleService.selectOne(task.getInfo().getvId());
 				if (StringUtils.isNotBlank(v_code)) {
-					Vehicle dbVehicle = vehicleService.selectByCode(vehicle.getCode());
+					Vehicle dbVehicle = vehicleService.selectByCode(v_code);
 					if (dbVehicle != null && dbVehicle.getId().longValue() != vehicle.getId().longValue()) {
 						vo.setSuccess(false);
 						vo.setMsg("整车代码已存在");
@@ -535,19 +519,27 @@ public class ApplyController extends AbstractController {
 		
 		for (AtlasResult at : pAtlasResult) {
 			if (at.getType() == 1) { // 红外光分析
-				at.setRemark(p_infLab);
+				if(StringUtils.isNotBlank(p_infLab)){
+					at.setRemark(p_infLab);
+				}
 				if (p_infile != null && !p_infile.isEmpty()) {
 					String pic = uploadImg(p_infile, atlasUrl + taskId + "apply/parts/inf/", false);
 					at.setPic(pic);
 				}
 			} else if (at.getType() == 2) { // 差热分析
-				at.setRemark(p_dtLab);
+				if(StringUtils.isNotBlank(p_dtLab)){
+					at.setRemark(p_dtLab);
+				}
+				
 				if (p_dtfile != null && !p_dtfile.isEmpty()) {
 					String pic = uploadImg(p_dtfile, atlasUrl + taskId + "/apply/parts/dt/", false);
 					at.setPic(pic);
 				}
 			} else { // 热重分析
-				at.setRemark(p_tgLab);
+				if(StringUtils.isNotBlank(p_tgLab)){
+					at.setRemark(p_tgLab);
+				}
+				
 				if (p_tgfile != null && !p_tgfile.isEmpty()) {
 					String pic = uploadImg(p_tgfile, atlasUrl + taskId + "apply/parts/tg/", false);
 					at.setPic(pic);
@@ -564,19 +556,28 @@ public class ApplyController extends AbstractController {
 		
 		for (AtlasResult at : mAtlasResult) {
 			if (at.getType() == 1) { // 红外光分析
-				at.setRemark(m_infLab);
+				if(StringUtils.isNotBlank(m_infLab)){
+					at.setRemark(m_infLab);
+				}
+				
 				if (m_infile != null && !m_infile.isEmpty()) {
 					String pic = uploadImg(m_infile, atlasUrl + taskId + "apply/material/inf/", false);
 					at.setPic(pic);
 				}
 			} else if (at.getType() == 2) { // 差热分析
-				at.setRemark(m_dtLab);
+				if(StringUtils.isNotBlank(m_dtLab)){
+					at.setRemark(m_dtLab);
+				}
+				
 				if (m_dtfile != null && !m_dtfile.isEmpty()) {
 					String pic = uploadImg(m_dtfile, atlasUrl + taskId + "/apply/material/dt/", false);
 					at.setPic(pic);
 				}
 			} else { // 热重分析
-				at.setRemark(m_tgLab);
+				if(StringUtils.isNotBlank(m_tgLab)){
+					at.setRemark(m_tgLab);
+				}
+				
 				if (m_tgfile != null && !m_tgfile.isEmpty()) {
 					String pic = uploadImg(m_tgfile, atlasUrl + taskId + "apply/material/tg/", false);
 					at.setPic(pic);
