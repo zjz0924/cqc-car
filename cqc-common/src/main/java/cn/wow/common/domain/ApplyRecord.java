@@ -17,6 +17,8 @@ public class ApplyRecord {
     private Long mId;
     // 任务ID
     private Long tId;
+    private Task task;
+    
     // 申请人ID
     private Long aId;
     // 状态：0-待审批，1-通过，2-不通过，3-取消
@@ -137,4 +139,14 @@ public class ApplyRecord {
     public void setConfirmTime(Date confirmTime) {
         this.confirmTime = confirmTime;
     }
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+    
+    
 }

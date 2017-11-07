@@ -28,13 +28,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MaterialService;
@@ -46,6 +49,7 @@ import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 
 /**
@@ -77,6 +81,8 @@ public class ApplyController extends AbstractController {
 	private AtlasResultService atlasResultService;
 	@Autowired
 	private PfResultService pfResultService;
+	@Autowired
+	private ApplyRecordService applyRecordService;
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -200,13 +206,160 @@ public class ApplyController extends AbstractController {
 	
 	
 	/**
-	 * 申请列表
+	 * 终止申请列表
 	 */
 	@RequestMapping(value = "/applyList")
 	public String applyList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		
+		Menu menu = menuService.selectByAlias("endApply");
+
+		model.addAttribute("menuName", menu.getName());
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		return "apply/apply_list";
 	}
+	
+	
+	/**
+	 * 列表数据
+	 * 
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/applyListData")
+	public Map<String, Object> applyListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime) {
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "create_time desc");
+		map.put("state", 0);
+		
+		// 除了超级管理员，其它用户只能查看自己录入的申请记录
+		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+			map.put("aId", account.getId());
+		}
+
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+
+		List<ApplyRecord> dataList = applyRecordService.selectAllList(map);
+
+		// 分页
+		Page<ApplyRecord> pageList = (Page<ApplyRecord>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+	
+	
+	@RequestMapping(value = "/applyDetail")
+	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		if (id != null) {
+			ApplyRecord applyRecord = applyRecordService.selectOne(id);
+			Task task = applyRecord.getTask();
+			
+			if(applyRecord.getType() == 1){
+				if (applyRecord.getpId() != null) {
+					Parts newParts = partsService.selectOne(applyRecord.getpId());
+					model.addAttribute("newParts", newParts);
+				}
+
+				if (applyRecord.getvId() != null) {
+					Vehicle newVehicle = vehicleService.selectOne(applyRecord.getvId());
+					model.addAttribute("newVehicle", newVehicle);
+				}
+
+				if (applyRecord.getmId() != null) {
+					Material newMaterial = materialService.selectOne(applyRecord.getvId());
+					model.addAttribute("newMaterial", newMaterial);
+				}
+			}else{
+				/** ---------  原结果  ----------- */
+				// 零部件-性能结果（只取最后一次实验）
+				List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
+
+				// 原材料-性能结果（只取最后一次实验结果）
+				List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
+				
+				// 零部件-图谱结果（只取最后一次实验）
+				List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
+				
+				// 原材料-图谱结果（只取最后一次实验）
+				List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
+				
+				/** ---------  修改之后的结果  ----------- */
+				// 零部件-性能结果（只取最后一次实验）
+				List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
+
+				// 原材料-性能结果（只取最后一次实验结果）
+				List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
+				
+				// 零部件-图谱结果（只取最后一次实验）
+				List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
+				
+				// 原材料-图谱结果（只取最后一次实验）
+				List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
+				
+				
+				model.addAttribute("pPfResult_old", pPfResult_old);
+				model.addAttribute("mPfResult_old", mPfResult_old);
+				model.addAttribute("pAtlasResult_old", pAtlasResult_old);
+				model.addAttribute("mAtlasResult_old", mAtlasResult_old);
+				model.addAttribute("pPfResult_new", pPfResult_new);
+				model.addAttribute("mPfResult_new", mPfResult_new);
+				model.addAttribute("pAtlasResult_new", pAtlasResult_new);
+				model.addAttribute("mAtlasResult_new", mAtlasResult_new);
+			}
+			
+			
+			model.addAttribute("applyRecord", applyRecord);
+			model.addAttribute("facadeBean", task);
+		}
+
+		return "apply/apply_detail";
+	}
+	
+	
+	/**
+	 * 中止申请
+	 * @param id	     申请记录ID
+	 * @param remark  备注
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/end")
+	public AjaxVO end(HttpServletRequest request, Model model, Long id, String remark) {
+		AjaxVO vo = new AjaxVO();
+
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			applyRecordService.end(account, id, remark);
+		} catch (Exception ex) {
+			logger.error("中止申请修改失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+		
+	}
+	
+	
 	
 	
 	/**

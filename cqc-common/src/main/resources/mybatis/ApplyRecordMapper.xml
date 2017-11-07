@@ -15,6 +15,9 @@
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="confirm_time" property="confirmTime" jdbcType="TIMESTAMP" />
+		
+		<association property="task" javaType="cn.wow.common.domain.Task" column="t_id" select="cn.wow.common.dao.TaskDao.selectOne"/> 
+		
 	</resultMap>
 	
 	<sql id="base_columns">

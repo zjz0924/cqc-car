@@ -1,17 +1,23 @@
 package cn.wow.common.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.wow.common.dao.ApplyRecordDao;
+import cn.wow.common.dao.TaskDao;
+import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ApplyRecord;
+import cn.wow.common.domain.Task;
+import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
-import cn.wow.common.dao.ApplyRecordDao;
-import cn.wow.common.domain.ApplyRecord;
-import cn.wow.common.service.ApplyRecordService;
 
 @Service
 @Transactional
@@ -21,6 +27,8 @@ public class ApplyRecordServiceImpl implements ApplyRecordService{
 
     @Autowired
     private ApplyRecordDao applyRecordDao;
+    @Autowired
+    private TaskDao taskDao;
 
     public ApplyRecord selectOne(Long id){
     	return applyRecordDao.selectOne(id);
@@ -56,4 +64,37 @@ public class ApplyRecordServiceImpl implements ApplyRecordService{
 			return null;
 		}
 	}
+	
+	 /**
+     * 中止申请
+     * @param account  
+     * @param id	      申请记录ID
+	 * @param remark  备注
+     */
+	public void end(Account account, Long id, String remark) {
+		ApplyRecord applyRecord = applyRecordDao.selectOne(id);
+		Task task = applyRecord.getTask();
+		Date date = new Date();
+
+		
+		if(applyRecord.getType() == 1){
+			task.setInfoApply(0);
+		}else{
+			// 父任务
+			Task pTask = taskDao.selectOne(task.gettId());
+			pTask.setResultApply(0);
+			taskDao.update(pTask);
+		}
+		
+		task.setConfirmTime(date);
+		task.setResultApply(0);
+		taskDao.update(task);
+		
+		
+		applyRecord.setConfirmTime(date);
+		applyRecord.setState(3);
+		applyRecord.setRemark(remark);
+		applyRecordDao.update(applyRecord);
+	}
+	
 }

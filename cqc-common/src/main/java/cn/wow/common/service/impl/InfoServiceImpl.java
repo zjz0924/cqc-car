@@ -603,7 +603,7 @@ public class InfoServiceImpl implements InfoService {
 
 		ApplyRecord applyRecord = new ApplyRecord();
 		applyRecord.setaId(account.getId());
-		applyRecord.setCreateTime(vehicle.getCreateTime());
+		applyRecord.setCreateTime(new Date());
 		applyRecord.setState(0);
 		applyRecord.settId(task.getId());
 		applyRecord.setType(1);
