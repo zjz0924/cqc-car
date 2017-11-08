@@ -83,8 +83,9 @@ public interface InfoService {
      * @param id       任务ID
      * @param result   结果：1-通过，2-不通过
      * @param remark   备注
+     * @param catagory 分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
      */
-    public void approve(Account account, Long id, int result, String remark);
+    public void approve(Account account, Long id, int result, int catagory, String remark);
     
     
     /**

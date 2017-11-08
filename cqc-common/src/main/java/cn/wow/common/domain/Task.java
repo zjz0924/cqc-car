@@ -80,7 +80,7 @@ public class Task {
     
     // 是否申请修改信息（0-否， 1-等待审批）
     private Integer infoApply;
-    // 是否申请修改试验结果（0-否，1-等待审批）
+    // 是否申请修改试验结果（0-否，1-等待审批，2-子任务等待审批）
     private Integer resultApply;
     
     public Long getId() {

@@ -26,11 +26,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.ApplyRecord;
+import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
+import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.StandardVO;
 import cn.wow.common.domain.Task;
+import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.ApplyRecordService;
+import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MaterialService;
@@ -79,6 +86,10 @@ public class PpapTaskController extends AbstractController {
 	private MaterialService materialService;
 	@Autowired
 	private ExamineRecordService examineRecordService;
+	@Autowired
+	private ApplyRecordService applyRecordService;
+	@Autowired
+	private AtlasResultService atlasResultService;
 	
 	/**
 	 * 首页
@@ -264,7 +275,7 @@ public class PpapTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("state", SamplingTaskEnum.APPROVE.getState());
+		map.put("ppap_approveTask", true);
 		map.put("type", TaskTypeEnum.PPAP.getState());
 
 		if (StringUtils.isNotBlank(code)) {
@@ -300,14 +311,68 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@RequestMapping(value = "/approveDetail")
 	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		int approveType = 3;
+		
 		if (id != null) {
 			Task task = taskService.selectOne(id);
+			
+			if(task.getState() == SamplingTaskEnum.APPLYING.getState()){
+				if (task.getInfoApply() == 1) { // 申请修改信息
+					approveType = 1;
+					ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
+					
+					if(applyRecord != null){
+						if (applyRecord.getpId() != null) {
+							Parts newParts = partsService.selectOne(applyRecord.getpId());
+							model.addAttribute("newParts", newParts);
+						}
+
+						if (applyRecord.getvId() != null) {
+							Vehicle newVehicle = vehicleService.selectOne(applyRecord.getvId());
+							model.addAttribute("newVehicle", newVehicle);
+						}
+
+						if (applyRecord.getmId() != null) {
+							Material newMaterial = materialService.selectOne(applyRecord.getvId());
+							model.addAttribute("newMaterial", newMaterial);
+						}
+					}
+					
+				}else if (task.getResultApply() == 1) { // 申请修改试验结果
+					approveType = 2;
+					
+					/** ---------  原结果  ----------- */
+					// 零部件-图谱结果（只取最后一次实验）
+					List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
+					
+					// 原材料-图谱结果（只取最后一次实验）
+					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
+					
+					/** ---------  修改之后的结果  ----------- */
+					// 零部件-图谱结果（只取最后一次实验）
+					List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
+					
+					// 原材料-图谱结果（只取最后一次实验）
+					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
+					
+					model.addAttribute("pAtlasResult_old", pAtlasResult_old);
+					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
+					model.addAttribute("pAtlasResult_new", pAtlasResult_new);
+					model.addAttribute("mAtlasResult_new", mAtlasResult_new);
+				}
+			}
 
 			model.addAttribute("facadeBean", task);
 		}
 
 		model.addAttribute("resUrl", resUrl);
-		return "task/ppap/approve_detail";
+		model.addAttribute("approveType", approveType);
+		
+		if (approveType == 1) {
+			return "task/ppap/approve_info_detail";
+		} else {
+			return "task/ppap/approve_detail";
+		}
 	}
 	
 	
@@ -317,17 +382,18 @@ public class PpapTaskController extends AbstractController {
      * @param id       任务ID
      * @param result   结果：1-通过，2-不通过
      * @param remark   备注
+     * @param catagory 分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
      */
 	@ResponseBody
 	@RequestMapping(value = "/approve")
-	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, String remark) {
+	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, String remark, int catagory) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.approve(account, id, result, remark);
+			infoService.approve(account, id, result, catagory, remark);
 		} catch (Exception ex) {
-			logger.error("OTS任务审批失败", ex);
+			logger.error("PPAP任务审批失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");

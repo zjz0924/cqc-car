@@ -45,6 +45,22 @@
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
+						field : 'infoApply',
+						title : '类型',
+						width : '150',
+						align : 'center',
+						formatter : function(value,row,index){
+							var str = "新增任务";
+							if(row.state == 8){
+								if(row.infoApply == 1){
+									str = "信息修改";
+								}else if(row.resultApply == 1){
+									str = "结果修改"
+								}
+							}
+							return "<span title='" + str + "'>" + str + "</span>";
+						}
+					}, {
 						field : 'org',
 						title : '录入单位',
 						width : '250',
@@ -57,7 +73,7 @@
 					}, {
 						field : 'account',
 						title : '录入用户',
-						width : '200',
+						width : '150',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -67,7 +83,7 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '250',
+						width : '220',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
@@ -216,8 +232,8 @@
 			
 			// 关掉对话时回调
 			function closeDialog(msg) {
+				$('#approveDetailDialog').dialog('close');
 				tipMsg(msg, function(){
-					$('#approveDetailDialog').dialog('close');
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});

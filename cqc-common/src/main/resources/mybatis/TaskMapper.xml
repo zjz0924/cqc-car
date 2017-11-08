@@ -185,8 +185,9 @@
 				and t.state = #{state,jdbcType=INTEGER}
 			</if>
 			
+			<!-- 抽样是否存在 -->
 			<if test="unstate != null">
-				and t.state != #{unstate,jdbcType=INTEGER}
+				and t.state != 7 and t.state != 9
 			</if>
 			
 			<if test="type != null">
@@ -272,14 +273,19 @@
 				and t.result_apply = #{resultApply,jdbcType=INTEGER}
 			</if>
 
-			<!-- 任务下达列表 -->
+			<!-- OTS 任务下达列表 -->
 			<if test="transimtTask != null">
 				and (t.parts_atl_id is null or t.mat_atl_id is null or t.parts_pat_id is null or t.mat_pat_id is null)
 			</if>
 
-			<!-- 审批列表 -->
+			<!-- OTS 审批列表 -->
 			<if test="approveTask != null">
 				and ((t.state = 3 and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+			</if>
+			
+			<!-- PPAP 审批列表 -->
+			<if test="ppap_approveTask != null">
+				and (t.state = 1 or (t.state = 8 and (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null))))
 			</if>
 
 			<!-- 图谱结果上传 -->
@@ -322,12 +328,12 @@
 
 			<!-- 所有已完成的任务 -->
 			<if test="accomplishTask != null">
-				and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8))) and (t.info_apply = 0 or t.result_apply = 0)
+				and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8))) and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
 			</if>
 			
 			<!-- 只能看到分配自己实验室的任务 -->
 			<if test="accomplishTask_lab != null">
-				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8)))  
+				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8)))  and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
 			</if>
 		</where>
 

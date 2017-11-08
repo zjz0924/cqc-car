@@ -253,10 +253,8 @@
 					    //默认选中第一个
 		                if (data.length > 0) {
 		                	if(!isNull("${facadeBean.iId}")){
-		                		alert(2);
 		                		$(this).combobox('select', "${facadeBean.iId}");
 		                	}else{
-		                		alert(3);
 		                		$(this).combobox('select', data[0].id);
 		                	}
 		                }
@@ -266,7 +264,6 @@
 				// 编辑的时候
 				var iId = "${facadeBean.iId}";
 				if(!isNull(iId)){
-					alert(1);
 					$('#standard').combobox('reload', standardUrl + "?v_id=" + $("#v_id").val() + "&p_id=" +  $("#p_id").val() + "&m_id=" + $("#m_id").val());
 				}
 				

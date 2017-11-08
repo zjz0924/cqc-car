@@ -711,7 +711,7 @@ public class OtsTaskController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			if(task.getState() == 5){
+			if(task.getState() == StandardTaskEnum.APPLYING.getState()){
 				if (task.getInfoApply() == 1) { // 申请修改信息
 					approveType = 1;
 					ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
