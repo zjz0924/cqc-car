@@ -1,5 +1,7 @@
 package cn.wow.support.web;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +27,9 @@ import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Menu;
+import cn.wow.common.domain.StandardVO;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
@@ -39,7 +43,6 @@ import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
-import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 /**
@@ -180,11 +183,12 @@ public class PpapTaskController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 			
+			// 审批记录
 			Map<String, Object> rMap = new PageMap(false);
 			rMap.put("taskId", id);
 			rMap.put("type", 2);
 			rMap.put("state", 2);
-			rMap.put("taskType", TaskTypeEnum.PPAP);
+			rMap.put("taskType", TaskTypeEnum.PPAP.getState());
 			rMap.put("custom_order_sql", "create_time asc");
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
@@ -200,9 +204,7 @@ public class PpapTaskController extends AbstractController {
 	 * 下达任务结果
 	 * 
 	 * @param t_id         任务ID
-	 * @param v_id         整车信息ID
-	 * @param p_id         零部件信息ID
-	 * @param m_id         原材料信息ID
+	 * @param i_id         信息ID
 	 * @param partsAtlId   零部件图谱实验室ID
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
@@ -210,13 +212,13 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long v_id, Long p_id,  Long m_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			
-			boolean flag = infoService.transmit(account, t_id, v_id, p_id, m_id, partsAtlId, matAtlId, partsPatId, matPatId);
+			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId);
 			if (!flag) {
 				vo.setSuccess(false);
 				vo.setMsg("已有进行中抽样，不能再申请");
@@ -335,6 +337,52 @@ public class PpapTaskController extends AbstractController {
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;
+	}
+	
+	
+	/**
+	 * 获取基准数据
+	 * @param v_id
+	 * @param p_id
+	 * @param m_id
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/standard")
+	public List<StandardVO> standard(HttpServletRequest request, Model model, Long v_id, Long p_id, Long m_id) {
+		List<StandardVO> dataList = new ArrayList<StandardVO>();
+		if (v_id == null || p_id == null || m_id == null) {
+			return dataList;
+		}
+		
+		Map<String, Object> iMap = new PageMap(false);
+		iMap.put("mId", m_id);
+		iMap.put("pId", p_id);
+		iMap.put("vId", v_id);
+		iMap.put("state", 1);
+		List<Info> infoList = infoService.selectAllList(iMap);
+		
+		if (infoList != null && infoList.size() > 0) {
+			List<Long> idList = new ArrayList<Long>();
+			for (Info info : infoList) {
+				idList.add(info.getId());
+			}
+
+			List<Task> taskList = taskService.batchQueryByInfoId(idList);
+			if (taskList != null && taskList.size() > 0) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+				for (int i = 0; i < taskList.size(); i++) {
+					Task task = taskList.get(i);
+					StandardVO vo = new StandardVO();
+					vo.setDate(sdf.format(task.getCreateTime()));
+					vo.setId(task.getiId());
+					vo.setTaskCode(task.getCode());
+					vo.setText("基准" + (i + 1));
+					dataList.add(vo);
+				}
+			}
+		}
+		return dataList;
 	}
 	
 }

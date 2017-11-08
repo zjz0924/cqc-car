@@ -45,7 +45,7 @@ public class PartsController extends AbstractController {
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
-		return "task/ots/parts/parts_list";
+		return "parts/parts_list";
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class PartsController extends AbstractController {
 			model.addAttribute("facadeBean", parts);
 		}
 		model.addAttribute("resUrl", resUrl);
-		return "task/ots/parts/parts_detail";
+		return "parts/parts_detail";
 	}
 
 

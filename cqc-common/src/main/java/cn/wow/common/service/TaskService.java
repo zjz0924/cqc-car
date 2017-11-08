@@ -70,4 +70,9 @@ public interface TaskService {
     public void compareResult(Account account, Long taskId, List<ExamineRecord> result, int state);
     
 
+    /**
+     * 获取info id 批量查询任务
+     * @param list
+     */
+    public List<Task> batchQueryByInfoId(List<Long> list);
 }

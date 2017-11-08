@@ -227,7 +227,7 @@
 				$('#approveDetailDialog').dialog({
 					title : '审批信息',
 					width : 900,
-					height : 920,
+					height : 700,
 					closed : false,
 					cache : false,
 					href : "${ctx}/ppap/approveDetail?id=" + id,

@@ -141,9 +141,7 @@
 					<td>
 						<span class="title-span"><span class="req-span">*</span>成分表：</span> 
 						<span id="m_pic_span" <c:if test="${empty facadeBean.info.material.pic}">style="display:none;"</c:if>>	
-							<a id="m_pic_a" target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">
-								<img id="m_pic" src="${resUrl}/${facadeBean.info.material.pic}" style="width: 100px;height: 50px;"></img>
-							</a>
+							<a id="m_pic_a" target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${facadeBean.info.material.pic}</a>
 						</span>
 						
 					</td>
@@ -155,8 +153,12 @@
 				</tr>
 			</table>
 		</div>
-		
-		
+
+		<div style="margin-left: 10px; margin-top: 20px;">
+			<div class="title">选择基准</div>
+			<div style="margin-left: 20px;"><input id="standard" name="standard" style="width: 370px"></div>
+		</div>
+
 		<div style="margin-left: 10px;margin-top:20px;">
 			<div class="title">下达实验室</div>
 			<div>
@@ -236,100 +238,134 @@
 		</style>
 		
 		<script type="text/javascript">
+			var standardUrl = '${ctx}/ppap/standard';
+			
 			$(function(){
+				// 基准选择
+				$("#standard").combobox({
+					url : standardUrl,
+					valueField : 'id',
+					textField : 'text',
+					formatter : formatItem,
+					onLoadSuccess:function(){ //默认选中第一条数据
+				        var data= $(this).combobox("getData");
+					
+					    //默认选中第一个
+		                if (data.length > 0) {
+		                	if(!isNull("${facadeBean.iId}")){
+		                		alert(2);
+		                		$(this).combobox('select', "${facadeBean.iId}");
+		                	}else{
+		                		alert(3);
+		                		$(this).combobox('select', data[0].id);
+		                	}
+		                }
+					}
+				});
+
+				// 编辑的时候
+				var iId = "${facadeBean.iId}";
+				if(!isNull(iId)){
+					alert(1);
+					$('#standard').combobox('reload', standardUrl + "?v_id=" + $("#v_id").val() + "&p_id=" +  $("#p_id").val() + "&m_id=" + $("#m_id").val());
+				}
+				
+				
 				// 零部件图谱
 				$('#partsAtlId').combotree({
-					url: '${ctx}/org/getTreeByType?type=3',
-					multiple: false,
-					animate: true,
-					width: '250px'				
+					url : '${ctx}/org/getTreeByType?type=3',
+					multiple : false,
+					animate : true,
+					width : '250px'
 				});
-				
+
 				// 只有最底层才能选择
-				var partsAtlIdTree = $('#partsAtlId').combotree('tree');	
+				var partsAtlIdTree = $('#partsAtlId').combotree('tree');
 				partsAtlIdTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
+					onBeforeSelect : function(node) {
+						if (isNull(node.children)) {
 							return true;
-					   }else{
-						   return false;
-					   }
-				   }
+						} else {
+							return false;
+						}
+					}
 				});
-				
-				
+
 				// 原材料图谱
 				$('#matAtlId').combotree({
-					url: '${ctx}/org/getTreeByType?type=3',
-					multiple: false,
-					animate: true,
-					width: '250px'					
+					url : '${ctx}/org/getTreeByType?type=3',
+					multiple : false,
+					animate : true,
+					width : '250px'
 				});
-				
+
 				// 只有最底层才能选择
-				var matAtlIdTree = $('#matAtlId').combotree('tree');	
+				var matAtlIdTree = $('#matAtlId').combotree('tree');
 				matAtlIdTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
+					onBeforeSelect : function(node) {
+						if (isNull(node.children)) {
 							return true;
-					   }else{
-						   return false;
-					   }
-				   }
+						} else {
+							return false;
+						}
+					}
 				});
-				
+
 				// 默认选中CQC实验室
 				$("#partsAtlId").combotree("setValue", "20");
 				$("#matAtlId").combotree("setValue", "20");
 			});
-		
-		
-			function save(){
+
+			function save() {
 				var t_id = $("#t_id").val();
 				var v_id = $("#v_id").val();
 				var p_id = $("#p_id").val();
 				var m_id = $("#m_id").val();
-				
-				if(isNull(v_id)){
+
+				if (isNull(v_id)) {
 					errorMsg("请选择整车信息");
 					return false;
 				}
-				
-				if(isNull(p_id)){
+
+				if (isNull(p_id)) {
 					errorMsg("请选择零部件信息");
 					return false;
 				}
-				
-				if(isNull(m_id)){
+
+				if (isNull(m_id)) {
 					errorMsg("请选择原材料信息");
 					return false;
 				}
 				
+				var iId = $("#standard").combobox("getValue");
+				if(isNull(iId)){
+					errorMsg("请选择基准");
+					return false;
+				}
+
 				var partsAtlId_val = $("#partsAtlId").combotree("getValue");
 				var matAtlId_val = $("#matAtlId").combotree("getValue");
-				
+
 				$.ajax({
-					url: "${ctx}/ppap/transmit",
-					data:{
-						"t_id": t_id,
-						"v_id": v_id,
-						"p_id": p_id,
-						"m_id": m_id,
-						"partsAtlId": partsAtlId_val,
-						"matAtlId": matAtlId_val
+					url : "${ctx}/ppap/transmit",
+					data : {
+						"t_id" : t_id,
+						"i_id" : iId,
+						"partsAtlId" : partsAtlId_val,
+						"matAtlId" : matAtlId_val
 					},
-					success: function(data){
-						if(data.success){ 
-							tipMsg(data.msg, function(){
+					success : function(data) {
+						if (data.success) {
+							tipMsg(data.msg, function() {
 								window.location.reload();
 							});
-						}else{
-							errorMsg(data.msg);						
+						} else {
+							errorMsg(data.msg);
 						}
 					}
 				});
 			}
-		
+
 			function vehicleInfo() {
 				$('#vehicleDialog').dialog({
 					title : '整车信息',
@@ -338,10 +374,13 @@
 					closed : false,
 					cache : false,
 					href : "${ctx}/vehicle/list",
-					modal : true
+					modal : true,
+					onClose: function(){
+						standardChange();
+					}
 				});
 			}
-			
+
 			function materialInfo() {
 				$('#materialDialog').dialog({
 					title : '原材料信息',
@@ -350,12 +389,14 @@
 					closed : false,
 					cache : false,
 					href : "${ctx}/material/list",
-					modal : true
+					modal : true,
+					onClose: function(){
+						standardChange();
+					}
 				});
 				$('#materialDialog').window('center');
 			}
-			
-			
+
 			function partsInfo() {
 				$('#partsDialog').dialog({
 					title : '零部件信息',
@@ -364,11 +405,30 @@
 					closed : false,
 					cache : false,
 					href : "${ctx}/parts/list",
-					modal : true
+					modal : true,
+					onClose: function(){
+						standardChange();
+					}
 				});
 				$('#partsDialog').window('center');
 			}
-			
+
+			function standardChange() { 
+				var v_id = $("#v_id").val();
+				var p_id = $("#p_id").val();
+				var m_id = $("#m_id").val();  
+				
+				if(!isNull(v_id) && !isNull(p_id) && !isNull(m_id)){
+				    $('#standard').combobox('reload', standardUrl + "?v_id=" + $("#v_id").val() + "&p_id=" +  $("#p_id").val() + "&m_id=" + $("#m_id").val());
+				}
+			}
+
+			// 格式化基准下拉框
+			function formatItem(row) {
+				var s = '<span style="font-weight:bold">' + row.text + '</span><br/>' + '<span style="color:#888">任务号：'
+						+ row.taskCode + '&nbsp;&nbsp;&nbsp;创建时间：' + row.date + '</span>';
+				return s;
+			}
 		</script>
 	
 </body>

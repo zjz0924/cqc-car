@@ -73,7 +73,7 @@ public class PfResultServiceImpl implements PfResultService{
     //性能结果上传
     public void upload(Account account, List<PfResult> dataList, Long taskId){
     	Task task = taskDao.selectOne(taskId);
-    	String remark = "";
+    	String remark = "上传零部件型式试验和原材料型式试验结果";
     	
 		// 批量添加
     	batchAdd(dataList);

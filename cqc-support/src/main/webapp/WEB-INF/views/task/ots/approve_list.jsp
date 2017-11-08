@@ -51,10 +51,12 @@
 						align : 'center',
 						formatter : function(value,row,index){
 							var str = "新增任务";
-							if(row.infoApply == 1 && row.tId == null){
-								str = "信息修改";
-							}else if(row.resultApply == 1 && row.tId != null ){
-								str = "结果修改"
+							if(row.state == 5){
+								if(row.infoApply == 1){
+									str = "信息修改";
+								}else if(row.resultApply == 1){
+									str = "结果修改"
+								}
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}

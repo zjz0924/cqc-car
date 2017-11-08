@@ -147,6 +147,11 @@
 	<update id="updateState" parameterType="java.util.Map">
 		update task set state = #{state,jdbcType=INTEGER} where id = #{id,jdbcType=BIGINT}
 	</update>
+	
+	<select id="batchQueryByInfoId" resultMap="BaseResultMap" parameterType="java.util.List">
+		select <include refid="base_columns" /> from task t where t.type = 1 and t.i_id in
+		<foreach collection="list" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> order by t.create_time desc
+	</select>
 
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select <include refid="base_columns" />
@@ -178,6 +183,10 @@
 
 			<if test="state != null">
 				and t.state = #{state,jdbcType=INTEGER}
+			</if>
+			
+			<if test="unstate != null">
+				and t.state != #{unstate,jdbcType=INTEGER}
 			</if>
 			
 			<if test="type != null">
@@ -313,12 +322,12 @@
 
 			<!-- 所有已完成的任务 -->
 			<if test="accomplishTask != null">
-				and (((t.type = 1 and t.state = 4) or (t.type = 2 and t.state = 7)) and (((t.info_apply = 0 or result_apply = 0) and t.t_id is null) or (t.result_apply != 1 and t.t_id is not null))) 
+				and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8))) and (t.info_apply = 0 or t.result_apply = 0)
 			</if>
 			
 			<!-- 只能看到分配自己实验室的任务 -->
 			<if test="accomplishTask_lab != null">
-				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and (((t.info_apply = 0 or result_apply = 0) and t.t_id is null) or (t.result_apply != 1 and t.t_id is not null))
+				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8)))  
 			</if>
 		</where>
 

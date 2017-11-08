@@ -104,8 +104,6 @@ public class TaskServiceImpl implements TaskService{
     private ExamineRecordDao examineRecordDao;
     @Autowired
     private CostRecordDao costRecordDao;
-    @Autowired
-    private ExpItemDao expItemDao;
 
     public Task selectOne(Long id){
     	return taskDao.selectOne(id);
@@ -646,5 +644,14 @@ public class TaskServiceImpl implements TaskService{
 		costRecord.setLabResult(result);
 		
 		return costRecord;
+	}
+	
+	
+	 /**
+     * 获取info id 批量查询任务
+     * @param list
+     */
+	public List<Task> batchQueryByInfoId(List<Long> list) {
+		return taskDao.batchQueryByInfoId(list);
 	}
 }

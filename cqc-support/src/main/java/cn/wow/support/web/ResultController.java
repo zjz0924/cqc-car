@@ -594,8 +594,8 @@ public class ResultController extends AbstractController {
 			}else if(task.getType() == TaskTypeEnum.PPAP.getState()){
 				
 				// 基准图谱结果
-				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardPartsAtlResult(task.getInfo().getpId());
-				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardMatAtlResult(task.getInfo().getmId());
+				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 1);
+				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 2);
 				
 				// 抽样图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();
@@ -729,8 +729,8 @@ public class ResultController extends AbstractController {
 			Task task = taskService.selectOne(id);
 
 			// 基准图谱结果
-			List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardPartsAtlResult(task.getInfo().getpId());
-			List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardMatAtlResult(task.getInfo().getmId());
+			List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 1);
+			List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 2);
 			
 			// 抽样图谱结果
 			Map<String, Object> atMap = new HashMap<String, Object>();

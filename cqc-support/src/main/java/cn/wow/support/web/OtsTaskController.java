@@ -711,65 +711,67 @@ public class OtsTaskController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			if (task.getInfoApply() == 1 && task.gettId() == null) { // 申请修改信息
-				approveType = 1;
-				ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
-				
-				if(applyRecord != null){
-					if (applyRecord.getpId() != null) {
-						Parts newParts = partsService.selectOne(applyRecord.getpId());
-						model.addAttribute("newParts", newParts);
-					}
+			if(task.getState() == 5){
+				if (task.getInfoApply() == 1) { // 申请修改信息
+					approveType = 1;
+					ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
+					
+					if(applyRecord != null){
+						if (applyRecord.getpId() != null) {
+							Parts newParts = partsService.selectOne(applyRecord.getpId());
+							model.addAttribute("newParts", newParts);
+						}
 
-					if (applyRecord.getvId() != null) {
-						Vehicle newVehicle = vehicleService.selectOne(applyRecord.getvId());
-						model.addAttribute("newVehicle", newVehicle);
-					}
+						if (applyRecord.getvId() != null) {
+							Vehicle newVehicle = vehicleService.selectOne(applyRecord.getvId());
+							model.addAttribute("newVehicle", newVehicle);
+						}
 
-					if (applyRecord.getmId() != null) {
-						Material newMaterial = materialService.selectOne(applyRecord.getvId());
-						model.addAttribute("newMaterial", newMaterial);
+						if (applyRecord.getmId() != null) {
+							Material newMaterial = materialService.selectOne(applyRecord.getvId());
+							model.addAttribute("newMaterial", newMaterial);
+						}
 					}
+					
+				} else if (task.getResultApply() == 1) { // 申请修改试验结果
+					approveType = 2;
+					
+					/** ---------  原结果  ----------- */
+					// 零部件-性能结果（只取最后一次实验）
+					List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
+
+					// 原材料-性能结果（只取最后一次实验结果）
+					List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
+					
+					// 零部件-图谱结果（只取最后一次实验）
+					List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
+					
+					// 原材料-图谱结果（只取最后一次实验）
+					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
+					
+					/** ---------  修改之后的结果  ----------- */
+					// 零部件-性能结果（只取最后一次实验）
+					List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
+
+					// 原材料-性能结果（只取最后一次实验结果）
+					List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
+					
+					// 零部件-图谱结果（只取最后一次实验）
+					List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
+					
+					// 原材料-图谱结果（只取最后一次实验）
+					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
+					
+					
+					model.addAttribute("pPfResult_old", pPfResult_old);
+					model.addAttribute("mPfResult_old", mPfResult_old);
+					model.addAttribute("pAtlasResult_old", pAtlasResult_old);
+					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
+					model.addAttribute("pPfResult_new", pPfResult_new);
+					model.addAttribute("mPfResult_new", mPfResult_new);
+					model.addAttribute("pAtlasResult_new", pAtlasResult_new);
+					model.addAttribute("mAtlasResult_new", mAtlasResult_new);
 				}
-				
-			} else if (task.getResultApply() == 1 && task.gettId() != null) { // 申请修改试验结果
-				approveType = 2;
-				
-				/** ---------  原结果  ----------- */
-				// 零部件-性能结果（只取最后一次实验）
-				List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
-
-				// 原材料-性能结果（只取最后一次实验结果）
-				List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
-				
-				// 零部件-图谱结果（只取最后一次实验）
-				List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
-				
-				// 原材料-图谱结果（只取最后一次实验）
-				List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
-				
-				/** ---------  修改之后的结果  ----------- */
-				// 零部件-性能结果（只取最后一次实验）
-				List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
-
-				// 原材料-性能结果（只取最后一次实验结果）
-				List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
-				
-				// 零部件-图谱结果（只取最后一次实验）
-				List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
-				
-				// 原材料-图谱结果（只取最后一次实验）
-				List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
-				
-				
-				model.addAttribute("pPfResult_old", pPfResult_old);
-				model.addAttribute("mPfResult_old", mPfResult_old);
-				model.addAttribute("pAtlasResult_old", pAtlasResult_old);
-				model.addAttribute("mAtlasResult_old", mAtlasResult_old);
-				model.addAttribute("pPfResult_new", pPfResult_new);
-				model.addAttribute("mPfResult_new", mPfResult_new);
-				model.addAttribute("pAtlasResult_new", pAtlasResult_new);
-				model.addAttribute("mAtlasResult_new", mAtlasResult_new);
 			}
 
 			model.addAttribute("approveType", approveType);

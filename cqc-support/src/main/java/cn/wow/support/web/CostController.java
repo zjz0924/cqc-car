@@ -168,9 +168,9 @@ public class CostController extends AbstractController {
 			} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState()) {
 
 				// 基准图谱结果
-				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardPartsAtlResult(costRecord.getTask().getInfo().getpId());
-				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardMatAtlResult(costRecord.getTask().getInfo().getmId());
-
+				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(costRecord.getTask().getiId(), 1);
+				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(costRecord.getTask().getiId(), 2);
+				
 				// 抽样图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();
 				atMap.put("tId", id);

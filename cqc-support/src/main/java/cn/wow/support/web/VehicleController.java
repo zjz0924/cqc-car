@@ -40,7 +40,7 @@ public class VehicleController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
-		return "task/ots/vehicle/vehicle_list";
+		return "vehicle/vehicle_list";
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class VehicleController extends AbstractController {
 
 			model.addAttribute("facadeBean", vehicle);
 		}
-		return "task/ots/vehicle/vehicle_detail";
+		return "vehicle/vehicle_detail";
 	}
 
 	@ResponseBody

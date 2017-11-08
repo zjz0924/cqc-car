@@ -11,7 +11,9 @@ public interface AtlasResultDao extends SqlDao{
 	
 	public int getExpNoByCatagory(Map<String, Object> map);
 	
-	public List<AtlasResult> getStandardPartsAtlResult(Long id);
+	/**
+     * 获取基准图谱结果
+     */
+	public List<AtlasResult> getStandardAtlResult(Map<String, Object> map);
 	
-	public List<AtlasResult> getStandardMatAtlResult(Long id);
 }

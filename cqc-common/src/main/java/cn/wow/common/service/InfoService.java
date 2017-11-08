@@ -57,15 +57,13 @@ public interface InfoService {
 	 * 下达任务（PPAP）
 	 * 
 	 * @param t_id         任务ID
-	 * @param v_id         整车信息ID
-	 * @param p_id         零部件信息ID
-	 * @param m_id         原材料信息ID
+	 * @param i_id         信息ID
 	 * @param partsAtlId   零部件图谱实验室ID
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
 	 */
-    public boolean transmit(Account account, Long t_id, Long v_id, Long p_id,  Long m_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId);
+    public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId);
     
     
     /**

@@ -37,17 +37,11 @@ public interface AtlasResultService {
     public int getExpNoByCatagory(Long taskId, int catagory);
     
     /**
-     * 获取零部件基准图谱结果
-     * @param id   零部件ID
+     * 获取基准图谱结果
+     * @param iId        信息ID
+     * @param catagory  种类：1-零部件，2-原材料
      */
-    public List<AtlasResult> getStandardPartsAtlResult(Long id);
-	
-    
-    /**
-     * 获取原材料基准图谱结果
-     * @param id   原材料ID
-     */
-	public List<AtlasResult> getStandardMatAtlResult(Long id);
+    public List<AtlasResult> getStandardAtlResult(Long iId, int catagory);
 	
 	/**
 	 * 组装图谱对比

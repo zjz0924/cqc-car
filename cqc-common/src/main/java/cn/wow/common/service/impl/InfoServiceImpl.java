@@ -274,46 +274,33 @@ public class InfoServiceImpl implements InfoService {
 	 * 下达任务（PPAP）
 	 * 
 	 * @param t_id         任务ID
-	 * @param v_id         整车信息ID
-	 * @param p_id         零部件信息ID
-	 * @param m_id         原材料信息ID
+	 * @param i_id         信息ID
 	 * @param partsAtlId   零部件图谱实验室ID
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
 	 */
-	public boolean transmit(Account account, Long t_id, Long v_id, Long p_id, Long m_id, Long partsAtlId, Long matAtlId,
-			Long partsPatId, Long matPatId) {
+	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
 
 		if (t_id == null) {
 			Date date = new Date();
 			String code = generateTaskCode(date);
 
-			// 检查当前信息是否已有任务
+			// 检查当前基准是否已有任务在进行
 			Map<String, Object> iMap = new PageMap(false);
-			iMap.put("vId", v_id);
-			iMap.put("pId", p_id);
-			iMap.put("mId", m_id);
+			iMap.put("iId", i_id);
 			iMap.put("type", TaskTypeEnum.PPAP.getState());
-			List<Info> infoList = infoDao.selectAllList(iMap);
-			if (infoList != null && infoList.size() > 0) {
+			iMap.put("unstate", 7);
+			iMap.put("unstate", 9);
+			List<Task> taskList = taskDao.selectAllList(iMap);
+			if (taskList != null && taskList.size() > 0) {
 				return false;
 			}
-
-			// 信息
-			Info info = new Info();
-			info.setCreateTime(date);
-			info.setmId(m_id);
-			info.setpId(p_id);
-			info.setState(Contants.FINISH_TYPE);
-			info.setvId(v_id);
-			info.setType(TaskTypeEnum.PPAP.getState());
-			infoDao.insert(info);
 
 			Task task = new Task();
 			task.setCode(code);
 			task.setCreateTime(date);
-			task.setiId(info.getId());
+			task.setiId(i_id);
 			task.setOrgId(account.getOrgId());
 			task.setState(SamplingTaskEnum.APPROVE.getState());
 			task.setType(TaskTypeEnum.PPAP.getState());
@@ -346,6 +333,7 @@ public class InfoServiceImpl implements InfoService {
 
 		} else {
 			Task task = taskDao.selectOne(t_id);
+			task.setiId(i_id);
 			task.setPartsAtlId(partsAtlId);
 			task.setMatAtlId(matAtlId);
 			task.setState(SamplingTaskEnum.APPROVE.getState());
@@ -435,7 +423,6 @@ public class InfoServiceImpl implements InfoService {
 					infoDao.update(info);
 					
 				} else {
-					task.setFailNum(1);
 					task.setRemark(remark);
 					applyRecord.setRemark(remark);
 				}
@@ -444,18 +431,25 @@ public class InfoServiceImpl implements InfoService {
 				applyRecord.setConfirmTime(date);
 				applyRecordDao.update(applyRecord);
 				
+				task.setState(StandardTaskEnum.ACCOMPLISH.getState());
 				task.setInfoApply(0);
 				taskDao.update(task);
 			}
 		}else if(catagory == 7){
 			
 			ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 2);
-			
-			if (result == 2) {
+			if (result == 1) {
+				task.setState(StandardTaskEnum.ACCOMPLISH.getState());
+			}else{
 				task.setFailNum(1);
 				task.setRemark(remark);
+				task.setState(StandardTaskEnum.APPLY_NOTPASS.getState());
 				applyRecord.setRemark(remark);
 			}
+			
+			Info info = task.getInfo();
+			info.setState(result);
+			infoDao.update(info);
 
 			applyRecord.setState(result);
 			applyRecord.setConfirmTime(date);
@@ -464,6 +458,7 @@ public class InfoServiceImpl implements InfoService {
 			// 父任务
 			Task pTask = taskDao.selectOne(task.gettId());
 			pTask.setResultApply(0);
+			pTask.setState(StandardTaskEnum.ACCOMPLISH.getState());
 			taskDao.update(pTask);
 
 			task.setResultApply(0);
@@ -599,6 +594,11 @@ public class InfoServiceImpl implements InfoService {
      */
     public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material){
 		task.setInfoApply(1);
+		if(task.getType() == 1){
+			task.setState(StandardTaskEnum.APPLYING.getState());
+		}else if(task.getType() == 2){
+			task.setState(SamplingTaskEnum.APPLYING.getState());
+		}
 		taskDao.update(task);
 
 		ApplyRecord applyRecord = new ApplyRecord();
@@ -637,6 +637,11 @@ public class InfoServiceImpl implements InfoService {
     	Date date = new Date();
     	
     	Task task = taskDao.selectOne(taskId);
+    	if(task.getType() == 1){
+			task.setState(StandardTaskEnum.APPLYING.getState());
+		}else if(task.getType() == 2){
+			task.setState(SamplingTaskEnum.APPLYING.getState());
+		}
     	task.setResultApply(1);
     	taskDao.update(task);
     	
