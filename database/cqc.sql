@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50045
 File Encoding         : 65001
 
-Date: 2017-10-13 01:53:26
+Date: 2017-11-09 01:15:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -40,18 +40,45 @@ CREATE TABLE `account` (
 -- ----------------------------
 -- Records of account
 -- ----------------------------
-INSERT INTO `account` VALUES ('1', 'admin', 'admin', 'E10ADC3949BA59ABBE56E057F20F883E', '13750017489', '2016-12-18 23:06:04', 'N', '1', null, '12313123@qq.com', null, null, null);
+INSERT INTO `account` VALUES ('1', 'admin', 'admin', 'E10ADC3949BA59ABBE56E057F20F883E', '13750017489', '2016-12-18 23:06:04', 'N', '1', '18', '314269261@qq.com', '', '1', null);
 INSERT INTO `account` VALUES ('2', 'jack', 'z_0924', 'E10ADC3949BA59ABBE56E057F20F883E', '13318668638', '2016-12-27 21:52:05', 'Y', '2', null, '12313123@qq.com', null, null, null);
 INSERT INTO `account` VALUES ('7', 'bill', 'ad', 'E10ADC3949BA59ABBE56E057F20F883E', '13512342323', '2017-06-21 23:30:12', 'N', '1', null, '12312@qq.com', null, null, null);
 INSERT INTO `account` VALUES ('8', 'lily', 'lily', 'E10ADC3949BA59ABBE56E057F20F883E', '13750017459', '2017-06-21 23:30:34', 'N', '33', null, '12313123@qq.com', null, null, null);
 INSERT INTO `account` VALUES ('13', 'William', 'William', 'E10ADC3949BA59ABBE56E057F20F883E', '15918703417', '2017-06-21 23:33:15', 'N', '33', null, '12313123@qq.com', null, null, null);
-INSERT INTO `account` VALUES ('35', 'ad', 'd_ad', 'E10ADC3949BA59ABBE56E057F20F883E', '13512342323', '2017-09-26 01:12:36', 'N', '16', '20', '12312@qq.com', 'test', '1', null);
+INSERT INTO `account` VALUES ('35', 'ad', 'd_ad', 'E10ADC3949BA59ABBE56E057F20F883E', '13512342323', '2017-09-26 01:12:36', 'N', '15', '20', '2420292077@qq.com', 'test', '1', null);
 INSERT INTO `account` VALUES ('42', 'ad1', 'ad', 'E10ADC3949BA59ABBE56E057F20F883E', '1431123', '2017-09-28 00:01:11', 'N', '15', null, '', null, null, null);
 INSERT INTO `account` VALUES ('38', 'd_test', 'test', 'E10ADC3949BA59ABBE56E057F20F883E', '123', '2017-09-26 22:09:22', 'N', '16', null, '12313123@qq.com', '', '1', null);
 INSERT INTO `account` VALUES ('39', 'd_test2', 'test2', 'E10ADC3949BA59ABBE56E057F20F883E', '13412231212', '2017-09-26 23:22:06', 'N', '9', null, '123123@qq.com', null, null, null);
 INSERT INTO `account` VALUES ('40', 'd_test3', 'test3', 'E10ADC3949BA59ABBE56E057F20F883E', '13412312312', '2017-09-26 23:24:26', 'N', '11', null, '12313123@qq.com', null, null, null);
 INSERT INTO `account` VALUES ('41', 'd_test4', 'test4', 'E10ADC3949BA59ABBE56E057F20F883E', '13412312313', '2017-09-26 23:24:26', 'N', '9', null, '12313123@qq.com', null, null, null);
 INSERT INTO `account` VALUES ('44', 'b', 'a', 'E10ADC3949BA59ABBE56E057F20F883E', '13512313@qq.com', '2017-09-30 02:24:54', 'N', '15', null, '12312@qq.com', '你好吗', '2', 'sign/1506709494265.png');
+
+-- ----------------------------
+-- Table structure for `apply_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `apply_record`;
+CREATE TABLE `apply_record` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `v_id` bigint(20) default NULL,
+  `p_id` bigint(20) default NULL,
+  `m_id` bigint(20) default NULL,
+  `t_id` bigint(20) default NULL,
+  `a_id` bigint(20) default NULL,
+  `state` int(11) default NULL,
+  `pf_result_ids` varchar(100) default NULL,
+  `atlas_result` varchar(100) default NULL,
+  `type` int(11) default NULL,
+  `remark` varchar(200) default NULL,
+  `create_time` timestamp NULL default NULL,
+  `confirm_time` timestamp NULL default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of apply_record
+-- ----------------------------
+INSERT INTO `apply_record` VALUES ('18', null, null, null, '42', '1', '1', null, null, '2', null, '2017-11-08 22:10:27', '2017-11-08 22:10:40');
+INSERT INTO `apply_record` VALUES ('19', '37', '38', '42', '44', '1', '0', null, null, '1', null, '2017-11-08 23:36:01', null);
 
 -- ----------------------------
 -- Table structure for `area`
@@ -87,6 +114,74 @@ INSERT INTO `area` VALUES ('106', 'a', 'a', '97', '');
 INSERT INTO `area` VALUES ('111', 'bb', 'bb', '106', '123');
 
 -- ----------------------------
+-- Table structure for `atlas_result`
+-- ----------------------------
+DROP TABLE IF EXISTS `atlas_result`;
+CREATE TABLE `atlas_result` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `t_id` bigint(20) default NULL,
+  `type` int(11) default NULL,
+  `pic` varchar(100) default NULL,
+  `remark` varchar(500) default NULL,
+  `create_time` timestamp NULL default NULL,
+  `catagory` int(11) default NULL,
+  `exp_no` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of atlas_result
+-- ----------------------------
+INSERT INTO `atlas_result` VALUES ('121', '41', '3', 'atlas/41/parts/tg/热重.png', '热重分析', '2017-11-08 22:07:04', '1', '1');
+INSERT INTO `atlas_result` VALUES ('122', '41', '1', 'atlas/41/parts/inf/红外光.png', '红外光分析', '2017-11-08 22:07:04', '1', '1');
+INSERT INTO `atlas_result` VALUES ('123', '41', '2', 'atlas/41/parts/dt/差热.png', '差热扫描', '2017-11-08 22:07:04', '1', '1');
+INSERT INTO `atlas_result` VALUES ('124', '41', '3', 'atlas/41/material/tg/热重.png', '热重分析', '2017-11-08 22:07:04', '2', '1');
+INSERT INTO `atlas_result` VALUES ('125', '41', '1', 'atlas/41/material/inf/红外光.png', '红外光分析', '2017-11-08 22:07:04', '2', '1');
+INSERT INTO `atlas_result` VALUES ('126', '41', '2', 'atlas/41/material/dt/差热.png', '差热扫描', '2017-11-08 22:07:04', '2', '1');
+INSERT INTO `atlas_result` VALUES ('127', '42', '2', 'atlas/41/parts/dt/差热.png', '差热扫描', '2017-11-08 22:10:27', '1', '1');
+INSERT INTO `atlas_result` VALUES ('128', '42', '1', 'atlas/41/parts/inf/红外光.png', '红外光分析', '2017-11-08 22:10:27', '1', '1');
+INSERT INTO `atlas_result` VALUES ('129', '42', '3', 'atlas/41/parts/tg/热重.png', '热重分析', '2017-11-08 22:10:27', '1', '1');
+INSERT INTO `atlas_result` VALUES ('130', '42', '2', 'atlas/41/material/dt/差热.png', '差热扫描', '2017-11-08 22:10:27', '2', '1');
+INSERT INTO `atlas_result` VALUES ('131', '42', '1', 'atlas/41/material/inf/红外光.png', '红外光分析', '2017-11-08 22:10:27', '2', '1');
+INSERT INTO `atlas_result` VALUES ('132', '42', '3', 'atlas/41/material/tg/热重.png', '热重分析', '2017-11-08 22:10:27', '2', '1');
+INSERT INTO `atlas_result` VALUES ('133', '44', '3', 'atlas/44/parts/tg/热重.png', '', '2017-11-08 23:07:35', '1', '1');
+INSERT INTO `atlas_result` VALUES ('134', '44', '1', 'atlas/44/parts/inf/红外光.png', '', '2017-11-08 23:07:35', '1', '1');
+INSERT INTO `atlas_result` VALUES ('135', '44', '2', 'atlas/44/parts/dt/差热.png', '', '2017-11-08 23:07:35', '1', '1');
+INSERT INTO `atlas_result` VALUES ('136', '44', '3', 'atlas/44/material/tg/热重.png', '', '2017-11-08 23:07:35', '2', '1');
+INSERT INTO `atlas_result` VALUES ('137', '44', '1', 'atlas/44/material/inf/红外光.png', '', '2017-11-08 23:07:35', '2', '1');
+INSERT INTO `atlas_result` VALUES ('138', '44', '2', 'atlas/44/material/dt/差热.png', '', '2017-11-08 23:07:35', '2', '1');
+
+-- ----------------------------
+-- Table structure for `cost_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `cost_record`;
+CREATE TABLE `cost_record` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `t_id` bigint(20) default NULL,
+  `a_id` bigint(20) default NULL,
+  `lab_id` bigint(20) default NULL,
+  `orgs` varchar(200) default NULL,
+  `state` int(11) default NULL,
+  `remark` varchar(200) default NULL,
+  `create_time` timestamp NULL default NULL,
+  `times` int(11) default NULL,
+  `lab_type` int(11) default NULL,
+  `send_time` timestamp NULL default NULL,
+  `lab_result` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of cost_record
+-- ----------------------------
+INSERT INTO `cost_record` VALUES ('9', '41', '1', '20', null, '0', null, '2017-11-08 22:07:43', '1', '1', null, '1');
+INSERT INTO `cost_record` VALUES ('10', '41', '1', '20', null, '0', null, '2017-11-08 22:07:43', '1', '2', null, '1');
+INSERT INTO `cost_record` VALUES ('11', '41', '1', '20', null, '0', null, '2017-11-08 22:07:43', '1', '3', null, '1');
+INSERT INTO `cost_record` VALUES ('12', '41', '1', '20', null, '0', null, '2017-11-08 22:07:43', '1', '4', null, '1');
+INSERT INTO `cost_record` VALUES ('13', '44', '1', '20', null, '0', null, '2017-11-08 23:35:00', '1', '1', null, '1');
+INSERT INTO `cost_record` VALUES ('14', '44', '1', '20', null, '0', null, '2017-11-08 23:35:00', '1', '3', null, '1');
+
+-- ----------------------------
 -- Table structure for `dictionary`
 -- ----------------------------
 DROP TABLE IF EXISTS `dictionary`;
@@ -95,7 +190,7 @@ CREATE TABLE `dictionary` (
   `name` varchar(50) default NULL,
   `val` varchar(50) default NULL,
   `desc` varchar(200) default NULL,
-  `create_time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `create_time` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
@@ -108,6 +203,111 @@ INSERT INTO `dictionary` VALUES ('5', 'b', 'b', 'b', '2017-09-27 01:16:47');
 INSERT INTO `dictionary` VALUES ('6', 'c', 'c', 'c', '2017-09-27 01:16:53');
 INSERT INTO `dictionary` VALUES ('7', 'aa', 'aa', 'aa', '2017-09-27 01:17:01');
 INSERT INTO `dictionary` VALUES ('8', 'asd', 'sdf', '', '2017-09-28 00:35:03');
+
+-- ----------------------------
+-- Table structure for `email_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `email_record`;
+CREATE TABLE `email_record` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `subject` varchar(100) default NULL,
+  `content` varchar(2000) default NULL,
+  `addr` varchar(1000) default NULL,
+  `task_id` bigint(20) default NULL,
+  `a_id` bigint(20) default NULL,
+  `state` int(11) default NULL,
+  `type` int(11) default NULL,
+  `orgin_email` varchar(50) default NULL,
+  `create_time` timestamp NULL default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of email_record
+-- ----------------------------
+INSERT INTO `email_record` VALUES ('1', '实验结果', '任务号：20171029004900，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '11', '1', '1', '1', '314269261@qq.com', '2017-10-29 15:45:26');
+INSERT INTO `email_record` VALUES ('2', '实验结果', '任务号：20171029004900，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '11', '1', '1', '1', '314269261@qq.com', '2017-10-29 15:45:26');
+INSERT INTO `email_record` VALUES ('4', '实验结果', '任务号：20171029004900，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '11', '35', '1', '1', '314269261@qq.com', '2017-10-29 15:54:23');
+INSERT INTO `email_record` VALUES ('5', '实验结果', '任务号：20171029004900，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '11', '35', '1', '1', '314269261@qq.com', '2017-10-29 15:54:23');
+INSERT INTO `email_record` VALUES ('6', '实验结果', '任务号：20171030215227，已完成零部件型式试验并已上传结果，请及时确认结果。', '314269261@qq.com', '14', '1', '1', '1', '314269261@qq.com', '2017-10-31 19:53:25');
+INSERT INTO `email_record` VALUES ('7', '实验结果', '任务号：20171030223641，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '22', '1', '1', '1', '314269261@qq.com', '2017-10-31 22:05:49');
+INSERT INTO `email_record` VALUES ('8', '警告书', '任务号：20171030223641，二次抽样均失败，第二次失败原因：不合格，请及时查清原因。', '2420292077@qq.com', '22', '1', '1', '1', '314269261@qq.com', '2017-11-01 01:46:37');
+INSERT INTO `email_record` VALUES ('9', '警告书', '任务号：20171030223641，二次抽样均失败，第二次失败原因：asdf，请及时查清原因。', '2420292077@qq.com', '22', '1', '1', '1', '314269261@qq.com', '2017-11-01 01:56:16');
+INSERT INTO `email_record` VALUES ('10', '警告书', '任务号：20171030223641，二次抽样均失败，第二次失败原因：abc，请及时查清原因。', '2420292077@qq.com', '22', '1', '1', '1', '314269261@qq.com', '2017-11-01 02:23:59');
+INSERT INTO `email_record` VALUES ('11', '实验结果', '任务号：20171102193214，已完成零部件型式试验并已上传结果，请及时确认结果。', '314269261@qq.com', '23', '1', '1', '1', '314269261@qq.com', '2017-11-02 19:43:05');
+INSERT INTO `email_record` VALUES ('12', '实验结果', '任务号：20171102193214，已完成原材料型式试验并已上传结果，请及时确认结果。', '314269261@qq.com', '23', '1', '1', '1', '314269261@qq.com', '2017-11-02 19:43:05');
+INSERT INTO `email_record` VALUES ('13', '实验结果', '任务号：20171102195246，已完成零部件型式试验并已上传结果，请及时确认结果。', '314269261@qq.com', '25', '1', '1', '1', '314269261@qq.com', '2017-11-02 19:59:23');
+INSERT INTO `email_record` VALUES ('14', '实验结果', '任务号：20171102195246，已完成原材料型式试验并已上传结果，请及时确认结果。', '2420292077@qq.com', '25', '1', '1', '1', '314269261@qq.com', '2017-11-02 19:59:23');
+INSERT INTO `email_record` VALUES ('15', '实验结果', '任务号：20171102200347，已完成原材料图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '26', '1', '1', '1', '314269261@qq.com', '2017-11-02 20:09:36');
+INSERT INTO `email_record` VALUES ('16', '实验结果', '任务号：20171102202216，已完成零部件型式试验并已上传结果，请及时确认结果。', '314269261@qq.com', '27', '1', '1', '1', '314269261@qq.com', '2017-11-02 20:25:26');
+INSERT INTO `email_record` VALUES ('17', '实验结果', '任务号：20171102202216，已完成原材料型式试验并已上传结果，请及时确认结果。', '314269261@qq.com', '27', '1', '1', '1', '314269261@qq.com', '2017-11-02 20:25:26');
+INSERT INTO `email_record` VALUES ('18', '实验结果', '任务号：20171102202616，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '28', '1', '1', '1', '314269261@qq.com', '2017-11-02 20:27:23');
+INSERT INTO `email_record` VALUES ('19', '实验结果', '任务号：20171102202616，已完成零部件图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '28', '1', '1', '1', '314269261@qq.com', '2017-11-02 20:28:44');
+INSERT INTO `email_record` VALUES ('20', '警告书', '任务号：20171102202616，二次抽样均失败，第二次失败原因：sdfasdf，请及时查清原因。', '2420292077@qq.com', '28', '1', '1', '1', '314269261@qq.com', '2017-11-02 20:29:12');
+INSERT INTO `email_record` VALUES ('21', '实验结果', '任务号：20171104034341，已完成原材料图谱试验并已上传结果，请及时确认结果。', '314269261@qq.com', '32', '1', '1', '1', '314269261@qq.com', '2017-11-04 03:45:23');
+INSERT INTO `email_record` VALUES ('22', '费用清单', '<div>任务号：20171104034341，已完成零部件图谱试验实验，收费信息如下：</div><div><table><tr><td>序号</td><td>参考标准</td><td>单价（元）</td><td>数量</td><td>价格（元）</td><td>备注</td></tr><tr><td>1</td><td>a</td><td>a</td><td>145.23</td><td>3</td><td>435.68999999999994</td><td>a</td></tr><tr><td>2</td><td>b</td><td>b</td><td>100.0</td><td>5</td><td>500.0</td><td>B</td></tr></table></div>', '314269261@qq.com', '32', '1', '1', '1', '314269261@qq.com', '2017-11-05 02:33:48');
+INSERT INTO `email_record` VALUES ('23', '费用清单', '<div>任务号：20171104034341，已完成零部件图谱试验实验，收费信息如下：</div><div><table><tr><td>序号</td><td>参考标准</td><td>单价（元）</td><td>数量</td><td>价格（元）</td><td>备注</td></tr><tr><td>1</td><td>C</td><td>C</td><td>1.0</td><td>1</td><td>1.0</td><td>C</td></tr></table></div>', '314269261@qq.com', '32', '1', '1', '1', '314269261@qq.com', '2017-11-05 02:35:06');
+INSERT INTO `email_record` VALUES ('24', '费用清单', '<div>任务号：20171104034341，已完成零部件图谱试验实验，收费信息如下：</div><div><table><tr><td>序号</td><td>参考标准</td><td>单价（元）</td><td>数量</td><td>价格（元）</td><td>备注</td></tr><tr><td>1</td><td>d</td><td>d</td><td>12.0</td><td>1</td><td>12.0</td><td>d</td></tr></table></div>', '314269261@qq.com', '32', '1', '1', '1', '314269261@qq.com', '2017-11-05 02:37:47');
+INSERT INTO `email_record` VALUES ('25', '费用清单', '<div>任务号：20171104034341，已完成零部件型式试验实验，收费信息如下：</div><div><table style=\'margin-left: 5px;font-size: 14px;\'><tr style=\'height: 30px\'><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>序号</td><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>试验项目</td><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>参考标准</td><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>单价（元）</td><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>数量</td><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>价格（元）</td><td style=\'width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;\'>备注</td></tr><tr style=\'height: 30px\'><td style=\'background: #f5f5f5;padding-left: 5px;\'>1</td><td style=\'background: #f5f5f5;padding-left: 5px;\'>aa</td><td style=\'background: #f5f5f5;padding-left: 5px;\'>aa</td><td>1200.0</td><td style=\'background: #f5f5f5;padding-left: 5px;\'>3</td><td>3600.0</td><td style=\'background: #f5f5f5;padding-left: 5px;\'>aa</td></tr></table></div>', '314269261@qq.com', '32', '1', '1', '1', '314269261@qq.com', '2017-11-05 03:12:05');
+
+-- ----------------------------
+-- Table structure for `examine_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `examine_record`;
+CREATE TABLE `examine_record` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `t_id` bigint(20) default NULL,
+  `a_id` bigint(20) default NULL,
+  `state` int(11) default NULL,
+  `remark` varchar(200) default NULL,
+  `create_time` timestamp NULL default NULL,
+  `type` int(11) default NULL,
+  `catagory` int(11) default NULL,
+  `task_type` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=204 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of examine_record
+-- ----------------------------
+INSERT INTO `examine_record` VALUES ('188', '41', '1', '1', '', '2017-11-08 22:04:59', '1', null, '1');
+INSERT INTO `examine_record` VALUES ('189', '41', '1', '1', '', '2017-11-08 22:05:21', '2', '5', '1');
+INSERT INTO `examine_record` VALUES ('190', '41', '1', '1', '零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验结果确认合格', '2017-11-08 22:07:43', '3', '5', '1');
+INSERT INTO `examine_record` VALUES ('191', '42', '1', '1', '', '2017-11-08 22:10:40', '2', '7', '1');
+INSERT INTO `examine_record` VALUES ('192', '43', '1', '2', 'xcv', '2017-11-08 22:17:47', '2', null, '2');
+INSERT INTO `examine_record` VALUES ('193', '44', '1', '2', '测试不要', '2017-11-08 22:58:15', '2', null, '2');
+INSERT INTO `examine_record` VALUES ('194', '44', '1', '1', '', '2017-11-08 23:07:03', '2', null, '2');
+INSERT INTO `examine_record` VALUES ('195', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '1', '2');
+INSERT INTO `examine_record` VALUES ('196', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '2', '2');
+INSERT INTO `examine_record` VALUES ('197', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '3', '2');
+INSERT INTO `examine_record` VALUES ('198', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '4', '2');
+INSERT INTO `examine_record` VALUES ('199', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '5', '2');
+INSERT INTO `examine_record` VALUES ('200', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '6', '2');
+INSERT INTO `examine_record` VALUES ('201', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '7', '2');
+INSERT INTO `examine_record` VALUES ('202', '44', '1', '1', '', '2017-11-08 23:34:27', '4', '8', '2');
+INSERT INTO `examine_record` VALUES ('203', '44', '1', '1', '结果合格', '2017-11-08 23:35:00', '3', null, '2');
+
+-- ----------------------------
+-- Table structure for `exp_item`
+-- ----------------------------
+DROP TABLE IF EXISTS `exp_item`;
+CREATE TABLE `exp_item` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `a_id` bigint(20) default NULL,
+  `project` varchar(50) default NULL,
+  `standard` varchar(500) default NULL,
+  `price` double default NULL,
+  `num` int(11) default NULL,
+  `total` double default NULL,
+  `remark` varchar(200) default NULL,
+  `create_time` timestamp NULL default NULL,
+  `c_id` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of exp_item
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `info`
@@ -123,19 +323,13 @@ CREATE TABLE `info` (
   `remark` varchar(200) default NULL,
   `create_time` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of info
 -- ----------------------------
-INSERT INTO `info` VALUES ('1', '4', '15', '8', '1', '0', null, '2017-10-12 22:50:36');
-INSERT INTO `info` VALUES ('2', '5', '16', '9', '1', '0', null, '2017-10-12 22:51:16');
-INSERT INTO `info` VALUES ('3', '6', '17', '10', '1', '0', null, '2017-10-12 22:51:28');
-INSERT INTO `info` VALUES ('4', '7', '18', '11', '1', '0', null, '2017-10-12 22:51:35');
-INSERT INTO `info` VALUES ('5', '8', '19', '12', '1', '0', null, '2017-10-12 22:51:47');
-INSERT INTO `info` VALUES ('6', '9', '20', '13', '1', '0', null, '2017-10-12 23:17:19');
-INSERT INTO `info` VALUES ('7', '10', '21', '14', '1', '0', null, '2017-10-12 23:17:24');
-INSERT INTO `info` VALUES ('8', '12', '22', '15', '1', '0', null, '2017-10-13 01:28:45');
+INSERT INTO `info` VALUES ('48', '36', '37', '41', '1', '1', null, '2017-11-08 22:04:46');
+INSERT INTO `info` VALUES ('49', '36', '37', '41', '1', '1', null, '2017-11-08 22:10:27');
 
 -- ----------------------------
 -- Table structure for `material`
@@ -147,33 +341,20 @@ CREATE TABLE `material` (
   `mat_name` varchar(50) default NULL,
   `mat_no` varchar(50) default NULL,
   `mat_color` varchar(50) default NULL,
-  `mat_producer` varchar(50) default NULL,
-  `producer_add` varchar(200) default NULL,
   `pro_no` varchar(50) default NULL,
   `pic` varchar(50) default NULL,
   `remark` varchar(200) default NULL,
-  `create_time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `create_time` timestamp NULL default NULL,
   `state` int(11) default NULL,
+  `org_id` bigint(20) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of material
 -- ----------------------------
-INSERT INTO `material` VALUES ('1', '2', 'a', '00001', 'blue', '蓝天', '广州市天河区广州市天河区广州市天河区', '001', 'material/1506703658228.png', '测试', '2017-10-12 23:56:53', '0');
-INSERT INTO `material` VALUES ('2', '1', 'b', 'b', 'b', 'b', 'b', 'b', 'material/1506703671976.png', 'bbb', '2017-10-12 23:56:53', '0');
-INSERT INTO `material` VALUES ('4', '1', 'a', 'a', 'a', 'a', 'aa', 'a', 'material/1506703808574.png', 'aa', '2017-10-12 23:56:53', '0');
-INSERT INTO `material` VALUES ('5', '1', 'a', 'a1', 'a1', '', '', 'a1', 'material/1506703982866.png', '', '2017-10-12 23:56:54', '0');
-INSERT INTO `material` VALUES ('6', '1', 'a', 'a', 'a', 'a', 'a', 'a', null, '', '2017-10-12 23:56:55', '0');
-INSERT INTO `material` VALUES ('7', '1', 'a', '', 'a', 'a', '', '', null, '', '2017-10-12 23:56:54', '0');
-INSERT INTO `material` VALUES ('8', '1', 'asdf', 'asdf', 'asf', 'asdf', 'asdf', 'asfasd', null, '', '2017-10-12 23:56:55', '0');
-INSERT INTO `material` VALUES ('9', '1', 'asdf', 'asdf', 'asf', 'asdf', 'asdf', 'asfasd', null, '', '2017-10-12 23:56:56', '0');
-INSERT INTO `material` VALUES ('10', '1', 'asdf', 'asdf', 'asf', 'asdf', 'asdf', 'asfasd', null, '', '2017-10-12 23:56:56', '0');
-INSERT INTO `material` VALUES ('11', '1', 'asdf', 'asdf', 'asf', 'asdf', 'asdf', 'asfasd', null, '', '2017-10-12 23:56:57', '0');
-INSERT INTO `material` VALUES ('12', '1', 'asdf', 'asdf', 'asf', 'asdf', 'asdf', 'asfasd', 'material/1507819907176.png', '', '2017-10-12 23:56:57', '0');
-INSERT INTO `material` VALUES ('13', '1', 'asdf', 'asdf', 'asdf', 'asdf', 'asdf', 'asdf', null, '', '2017-10-12 23:56:58', '0');
-INSERT INTO `material` VALUES ('14', '1', 'asdf', 'asdf', 'asdf', 'asdf', 'asdf', 'asdf', null, '', '2017-10-12 23:56:59', '0');
-INSERT INTO `material` VALUES ('15', '1', 'a', '00001', 'blue', '蓝天', '广州市天河区广州市天河区广州市天河区', '001', null, '测试', '2017-10-13 01:28:45', '0');
+INSERT INTO `material` VALUES ('41', '1', '橡胶', '0001', '黑色', '0001', 'material/对比.jpg', '', '2017-11-08 22:04:46', '1', '21');
+INSERT INTO `material` VALUES ('42', '1', '橡胶', '0001', '黑色', '0001', 'material/对比.jpg', '测试备注', '2017-11-08 23:36:00', '0', '21');
 
 -- ----------------------------
 -- Table structure for `menu`
@@ -183,7 +364,6 @@ CREATE TABLE `menu` (
   `id` bigint(20) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL,
   `url` varchar(100) default NULL,
-  `logo` varchar(50) default NULL,
   `p_id` bigint(20) default NULL,
   `sort_num` int(11) default NULL,
   `is_parent` enum('N','Y') default 'N',
@@ -194,52 +374,50 @@ CREATE TABLE `menu` (
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
-INSERT INTO `menu` VALUES ('1', '系统管理', 'system/index', '', null, '10', 'Y', 'system');
-INSERT INTO `menu` VALUES ('2', '用户管理', 'account/list', '', '1', '1', 'N', 'account');
-INSERT INTO `menu` VALUES ('3', '角色管理', 'role/list', '', '1', '2', 'N', 'role');
-INSERT INTO `menu` VALUES ('10', '字典管理', 'dictionary/list', null, '1', '6', 'N', 'dictionary');
-INSERT INTO `menu` VALUES ('11', '日志管理', 'operationlog/list', '', '1', '4', 'N', 'log');
-INSERT INTO `menu` VALUES ('12', '区域管理', 'area/list', '', '1', '2', 'N', 'area');
-INSERT INTO `menu` VALUES ('13', '机构管理', 'org/list', '', '1', '3', 'N', 'org');
-INSERT INTO `menu` VALUES ('14', '菜单管理', 'menu/list', null, '1', '5', 'N', 'menu');
-INSERT INTO `menu` VALUES ('15', '任务管理', '', null, null, '1', 'Y', 'info');
-INSERT INTO `menu` VALUES ('16', '车型OTS阶段任务', 'ots/index', null, '15', '1', 'N', 'otsTask');
-INSERT INTO `menu` VALUES ('17', '任务申请', 'ots/require', null, '16', '1', 'N', 'otsRequire');
-INSERT INTO `menu` VALUES ('18', '信息审核', null, null, '16', '2', 'N', 'otsExamine');
-INSERT INTO `menu` VALUES ('19', '任务下达', null, null, '16', '3', 'N', 'otsOrder');
-INSERT INTO `menu` VALUES ('20', '任务审批', null, null, '16', '4', 'N', 'otsApprove');
-INSERT INTO `menu` VALUES ('21', '车型PPAP阶段任务', null, null, '15', '2', 'N', 'aa');
-INSERT INTO `menu` VALUES ('22', '任务下达 ', null, null, '21', '1', 'N', 'bb');
-INSERT INTO `menu` VALUES ('23', '任务审批', null, null, '21', '2', 'N', 'cc');
-INSERT INTO `menu` VALUES ('24', '车型SOP阶段任务', null, null, '15', '3', 'N', 'dd');
-INSERT INTO `menu` VALUES ('25', '任务下达 ', null, null, '24', '1', 'N', 'ee');
-INSERT INTO `menu` VALUES ('26', '任务审批 ', null, null, '24', '2', 'N', 'ff');
-INSERT INTO `menu` VALUES ('27', '非车型材料任务', null, null, '15', '4', 'N', 'gg');
-INSERT INTO `menu` VALUES ('28', '任务申请', null, null, '27', '1', 'N', 'hh');
-INSERT INTO `menu` VALUES ('29', '信息审核 ', null, null, '27', '2', 'N', 'ii');
-INSERT INTO `menu` VALUES ('30', '任务下达 ', null, null, '27', '3', 'N', 'jj');
-INSERT INTO `menu` VALUES ('31', '任务审批 ', null, null, '27', '4', 'N', 'kk');
-INSERT INTO `menu` VALUES ('32', '实验管理', null, null, null, '2', 'Y', 'll');
-INSERT INTO `menu` VALUES ('33', '结果上传', null, null, '32', null, 'N', 'mm');
-INSERT INTO `menu` VALUES ('34', '型式试验结果上传', null, null, '33', null, 'N', 'oo');
-INSERT INTO `menu` VALUES ('35', '图谱结果上传', null, null, '33', null, 'N', 'pp');
-INSERT INTO `menu` VALUES ('36', '结果比对', null, null, '32', null, 'N', 'qq');
-INSERT INTO `menu` VALUES ('37', '结果发送', null, null, '32', null, 'N', 'rr');
-INSERT INTO `menu` VALUES ('38', '结果确认', null, null, '32', null, 'N', 'ss');
-INSERT INTO `menu` VALUES ('39', '原料图谱结果确认', null, null, '38', null, 'N', 'tt');
-INSERT INTO `menu` VALUES ('40', '零件图谱结果确认', null, null, '38', null, 'N', 'uu');
-INSERT INTO `menu` VALUES ('41', '申请管理', null, null, null, '3', 'Y', 'vv');
-INSERT INTO `menu` VALUES ('42', '修改申请', null, null, '41', null, 'N', 'ww');
-INSERT INTO `menu` VALUES ('43', '终止申请', null, null, '41', null, 'N', 'xx');
-INSERT INTO `menu` VALUES ('44', '查询管理', null, null, null, '4', 'Y', 'yy');
-INSERT INTO `menu` VALUES ('45', '任务查询', null, null, '44', null, 'N', 'zz');
-INSERT INTO `menu` VALUES ('46', '结果查询', null, null, '44', null, 'N', 'a1');
-INSERT INTO `menu` VALUES ('47', '统计管理', null, null, null, '5', 'Y', 'a2');
-INSERT INTO `menu` VALUES ('48', '任务统计', null, null, '47', null, 'N', 'a3');
-INSERT INTO `menu` VALUES ('49', '结果统计', null, null, '47', null, 'N', 'a5');
-INSERT INTO `menu` VALUES ('50', '费用管理', null, null, null, '6', 'Y', 'a6');
-INSERT INTO `menu` VALUES ('51', '待发送列表', null, null, '50', null, 'N', 'a8');
-INSERT INTO `menu` VALUES ('52', '收费通知单列表', null, null, '50', null, 'N', 'a9');
+INSERT INTO `menu` VALUES ('1', '系统管理', 'system/index', null, '10', 'Y', 'system');
+INSERT INTO `menu` VALUES ('2', '用户管理', 'account/list', '1', '1', 'N', 'account');
+INSERT INTO `menu` VALUES ('3', '角色管理', 'role/list', '1', '2', 'N', 'role');
+INSERT INTO `menu` VALUES ('10', '字典管理', 'dictionary/list', '1', '6', 'N', 'dictionary');
+INSERT INTO `menu` VALUES ('11', '日志管理', 'operationlog/list', '1', '4', 'N', 'log');
+INSERT INTO `menu` VALUES ('12', '区域管理', 'area/list', '1', '2', 'N', 'area');
+INSERT INTO `menu` VALUES ('13', '机构管理', 'org/list', '1', '3', 'N', 'org');
+INSERT INTO `menu` VALUES ('14', '菜单管理', 'menu/list', '1', '5', 'N', 'menu');
+INSERT INTO `menu` VALUES ('15', '任务管理', '', null, '1', 'Y', 'info');
+INSERT INTO `menu` VALUES ('16', '车型OTS阶段任务', 'ots/index', '15', '1', 'N', 'otsTask');
+INSERT INTO `menu` VALUES ('17', '任务申请', 'ots/requireList', '16', '1', 'N', 'otsRequire');
+INSERT INTO `menu` VALUES ('18', '信息审核', 'ots/examineList', '16', '2', 'N', 'otsExamine');
+INSERT INTO `menu` VALUES ('19', '任务下达', 'ots/transmitList', '16', '3', 'N', 'otsOrder');
+INSERT INTO `menu` VALUES ('20', '任务审批', 'ots/approveList', '16', '4', 'N', 'otsApprove');
+INSERT INTO `menu` VALUES ('21', '车型PPAP阶段任务', 'ppap/index', '15', '2', 'N', 'ppapTask');
+INSERT INTO `menu` VALUES ('22', '任务下达 ', 'ppap/transmitList', '21', '1', 'N', 'ppapOrder');
+INSERT INTO `menu` VALUES ('23', '任务审批', 'ppap/approveList', '21', '2', 'N', 'ppapApprove');
+INSERT INTO `menu` VALUES ('24', '车型SOP阶段任务', null, '15', '3', 'N', 'dd');
+INSERT INTO `menu` VALUES ('25', '任务下达 ', null, '24', '1', 'N', 'ee');
+INSERT INTO `menu` VALUES ('26', '任务审批 ', null, '24', '2', 'N', 'ff');
+INSERT INTO `menu` VALUES ('27', '非车型材料任务', null, '15', '4', 'N', 'gg');
+INSERT INTO `menu` VALUES ('28', '任务申请', null, '27', '1', 'N', 'hh');
+INSERT INTO `menu` VALUES ('29', '信息审核 ', null, '27', '2', 'N', 'ii');
+INSERT INTO `menu` VALUES ('30', '任务下达 ', null, '27', '3', 'N', 'jj');
+INSERT INTO `menu` VALUES ('31', '任务审批 ', null, '27', '4', 'N', 'kk');
+INSERT INTO `menu` VALUES ('32', '实验管理', null, null, '2', 'Y', 'll');
+INSERT INTO `menu` VALUES ('33', '结果上传', null, '32', null, 'N', 'result');
+INSERT INTO `menu` VALUES ('34', '型式试验结果上传', 'result/uploadList?type=1', '33', null, 'N', 'patternUpload');
+INSERT INTO `menu` VALUES ('35', '图谱结果上传', 'result/uploadList?type=2', '33', null, 'N', 'atlasUpload');
+INSERT INTO `menu` VALUES ('36', '结果比对', 'result/compareList', '32', null, 'N', 'compare');
+INSERT INTO `menu` VALUES ('37', '结果发送', 'result/sendList', '32', null, 'N', 'send');
+INSERT INTO `menu` VALUES ('38', '结果确认', null, '32', null, 'N', 'confirm');
+INSERT INTO `menu` VALUES ('39', '待上传结果', 'result/confirmList?type=1', '38', null, 'N', 'waitConfirm');
+INSERT INTO `menu` VALUES ('40', '已上传结果', 'result/confirmList?type=2', '38', null, 'N', 'finishConfirm');
+INSERT INTO `menu` VALUES ('41', '申请管理', null, null, '3', 'Y', 'vv');
+INSERT INTO `menu` VALUES ('42', '修改申请', 'apply/taskList', '41', null, 'N', 'updateApply');
+INSERT INTO `menu` VALUES ('43', '终止申请', 'apply/applyList', '41', null, 'N', 'endApply');
+INSERT INTO `menu` VALUES ('44', '查询管理', 'query/list', null, '4', 'Y', 'query');
+INSERT INTO `menu` VALUES ('47', '统计管理', null, null, '5', 'Y', 'a2');
+INSERT INTO `menu` VALUES ('48', '任务统计', null, '47', null, 'N', 'a3');
+INSERT INTO `menu` VALUES ('49', '结果统计', null, '47', null, 'N', 'a5');
+INSERT INTO `menu` VALUES ('50', '费用管理', '', null, '6', 'Y', 'cost');
+INSERT INTO `menu` VALUES ('51', '待发送列表', 'cost/list?type=1', '50', null, 'N', 'tosend');
+INSERT INTO `menu` VALUES ('52', '收费通知单列表', 'cost/list?type=2', '50', null, 'N', 'sent');
 
 -- ----------------------------
 -- Table structure for `operation_log`
@@ -250,12 +428,12 @@ CREATE TABLE `operation_log` (
   `user_name` varchar(50) default NULL,
   `user_agent` varchar(200) default NULL,
   `client_ip` varchar(50) default NULL,
-  `time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `time` timestamp NULL default NULL,
   `detail` longtext,
   `type` varchar(100) default NULL,
   `operation` varchar(20) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1085 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1287 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of operation_log
@@ -1276,6 +1454,208 @@ INSERT INTO `operation_log` VALUES ('1081', 'admin', 'Mozilla/5.0 (Windows NT 6.
 INSERT INTO `operation_log` VALUES ('1082', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-12 22:44:55', null, '用户管理', '登录');
 INSERT INTO `operation_log` VALUES ('1083', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-13 00:03:33', null, '用户管理', '登录');
 INSERT INTO `operation_log` VALUES ('1084', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-13 00:41:42', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1085', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-13 23:03:30', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1086', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:02:47', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1087', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:08:10', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1088', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:09:20', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 1,\\r\\n  \\\"userName\\\" : \\\"admin\\\",\\r\\n  \\\"nickName\\\" : \\\"admin\\\",\\r\\n  \\\"mobile\\\" : \\\"13750017489\\\",\\r\\n  \\\"createTime\\\" : 1482073564000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 1,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 1,\\r\\n    \\\"name\\\" : \\\"admin\\\",\\r\\n    \\\"code\\\" : \\\"admin\\\",\\r\\n    \\\"desc\\\" : \\\"超级管理员\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 22,\\r\\n      \\\"name\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 18,\\r\\n  \\\"email\\\" : \\\"12313123@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Account\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 1,\\r\\n  \\\"userName\\\" : \\\"admin\\\",\\r\\n  \\\"nickName\\\" : \\\"admin\\\",\\r\\n  \\\"mobile\\\" : \\\"13750017489\\\",\\r\\n  \\\"createTime\\\" : 1482073564000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 1,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 1,\\r\\n    \\\"name\\\" : \\\"admin\\\",\\r\\n    \\\"code\\\" : \\\"admin\\\",\\r\\n    \\\"desc\\\" : \\\"超级管理员\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 22,\\r\\n      \\\"name\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"email\\\" : \\\"12313123@qq.com\\\"\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '用户管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1089', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:36:55', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1090', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:54:14', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1091', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:57:40', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1092', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 21:58:56', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1093', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 22:55:34', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1094', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-16 23:28:41', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1095', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 00:28:15', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1096', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 01:14:32', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1097', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 01:22:47', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1098', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 01:24:40', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1099', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 02:00:50', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1100', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 02:13:28', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1101', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 19:36:19', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1102', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 19:59:52', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1103', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 20:25:38', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1104', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 21:14:37', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1105', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 21:15:38', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1106', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 22:09:04', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1107', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 22:23:47', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1108', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-17 23:33:28', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1109', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 00:07:26', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1110', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 01:20:46', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1111', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 02:24:50', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1112', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 02:28:21', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1113', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 20:00:25', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1114', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 20:30:01', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1115', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 21:23:04', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1116', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 22:27:03', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1117', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-18 22:56:27', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1118', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 01:04:46', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1119', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 02:09:00', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1120', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 19:39:50', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1121', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 19:56:19', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1122', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 20:50:41', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1123', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 20:55:49', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1124', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 20:57:47', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1125', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 20:59:09', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1126', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 21:02:09', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1127', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 22:02:17', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1128', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 22:17:51', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1129', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 22:27:05', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1130', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 22:30:12', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1131', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 22:39:20', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1132', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 23:02:40', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1133', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 23:03:14', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 35,\\r\\n  \\\"userName\\\" : \\\"ad\\\",\\r\\n  \\\"nickName\\\" : \\\"d_ad\\\",\\r\\n  \\\"mobile\\\" : \\\"13512342323\\\",\\r\\n  \\\"createTime\\\" : 1506359556000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 16,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 16,\\r\\n    \\\"name\\\" : \\\"PE_负责人\\\",\\r\\n    \\\"code\\\" : \\\"pe_leader\\\",\\r\\n    \\\"desc\\\" : \\\"上汽通用五菱PE-负责人\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 18,\\r\\n      \\\"name\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 20,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 20,\\r\\n    \\\"name\\\" : \\\"CQC华南实验室\\\",\\r\\n    \\\"code\\\" : \\\"cqc\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 19,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 19,\\r\\n      \\\"name\\\" : \\\"实验室\\\",\\r\\n      \\\"code\\\" : \\\"sy\\\",\\r\\n      \\\"areaid\\\" : 111,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 111,\\r\\n        \\\"code\\\" : \\\"bb\\\",\\r\\n        \\\"name\\\" : \\\"bb\\\",\\r\\n        \\\"parentid\\\" : 106,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 106,\\r\\n          \\\"code\\\" : \\\"a\\\",\\r\\n          \\\"name\\\" : \\\"a\\\",\\r\\n          \\\"parentid\\\" : 97,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 97,\\r\\n            \\\"code\\\" : \\\"abab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 92,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 92,\\r\\n              \\\"code\\\" : \\\"ab\\\",\\r\\n              \\\"name\\\" : \\\"ab\\\",\\r\\n              \\\"parentid\\\" : 2,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 2,\\r\\n                \\\"code\\\" : \\\"001\\\",\\r\\n                \\\"name\\\" : \\\"广州\\\",\\r\\n                \\\"parentid\\\" : 1,\\r\\n                \\\"parent\\\" : {\\r\\n                  \\\"id\\\" : 1,\\r\\n                  \\\"code\\\" : \\\"000\\\",\\r\\n                  \\\"name\\\" : \\\"地区\\\",\\r\\n                  \\\"parentid\\\" : 0,\\r\\n                  \\\"desc\\\" : \\\"根节点\\\"\\r\\n                },\\r\\n                \\\"desc\\\" : \\\"\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"123\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 3\\r\\n    },\\r\\n    \\\"type\\\" : 3\\r\\n  },\\r\\n  \\\"email\\\" : \\\"2420292077@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"test\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Account\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 35,\\r\\n  \\\"userName\\\" : \\\"ad\\\",\\r\\n  \\\"nickName\\\" : \\\"d_ad\\\",\\r\\n  \\\"mobile\\\" : \\\"13512342323\\\",\\r\\n  \\\"createTime\\\" : 1506359556000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 16,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 16,\\r\\n    \\\"name\\\" : \\\"PE_负责人\\\",\\r\\n    \\\"code\\\" : \\\"pe_leader\\\",\\r\\n    \\\"desc\\\" : \\\"上汽通用五菱PE-负责人\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 18,\\r\\n      \\\"name\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 20,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 20,\\r\\n    \\\"name\\\" : \\\"CQC华南实验室\\\",\\r\\n    \\\"code\\\" : \\\"cqc\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 19,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 19,\\r\\n      \\\"name\\\" : \\\"实验室\\\",\\r\\n      \\\"code\\\" : \\\"sy\\\",\\r\\n      \\\"areaid\\\" : 111,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 111,\\r\\n        \\\"code\\\" : \\\"bb\\\",\\r\\n        \\\"name\\\" : \\\"bb\\\",\\r\\n        \\\"parentid\\\" : 106,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 106,\\r\\n          \\\"code\\\" : \\\"a\\\",\\r\\n          \\\"name\\\" : \\\"a\\\",\\r\\n          \\\"parentid\\\" : 97,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 97,\\r\\n            \\\"code\\\" : \\\"abab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 92,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 92,\\r\\n              \\\"code\\\" : \\\"ab\\\",\\r\\n              \\\"name\\\" : \\\"ab\\\",\\r\\n              \\\"parentid\\\" : 2,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 2,\\r\\n                \\\"code\\\" : \\\"001\\\",\\r\\n                \\\"name\\\" : \\\"广州\\\",\\r\\n                \\\"parentid\\\" : 1,\\r\\n                \\\"parent\\\" : {\\r\\n                  \\\"id\\\" : 1,\\r\\n                  \\\"code\\\" : \\\"000\\\",\\r\\n                  \\\"name\\\" : \\\"地区\\\",\\r\\n                  \\\"parentid\\\" : 0,\\r\\n                  \\\"desc\\\" : \\\"根节点\\\"\\r\\n                },\\r\\n                \\\"desc\\\" : \\\"\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"123\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 3\\r\\n    },\\r\\n    \\\"type\\\" : 3\\r\\n  },\\r\\n  \\\"email\\\" : \\\"12312@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"test\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '用户管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1134', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 23:03:32', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 1,\\r\\n  \\\"userName\\\" : \\\"admin\\\",\\r\\n  \\\"nickName\\\" : \\\"admin\\\",\\r\\n  \\\"mobile\\\" : \\\"13750017489\\\",\\r\\n  \\\"createTime\\\" : 1482073564000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 1,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 1,\\r\\n    \\\"name\\\" : \\\"admin\\\",\\r\\n    \\\"code\\\" : \\\"admin\\\",\\r\\n    \\\"desc\\\" : \\\"超级管理员\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 22,\\r\\n      \\\"name\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 18,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 18,\\r\\n    \\\"name\\\" : \\\"供应商1\\\",\\r\\n    \\\"code\\\" : \\\"g1\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 17,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 17,\\r\\n      \\\"name\\\" : \\\"供应商\\\",\\r\\n      \\\"code\\\" : \\\"gy\\\",\\r\\n      \\\"areaid\\\" : 106,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 2\\r\\n    },\\r\\n    \\\"type\\\" : 2\\r\\n  },\\r\\n  \\\"email\\\" : \\\"314269261@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Account\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 1,\\r\\n  \\\"userName\\\" : \\\"admin\\\",\\r\\n  \\\"nickName\\\" : \\\"admin\\\",\\r\\n  \\\"mobile\\\" : \\\"13750017489\\\",\\r\\n  \\\"createTime\\\" : 1482073564000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 1,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 1,\\r\\n    \\\"name\\\" : \\\"admin\\\",\\r\\n    \\\"code\\\" : \\\"admin\\\",\\r\\n    \\\"desc\\\" : \\\"超级管理员\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 22,\\r\\n      \\\"name\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"系统维护人员\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 18,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 18,\\r\\n    \\\"name\\\" : \\\"供应商1\\\",\\r\\n    \\\"code\\\" : \\\"g1\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 17,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 17,\\r\\n      \\\"name\\\" : \\\"供应商\\\",\\r\\n      \\\"code\\\" : \\\"gy\\\",\\r\\n      \\\"areaid\\\" : 106,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 2\\r\\n    },\\r\\n    \\\"type\\\" : 2\\r\\n  },\\r\\n  \\\"email\\\" : \\\"12313123@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '用户管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1135', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 23:11:29', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 35,\\r\\n  \\\"userName\\\" : \\\"ad\\\",\\r\\n  \\\"nickName\\\" : \\\"d_ad\\\",\\r\\n  \\\"mobile\\\" : \\\"13512342323\\\",\\r\\n  \\\"createTime\\\" : 1506359556000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 16,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 16,\\r\\n    \\\"name\\\" : \\\"PE_负责人\\\",\\r\\n    \\\"code\\\" : \\\"pe_leader\\\",\\r\\n    \\\"desc\\\" : \\\"上汽通用五菱PE-负责人\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 18,\\r\\n      \\\"name\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 15,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 20,\\r\\n    \\\"name\\\" : \\\"CQC华南实验室\\\",\\r\\n    \\\"code\\\" : \\\"cqc\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 19,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 19,\\r\\n      \\\"name\\\" : \\\"实验室\\\",\\r\\n      \\\"code\\\" : \\\"sy\\\",\\r\\n      \\\"areaid\\\" : 111,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 111,\\r\\n        \\\"code\\\" : \\\"bb\\\",\\r\\n        \\\"name\\\" : \\\"bb\\\",\\r\\n        \\\"parentid\\\" : 106,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 106,\\r\\n          \\\"code\\\" : \\\"a\\\",\\r\\n          \\\"name\\\" : \\\"a\\\",\\r\\n          \\\"parentid\\\" : 97,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 97,\\r\\n            \\\"code\\\" : \\\"abab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 92,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 92,\\r\\n              \\\"code\\\" : \\\"ab\\\",\\r\\n              \\\"name\\\" : \\\"ab\\\",\\r\\n              \\\"parentid\\\" : 2,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 2,\\r\\n                \\\"code\\\" : \\\"001\\\",\\r\\n                \\\"name\\\" : \\\"广州\\\",\\r\\n                \\\"parentid\\\" : 1,\\r\\n                \\\"parent\\\" : {\\r\\n                  \\\"id\\\" : 1,\\r\\n                  \\\"code\\\" : \\\"000\\\",\\r\\n                  \\\"name\\\" : \\\"地区\\\",\\r\\n                  \\\"parentid\\\" : 0,\\r\\n                  \\\"desc\\\" : \\\"根节点\\\"\\r\\n                },\\r\\n                \\\"desc\\\" : \\\"\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"123\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 3\\r\\n    },\\r\\n    \\\"type\\\" : 3\\r\\n  },\\r\\n  \\\"email\\\" : \\\"2420292077@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"test\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Account\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 35,\\r\\n  \\\"userName\\\" : \\\"ad\\\",\\r\\n  \\\"nickName\\\" : \\\"d_ad\\\",\\r\\n  \\\"mobile\\\" : \\\"13512342323\\\",\\r\\n  \\\"createTime\\\" : 1506359556000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 16,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 16,\\r\\n    \\\"name\\\" : \\\"PE_负责人\\\",\\r\\n    \\\"code\\\" : \\\"pe_leader\\\",\\r\\n    \\\"desc\\\" : \\\"上汽通用五菱PE-负责人\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 18,\\r\\n      \\\"name\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 20,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 20,\\r\\n    \\\"name\\\" : \\\"CQC华南实验室\\\",\\r\\n    \\\"code\\\" : \\\"cqc\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 19,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 19,\\r\\n      \\\"name\\\" : \\\"实验室\\\",\\r\\n      \\\"code\\\" : \\\"sy\\\",\\r\\n      \\\"areaid\\\" : 111,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 111,\\r\\n        \\\"code\\\" : \\\"bb\\\",\\r\\n        \\\"name\\\" : \\\"bb\\\",\\r\\n        \\\"parentid\\\" : 106,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 106,\\r\\n          \\\"code\\\" : \\\"a\\\",\\r\\n          \\\"name\\\" : \\\"a\\\",\\r\\n          \\\"parentid\\\" : 97,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 97,\\r\\n            \\\"code\\\" : \\\"abab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 92,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 92,\\r\\n              \\\"code\\\" : \\\"ab\\\",\\r\\n              \\\"name\\\" : \\\"ab\\\",\\r\\n              \\\"parentid\\\" : 2,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 2,\\r\\n                \\\"code\\\" : \\\"001\\\",\\r\\n                \\\"name\\\" : \\\"广州\\\",\\r\\n                \\\"parentid\\\" : 1,\\r\\n                \\\"parent\\\" : {\\r\\n                  \\\"id\\\" : 1,\\r\\n                  \\\"code\\\" : \\\"000\\\",\\r\\n                  \\\"name\\\" : \\\"地区\\\",\\r\\n                  \\\"parentid\\\" : 0,\\r\\n                  \\\"desc\\\" : \\\"根节点\\\"\\r\\n                },\\r\\n                \\\"desc\\\" : \\\"\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"123\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 3\\r\\n    },\\r\\n    \\\"type\\\" : 3\\r\\n  },\\r\\n  \\\"email\\\" : \\\"2420292077@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"test\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '用户管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1136', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 23:15:56', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1137', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-19 23:31:34', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1138', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-20 00:09:49', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1139', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-20 01:30:14', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1140', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 00:09:13', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1141', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 00:35:36', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1142', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 01:16:44', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1143', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 01:20:46', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1144', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 01:22:30', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1145', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 01:25:23', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1146', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 01:54:36', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1147', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 01:59:27', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1148', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 22:14:18', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1149', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-27 22:29:03', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1150', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 10:08:57', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1151', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 10:13:59', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1152', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 12:35:45', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1153', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 12:37:43', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1154', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:00:50', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1155', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:28:33', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1156', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:29:42', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 22,\\r\\n  \\\"name\\\" : \\\"供应商3\\\",\\r\\n  \\\"code\\\" : \\\"g3\\\",\\r\\n  \\\"areaid\\\" : 111,\\r\\n  \\\"area\\\" : {\\r\\n    \\\"id\\\" : 111,\\r\\n    \\\"code\\\" : \\\"bb\\\",\\r\\n    \\\"name\\\" : \\\"bb\\\",\\r\\n    \\\"parentid\\\" : 106,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"123\\\"\\r\\n  },\\r\\n  \\\"desc\\\" : \\\"\\\",\\r\\n  \\\"parentid\\\" : 17,\\r\\n  \\\"parent\\\" : {\\r\\n    \\\"id\\\" : 17,\\r\\n    \\\"name\\\" : \\\"供应商\\\",\\r\\n    \\\"code\\\" : \\\"gy\\\",\\r\\n    \\\"areaid\\\" : 106,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 1,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 1,\\r\\n      \\\"name\\\" : \\\"机构\\\",\\r\\n      \\\"code\\\" : \\\"001\\\"\\r\\n    },\\r\\n    \\\"type\\\" : 2\\r\\n  },\\r\\n  \\\"type\\\" : 2\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Org\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"编辑\"\r\n}', '菜单管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1157', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:31:23', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 18,\\r\\n  \\\"name\\\" : \\\"供应商1\\\",\\r\\n  \\\"code\\\" : \\\"g1\\\",\\r\\n  \\\"areaid\\\" : 111,\\r\\n  \\\"area\\\" : {\\r\\n    \\\"id\\\" : 111,\\r\\n    \\\"code\\\" : \\\"bb\\\",\\r\\n    \\\"name\\\" : \\\"bb\\\",\\r\\n    \\\"parentid\\\" : 106,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"123\\\"\\r\\n  },\\r\\n  \\\"desc\\\" : \\\"\\\",\\r\\n  \\\"parentid\\\" : 17,\\r\\n  \\\"parent\\\" : {\\r\\n    \\\"id\\\" : 17,\\r\\n    \\\"name\\\" : \\\"供应商\\\",\\r\\n    \\\"code\\\" : \\\"gy\\\",\\r\\n    \\\"areaid\\\" : 106,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 1,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 1,\\r\\n      \\\"name\\\" : \\\"机构\\\",\\r\\n      \\\"code\\\" : \\\"001\\\"\\r\\n    },\\r\\n    \\\"type\\\" : 2\\r\\n  },\\r\\n  \\\"type\\\" : 2,\\r\\n  \\\"addr\\\" : \\\"广州市天河区\\\"\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Org\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"编辑\"\r\n}', '菜单管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1158', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:31:34', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 21,\\r\\n  \\\"name\\\" : \\\"供应商2\\\",\\r\\n  \\\"code\\\" : \\\"g2\\\",\\r\\n  \\\"areaid\\\" : 111,\\r\\n  \\\"area\\\" : {\\r\\n    \\\"id\\\" : 111,\\r\\n    \\\"code\\\" : \\\"bb\\\",\\r\\n    \\\"name\\\" : \\\"bb\\\",\\r\\n    \\\"parentid\\\" : 106,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"123\\\"\\r\\n  },\\r\\n  \\\"desc\\\" : \\\"\\\",\\r\\n  \\\"parentid\\\" : 17,\\r\\n  \\\"parent\\\" : {\\r\\n    \\\"id\\\" : 17,\\r\\n    \\\"name\\\" : \\\"供应商\\\",\\r\\n    \\\"code\\\" : \\\"gy\\\",\\r\\n    \\\"areaid\\\" : 106,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 1,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 1,\\r\\n      \\\"name\\\" : \\\"机构\\\",\\r\\n      \\\"code\\\" : \\\"001\\\"\\r\\n    },\\r\\n    \\\"type\\\" : 2\\r\\n  },\\r\\n  \\\"type\\\" : 2,\\r\\n  \\\"addr\\\" : \\\"广州市海珠区\\\"\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Org\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"编辑\"\r\n}', '菜单管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1159', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:31:44', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 22,\\r\\n  \\\"name\\\" : \\\"供应商3\\\",\\r\\n  \\\"code\\\" : \\\"g3\\\",\\r\\n  \\\"areaid\\\" : 111,\\r\\n  \\\"area\\\" : {\\r\\n    \\\"id\\\" : 111,\\r\\n    \\\"code\\\" : \\\"bb\\\",\\r\\n    \\\"name\\\" : \\\"bb\\\",\\r\\n    \\\"parentid\\\" : 106,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"123\\\"\\r\\n  },\\r\\n  \\\"desc\\\" : \\\"\\\",\\r\\n  \\\"parentid\\\" : 17,\\r\\n  \\\"parent\\\" : {\\r\\n    \\\"id\\\" : 17,\\r\\n    \\\"name\\\" : \\\"供应商\\\",\\r\\n    \\\"code\\\" : \\\"gy\\\",\\r\\n    \\\"areaid\\\" : 106,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 106,\\r\\n      \\\"code\\\" : \\\"a\\\",\\r\\n      \\\"name\\\" : \\\"a\\\",\\r\\n      \\\"parentid\\\" : 97,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 97,\\r\\n        \\\"code\\\" : \\\"abab\\\",\\r\\n        \\\"name\\\" : \\\"ab\\\",\\r\\n        \\\"parentid\\\" : 92,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 92,\\r\\n          \\\"code\\\" : \\\"ab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 2,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 2,\\r\\n            \\\"code\\\" : \\\"001\\\",\\r\\n            \\\"name\\\" : \\\"广州\\\",\\r\\n            \\\"parentid\\\" : 1,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 1,\\r\\n              \\\"code\\\" : \\\"000\\\",\\r\\n              \\\"name\\\" : \\\"地区\\\",\\r\\n              \\\"parentid\\\" : 0,\\r\\n              \\\"desc\\\" : \\\"根节点\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 1,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 1,\\r\\n      \\\"name\\\" : \\\"机构\\\",\\r\\n      \\\"code\\\" : \\\"001\\\"\\r\\n    },\\r\\n    \\\"type\\\" : 2\\r\\n  },\\r\\n  \\\"type\\\" : 2,\\r\\n  \\\"addr\\\" : \\\"广州市白云区\\\"\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Org\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"编辑\"\r\n}', '菜单管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1160', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:36:17', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1161', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 13:39:20', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1162', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 14:10:25', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1163', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 14:16:18', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1164', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 14:33:09', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1165', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 15:24:39', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1166', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-28 16:32:53', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1167', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 00:15:56', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1168', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 00:36:44', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1169', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 00:44:55', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1170', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 02:49:48', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1171', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 03:20:48', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1172', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 03:26:36', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1173', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 03:41:16', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1174', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 04:04:06', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1175', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 12:04:49', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1176', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 12:26:50', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1177', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 12:28:53', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1178', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 13:28:45', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1179', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-10-29 13:36:12', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1180', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-10-29 13:40:35', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 23,\\r\\n  \\\"name\\\" : \\\"其它实验室\\\",\\r\\n  \\\"code\\\" : \\\"qt\\\",\\r\\n  \\\"areaid\\\" : 2,\\r\\n  \\\"desc\\\" : \\\"\\\",\\r\\n  \\\"parentid\\\" : 19,\\r\\n  \\\"parent\\\" : {\\r\\n    \\\"id\\\" : 19,\\r\\n    \\\"name\\\" : \\\"实验室\\\",\\r\\n    \\\"code\\\" : \\\"sy\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 1,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 1,\\r\\n      \\\"name\\\" : \\\"机构\\\",\\r\\n      \\\"code\\\" : \\\"001\\\"\\r\\n    },\\r\\n    \\\"type\\\" : 3\\r\\n  },\\r\\n  \\\"type\\\" : 3,\\r\\n  \\\"addr\\\" : \\\"\\\"\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Org\",\r\n  \"OLDENTITY\" : null,\r\n  \"OPERATION\" : \"新建\"\r\n}', '菜单管理', '新建');
+INSERT INTO `operation_log` VALUES ('1181', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-10-29 13:40:52', '{\r\n  \"ENTITY\" : \"{\\r\\n  \\\"id\\\" : 35,\\r\\n  \\\"userName\\\" : \\\"ad\\\",\\r\\n  \\\"nickName\\\" : \\\"d_ad\\\",\\r\\n  \\\"mobile\\\" : \\\"13512342323\\\",\\r\\n  \\\"createTime\\\" : 1506359556000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 15,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 16,\\r\\n    \\\"name\\\" : \\\"PE_负责人\\\",\\r\\n    \\\"code\\\" : \\\"pe_leader\\\",\\r\\n    \\\"desc\\\" : \\\"上汽通用五菱PE-负责人\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 18,\\r\\n      \\\"name\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 20,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 15,\\r\\n    \\\"name\\\" : \\\"上汽通用五菱 PE\\\",\\r\\n    \\\"code\\\" : \\\"PE\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 13,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 13,\\r\\n      \\\"name\\\" : \\\"通用五菱\\\",\\r\\n      \\\"code\\\" : \\\"sgmw\\\",\\r\\n      \\\"areaid\\\" : 2,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 2,\\r\\n        \\\"code\\\" : \\\"001\\\",\\r\\n        \\\"name\\\" : \\\"广州\\\",\\r\\n        \\\"parentid\\\" : 1,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 1,\\r\\n          \\\"code\\\" : \\\"000\\\",\\r\\n          \\\"name\\\" : \\\"地区\\\",\\r\\n          \\\"parentid\\\" : 0,\\r\\n          \\\"desc\\\" : \\\"根节点\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 1\\r\\n    },\\r\\n    \\\"type\\\" : 1\\r\\n  },\\r\\n  \\\"email\\\" : \\\"2420292077@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"test\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"ENTITYTYPE\" : \"cn.wow.common.domain.Account\",\r\n  \"OLDENTITY\" : \"{\\r\\n  \\\"id\\\" : 35,\\r\\n  \\\"userName\\\" : \\\"ad\\\",\\r\\n  \\\"nickName\\\" : \\\"d_ad\\\",\\r\\n  \\\"mobile\\\" : \\\"13512342323\\\",\\r\\n  \\\"createTime\\\" : 1506359556000,\\r\\n  \\\"lock\\\" : \\\"N\\\",\\r\\n  \\\"roleId\\\" : 16,\\r\\n  \\\"role\\\" : {\\r\\n    \\\"id\\\" : 16,\\r\\n    \\\"name\\\" : \\\"PE_负责人\\\",\\r\\n    \\\"code\\\" : \\\"pe_leader\\\",\\r\\n    \\\"desc\\\" : \\\"上汽通用五菱PE-负责人\\\",\\r\\n    \\\"group\\\" : {\\r\\n      \\\"id\\\" : 18,\\r\\n      \\\"name\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"desc\\\" : \\\"上汽通用五菱PE\\\",\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"角色\\\",\\r\\n        \\\"desc\\\" : \\\"根节点\\\"\\r\\n      }\\r\\n    }\\r\\n  },\\r\\n  \\\"orgId\\\" : 15,\\r\\n  \\\"org\\\" : {\\r\\n    \\\"id\\\" : 15,\\r\\n    \\\"name\\\" : \\\"上汽通用五菱 PE\\\",\\r\\n    \\\"code\\\" : \\\"PE\\\",\\r\\n    \\\"areaid\\\" : 111,\\r\\n    \\\"area\\\" : {\\r\\n      \\\"id\\\" : 111,\\r\\n      \\\"code\\\" : \\\"bb\\\",\\r\\n      \\\"name\\\" : \\\"bb\\\",\\r\\n      \\\"parentid\\\" : 106,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 106,\\r\\n        \\\"code\\\" : \\\"a\\\",\\r\\n        \\\"name\\\" : \\\"a\\\",\\r\\n        \\\"parentid\\\" : 97,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 97,\\r\\n          \\\"code\\\" : \\\"abab\\\",\\r\\n          \\\"name\\\" : \\\"ab\\\",\\r\\n          \\\"parentid\\\" : 92,\\r\\n          \\\"parent\\\" : {\\r\\n            \\\"id\\\" : 92,\\r\\n            \\\"code\\\" : \\\"ab\\\",\\r\\n            \\\"name\\\" : \\\"ab\\\",\\r\\n            \\\"parentid\\\" : 2,\\r\\n            \\\"parent\\\" : {\\r\\n              \\\"id\\\" : 2,\\r\\n              \\\"code\\\" : \\\"001\\\",\\r\\n              \\\"name\\\" : \\\"广州\\\",\\r\\n              \\\"parentid\\\" : 1,\\r\\n              \\\"parent\\\" : {\\r\\n                \\\"id\\\" : 1,\\r\\n                \\\"code\\\" : \\\"000\\\",\\r\\n                \\\"name\\\" : \\\"地区\\\",\\r\\n                \\\"parentid\\\" : 0,\\r\\n                \\\"desc\\\" : \\\"根节点\\\"\\r\\n              },\\r\\n              \\\"desc\\\" : \\\"\\\"\\r\\n            },\\r\\n            \\\"desc\\\" : \\\"\\\"\\r\\n          },\\r\\n          \\\"desc\\\" : \\\"\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"123\\\"\\r\\n    },\\r\\n    \\\"desc\\\" : \\\"\\\",\\r\\n    \\\"parentid\\\" : 13,\\r\\n    \\\"parent\\\" : {\\r\\n      \\\"id\\\" : 13,\\r\\n      \\\"name\\\" : \\\"通用五菱\\\",\\r\\n      \\\"code\\\" : \\\"sgmw\\\",\\r\\n      \\\"areaid\\\" : 2,\\r\\n      \\\"area\\\" : {\\r\\n        \\\"id\\\" : 2,\\r\\n        \\\"code\\\" : \\\"001\\\",\\r\\n        \\\"name\\\" : \\\"广州\\\",\\r\\n        \\\"parentid\\\" : 1,\\r\\n        \\\"parent\\\" : {\\r\\n          \\\"id\\\" : 1,\\r\\n          \\\"code\\\" : \\\"000\\\",\\r\\n          \\\"name\\\" : \\\"地区\\\",\\r\\n          \\\"parentid\\\" : 0,\\r\\n          \\\"desc\\\" : \\\"根节点\\\"\\r\\n        },\\r\\n        \\\"desc\\\" : \\\"\\\"\\r\\n      },\\r\\n      \\\"desc\\\" : \\\"\\\",\\r\\n      \\\"parentid\\\" : 1,\\r\\n      \\\"parent\\\" : {\\r\\n        \\\"id\\\" : 1,\\r\\n        \\\"name\\\" : \\\"机构\\\",\\r\\n        \\\"code\\\" : \\\"001\\\"\\r\\n      },\\r\\n      \\\"type\\\" : 1\\r\\n    },\\r\\n    \\\"type\\\" : 1\\r\\n  },\\r\\n  \\\"email\\\" : \\\"2420292077@qq.com\\\",\\r\\n  \\\"remark\\\" : \\\"test\\\",\\r\\n  \\\"signType\\\" : 1\\r\\n}\",\r\n  \"OPERATION\" : \"编辑\"\r\n}', '用户管理', '编辑');
+INSERT INTO `operation_log` VALUES ('1182', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-10-29 13:41:06', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1183', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 13:41:45', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1184', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:06:44', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1185', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:07:09', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1186', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:07:15', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1187', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:08:21', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1188', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:08:25', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1189', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:21:48', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1190', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 14:49:56', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1191', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 15:42:46', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1192', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 15:46:34', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1193', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 15:46:39', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1194', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 15:49:04', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1195', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 15:49:10', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1196', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 15:49:16', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1197', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 16:19:22', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1198', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 16:54:27', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1199', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 19:01:47', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1200', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 19:28:33', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1201', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-29 20:00:49', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1202', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-30 19:38:39', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1203', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-30 21:24:33', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1204', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-30 21:31:12', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1205', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-30 22:01:57', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1206', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-30 22:33:35', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1207', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 01:59:35', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1208', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 02:00:05', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1209', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 02:04:44', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1210', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 02:08:04', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1211', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 19:46:16', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1212', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 21:20:03', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1213', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 21:42:11', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1214', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 22:01:33', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1215', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 22:17:43', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1216', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 23:14:28', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1217', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 23:22:52', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1218', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-10-31 23:51:02', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1219', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-01 01:37:11', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1220', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-01 02:20:26', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1221', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 19:27:08', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1222', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 19:48:20', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1223', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 19:48:30', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1224', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 19:49:16', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1225', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 19:49:21', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1226', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 21:49:52', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1227', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 21:49:58', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1228', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 21:51:36', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1229', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 21:51:39', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1230', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 21:52:36', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1231', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-02 21:52:39', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1232', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 01:24:54', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1233', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 03:39:27', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1234', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 03:58:17', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1235', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 12:58:49', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1236', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 13:00:24', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1237', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 13:25:33', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1238', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 19:13:02', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1239', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 21:05:06', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1240', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 21:06:39', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1241', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-04 22:41:36', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1242', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 00:26:25', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1243', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 02:00:13', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1244', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 02:33:14', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1245', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 02:53:56', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1246', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 02:57:12', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1247', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-11-05 13:24:58', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1248', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-11-05 13:25:11', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1249', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-11-05 13:25:15', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1250', 'ad', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-11-05 13:27:02', null, '用户管理', '登出');
+INSERT INTO `operation_log` VALUES ('1251', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '127.0.0.1', '2017-11-05 13:27:06', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1252', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 13:44:22', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1253', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-05 18:51:52', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1254', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-06 20:01:27', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1255', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-06 20:09:02', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1256', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-06 21:12:21', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1257', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-06 22:53:18', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1258', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-06 23:11:55', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1259', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-06 23:42:16', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1260', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 00:39:01', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1261', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 00:48:22', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1262', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 00:52:24', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1263', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 01:28:59', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1264', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 20:34:54', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1265', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 20:55:55', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1266', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 21:00:28', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1267', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 21:04:08', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1268', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 21:13:25', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1269', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 21:58:17', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1270', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 22:55:17', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1271', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-07 23:35:26', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1272', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 00:22:44', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1273', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 00:49:19', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1274', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 01:16:00', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1275', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 02:00:07', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1276', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 02:24:46', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1277', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 19:51:38', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1278', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 20:13:05', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1279', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 21:26:49', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1280', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 22:12:12', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1281', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 22:44:15', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1282', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 23:18:41', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1283', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 23:32:47', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1284', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 23:42:25', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1285', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 23:44:53', null, '用户管理', '登录');
+INSERT INTO `operation_log` VALUES ('1286', 'admin', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36', '0:0:0:0:0:0:0:1', '2017-11-08 23:46:46', null, '用户管理', '登录');
 
 -- ----------------------------
 -- Table structure for `org`
@@ -1289,23 +1669,25 @@ CREATE TABLE `org` (
   `desc` varchar(200) default NULL,
   `parentid` bigint(20) default NULL,
   `type` int(11) default NULL,
+  `addr` varchar(200) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of org
 -- ----------------------------
-INSERT INTO `org` VALUES ('1', '机构', '001', null, null, null, null);
-INSERT INTO `org` VALUES ('13', '通用五菱', 'sgmw', '2', '', '1', '1');
-INSERT INTO `org` VALUES ('14', '上汽通用五菱SQE', 'SQE', '111', '', '13', '1');
-INSERT INTO `org` VALUES ('15', '上汽通用五菱 PE', 'PE', '111', '', '13', '1');
-INSERT INTO `org` VALUES ('16', '上汽通用五菱材料研究所', 'cl', '111', '', '13', '1');
-INSERT INTO `org` VALUES ('17', '供应商', 'gy', '106', '', '1', '2');
-INSERT INTO `org` VALUES ('18', '供应商1', 'g1', '111', '', '17', '2');
-INSERT INTO `org` VALUES ('19', '实验室', 'sy', '111', '', '1', '3');
-INSERT INTO `org` VALUES ('20', 'CQC华南实验室', 'cqc', '111', '', '19', '3');
-INSERT INTO `org` VALUES ('21', '供应商2', 'g2', '111', '', '17', '2');
-INSERT INTO `org` VALUES ('22', '供应商3', 'g3', '111', '', '17', '2');
+INSERT INTO `org` VALUES ('1', '机构', '001', null, null, null, null, null);
+INSERT INTO `org` VALUES ('13', '通用五菱', 'sgmw', '2', '', '1', '1', null);
+INSERT INTO `org` VALUES ('14', '上汽通用五菱SQE', 'SQE', '111', '', '13', '1', null);
+INSERT INTO `org` VALUES ('15', '上汽通用五菱 PE', 'PE', '111', '', '13', '1', null);
+INSERT INTO `org` VALUES ('16', '上汽通用五菱材料研究所', 'cl', '111', '', '13', '1', null);
+INSERT INTO `org` VALUES ('17', '供应商', 'gy', '106', '', '1', '2', null);
+INSERT INTO `org` VALUES ('18', '供应商1', 'g1', '111', '', '17', '2', '广州市天河区');
+INSERT INTO `org` VALUES ('19', '实验室', 'sy', '111', '', '1', '3', null);
+INSERT INTO `org` VALUES ('20', 'CQC华南实验室', 'cqc', '111', '', '19', '3', null);
+INSERT INTO `org` VALUES ('21', '供应商2', 'g2', '111', '', '17', '2', '广州市海珠区');
+INSERT INTO `org` VALUES ('22', '供应商3', 'g3', '111', '', '17', '2', '广州市白云区');
+INSERT INTO `org` VALUES ('23', '其它实验室', 'qt', '2', '', '19', '3', '');
 
 -- ----------------------------
 -- Table structure for `parts`
@@ -1316,46 +1698,51 @@ CREATE TABLE `parts` (
   `type` int(11) default NULL,
   `code` varchar(50) default NULL,
   `name` varchar(50) default NULL,
-  `producer` varchar(50) default NULL,
   `pro_time` date default NULL,
   `place` varchar(100) default NULL,
   `pro_no` varchar(50) default NULL,
-  `technology` varchar(100) default NULL,
-  `mat_name` varchar(50) default NULL,
-  `mat_no` varchar(50) default NULL,
-  `mat_color` varchar(50) default NULL,
-  `mat_producer` varchar(50) default NULL,
-  `pic` varchar(50) default NULL,
   `remark` varchar(200) default NULL,
-  `create_time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `create_time` timestamp NULL default NULL,
   `state` int(11) default NULL,
+  `org_id` bigint(20) default NULL,
+  `is_key` int(11) default NULL,
+  `key_code` varchar(50) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of parts
 -- ----------------------------
-INSERT INTO `parts` VALUES ('1', '1', 'test', 'test', 'test', '2017-09-29', 'test', 'tes', 'tte', 'st', 'te', 'etst', 'test', 'parts/1.png', 'setst', '2017-10-13 01:14:39', '1');
-INSERT INTO `parts` VALUES ('3', '2', 'test1', 'test', '', null, '', '', '', '', '', '', '', 'parts/1506697221414.png', 'asdf', '2017-10-13 01:14:40', '1');
-INSERT INTO `parts` VALUES ('4', '2', 'test', 'test', '', null, '', '', '', '', '', '', '', 'parts/1506699062019.png', 'asdf', '2017-10-13 01:14:41', '1');
-INSERT INTO `parts` VALUES ('5', '1', 'test1', 'test', '', null, '', '', '', '', '', '', '', 'parts/1506699069214.png', 'asdf', '2017-10-13 01:14:24', '0');
-INSERT INTO `parts` VALUES ('6', '1', 'a', 'a', 'a', '2017-09-29', 'a', 'no1', 'a', 'a', 'a', 'a', 'a', 'parts/1506699036225.png', 'asdf', '2017-10-13 01:14:42', '1');
-INSERT INTO `parts` VALUES ('7', '1', 'b', 'b', 'a', null, '', '10001', '', '', 'bb', '', '', 'parts/1506699042704.png', 'asdfasd', '2017-10-13 01:14:41', '1');
-INSERT INTO `parts` VALUES ('8', '1', 'c', 'c', 'b', null, '', '10002', '', '', '', '', '', 'parts/1506699048305.png', 'asdfa', '2017-10-13 01:14:42', '1');
-INSERT INTO `parts` VALUES ('9', '1', 'd', 'd', '', null, '', '', '', '', '', '', '', 'parts/1506699054079.png', 'asdf', '2017-10-13 01:14:43', '1');
-INSERT INTO `parts` VALUES ('10', '1', 'dd', 'dd', '', null, '', '', '', '', '', '', '', 'parts/1506699117579.png', 'asdf', '2017-10-13 01:14:25', '0');
-INSERT INTO `parts` VALUES ('11', '1', 'gg', 'gg', '', null, '', '', '', '', '', '', '', 'parts/1506699129228.png', 'asdf', '2017-10-13 01:14:44', '1');
-INSERT INTO `parts` VALUES ('12', '1', 'cx', 'xc', '', null, '', '', '', '', '', '', '', 'parts/1506699338381.png', '', '2017-10-12 23:56:41', '0');
-INSERT INTO `parts` VALUES ('13', '2', 'a', 'a', 'a', '2017-09-29', 'a', 'no1', 'a', 'a', 'a', 'a', 'a', null, '', '2017-10-12 23:56:42', '0');
-INSERT INTO `parts` VALUES ('14', '2', 'c', 'c', '', null, '', '10002', '', '', '', '', '', null, '', '2017-10-12 23:56:41', '0');
-INSERT INTO `parts` VALUES ('15', '1', 'asdf', 'asdf', 'asdf', '2017-10-09', 'asdf', 'asdf', 'asdf', 'asdfasdf', 'sdfasd', 'asdf', 'asdf', null, '', '2017-10-12 23:56:43', '0');
-INSERT INTO `parts` VALUES ('16', '1', 'asdf', 'asdf', 'asdf', '2017-10-09', 'asdf', 'asdf', 'asdf', 'asdfasdf', 'sdfasd', 'asdf', 'asdf', null, 'asdf', '2017-10-13 01:14:26', '0');
-INSERT INTO `parts` VALUES ('17', '1', 'asdf', 'asdf', 'asdf', '2017-10-09', 'asdf', 'asdf', 'asdf', 'asdfasdf', 'sdfasd', 'asdf', 'asdf', null, '', '2017-10-12 23:56:43', '0');
-INSERT INTO `parts` VALUES ('18', '1', 'asdf', 'asdf', 'asdf', '2017-10-09', 'asdf', 'asdf', 'asdf', 'asdfasdf', 'sdfasd', 'asdf', 'asdf', 'parts/1507819895744.png', '', '2017-10-12 23:56:44', '0');
-INSERT INTO `parts` VALUES ('19', '1', 'asdf', 'asdf', 'asdf', '2017-10-09', 'asdf', 'asdf', 'asdf', 'asdfasdf', 'sdfasd', 'asdf', 'asdf', 'parts/1507819907173.png', 'asdf', '2017-10-13 01:14:28', '0');
-INSERT INTO `parts` VALUES ('20', '1', 'asdf', 'asdfasdf', 'asdf', '2017-10-05', 'asdf', 'asdf', 'asdf', 'asdf', 'sdf', 'asdf', 'asdf', null, '', '2017-10-12 23:56:45', '0');
-INSERT INTO `parts` VALUES ('21', '1', 'asdf', 'asdfasdf', 'asdf', '2017-10-05', 'asdf', 'asdf', 'asdf', 'asdf', 'sdf', 'asdf', 'asdf', null, '', '2017-10-12 23:56:48', '0');
-INSERT INTO `parts` VALUES ('22', '1', 'a', 'a', 'a', '2017-09-29', 'a', 'no1', 'a', 'a', 'a', 'a', 'a', null, 'asdf', '2017-10-13 01:28:45', '0');
+INSERT INTO `parts` VALUES ('37', '1', '0001', '轮胎', '2017-11-09', '广州市海珠区', '0001', '', '2017-11-08 22:04:46', '1', '21', '1', '0001');
+INSERT INTO `parts` VALUES ('38', '1', '0001', '轮胎', '2017-11-09', '广州市海珠区', '0001', '测试备注', '2017-11-08 23:36:00', '0', '21', '1', '0001');
+
+-- ----------------------------
+-- Table structure for `pf_result`
+-- ----------------------------
+DROP TABLE IF EXISTS `pf_result`;
+CREATE TABLE `pf_result` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `t_id` bigint(20) default NULL,
+  `project` varchar(100) default NULL,
+  `standard` varchar(500) default NULL,
+  `require` varchar(500) default NULL,
+  `result` varchar(500) default NULL,
+  `evaluate` varchar(500) default NULL,
+  `remark` varchar(200) default NULL,
+  `create_time` timestamp NULL default NULL,
+  `catagory` int(11) default NULL,
+  `exp_no` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of pf_result
+-- ----------------------------
+INSERT INTO `pf_result` VALUES ('40', '41', '试验1', '标准1', '要求1', '结果1', '评价1', '', '2017-11-08 22:06:13', '1', '1');
+INSERT INTO `pf_result` VALUES ('41', '41', '试验2', '标准2', '要求2', '结果2', '评价2', '', '2017-11-08 22:06:13', '2', '1');
+INSERT INTO `pf_result` VALUES ('42', '42', '试验1', '标准1', '要求1', '结果1', '评价1', '', '2017-11-08 22:10:27', '1', '1');
+INSERT INTO `pf_result` VALUES ('43', '42', '试验2', '标准2', '要求2', '结果2', '评价2', '', '2017-11-08 22:10:27', '1', '1');
+INSERT INTO `pf_result` VALUES ('44', '42', '试验2', '标准2', '要求2', '结果2', '评价2', '', '2017-11-08 22:10:27', '2', '1');
 
 -- ----------------------------
 -- Table structure for `role`
@@ -1419,7 +1806,7 @@ INSERT INTO `role_permission` VALUES ('5', '1', 'account-1,role-2,log-2,home-2,a
 INSERT INTO `role_permission` VALUES ('11', '33', 'home-1,user-1,role-1');
 INSERT INTO `role_permission` VALUES ('24', '14', '');
 INSERT INTO `role_permission` VALUES ('26', '16', '17,18');
-INSERT INTO `role_permission` VALUES ('27', '15', '17,18,19,20');
+INSERT INTO `role_permission` VALUES ('27', '15', '17,18,19,20,42,43,45,46,48,49,51,52,2,3,12,13,11,14,10');
 
 -- ----------------------------
 -- Table structure for `task`
@@ -1432,17 +1819,35 @@ CREATE TABLE `task` (
   `org_id` bigint(20) default NULL,
   `type` int(11) default NULL,
   `state` int(11) default NULL,
-  `tg_labe` bigint(20) default NULL,
-  `inf_lab` bigint(20) default NULL,
-  `dt_lab` bigint(20) default NULL,
+  `parts_atl_id` bigint(20) default NULL,
+  `mat_atl_id` bigint(20) default NULL,
+  `parts_pat_id` bigint(20) default NULL,
+  `mat_pat_id` bigint(20) default NULL,
   `remark` varchar(200) default NULL,
-  `create_time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `create_time` timestamp NULL default NULL,
+  `fail_num` int(11) default NULL,
+  `a_id` bigint(20) default NULL,
+  `parts_atl_result` int(11) default NULL,
+  `mat_atl_result` int(11) default NULL,
+  `parts_pat_result` int(11) default NULL,
+  `mat_pat_result` int(11) default NULL,
+  `parts_atl_times` int(11) unsigned default '0',
+  `mat_atl_times` int(11) unsigned default '0',
+  `parts_pat_times` int(11) unsigned default '0',
+  `mat_pat_times` int(11) unsigned default '0',
+  `confirm_time` timestamp NULL default NULL,
+  `info_apply` int(11) default NULL,
+  `result_apply` int(11) default NULL,
+  `t_id` bigint(20) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task
 -- ----------------------------
+INSERT INTO `task` VALUES ('41', '20171108220446', '48', '18', '1', '4', '20', '20', '20', '20', null, '2017-11-08 22:04:46', '0', '1', '4', '4', '4', '4', '1', '1', '1', '1', '2017-11-08 22:07:43', '0', '0', null);
+INSERT INTO `task` VALUES ('42', '20171108220446-R1', '49', '18', '1', '4', '20', '20', '20', '20', null, '2017-11-08 22:10:27', '0', '1', '4', '4', '4', '4', '1', '1', '1', '1', '2017-11-08 22:10:40', '0', '0', '41');
+INSERT INTO `task` VALUES ('44', '20171108225739', '48', '18', '2', '8', '20', '20', null, null, null, '2017-11-08 22:57:39', '0', '1', '3', '3', '0', '0', '1', '1', '0', '0', '2017-11-08 23:35:00', '1', '0', null);
 
 -- ----------------------------
 -- Table structure for `task_record`
@@ -1454,13 +1859,32 @@ CREATE TABLE `task_record` (
   `a_id` bigint(20) default NULL,
   `state` int(11) default NULL,
   `remark` varchar(200) default NULL,
-  `create_time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `create_time` timestamp NULL default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of task_record
 -- ----------------------------
+INSERT INTO `task_record` VALUES ('270', '20171108220446', '1', '1', '填写信息', '2017-11-08 22:04:46');
+INSERT INTO `task_record` VALUES ('271', '20171108220446', '1', '2', '信息审核通过', '2017-11-08 22:04:59');
+INSERT INTO `task_record` VALUES ('272', '20171108220446', '1', '4', '分配任务到实验室', '2017-11-08 22:05:11');
+INSERT INTO `task_record` VALUES ('273', '20171108220446', '1', '5', '图谱和型式试验全部审批通过', '2017-11-08 22:05:21');
+INSERT INTO `task_record` VALUES ('274', '20171108220446', '1', '7', '', '2017-11-08 22:06:13');
+INSERT INTO `task_record` VALUES ('275', '20171108220446', '1', '7', '上传零部件和原材料图谱试验结果', '2017-11-08 22:07:04');
+INSERT INTO `task_record` VALUES ('276', '20171108220446', '1', '8', '发送零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验结果', '2017-11-08 22:07:25');
+INSERT INTO `task_record` VALUES ('277', '20171108220446', '1', '10', '基准信息已保存', '2017-11-08 22:07:43');
+INSERT INTO `task_record` VALUES ('278', '20171108220446', '1', '9', '零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验结果确认合格', '2017-11-08 22:07:43');
+INSERT INTO `task_record` VALUES ('279', '20171108221727', '1', '1', '下达试验任务', '2017-11-08 22:17:27');
+INSERT INTO `task_record` VALUES ('280', '20171108221727', '1', '3', '审批不通过：xcv', '2017-11-08 22:17:47');
+INSERT INTO `task_record` VALUES ('281', '20171108225739', '1', '1', '下达试验任务', '2017-11-08 22:57:39');
+INSERT INTO `task_record` VALUES ('282', '20171108225739', '1', '3', '审批不通过：测试不要', '2017-11-08 22:58:15');
+INSERT INTO `task_record` VALUES ('283', '20171108225739', '1', '1', '下达试验任务', '2017-11-08 23:00:04');
+INSERT INTO `task_record` VALUES ('284', '20171108225739', '1', '2', '审批通过', '2017-11-08 23:07:03');
+INSERT INTO `task_record` VALUES ('285', '20171108225739', '1', '7', '上传零部件和原材料图谱试验结果', '2017-11-08 23:07:35');
+INSERT INTO `task_record` VALUES ('286', '20171108225739', '1', '5', '提交对比结果', '2017-11-08 23:34:27');
+INSERT INTO `task_record` VALUES ('287', '20171108225739', '1', '8', '发送零部件图谱试验、原材料图谱试验结果', '2017-11-08 23:34:43');
+INSERT INTO `task_record` VALUES ('288', '20171108225739', '1', '8', '结果留存', '2017-11-08 23:35:00');
 
 -- ----------------------------
 -- Table structure for `vehicle`
@@ -1473,22 +1897,13 @@ CREATE TABLE `vehicle` (
   `pro_time` date default NULL,
   `pro_addr` varchar(100) default NULL,
   `remark` varchar(200) default NULL,
-  `create_time` timestamp NULL default NULL on update CURRENT_TIMESTAMP,
+  `create_time` timestamp NULL default NULL,
   `state` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of vehicle
 -- ----------------------------
-INSERT INTO `vehicle` VALUES ('1', 'bmw', '三厢', '2017-09-29', '广东省广州市天河区', 'test', '2017-10-13 00:40:09', '1');
-INSERT INTO `vehicle` VALUES ('3', 'test', '两厢', '2017-09-26', 'asdf', 'asdfasdf', '2017-10-13 00:40:09', '1');
-INSERT INTO `vehicle` VALUES ('4', 'a', '三厢', '2017-09-26', 'axcv', '', '2017-10-12 23:56:25', '0');
-INSERT INTO `vehicle` VALUES ('5', 'a', '三厢', '2017-09-26', 'axcv', '', '2017-10-13 00:40:11', '1');
-INSERT INTO `vehicle` VALUES ('6', 'a', '三厢', '2017-09-26', 'axcv', '', '2017-10-12 23:56:26', '0');
-INSERT INTO `vehicle` VALUES ('7', 'a', '三厢', '2017-09-26', 'axcv', '', '2017-10-13 00:40:12', '1');
-INSERT INTO `vehicle` VALUES ('8', 'a', '三厢', '2017-09-26', 'axcv', '', '2017-10-12 23:56:27', '0');
-INSERT INTO `vehicle` VALUES ('9', 'adsf', 'asdf', '2017-10-18', 'asdf', '', '2017-10-12 23:56:27', '0');
-INSERT INTO `vehicle` VALUES ('10', 'adsf', 'asdf', '2017-10-18', 'asdf', '', '2017-10-12 23:56:28', '0');
-INSERT INTO `vehicle` VALUES ('11', 'asd', 'fasdf', '2017-10-19', 'asdf', null, '2017-10-13 00:40:08', '1');
-INSERT INTO `vehicle` VALUES ('12', 'test', '两厢', '2017-09-26', 'asdf', 'asdfasdf', '2017-10-13 01:28:45', '0');
+INSERT INTO `vehicle` VALUES ('36', '001', '宝马7系', '2017-11-08', '广州市海珠区', '', '2017-11-08 22:04:46', '1');
+INSERT INTO `vehicle` VALUES ('37', '001', '宝马7系', '2017-11-08', '广州市海珠区', '测试备注', '2017-11-08 23:36:00', '0');
