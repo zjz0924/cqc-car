@@ -27,53 +27,55 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">零部件信息</div>
-		<div style="width: 98%;">
-			<table class="info">
-				<tr>
-					<td class="title-td">代码：</td>
-					<td class="value-td">${facadeBean.info.parts.code}</td>
-					<td class="title-td">名称：</td>
-					<td class="value-td">${facadeBean.info.parts.name}</td>
-				</tr>
-				<tr>
-					<td class="title-td">生产商：</td>
-					<td class="value-td">${facadeBean.info.parts.org.name}</td>
-					<td class="title-td">生产批号：</td>
-					<td class="value-td">${facadeBean.info.parts.proNo}</td>
-				</tr>
-				<tr>
-					<td class="title-td">生产日期：</td>
-					<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-					<td class="title-td">生产地址：</td>
-					<td class="value-td">${facadeBean.info.parts.place}</td>
-				</tr>
-				<tr>
-					<td class="title-td">关键零件：</td>
-					<td class="value-td">
-						<c:choose>
-							<c:when test="${facadeBean.info.parts.isKey == 0}">
-								否
-							</c:when>
-							<c:otherwise>
-								是
-							</c:otherwise>
-						</c:choose>
-					</td>
-					<td class="title-td">零件型号</td>
-					<td class="value-td">
-						${facadeBean.info.parts.keyCode}
-					</td>
-				</tr>
-				
-				<tr>
-					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.info.parts.remark}</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		<c:if test="${facadeBean.type != 4}">
+			<div class="title">零部件信息</div>
+			<div style="width: 98%;">
+				<table class="info">
+					<tr>
+						<td class="title-td">代码：</td>
+						<td class="value-td">${facadeBean.info.parts.code}</td>
+						<td class="title-td">名称：</td>
+						<td class="value-td">${facadeBean.info.parts.name}</td>
+					</tr>
+					<tr>
+						<td class="title-td">生产商：</td>
+						<td class="value-td">${facadeBean.info.parts.org.name}</td>
+						<td class="title-td">生产批号：</td>
+						<td class="value-td">${facadeBean.info.parts.proNo}</td>
+					</tr>
+					<tr>
+						<td class="title-td">生产日期：</td>
+						<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
+						<td class="title-td">生产地址：</td>
+						<td class="value-td">${facadeBean.info.parts.place}</td>
+					</tr>
+					<tr>
+						<td class="title-td">关键零件：</td>
+						<td class="value-td">
+							<c:choose>
+								<c:when test="${facadeBean.info.parts.isKey == 0}">
+									否
+								</c:when>
+								<c:otherwise>
+									是
+								</c:otherwise>
+							</c:choose>
+						</td>
+						<td class="title-td">零件型号</td>
+						<td class="value-td">
+							${facadeBean.info.parts.keyCode}
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="title-td">备注：</td>
+						<td class="value-td">${facadeBean.info.parts.remark}</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		</c:if>
 		
 		<div class="title">原材料信息</div>
 		<div style="width: 98%;">
@@ -121,58 +123,60 @@
 			<c:when test="${type == 1}">
 				
 				<!-- 零部件型式试验结果-start  -->
-				<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsPatResult == 1)  }">
-					<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
-					<div class="title" style="margin-top:15px;">
-						零部件型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
-					</div>
-					<div>
-						<table class="info" id="p_pfTable">
-							<tr>
-								<td style="background: #F0F0F0;font-weight:bold;">序号</td>
-								<td class="title-td"><span class="req-span">*</span>试验项目</td>
-								<td class="title-td"><span class="req-span">*</span>参考标准</td>
-								<td class="title-td"><span class="req-span">*</span>试验要求</td>
-								<td class="title-td"><span class="req-span">*</span>试验结果</td>
-								<td class="title-td"><span class="req-span">*</span>结果评价</td>
-								<td class="title-td">备注</td>
-								<td style="background: #F0F0F0;font-weight:bold;">操作</td>
-							</tr>
-							
-							<c:forEach var="i" begin="1" end="1" varStatus="status">
-								<tr p_num="p_${status.index}">
-									<td style="background: #f5f5f5;padding-left:5px;">${status.index}</td>
-									<td class="value-td1">
-										<input id="p_project_${status.index}" name="p_project_${status.index}" class="easyui-textbox" style="width:125px">
-										<span id="p_project_${status.index}_error" class="req-span"></span>
-									</td>
-									<td class="value-td1">
-										<input id="p_standard_${status.index}" name="p_standard_${status.index}" class="easyui-textbox" style="width:95%">
-										<span id="p_standard_${status.index}_error" class="req-span"></span>
-									</td>
-									<td class="value-td1">
-										<input id="p_require_${status.index}" name="p_require_${status.index}" class="easyui-textbox" style="width:95%">
-										<span id="p_require_${status.index}_error" class="req-span"></span>
-									</td>
-									<td class="value-td1">
-										<input id="p_result_${status.index}" name="p_result_${status.index}" class="easyui-textbox" style="width:125px">
-										<span id="p_result_${status.index}_error" class="req-span"></span>
-									</td>
-									<td class="value-td1">
-										<input id="p_evaluate_${status.index}" name="p_evaluate_${status.index}" class="easyui-textbox" style="width:125px">
-										<span id="p_evaluate_${status.index}_error" class="req-span"></span>
-									</td>
-									<td class="value-td1">
-										<input id="p_remark_${status.index}" name="p_remark_${status.index}" class="easyui-textbox" style="width:125px">
-										<span id="p_remark_${status.index}_error" class="req-span"></span>
-									</td>
-									<td style="background: #f5f5f5;padding-left:5px;">
-										<a href="javascript:void(0);"  onclick="deleteResult('p','p_${status.index}')"><i class="icon icon-cancel"></i></a>
-									</td>
+				<c:if test="${facadeBean.type != 4}">
+					<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsPatResult == 1)  }">
+						<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
+						<div class="title" style="margin-top:15px;">
+							零部件型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+						</div>
+						<div>
+							<table class="info" id="p_pfTable">
+								<tr>
+									<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+									<td class="title-td"><span class="req-span">*</span>试验项目</td>
+									<td class="title-td"><span class="req-span">*</span>参考标准</td>
+									<td class="title-td"><span class="req-span">*</span>试验要求</td>
+									<td class="title-td"><span class="req-span">*</span>试验结果</td>
+									<td class="title-td"><span class="req-span">*</span>结果评价</td>
+									<td class="title-td">备注</td>
+									<td style="background: #F0F0F0;font-weight:bold;">操作</td>
 								</tr>
-							</c:forEach>
-						</table>
-					</div>
+								
+								<c:forEach var="i" begin="1" end="1" varStatus="status">
+									<tr p_num="p_${status.index}">
+										<td style="background: #f5f5f5;padding-left:5px;">${status.index}</td>
+										<td class="value-td1">
+											<input id="p_project_${status.index}" name="p_project_${status.index}" class="easyui-textbox" style="width:125px">
+											<span id="p_project_${status.index}_error" class="req-span"></span>
+										</td>
+										<td class="value-td1">
+											<input id="p_standard_${status.index}" name="p_standard_${status.index}" class="easyui-textbox" style="width:95%">
+											<span id="p_standard_${status.index}_error" class="req-span"></span>
+										</td>
+										<td class="value-td1">
+											<input id="p_require_${status.index}" name="p_require_${status.index}" class="easyui-textbox" style="width:95%">
+											<span id="p_require_${status.index}_error" class="req-span"></span>
+										</td>
+										<td class="value-td1">
+											<input id="p_result_${status.index}" name="p_result_${status.index}" class="easyui-textbox" style="width:125px">
+											<span id="p_result_${status.index}_error" class="req-span"></span>
+										</td>
+										<td class="value-td1">
+											<input id="p_evaluate_${status.index}" name="p_evaluate_${status.index}" class="easyui-textbox" style="width:125px">
+											<span id="p_evaluate_${status.index}_error" class="req-span"></span>
+										</td>
+										<td class="value-td1">
+											<input id="p_remark_${status.index}" name="p_remark_${status.index}" class="easyui-textbox" style="width:125px">
+											<span id="p_remark_${status.index}_error" class="req-span"></span>
+										</td>
+										<td style="background: #f5f5f5;padding-left:5px;">
+											<a href="javascript:void(0);"  onclick="deleteResult('p','p_${status.index}')"><i class="icon icon-cancel"></i></a>
+										</td>
+									</tr>
+								</c:forEach>
+							</table>
+						</div>
+					</c:if>
 				</c:if>
 				<!-- 零部件型式试验结果-end -->
 				
@@ -244,48 +248,50 @@
 					<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
 					
 					<!-- 零部件图谱试验结果-start -->
-					<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 1) }">
-						<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
-						<div>
-							<table class="info" id="p_arTable">
-								<tr>
-									<td class="title-td">图谱类型</td>
-									<td class="title-td">图谱描述</td>
-									<td class="title-td">选择图谱</td>
-								</tr>
-								
-								<tr>
-									<td class="value-td">热重分析</td>
-									<td class="value-td"><input id="p_tgLab" name="p_tgLab" class="easyui-textbox" style="width:230px"></td>
-									<td class="value-td">
-										<span class="req-span">*</span>
-										<input id="p_tgLab_pic" name="p_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
-										<span id="p_tg_error" class="req-span"></span>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="value-td">红外光分析</td>
-									<td class="value-td"><input id="p_infLab" name="p_infLab" class="easyui-textbox" style="width:230px"></td>
-									<td class="value-td">
-										<span class="req-span">*</span>
-										<input id="p_infLab_pic" name="p_infLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
-										<span id="p_inf_error" class="req-span"></span>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="value-td">差热扫描</td>
-									<td class="value-td"><input id="p_dtLab" name="p_dtLab" class="easyui-textbox" style="width:230px"></td>
-									<td class="value-td">
-										<span class="req-span">*</span>
-										<input id="p_dtLab_pic" name="p_dtLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
-										<span id="p_dt_error" class="req-span"></span>
-									</td>
-								</tr>
-								
-							</table>
-						</div>
+					<c:if test="${facadeBean.type != 4}">
+						<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 1) }">
+							<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
+							<div>
+								<table class="info" id="p_arTable">
+									<tr>
+										<td class="title-td">图谱类型</td>
+										<td class="title-td">图谱描述</td>
+										<td class="title-td">选择图谱</td>
+									</tr>
+									
+									<tr>
+										<td class="value-td">热重分析</td>
+										<td class="value-td"><input id="p_tgLab" name="p_tgLab" class="easyui-textbox" style="width:230px"></td>
+										<td class="value-td">
+											<span class="req-span">*</span>
+											<input id="p_tgLab_pic" name="p_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+											<span id="p_tg_error" class="req-span"></span>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="value-td">红外光分析</td>
+										<td class="value-td"><input id="p_infLab" name="p_infLab" class="easyui-textbox" style="width:230px"></td>
+										<td class="value-td">
+											<span class="req-span">*</span>
+											<input id="p_infLab_pic" name="p_infLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+											<span id="p_inf_error" class="req-span"></span>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="value-td">差热扫描</td>
+										<td class="value-td"><input id="p_dtLab" name="p_dtLab" class="easyui-textbox" style="width:230px"></td>
+										<td class="value-td">
+											<span class="req-span">*</span>
+											<input id="p_dtLab_pic" name="p_dtLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+											<span id="p_dt_error" class="req-span"></span>
+										</td>
+									</tr>
+									
+								</table>
+							</div>
+						</c:if>
 					</c:if>
 					<!-- 零部件图谱试验结果-end -->
 					
@@ -350,55 +356,60 @@
 	<script type="text/javascript">
 		// 图谱结果保存
 		function doSubmit(){
-			var p_arTable =  $("#p_arTable").length;
+			var taskType = "${facadeBean.type}";
+			
 			var m_arTable = $("#m_arTable").length;
 			
-			// 零部件结果
-			if(p_arTable > 0){
-				// 热重分析图谱
-				var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
-				if (!isNull(p_tgLabDir)) {
-					var suffix = p_tgLabDir.substr(p_tgLabDir.lastIndexOf("."));
-					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
-						$("#p_tg_error").html("图片格式");
-						$("#p_tgLab_pic").focus();
-						return false;
-					}
-				}else{
-					$("#p_tg_error").html("必选");
-					return false;
-				}
-				$("#p_tg_error").html("");
+			if(taskType != 4){
+				var p_arTable =  $("#p_arTable").length;
 				
-				// 红外光分析图谱
-				var p_infLabDir = $("#p_infLab_pic").filebox("getValue");
-				if (!isNull(p_infLabDir)) {
-					var suffix = p_infLabDir.substr(p_infLabDir.lastIndexOf("."));
-					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
-						$("#p_inf_error").html("图片格式");
-						$("#p_infLab_pic").focus();
+				// 零部件结果
+				if(p_arTable > 0){
+					// 热重分析图谱
+					var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
+					if (!isNull(p_tgLabDir)) {
+						var suffix = p_tgLabDir.substr(p_tgLabDir.lastIndexOf("."));
+						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+							$("#p_tg_error").html("图片格式");
+							$("#p_tgLab_pic").focus();
+							return false;
+						}
+					}else{
+						$("#p_tg_error").html("必选");
 						return false;
 					}
-				}else{
-					$("#p_inf_error").html("必选");
-					return false;
-				}
-				$("#p_inf_error").html("");
-				
-				// 差热扫描图谱
-				var p_dtLabDir = $("#p_dtLab_pic").filebox("getValue");
-				if (!isNull(p_dtLabDir)) {
-					var suffix = p_dtLabDir.substr(p_dtLabDir.lastIndexOf("."));
-					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
-						$("#p_dt_error").html("图片格式");
-						$("#p_dtLab_pic").focus();
+					$("#p_tg_error").html("");
+					
+					// 红外光分析图谱
+					var p_infLabDir = $("#p_infLab_pic").filebox("getValue");
+					if (!isNull(p_infLabDir)) {
+						var suffix = p_infLabDir.substr(p_infLabDir.lastIndexOf("."));
+						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+							$("#p_inf_error").html("图片格式");
+							$("#p_infLab_pic").focus();
+							return false;
+						}
+					}else{
+						$("#p_inf_error").html("必选");
 						return false;
 					}
-				}else{
-					$("#p_dt_error").html("必选");
-					return false;
+					$("#p_inf_error").html("");
+					
+					// 差热扫描图谱
+					var p_dtLabDir = $("#p_dtLab_pic").filebox("getValue");
+					if (!isNull(p_dtLabDir)) {
+						var suffix = p_dtLabDir.substr(p_dtLabDir.lastIndexOf("."));
+						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+							$("#p_dt_error").html("图片格式");
+							$("#p_dtLab_pic").focus();
+							return false;
+						}
+					}else{
+						$("#p_dt_error").html("必选");
+						return false;
+					}
+					$("#p_dt_error").html("");
 				}
-				$("#p_dt_error").html("");
 			}
 			
 			// 原材料结果
@@ -473,18 +484,21 @@
 			
 			var p_pfTable =  $("#p_pfTable").length;
 			var m_pfTable = $("#m_pfTable").length;
+			var taskType = "${facadeBean.type}";
 			
-			// 零部件试验结果
-			if(p_pfTable > 0){
-				if($("tr[p_num]").length < 1){
-					$("#patternError").html("请添加零部件试验结果");
-					return false;
-				}
-				$("#patternError").html("");
-				
-				p_result = assemble("p", date);
-				if(p_result == false){
-					return false;
+			if(taskType != 4){
+				// 零部件试验结果
+				if(p_pfTable > 0){
+					if($("tr[p_num]").length < 1){
+						$("#patternError").html("请添加零部件试验结果");
+						return false;
+					}
+					$("#patternError").html("");
+					
+					p_result = assemble("p", date);
+					if(p_result == false){
+						return false;
+					}
 				}
 			}
 			

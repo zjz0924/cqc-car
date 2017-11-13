@@ -54,14 +54,6 @@
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
-						field : 'failNum',
-						title : '实验次数',
-						width : '120',
-						align : 'center',
-						formatter : function(val){
-							return "<span title='" + (val + 1) + "'>第" + (val+1) + "次</span>";
-						}
-					}, {
 						field : 'org',
 						title : '录入单位',
 						width : '250',

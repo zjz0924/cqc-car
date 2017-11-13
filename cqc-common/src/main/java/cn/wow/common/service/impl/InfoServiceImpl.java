@@ -108,7 +108,7 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId, int taskType) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
 
@@ -120,11 +120,13 @@ public class InfoServiceImpl implements InfoService {
 			}
 		}
 
-		if (parts.getId() == null) {
-			partsDao.insert(parts);
-		} else {
-			if (parts.getState() == Contants.ONDOING_TYPE) {
-				partsDao.update(parts);
+		if (taskType == TaskTypeEnum.OTS.getState()) {
+			if (parts.getId() == null) {
+				partsDao.insert(parts);
+			} else {
+				if (parts.getState() == Contants.ONDOING_TYPE) {
+					partsDao.update(parts);
+				}
 			}
 		}
 		
@@ -139,7 +141,10 @@ public class InfoServiceImpl implements InfoService {
 			Info info = new Info();
 			info.setCreateTime(date);
 			info.setmId(material.getId());
-			info.setpId(parts.getId());
+			
+			if (taskType == TaskTypeEnum.OTS.getState()) {
+				info.setpId(parts.getId());
+			}
 			info.setState(Contants.ONDOING_TYPE);
 			info.setvId(vehicle.getId());
 			info.setType(type);
@@ -152,7 +157,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setiId(info.getId());
 			task.setOrgId(account.getOrgId());
 			task.setState(StandardTaskEnum.EXAMINE.getState());
-			task.setType(TaskTypeEnum.OTS.getState());
+			task.setType(taskType);
 			task.setFailNum(0);
 			task.setaId(account.getId());
 			task.setMatAtlResult(0);
@@ -213,7 +218,7 @@ public class InfoServiceImpl implements InfoService {
 		examineRecord.setState(type);
 		examineRecord.settId(id);
 		examineRecord.setType(1);
-		examineRecord.setTaskType(TaskTypeEnum.OTS.getState());
+		examineRecord.setTaskType(task.getType());
 		examineRecordDao.insert(examineRecord);
 		
 		// 操作记录
@@ -250,15 +255,19 @@ public class InfoServiceImpl implements InfoService {
 		
 		if(partsAtlId != null){
 			task.setPartsAtlId(partsAtlId);
+			task.setPartsAtlResult(0);
 		}
 		if(matAtlId != null){
 			task.setMatAtlId(matAtlId);
+			task.setMatAtlResult(0);
 		}
 		if(partsPatId != null){
 			task.setPartsPatId(partsPatId);
+			task.setPartsPatResult(0);
 		}
 		if(matPatId != null){
 			task.setMatPatId(matPatId);
+			task.setMatPatResult(0);
 		}
 		taskDao.update(task);
 
@@ -492,40 +501,44 @@ public class InfoServiceImpl implements InfoService {
 				}else{
 					task.setMatAtlResult(1);
 					task.setMatPatResult(1);
-					task.setPartsAtlResult(1);
-					task.setPartsPatResult(1);
+					
+					if(task.getType() == TaskTypeEnum.OTS.getState()) {
+						task.setPartsAtlResult(1);
+						task.setPartsPatResult(1);
+					}
 					remark = "图谱和型式试验全部审批通过";
 				}
 				record.setState(StandardTaskRecordEnum.APPROVE_AGREE.getState());
 			} else {
 				
 				if(catagory == 1){
-					task.setPartsAtlResult(0);
+					task.setPartsAtlResult(6);
 					task.setPartsAtlId(null);
 					remark = "零部件图谱试验审批不通过：" + remark;
 				}else if(catagory == 2){
-					task.setMatAtlResult(0);
-					task.setMatAtl(null);
+					task.setMatAtlResult(6);
+					task.setMatAtlId(null);
 					remark = "原材料图谱试验审批不通过：" + remark;
 				}else if(catagory == 3){
-					task.setPartsPatResult(0);
-					task.setPartsPat(null);
+					task.setPartsPatResult(6);
+					task.setPartsPatId(null);
 					remark = "零部件型式试验审批不通过：" + remark;
 				}else if(catagory == 4){
-					task.setMatPatResult(0);
-					task.setMatPat(null);
+					task.setMatPatResult(6);
+					task.setMatPatId(null);
 					remark = "原材料型式试验审批不通过：" + remark;
 				}else{
-					task.setMatAtlResult(0);
-					task.setMatPatResult(0);
-					task.setPartsAtlResult(0);
-					task.setPartsPatResult(0);
-					
-					task.setPartsAtlId(null);
+					task.setMatAtlResult(6);
+					task.setMatPatResult(6);
 					task.setMatAtlId(null);
-					task.setPartsPatId(null);
 					task.setMatPatId(null);
 					
+					if(task.getType() == TaskTypeEnum.OTS.getState()) {
+						task.setPartsAtlResult(6);
+						task.setPartsPatResult(6);
+						task.setPartsPatId(null);
+						task.setPartsAtlId(null);
+					}
 					remark = "图谱和型式试验全部审批不通过：" + remark;
 				}
 				record.setState(StandardTaskRecordEnum.APPROVE_DISAGREE.getState());

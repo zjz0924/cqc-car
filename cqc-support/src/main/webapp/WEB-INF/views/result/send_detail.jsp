@@ -27,53 +27,55 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">零部件信息</div>
-		<div style="width: 98%;">
-			<table class="info">
-				<tr>
-					<td class="title-td">代码：</td>
-					<td class="value-td">${facadeBean.info.parts.code}</td>
-					<td class="title-td">名称：</td>
-					<td class="value-td">${facadeBean.info.parts.name}</td>
-				</tr>
-				<tr>
-					<td class="title-td">生产商：</td>
-					<td class="value-td">${facadeBean.info.parts.org.name}</td>
-					<td class="title-td">生产批号：</td>
-					<td class="value-td">${facadeBean.info.parts.proNo}</td>
-				</tr>
-				<tr>
-					<td class="title-td">生产日期：</td>
-					<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-					<td class="title-td">生产地址：</td>
-					<td class="value-td">${facadeBean.info.parts.place}</td>
-				</tr>
-				<tr>
-					<td class="title-td">关键零件：</td>
-					<td class="value-td">
-						<c:choose>
-							<c:when test="${facadeBean.info.parts.isKey == 0}">
-								否
-							</c:when>
-							<c:otherwise>
-								是
-							</c:otherwise>
-						</c:choose>
-					</td>
-					<td class="title-td">零件型号</td>
-					<td class="value-td">
-						${facadeBean.info.parts.keyCode}
-					</td>
-				</tr>
-				
-				<tr>
-					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.info.parts.remark}</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		<c:if test="${facadeBean.type != 4}">
+			<div class="title">零部件信息</div>
+			<div style="width: 98%;">
+				<table class="info">
+					<tr>
+						<td class="title-td">代码：</td>
+						<td class="value-td">${facadeBean.info.parts.code}</td>
+						<td class="title-td">名称：</td>
+						<td class="value-td">${facadeBean.info.parts.name}</td>
+					</tr>
+					<tr>
+						<td class="title-td">生产商：</td>
+						<td class="value-td">${facadeBean.info.parts.org.name}</td>
+						<td class="title-td">生产批号：</td>
+						<td class="value-td">${facadeBean.info.parts.proNo}</td>
+					</tr>
+					<tr>
+						<td class="title-td">生产日期：</td>
+						<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
+						<td class="title-td">生产地址：</td>
+						<td class="value-td">${facadeBean.info.parts.place}</td>
+					</tr>
+					<tr>
+						<td class="title-td">关键零件：</td>
+						<td class="value-td">
+							<c:choose>
+								<c:when test="${facadeBean.info.parts.isKey == 0}">
+									否
+								</c:when>
+								<c:otherwise>
+									是
+								</c:otherwise>
+							</c:choose>
+						</td>
+						<td class="title-td">零件型号</td>
+						<td class="value-td">
+							${facadeBean.info.parts.keyCode}
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="title-td">备注：</td>
+						<td class="value-td">${facadeBean.info.parts.remark}</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		</c:if>
 		
 		<div class="title">原材料信息</div>
 		<div style="width: 98%;">
@@ -452,7 +454,9 @@
 					if(data.success){
 						closeDialog(data.msg);
 					}else{
-						$("#atlasError").html(data.msg);						
+						$("#atlasError").html(data.msg);
+						$("#sendBtn").show();
+						$("#cancelBtn").show();
 					}
 				}
 			});

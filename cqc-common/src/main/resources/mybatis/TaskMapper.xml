@@ -274,13 +274,23 @@
 			</if>
 
 			<!-- OTS 任务下达列表 -->
-			<if test="transimtTask != null">
+			<if test="transimtTask_ots != null">
 				and (t.parts_atl_id is null or t.mat_atl_id is null or t.parts_pat_id is null or t.mat_pat_id is null)
+			</if>
+			
+			<!-- gs 任务下达列表 -->
+			<if test="transimtTask_gs != null">
+				and (t.mat_atl_id is null or t.mat_pat_id is null)
 			</if>
 
 			<!-- OTS 审批列表 -->
-			<if test="approveTask != null">
+			<if test="approveTask_ots != null">
 				and ((t.state = 3 and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+			</if>
+			
+			<!-- gs 审批列表-->
+			<if test="approveTask_gs != null">
+				and ((t.state = 3 and (t.mat_atl_result = 0 or t.mat_pat_result = 0)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
 			</if>
 			
 			<!-- PPAP 审批列表 -->
@@ -313,22 +323,22 @@
 
 			<!-- 结果发送列表 -->
 			<if test="sendTask != null">
-			    and ((state =3 and type = 1) or (state = 5 and (type = 2 or type = 3))) and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
+			    and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
 			</if>
 			
 			<if test="sendTask_admin != null">
-				and ((state =3 and type = 1) or (state = 5 and (type = 2 or type = 3))) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
+				and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
 			</if>
 
 
 			<!-- 结果确认：待上传列表 -->
 			<if test="confirmTask_wait != null">
-				and t.type = 1 and ((t.parts_pat_result = 3  or t.mat_pat_result = 3 or t.parts_atl_result = 3 or t.mat_atl_result = 3) and (t.parts_pat_result != 3  or t.mat_pat_result != 3 or t.parts_atl_result != 3 or t.mat_atl_result != 3))
+				and ((t.type = 1 and ((t.parts_pat_result = 3  or t.mat_pat_result = 3 or t.parts_atl_result = 3 or t.mat_atl_result = 3) and (t.parts_pat_result != 3  or t.mat_pat_result != 3 or t.parts_atl_result != 3 or t.mat_atl_result != 3))) or (t.type = 4 and ((t.mat_pat_result = 3 or t.mat_atl_result = 3) and (t.mat_pat_result != 3 or or t.mat_atl_result != 3))))
 			</if>
 			
 			<!-- 结果确认：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				and ((t.type = 1 and t.state = 3 and t.parts_pat_result = 3  and t.mat_pat_result = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3) or (t.state = 6 and (type = 2 or type = 3)))
+				and ((t.type = 1 and t.state = 3 and t.parts_pat_result = 3  and t.mat_pat_result = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3) or (t.state = 6 and (type = 2 or type = 3) or (t.type = 4 and t.state = 3 and t.mat_pat_result = 3 and t.mat_atl_result = 3)))
 			</if>
 
 			<!-- 所有已完成的任务 -->

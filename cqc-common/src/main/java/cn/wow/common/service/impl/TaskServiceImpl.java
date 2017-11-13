@@ -220,8 +220,8 @@ public class TaskServiceImpl implements TaskService{
 	public void confirmResult(Account account, Long taskId, int result, int type, String remark, String orgs) throws Exception {
 		Task task = this.selectOne(taskId);
 
-		// OTS 任务
-		if (task.getType() == TaskTypeEnum.OTS.getState()) {
+		// OTS/GS 任务
+		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 			OtsResultConfirm(task, account, taskId, result, type, remark);
 		} else if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
 			PpapResultConfirm(task, account, taskId, result, remark, orgs);
@@ -257,16 +257,18 @@ public class TaskServiceImpl implements TaskService{
 					task.setMatPatResult(4);
 				}
 
-				if (task.getPartsAtlResult() != 4) {
-					task.setPartsAtlResult(4);
-				}
+				remark += "原材料图谱试验、原材料型式试验、";
+				if (task.getType() == TaskTypeEnum.OTS.getState()) {
+					if (task.getPartsAtlResult() != 4) {
+						task.setPartsAtlResult(4);
+					}
 
-				if (task.getPartsPatResult() != 4) {
-					task.setPartsPatResult(4);
+					if (task.getPartsPatResult() != 4) {
+						task.setPartsPatResult(4);
+					}
+					remark += "零部件图谱试验、零部件型式试验、";
 				}
-
 				isPass = true;
-				remark += "零部件图谱试验、零部件型式试验、原材料图谱试验、原材料型式试验、";
 			}
 
 			if (StringUtils.isNotBlank(remark)) {
@@ -275,11 +277,16 @@ public class TaskServiceImpl implements TaskService{
 			}
 
 			// 所有实验已确认
-			if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getPartsAtlResult() == 4
-					&& task.getPartsPatResult() == 4) {
-				isPass = true;
+			if (task.getType() == TaskTypeEnum.OTS.getState()) {
+				if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getPartsAtlResult() == 4 && task.getPartsPatResult() == 4) {
+					isPass = true;
+				}
+			}else if(task.getType() == TaskTypeEnum.GS.getState()){
+				if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4) {
+					isPass = true;
+				}
 			}
-
+			
 			if (isPass) {
 				task.setState(StandardTaskEnum.ACCOMPLISH.getState());
 				task.setConfirmTime(new Date());
@@ -315,13 +322,16 @@ public class TaskServiceImpl implements TaskService{
 				task.setMatPatId(null);
 				temp += "原材料型式试验、";
 			} else {
-				task.setPartsAtlResult(0);
-				task.setPartsAtlId(null);
-				temp += "零部件图谱试验、";
+				
+				if (task.getType() == TaskTypeEnum.OTS.getState()) {
+					task.setPartsAtlResult(0);
+					task.setPartsAtlId(null);
+					temp += "零部件图谱试验、";
 
-				task.setPartsPatResult(0);
-				task.setPartsPatId(null);
-				temp += "零部件型式试验、";
+					task.setPartsPatResult(0);
+					task.setPartsPatId(null);
+					temp += "零部件型式试验、";
+				}
 
 				task.setMatAtlResult(0);
 				task.setMatAtlId(null);
@@ -479,17 +489,19 @@ public class TaskServiceImpl implements TaskService{
 		}
 		
 		// 整车
-		Parts parts = partsDao.selectOne(info.getpId());
-		if(parts.getState() == 0){
-			parts.setState(state);
-			partsDao.update(parts);
-		}
-				
-		// 零部件
 		Vehicle vehicle = vehicleDao.selectOne(info.getvId());
 		if(vehicle.getState() == 0){
 			vehicle.setState(state);
 			vehicleDao.update(vehicle);
+		}
+		
+		if(task.getType() == TaskTypeEnum.OTS.getState()) {
+			// 零部件
+			Parts parts = partsDao.selectOne(info.getpId());
+			if(parts.getState() == 0){
+				parts.setState(state);
+				partsDao.update(parts);
+			}
 		}
 		
 		// 任务记录

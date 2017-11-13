@@ -15,7 +15,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/examineListData?time=" + new Date();
+			var getDataUrl = "${ctx}/ots/examineListData?taskType=${taskType}&time=" + new Date();
 			var datagrid = "examineTable";
 			
 			var recordDatagrid = "taskRecordTable";
@@ -246,7 +246,7 @@
 					height : 680,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/examineDetail?id=" + id,
+					href : "${ctx}/ots/examineDetail?taskType=${taskType}&id=" + id,
 					modal : true
 				});
 				$('#examineDetailDialog').window('center');

@@ -562,7 +562,7 @@ public class ResultController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			if(task.getType() == TaskTypeEnum.OTS.getState()){   // OTS 结果确认
+			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()){   // OTS/GS 结果确认
 				// 性能结果
 				Map<String, Object> pfMap = new HashMap<String, Object>();
 				pfMap.put("tId", id);

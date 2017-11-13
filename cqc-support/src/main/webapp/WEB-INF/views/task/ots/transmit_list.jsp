@@ -15,7 +15,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/transmitListData?time=" + new Date();
+			var getDataUrl = "${ctx}/ots/transmitListData?taskType=${taskType}&time=" + new Date();
 			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
 			var datagrid = "transmitTable";
 			var recordDatagrid = "taskRecordTable";
@@ -248,7 +248,7 @@
 					height : 680,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/transmitDetail?id=" + id,
+					href : "${ctx}/ots/transmitDetail?taskType=${taskType}&id=" + id,
 					modal : true
 				});
 				$('#transmitDetailDialog').window('center');

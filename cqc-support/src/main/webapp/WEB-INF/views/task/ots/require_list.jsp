@@ -16,7 +16,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/requireListData?time=" + new Date();
+			var getDataUrl = "${ctx}/ots/requireListData?taskType=${taskType}&time=" + new Date();
 			var datagrid = "requireTable";
 		
 			var toolbar = [{
@@ -115,9 +115,9 @@
 			}
 			
 			function detail(id) {
-				var url = "${ctx}/ots/requireDetail";
+				var url = "${ctx}/ots/requireDetail?taskType=${taskType}";
 				if(!isNull(id)){
-					url += "?id=" + id;
+					url += "&id=" + id;
 				}
 				
 				$('#requireDialog').dialog({

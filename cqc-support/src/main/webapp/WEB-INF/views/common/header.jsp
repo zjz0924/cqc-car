@@ -128,7 +128,7 @@
 														   		<c:if test="${fn:indexOf(vo.url, '?') < 1 }">
 														   			<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
 														   		</c:if>
-														   		<c:if test="${fn:indexOf(vo.url, '?') < 0 }">
+														   		<c:if test="${fn:indexOf(vo.url, '?') > 0 }">
 														   			<a href="${ctx}/${vo.url}&choose=${vst.index}">${subVo.name}</a>
 														   		</c:if>
 														   	</c:when>

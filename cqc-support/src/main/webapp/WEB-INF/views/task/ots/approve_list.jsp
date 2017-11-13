@@ -15,7 +15,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/approveListData?time=" + new Date();
+			var getDataUrl = "${ctx}/ots/approveListData?taskType=${taskType}&time=" + new Date();
 			var datagrid = "approveTable";
 			
 			var recordDatagrid = "taskRecordTable";
@@ -262,7 +262,7 @@
 					height : 700,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/approveDetail?id=" + id,
+					href : "${ctx}/ots/approveDetail?taskType=${taskType}&id=" + id,
 					modal : true
 				});
 				$('#approveDetailDialog').window('center');

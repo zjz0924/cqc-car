@@ -113,10 +113,16 @@ public class OtsTaskController extends AbstractController {
 	 * 首页
 	 */
 	@RequestMapping(value = "/index")
-	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose) {
+	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose, int taskType) {
 		HttpSession session = request.getSession();
-
-		Menu menu = menuService.selectByAlias("otsTask");
+		Menu menu = null;
+		
+		if(taskType == TaskTypeEnum.OTS.getState()) {
+			menu = menuService.selectByAlias("otsTask");
+		}else if(taskType == TaskTypeEnum.GS.getState()) {
+			menu = menuService.selectByAlias("gsTask");
+		}
+		
 		// 没有权限的菜单
 		Set<Long> illegalMenu = (Set<Long>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);
 
@@ -147,12 +153,14 @@ public class OtsTaskController extends AbstractController {
 		return "task/ots/index";
 	}
 
+	/** --------------------------------  任务申请    ---------------------------------*/
 	/**
 	 * 任务申请列表
 	 */
 	@RequestMapping(value = "/requireList")
-	public String requireList(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String requireList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", REQUIRE_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
 		return "task/ots/require_list";
 	}
 
@@ -163,7 +171,7 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/requireListData")
 	public Map<String, Object> requireListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, Integer state) {
+			String endCreateTime, Integer state, int taskType) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -180,7 +188,7 @@ public class OtsTaskController extends AbstractController {
 		} else {
 			map.put("state", state);
 		}
-		map.put("type", TaskTypeEnum.OTS.getState());
+		map.put("type", taskType);
 
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime);
@@ -215,7 +223,7 @@ public class OtsTaskController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/requireDetail")
-	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
@@ -224,13 +232,14 @@ public class OtsTaskController extends AbstractController {
 			rMap.put("taskId", id);
 			rMap.put("custom_order_sql", "create_time asc");
 			rMap.put("type", 1);
-			rMap.put("taskType", TaskTypeEnum.OTS.getState());
+			rMap.put("taskType", task.getType());
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
 		}
 
+		model.addAttribute("taskType", taskType);
 		return "task/ots/require_detail";
 	}
 
@@ -243,7 +252,7 @@ public class OtsTaskController extends AbstractController {
 			String v_proTime, String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime,
 			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
 			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
-			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id) {
+			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -291,31 +300,11 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			// 零部件信息
-			Parts parts = null;
-			if (p_id == null) {
-				parts = new Parts();
-				parts.setType(Contants.STANDARD_TYPE);
-				parts.setProTime(sdf.parse(p_proTime));
-				parts.setRemark(p_remark);
-				parts.setPlace(p_place);
-				parts.setProNo(p_proNo);
-				parts.setName(p_name);
-				parts.setCode(p_code);
-				parts.setIsKey(p_isKey);
-				parts.setKeyCode(p_keyCode);
-				parts.setOrgId(p_orgId);
-				parts.setCreateTime(date);
-				parts.setState(Contants.ONDOING_TYPE);
-
-				Parts dbParts = partsService.selectByCode(parts.getCode());
-				if (dbParts != null) {
-					vo.setSuccess(false);
-					vo.setMsg("零部件号已存在");
-					return vo;
-				}
-			} else {
-				parts = partsService.selectOne(p_id);
-				if (parts.getState().intValue() == 0) {
+			if(taskType == TaskTypeEnum.OTS.getState()) {
+				Parts parts = null;
+				if (p_id == null) {
+					parts = new Parts();
+					parts.setType(Contants.STANDARD_TYPE);
 					parts.setProTime(sdf.parse(p_proTime));
 					parts.setRemark(p_remark);
 					parts.setPlace(p_place);
@@ -325,13 +314,35 @@ public class OtsTaskController extends AbstractController {
 					parts.setIsKey(p_isKey);
 					parts.setKeyCode(p_keyCode);
 					parts.setOrgId(p_orgId);
+					parts.setCreateTime(date);
+					parts.setState(Contants.ONDOING_TYPE);
 
-					if (!p_code.equals(parts.getCode())) {
-						Parts dbParts = partsService.selectByCode(parts.getCode());
-						if (dbParts != null) {
-							vo.setSuccess(false);
-							vo.setMsg("零部件号已存在");
-							return vo;
+					Parts dbParts = partsService.selectByCode(parts.getCode());
+					if (dbParts != null) {
+						vo.setSuccess(false);
+						vo.setMsg("零部件号已存在");
+						return vo;
+					}
+				} else {
+					parts = partsService.selectOne(p_id);
+					if (parts.getState().intValue() == 0) {
+						parts.setProTime(sdf.parse(p_proTime));
+						parts.setRemark(p_remark);
+						parts.setPlace(p_place);
+						parts.setProNo(p_proNo);
+						parts.setName(p_name);
+						parts.setCode(p_code);
+						parts.setIsKey(p_isKey);
+						parts.setKeyCode(p_keyCode);
+						parts.setOrgId(p_orgId);
+
+						if (!p_code.equals(parts.getCode())) {
+							Parts dbParts = partsService.selectByCode(parts.getCode());
+							if (dbParts != null) {
+								vo.setSuccess(false);
+								vo.setMsg("零部件号已存在");
+								return vo;
+							}
 						}
 					}
 				}
@@ -371,10 +382,10 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, t_id);
+			infoService.insert(account, vehicle, null, material, Contants.STANDARD_TYPE, t_id, taskType);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("OTS任务申请失败", ex);
+			logger.error("任务申请失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("保存失败，系统异常");
@@ -386,13 +397,15 @@ public class OtsTaskController extends AbstractController {
 		return vo;
 	}
 
+	/** --------------------------------  任务审核    ---------------------------------*/
 	/**
 	 * 审核列表
 	 */
 	@RequestMapping(value = "/examineList")
-	public String examineList(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String examineList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", EXAMINE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
 		return "task/ots/examine_list";
 	}
 
@@ -402,7 +415,7 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/examineListData")
 	public Map<String, Object> examineListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -413,7 +426,7 @@ public class OtsTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("state", StandardTaskEnum.EXAMINE.getState());
-		map.put("type", TaskTypeEnum.OTS.getState());
+		map.put("type", taskType);
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -461,12 +474,9 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审核结果
 	 * 
-	 * @param id
-	 *            任务ID
-	 * @param type
-	 *            结果： 1-通过， 2-不通过
-	 * @param remark
-	 *            备注
+	 * @param id      任务ID
+	 * @param type    结果： 1-通过， 2-不通过
+	 * @param remark  备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
@@ -477,7 +487,7 @@ public class OtsTaskController extends AbstractController {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			infoService.examine(account, id, type, remark);
 		} catch (Exception ex) {
-			logger.error("OTS任务审核失败", ex);
+			logger.error("任务审核失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");
@@ -489,13 +499,15 @@ public class OtsTaskController extends AbstractController {
 		return vo;
 	}
 
+	/** --------------------------------  任务下达    ---------------------------------*/
 	/**
 	 * 任务下达列表
 	 */
 	@RequestMapping(value = "/transmitList")
-	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
 		return "task/ots/transmit_list";
 	}
 
@@ -505,7 +517,7 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -515,9 +527,15 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("transimtTask", true);
+		
+		if (taskType == TaskTypeEnum.OTS.getState()) {
+			map.put("transimtTask_ots", true);
+		} else if (taskType == TaskTypeEnum.GS.getState()) {
+			map.put("transimtTask_gs", true);
+		}
+		
 		map.put("state", StandardTaskEnum.TESTING.getState());
-		map.put("type", TaskTypeEnum.OTS.getState());
+		map.put("type", taskType);
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -551,7 +569,7 @@ public class OtsTaskController extends AbstractController {
 	 * 详情列表
 	 */
 	@RequestMapping(value = "/transmitDetail")
-	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
@@ -560,7 +578,7 @@ public class OtsTaskController extends AbstractController {
 			rMap.put("type", 2);
 			rMap.put("state", 2);
 			rMap.put("custom_order_sql", "create_time asc");
-			rMap.put("taskType", TaskTypeEnum.OTS.getState());
+			rMap.put("taskType", taskType);
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
 			model.addAttribute("facadeBean", task);
@@ -644,13 +662,16 @@ public class OtsTaskController extends AbstractController {
 		}
 	}
 
+	
+	/** --------------------------------   任务审批     ---------------------------------*/
 	/**
 	 * 任务审批列表
 	 */
 	@RequestMapping(value = "/approveList")
-	public String approveList(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String approveList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
 		return "task/ots/approve_list";
 	}
 
@@ -660,7 +681,7 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -670,8 +691,15 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		map.put("approveTask", true);
-		map.put("type", TaskTypeEnum.OTS.getState());
+		
+		if(taskType == TaskTypeEnum.OTS.getState()) {
+			map.put("approveTask_ots", true);
+		}else if(taskType == TaskTypeEnum.GS.getState()) {
+			map.put("approveTask_gs", true);
+		}
+		
+		
+		map.put("type", taskType);
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -705,7 +733,7 @@ public class OtsTaskController extends AbstractController {
 	 * 详情列表
 	 */
 	@RequestMapping(value = "/approveDetail")
-	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
 		int approveType = 3;
 
 		if (id != null) {
@@ -717,7 +745,7 @@ public class OtsTaskController extends AbstractController {
 					ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
 					
 					if(applyRecord != null){
-						if (applyRecord.getpId() != null) {
+						if (taskType == TaskTypeEnum.OTS.getState() && applyRecord.getpId() != null) {
 							Parts newParts = partsService.selectOne(applyRecord.getpId());
 							model.addAttribute("newParts", newParts);
 						}
@@ -737,43 +765,50 @@ public class OtsTaskController extends AbstractController {
 					approveType = 2;
 					
 					/** ---------  原结果  ----------- */
-					// 零部件-性能结果（只取最后一次实验）
-					List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
+					if(taskType == TaskTypeEnum.OTS.getState() ) {
+						// 零部件-性能结果（只取最后一次实验）
+						List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
+						
+						// 零部件-图谱结果（只取最后一次实验）
+						List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
+						
+						model.addAttribute("pPfResult_old", pPfResult_old);
+						model.addAttribute("pAtlasResult_old", pAtlasResult_old);
+					}
 
 					// 原材料-性能结果（只取最后一次实验结果）
 					List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
 					
-					// 零部件-图谱结果（只取最后一次实验）
-					List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
-					
 					// 原材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
 					
+				
 					/** ---------  修改之后的结果  ----------- */
-					// 零部件-性能结果（只取最后一次实验）
-					List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
+					if(taskType == TaskTypeEnum.OTS.getState() ) {
+						// 零部件-性能结果（只取最后一次实验）
+						List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
 
+						// 零部件-图谱结果（只取最后一次实验）
+						List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
+						
+						model.addAttribute("pAtlasResult_new", pAtlasResult_new);
+						model.addAttribute("pPfResult_new", pPfResult_new);
+					}
+					
 					// 原材料-性能结果（只取最后一次实验结果）
 					List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
-					
-					// 零部件-图谱结果（只取最后一次实验）
-					List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
 					
 					// 原材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
 					
-					
-					model.addAttribute("pPfResult_old", pPfResult_old);
 					model.addAttribute("mPfResult_old", mPfResult_old);
-					model.addAttribute("pAtlasResult_old", pAtlasResult_old);
 					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
-					model.addAttribute("pPfResult_new", pPfResult_new);
 					model.addAttribute("mPfResult_new", mPfResult_new);
-					model.addAttribute("pAtlasResult_new", pAtlasResult_new);
 					model.addAttribute("mAtlasResult_new", mAtlasResult_new);
 				}
 			}
 
+			model.addAttribute("taskType", taskType);
 			model.addAttribute("approveType", approveType);
 			model.addAttribute("facadeBean", task);
 		}
