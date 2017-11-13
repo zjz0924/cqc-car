@@ -346,7 +346,7 @@
 		</c:if>
 		
 		<!-- PPAP 对比结果确认 -->
-		<c:if test="${facadeBean.type == 2}">
+		<c:if test="${facadeBean.type == 2 or facadeBean.type == 3 }">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">对比结果</div>
 			

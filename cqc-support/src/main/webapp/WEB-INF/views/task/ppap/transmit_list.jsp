@@ -15,7 +15,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ppap/transmitListData?time=" + new Date();
+			var getDataUrl = "${ctx}/ppap/transmitListData?taskType=${taskType}";
 			var datagrid = "transmitTable";
 		
 			var toolbar = [{
@@ -114,14 +114,14 @@
 			}
 			
 			function detail(id) {
-				var url = "${ctx}/ppap/transmitDetail";
+				var url = "${ctx}/ppap/transmitDetail?taskType=${taskType}";
 				if(!isNull(id)){
 					url += "?id=" + id;
 				}
 				
 				$('#transmitDialog').dialog({
 					title : '详情',
-					width : 1200,
+					width : 1000,
 					height : 660,
 					closed : false,
 					cache : false,

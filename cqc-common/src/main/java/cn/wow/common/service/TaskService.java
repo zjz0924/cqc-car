@@ -61,6 +61,17 @@ public interface TaskService {
 	 */
     public void confirmResult(Account account, Long taskId, int result, int type, String remark, String orgs) throws Exception;
     
+    
+    /**
+   	 * PPAP任务第二次确认
+   	 * @param taskId  任务ID
+   	 * @param result  结果：1-第二次抽样，2-中止任务
+   	 * @param remark  不合格的理由
+   	 */
+     public void confirmResult(Account account, Long taskId, int result, String remark);
+    
+    
+    
     /**
 	 * 结果对比
 	 * @param taskId  任务ID
@@ -75,4 +86,11 @@ public interface TaskService {
      * @param list
      */
     public List<Task> batchQueryByInfoId(List<Long> list);
+    
+    
+    /**
+     *  获取子任务的数量
+     * @param taskId
+     */
+    public int getSubTaskNum(Long taskId);
 }

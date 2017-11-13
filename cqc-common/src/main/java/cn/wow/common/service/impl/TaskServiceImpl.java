@@ -195,8 +195,8 @@ public class TaskServiceImpl implements TaskService{
     		remark = "发送" + remark + "结果";
     	}
     	
-		// PPAP任务发送结果后，进入结果确认阶段
-		if (task.getType() == 2) {
+		// PPAP/SOP任务发送结果后，进入结果确认阶段
+		if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ) {
 			task.setState(SamplingTaskEnum.COMFIRM.getState());
 		}
     	
@@ -223,7 +223,7 @@ public class TaskServiceImpl implements TaskService{
 		// OTS 任务
 		if (task.getType() == TaskTypeEnum.OTS.getState()) {
 			OtsResultConfirm(task, account, taskId, result, type, remark);
-		} else if (task.getType() == TaskTypeEnum.PPAP.getState()) {
+		} else if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
 			PpapResultConfirm(task, account, taskId, result, remark, orgs);
 		}
 	}
@@ -381,13 +381,12 @@ public class TaskServiceImpl implements TaskService{
 			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.SAVE.getState(), "结果留存", date);
 			taskRecordDao.insert(taskRecord);
 		}else{
-			// 第一次失败（重新进行第2次抽样）
+			// 第一次失败（确认后再进行第2次抽样）
 			if(task.getFailNum() == 0){
-				task.setState(SamplingTaskEnum.UPLOAD.getState());
-				task.setMatAtlResult(1);
-				task.setPartsAtlResult(1);
+				task.setState(SamplingTaskEnum.RECONFIRM.getState());
 				task.setFailNum(task.getFailNum() + 1);
 				task.setConfirmTime(new Date());
+				task.setRemark(remark);
 				taskDao.update(task);
 				
 				// 确认记录
@@ -400,6 +399,7 @@ public class TaskServiceImpl implements TaskService{
 			}else{  // 第二次失败
 				task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
 				task.setFailNum(task.getFailNum() + 1);
+				task.setRemark(remark);
 				taskDao.update(task);
 				
 				// 发送警告书
@@ -648,10 +648,90 @@ public class TaskServiceImpl implements TaskService{
 	
 	
 	 /**
+   	 * PPAP任务第二次确认
+   	 * @param taskId  任务ID
+   	 * @param result  结果：1-第二次抽样，2-中止任务
+   	 * @param remark  不合格的理由
+   	 */
+     public void confirmResult(Account account, Long taskId, int result, String remark) {
+		Task task = taskDao.selectOne(taskId);
+		Date date = new Date();
+
+		if (result == 1) {
+			task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
+			taskDao.update(task);
+
+			remark = "进行二次抽样";
+			
+			// 新建子任务
+			Task subTask = new Task();
+			subTask.setCode(task.getCode() + "-R" + this.getSubTaskNum(task.getId()));
+			subTask.setCreateTime(date);
+			subTask.setiId(task.getiId());
+			subTask.setOrgId(account.getOrgId());
+			subTask.setState(SamplingTaskEnum.APPROVE.getState());
+			subTask.setType(task.getType());
+			subTask.setFailNum(0);
+			subTask.setaId(account.getId());
+			subTask.setMatAtlResult(0);
+			subTask.setMatPatResult(0);
+			subTask.setPartsAtlResult(0);
+			subTask.setPartsPatResult(0);
+			subTask.setPartsAtlId(task.getPartsAtlId());
+			subTask.setMatAtlId(task.getMatAtlId());
+			subTask.setPartsAtlTimes(0);
+			subTask.setPartsPatTimes(0);
+			subTask.setMatAtlTimes(0);
+			subTask.setMatPatTimes(0);
+			subTask.setInfoApply(0);
+			subTask.setResultApply(0);
+			subTask.settId(task.getId());
+			taskDao.insert(subTask);
+			
+		} else {
+			task.setState(SamplingTaskEnum.END.getState());
+			task.setConfirmTime(date);
+			
+			remark = "中止任务，原因：" + remark;
+			taskDao.update(task);
+		}
+		
+		// 确认记录
+		ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, remark, 5, null, date, TaskTypeEnum.PPAP.getState());
+		examineRecordDao.insert(examineRecord);
+		
+		// 任务记录
+		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.RECONFIRM.getState(), remark, date);
+		taskRecordDao.insert(taskRecord);
+    	 
+     }
+	
+	
+	
+	 /**
      * 获取info id 批量查询任务
      * @param list
      */
 	public List<Task> batchQueryByInfoId(List<Long> list) {
 		return taskDao.batchQueryByInfoId(list);
 	}
+	
+	
+	/**
+     *  获取子任务的数量
+     * @param taskId
+     */
+	public int getSubTaskNum(Long taskId) {
+		// 查看子任务的数量
+		Map<String, Object> tMap = new PageMap(false);
+		tMap.put("tId", taskId);
+		List<Task> taskList = taskDao.selectAllList(tMap);
+
+		int taskNum = 1;
+		if (taskList != null && taskList.size() > 0) {
+			taskNum = taskList.size() + 1;
+		}
+		return taskNum;
+	}
+	
 }

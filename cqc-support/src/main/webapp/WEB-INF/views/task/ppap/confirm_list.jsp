@@ -7,7 +7,7 @@
 		<title>SGMW</title>
 		<%@include file="../../common/source.jsp"%>
 		
-		<style type="text/css">			
+		<style type="text/css">
 			.qlabel{
 				display: inline-block;
 				width: 63px;
@@ -15,16 +15,15 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ppap/approveListData?taskType=${taskType}";
-			var datagrid = "approveTable";
-			
-			var recordDatagrid = "taskRecordTable";
+			var getDataUrl = "${ctx}/ppap/confirmListData?taskType=${taskType}";
 			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
+			var datagrid = "confirmTable";
+			var recordDatagrid = "taskRecordTable";
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
 			
-			
 			$(function(){
+				 // 任务列表
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
@@ -41,29 +40,37 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '200',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
-						field : 'infoApply',
-						title : '类型',
+						field : 'type',
+						title : '任务类型',
 						width : '150',
 						align : 'center',
-						formatter : function(value,row,index){
-							var str = "新增任务";
-							if(row.state == 8){
-								if(row.infoApply == 1){
-									str = "信息修改";
-								}else if(row.resultApply == 1){
-									str = "结果修改"
-								}
+						formatter : function(val){
+							var str = "材料研究所任务"
+							if(val == 1){
+								str = "OTS阶段任务";
+							}else if(val == 2){
+								str = "PPAP阶段任务";
+							}else if(val == 3){
+								str = "SOP阶段任务";
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
+						field : 'failNum',
+						title : '实验次数',
+						width : '120',
+						align : 'center',
+						formatter : function(val){
+							return "<span title='" + (val) + "'>第" + (val) + "次</span>";
+						}
+					}, {
 						field : 'org',
 						title : '录入单位',
-						width : '250',
+						width : '200',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -73,7 +80,7 @@
 					}, {
 						field : 'account',
 						title : '录入用户',
-						width : '150',
+						width : '120',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -83,7 +90,7 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '220',
+						width : '150',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
@@ -92,11 +99,11 @@
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="approveDetail('+ row.id +')">审批</a>';  	
+							return '<a href="javascript:void(0)" onclick="confirmDetail('+ row.id +')">确认</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						approveDetail(rowData.id);
+						confirmDetail(rowData.id);
 					},
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
@@ -123,6 +130,7 @@
 					}
 				});
 				
+				
 				// 任务记录列表
 				$("#" + recordDatagrid).datagrid({
 			        url : getRecordUrl,
@@ -140,7 +148,7 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '200',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
@@ -156,19 +164,33 @@
 					}, {
 						field : 'state',
 						title : '状态',
-						width : '180',
+						width : '150',
 						align : 'center',
 						formatter : function(val){
 							var str = "";
 							if(val){
 								if(val == 1){
-									str = "任务下达";
+									str = "基准信息录入";
 								}else if(val == 2){
-									str = "审批同意";
+									str = "审核通过";
 								}else if(val == 3){
-									str = "审批不同意";
+									str = "审核不通过";
 								}else if(val == 4){
+									str = "任务下达"
+								}else if(val == 5){
+									str = "审批同意";
+								}else if(val == 6){
+									str = "审批不同意";
+								}else if(val == 7){
 									str = "结果上传";
+								}else if(val == 8){
+									str = "结果发送";
+								}else if(val == 9){
+									str = "结果确认";
+								}else if(val == 10){
+									str = "基准保存";
+								}else if(val == 11){
+									str = "收费通知";
 								}
 								return "<span title='" + str + "'>" + str + "</span>";
 							}
@@ -187,7 +209,8 @@
 						formatter : DateTimeFormatter
 					}  ] ]
 				});
-				
+				 
+				 
 				$("#" + recordDatagrid).datagrid('getPager').pagination({
 					pageSize : "${recordPageSize}",
 					pageNumber : 1,
@@ -201,6 +224,7 @@
 						getData(recordDatagrid, getRecordUrl, data);
 					}
 				});
+				
 			});
 		
 			function doSearch() {
@@ -232,24 +256,24 @@
 			
 			// 关掉对话时回调
 			function closeDialog(msg) {
-				$('#approveDetailDialog').dialog('close');
+				$('#confirmDetailDialog').dialog('close');
 				tipMsg(msg, function(){
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
-			function approveDetail(id) {
-				$('#approveDetailDialog').dialog({
-					title : '审批信息',
-					width : 900,
-					height : 700,
+			function confirmDetail(id) {
+				$('#confirmDetailDialog').dialog({
+					title : '结果信息',
+					width : 1000,
+					height : 650,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ppap/approveDetail?id=" + id,
+					href : "${ctx}/ppap/confirmDetail?id=" + id,
 					modal : true
 				});
-				$('#approveDetailDialog').window('center');
+				$('#confirmDetailDialog').window('center');
 			}
 			
 		</script>
@@ -277,16 +301,17 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
 			</div>
-		</div>
-	
-		<div style="margin-top:10px;">
-			<table id="approveTable" style="height:auto;width:auto"></table>
-		</div>
+			
+			<div style="margin-top:10px;">
+				<table id="confirmTable" style="height:auto;width:auto"></table>
+			</div>
+			
+			<div style="margin-top:10px;">
+				<table id="taskRecordTable" style="height:auto;width:auto"></table>
+			</div>
+			
+			<div id="confirmDetailDialog"></div>
 		
-		<div style="margin-top:10px;">
-			<table id="taskRecordTable" style="height:auto;width:auto"></table>
 		</div>
-		
-		<div id="approveDetailDialog"></div>
 	</body>	
 </html>

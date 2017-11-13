@@ -35,6 +35,7 @@ import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
@@ -72,6 +73,8 @@ public class InfoServiceImpl implements InfoService {
 	private AtlasResultDao atlasResultDao;
 	@Autowired
 	private ApplyRecordService applyRecordService;
+	@Autowired
+	private TaskService taskService;
 	
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -275,12 +278,13 @@ public class InfoServiceImpl implements InfoService {
 	 * 
 	 * @param t_id         任务ID
 	 * @param i_id         信息ID
+	 * @param taskType     任务类型 
 	 * @param partsAtlId   零部件图谱实验室ID
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
 	 */
-	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
+	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType) {
 
 		if (t_id == null) {
 			Date date = new Date();
@@ -289,7 +293,7 @@ public class InfoServiceImpl implements InfoService {
 			// 检查当前基准是否已有任务在进行
 			Map<String, Object> iMap = new PageMap(false);
 			iMap.put("iId", i_id);
-			iMap.put("type", TaskTypeEnum.PPAP.getState());
+			iMap.put("type", taskType);
 			iMap.put("unstate", true);
 			List<Task> taskList = taskDao.selectAllList(iMap);
 			if (taskList != null && taskList.size() > 0) {
@@ -302,7 +306,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setiId(i_id);
 			task.setOrgId(account.getOrgId());
 			task.setState(SamplingTaskEnum.APPROVE.getState());
-			task.setType(TaskTypeEnum.PPAP.getState());
+			task.setType(taskType);
 			task.setFailNum(0);
 			task.setaId(account.getId());
 			task.setMatAtlResult(0);
@@ -566,9 +570,12 @@ public class InfoServiceImpl implements InfoService {
 					Info info = task.getInfo();
 
 					if (applyRecord.getpId() != null) {
-						Parts oldParts = info.getParts();
-						oldParts.setState(2);
-						partsDao.update(oldParts);
+						//先检查有没有在用
+						if(isUse(info.getId(), info.getpId(), 2)) {
+							Parts oldParts = info.getParts();
+							oldParts.setState(2);
+							partsDao.update(oldParts);
+						}
 
 						Parts parts = partsDao.selectOne(applyRecord.getpId());
 						parts.setState(1);
@@ -578,9 +585,12 @@ public class InfoServiceImpl implements InfoService {
 					}
 
 					if (applyRecord.getvId() != null) {
-						Vehicle oldVehicle = info.getVehicle();
-						oldVehicle.setState(2);
-						vehicleDao.update(oldVehicle);
+						//先检查有没有在用
+						if(isUse(info.getId(), info.getvId(), 1)) {
+							Vehicle oldVehicle = info.getVehicle();
+							oldVehicle.setState(2);
+							vehicleDao.update(oldVehicle);
+						}
 
 						Vehicle vehicle = vehicleDao.selectOne(applyRecord.getvId());
 						vehicle.setState(1);
@@ -590,9 +600,12 @@ public class InfoServiceImpl implements InfoService {
 					}
 
 					if (applyRecord.getmId() != null) {
-						Material oldMaterial = info.getMaterial();
-						oldMaterial.setState(2);
-						materialDao.update(oldMaterial);
+						// 先检查有没有在用
+						if (isUse(info.getId(), info.getmId(), 3)) {
+							Material oldMaterial = info.getMaterial();
+							oldMaterial.setState(2);
+							materialDao.update(oldMaterial);
+						}
 
 						Material material = materialDao.selectOne(applyRecord.getmId());
 						material.setState(1);
@@ -747,16 +760,6 @@ public class InfoServiceImpl implements InfoService {
 		info.setvId(task.getInfo().getvId());
     	infoDao.insert(info);
     	
-    	// 查看子任务的数量
-		Map<String, Object> tMap = new PageMap(false);
-		tMap.put("tId", task.getId());
-		List<Task> taskList = taskDao.selectAllList(tMap);
-
-		int taskNum = 1;
-		if (taskList != null && taskList.size() > 0) {
-			taskNum = taskList.size() + 1;
-		}
-    	
 		// 创建新的子订单
     	task.setaId(account.getId());
     	task.setOrgId(account.getOrgId());
@@ -767,7 +770,7 @@ public class InfoServiceImpl implements InfoService {
     	task.setiId(info.getId());
     	task.setConfirmTime(null);
     	task.settId(task.getId());
-    	task.setCode(task.getCode() + "-R" + taskNum);
+    	task.setCode(task.getCode() + "-R" + taskService.getSubTaskNum(task.getId()));
     	task.setId(null);
     	task.setRemark("");
     	taskDao.insert(task);
@@ -813,4 +816,38 @@ public class InfoServiceImpl implements InfoService {
 
 		return taskCode;
 	}
+	
+	/**
+	 * 是否有在使用的
+	 * @param iId   信息ID
+	 * @param id    ID
+	 * @param type  类型：1-整车信息，2-零部件信息，3-原材料信息
+	 * @return
+	 */
+	boolean isUse(Long iId, Long id, int type) {
+		Map<String, Object> map = new PageMap(false);
+
+		if (type == 1) {
+			map.put("vId", id);
+		} else if (type == 2) {
+			map.put("pId", id);
+		} else {
+			map.put("mId", id);
+		}
+
+		List<Info> infoList = infoDao.selectAllList(map);
+		boolean flag = false;
+		if (infoList != null && infoList.size() > 0) {
+			for (Info info : infoList) {
+				if (info.getId().longValue() != iId.longValue()) {
+					flag = true;
+					break;
+				}
+			}
+			return flag;
+		} else {
+			return false;
+		}
+	}
+	
 }

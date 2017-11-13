@@ -28,6 +28,7 @@ import com.github.pagehelper.Page;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
@@ -43,7 +44,6 @@ import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PartsService;
-import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
@@ -69,6 +69,8 @@ public class PpapTaskController extends AbstractController {
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
 	// 任务审批列表
 	private final static String APPROVE_DEFAULT_PAGE_SIZE = "10";
+	// 结果确认列表
+	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";
 	
 	@Autowired
 	private MenuService menuService;
@@ -76,8 +78,6 @@ public class PpapTaskController extends AbstractController {
 	private InfoService infoService;
 	@Autowired
 	private TaskService taskService;
-	@Autowired
-	private TaskRecordService taskRecordService;
 	@Autowired
 	private VehicleService vehicleService;
 	@Autowired
@@ -93,12 +93,19 @@ public class PpapTaskController extends AbstractController {
 	
 	/**
 	 * 首页
+	 * @param taskType 任务类型：２-PPAP，3-SOP
 	 */
 	@RequestMapping(value = "/index")
-	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose) {
+	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose, int taskType) {
 		HttpSession session = request.getSession();
 
-		Menu menu = menuService.selectByAlias("ppapTask");
+		Menu menu = null;
+		if(taskType == 2) {
+			menu = menuService.selectByAlias("ppapTask");
+		}else if(taskType == 3) {
+			menu = menuService.selectByAlias("sopTask");
+		}
+		
 		// 没有权限的菜单
 		Set<Long> illegalMenu = (Set<Long>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);
 
@@ -132,10 +139,13 @@ public class PpapTaskController extends AbstractController {
 	/** --------------------------------   任务下达      ---------------------------------*/
 	/**
 	 * 任务下达列表
+	 * 
+	 * @param taskType 任务类型：２-PPAP，3-SOP
 	 */
 	@RequestMapping(value = "/transmitList")
-	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
 		return "task/ppap/transmit_list";
 	}
 
@@ -145,7 +155,7 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -156,7 +166,11 @@ public class PpapTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("state", SamplingTaskEnum.APPROVE_NOTPASS.getState());
-		map.put("type", TaskTypeEnum.PPAP.getState());
+		if(taskType == 2) {
+			map.put("type", TaskTypeEnum.PPAP.getState());
+		}else if(taskType == 3) {
+			map.put("type", TaskTypeEnum.SOP.getState());
+		}
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -190,7 +204,7 @@ public class PpapTaskController extends AbstractController {
 	 * 详情列表
 	 */
 	@RequestMapping(value = "/transmitDetail")
-	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 			
@@ -199,7 +213,13 @@ public class PpapTaskController extends AbstractController {
 			rMap.put("taskId", id);
 			rMap.put("type", 2);
 			rMap.put("state", 2);
-			rMap.put("taskType", TaskTypeEnum.PPAP.getState());
+			
+			if(taskType == 2) {
+				rMap.put("taskType", TaskTypeEnum.PPAP.getState());
+			}else if(taskType == 3) {
+				rMap.put("taskType", TaskTypeEnum.SOP.getState());
+			}
+			
 			rMap.put("custom_order_sql", "create_time asc");
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
@@ -208,6 +228,7 @@ public class PpapTaskController extends AbstractController {
 		}
 
 		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("taskType", taskType);
 		return "task/ppap/transmit_detail";
 	}
 
@@ -216,6 +237,7 @@ public class PpapTaskController extends AbstractController {
 	 * 
 	 * @param t_id         任务ID
 	 * @param i_id         信息ID
+	 * @param taskType     任务类型
 	 * @param partsAtlId   零部件图谱实验室ID
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
@@ -223,20 +245,20 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			
-			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId);
+			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId, taskType);
 			if (!flag) {
 				vo.setSuccess(false);
 				vo.setMsg("已有进行中抽样，不能再申请");
 				return vo;
 			}
 		} catch (Exception ex) {
-			logger.error("PPAP任务下达失败", ex);
+			logger.error("PPAP/SOP任务下达失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");
@@ -253,9 +275,10 @@ public class PpapTaskController extends AbstractController {
 	 * 任务审批列表
 	 */
 	@RequestMapping(value = "/approveList")
-	public String approveList(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String approveList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
 		return "task/ppap/approve_list";
 	}
 
@@ -265,7 +288,7 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -276,7 +299,11 @@ public class PpapTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("ppap_approveTask", true);
-		map.put("type", TaskTypeEnum.PPAP.getState());
+		if (taskType == 2) {
+			map.put("type", TaskTypeEnum.PPAP.getState());
+		} else if (taskType == 3) {
+			map.put("type", TaskTypeEnum.SOP.getState());
+		}
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -403,6 +430,157 @@ public class PpapTaskController extends AbstractController {
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;
+	}
+	
+	
+	
+	/** --------------------------------   结果确认      ---------------------------------*/
+	
+	/**
+	 * 结果确认列表
+	 */
+	@RequestMapping(value = "/confirmList")
+	public String confirmList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
+		model.addAttribute("defaultPageSize", CONFIRM_DEFAULT_PAGE_SIZE);
+		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
+		model.addAttribute("taskType", taskType);
+		return "task/ppap/confirm_list";
+	}
+
+	/**
+	 * 列表数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/confirmListData")
+	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String code, String orgId,
+			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", CONFIRM_DEFAULT_PAGE_SIZE);
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", "t.create_time desc");
+		map.put("state", SamplingTaskEnum.RECONFIRM.getState());
+		map.put("type", taskType);
+
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime);
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(nickName)) {
+			map.put("nickName", nickName);
+		}
+		if (StringUtils.isNotBlank(orgId)) {
+			map.put("orgId", orgId);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
+
+	/**
+	 * 详情列表
+	 */
+	@RequestMapping(value = "/confirmDetail")
+	public String confirmDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+		
+		if (id != null) {
+			Task task = taskService.selectOne(id);
+
+			// 基准图谱结果
+			List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 1);
+			List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 2);
+			
+			// 抽样图谱结果
+			Map<String, Object> atMap = new HashMap<String, Object>();
+			atMap.put("tId", id);
+			atMap.put("custom_order_sql", "exp_no desc limit 6");
+			List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
+
+			List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();
+			List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
+			groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
+			
+			// 零部件图谱结果
+			Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult, sl_pAtlasResult);
+			// 原材料图谱结果
+			Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
+			// 对比结果
+			Map<String, List<ExamineRecord>> compareResult = atlasResultService.assembleCompareResult(id);
+			
+			model.addAttribute("mAtlasResult", mAtlasResult);
+			model.addAttribute("pAtlasResult", pAtlasResult);
+			model.addAttribute("compareResult", compareResult);
+			
+			model.addAttribute("facadeBean", task);
+		}
+
+		model.addAttribute("resUrl", resUrl);
+		
+		return "task/ppap/confirm_detail";
+	}
+	
+	
+	/**
+	 * 结果确认
+	 * @param taskId  任务ID
+	 * @param result  结果：1-第二次抽样，2-中止任务
+	 * @param remark  中止任务原因
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/confirmResult")
+	public AjaxVO confirmResult(HttpServletRequest request, Model model, Long taskId, int result, String remark){
+		AjaxVO vo = new AjaxVO();
+		
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			taskService.confirmResult(account, taskId, result, remark);
+		}catch(Exception ex){
+			logger.error("结果确认失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+		
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
+	/** --------------------------------   其它      ---------------------------------*/
+	
+	/**
+	 * 分组
+	 * @param atDataList
+	 * @param pAtlasResult
+	 * @param mAtlasResult
+	 */
+	public void groupAtlasResult(List<AtlasResult> arDataList, List<AtlasResult> pAtlasResult,  List<AtlasResult> mAtlasResult) {
+		for (AtlasResult ar : arDataList) {
+			if (ar.getCatagory() == 1) {
+				pAtlasResult.add(ar);
+			} else {
+				mAtlasResult.add(ar);
+			}
+		}
 	}
 	
 	

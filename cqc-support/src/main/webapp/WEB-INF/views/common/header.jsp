@@ -108,7 +108,12 @@
 														   	  	 	</c:when>
 														   	  	 	<c:otherwise>
 														   	  	 		<li class="subli">
-																			<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
+														   	  	 			<c:if test="${fn:indexOf(subVo.url, '?') < 1 }">
+																				<a href="${ctx}/${subVo.url}?choose=${tst.index}">${tVo.name}</a>
+																			</c:if>
+																			<c:if test="${fn:indexOf(subVo.url, '?') > 0 }">
+																				<a href="${ctx}/${subVo.url}&choose=${tst.index}">${tVo.name}</a>
+																			</c:if>
 																		</li>
 														   	  	 	</c:otherwise>
 														   	  	 </c:choose>
@@ -120,7 +125,12 @@
 														
 														<c:choose>
 														   	<c:when test="${not empty vo.url}">
-														   		<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+														   		<c:if test="${fn:indexOf(vo.url, '?') < 1 }">
+														   			<a href="${ctx}/${vo.url}?choose=${vst.index}">${subVo.name}</a>
+														   		</c:if>
+														   		<c:if test="${fn:indexOf(vo.url, '?') < 0 }">
+														   			<a href="${ctx}/${vo.url}&choose=${vst.index}">${subVo.name}</a>
+														   		</c:if>
 														   	</c:when>
 														   	<c:otherwise>
 														   		<a href="${ctx}/${subVo.url}">${subVo.name}</a>

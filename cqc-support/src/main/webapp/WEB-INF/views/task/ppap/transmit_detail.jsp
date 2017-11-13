@@ -349,7 +349,8 @@
 						"t_id" : t_id,
 						"i_id" : iId,
 						"partsAtlId" : partsAtlId_val,
-						"matAtlId" : matAtlId_val
+						"matAtlId" : matAtlId_val,
+						"taskType": "${taskType}"
 					},
 					success : function(data) {
 						if (data.success) {

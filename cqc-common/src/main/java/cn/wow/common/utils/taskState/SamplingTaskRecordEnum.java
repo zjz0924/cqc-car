@@ -18,7 +18,8 @@ public enum SamplingTaskRecordEnum {
 	SAVE(8, "结果留存"),
 	REORDER(9, "重新下任务"),
 	ALARM(10, "发送警告书"),
-	NOTICE(11, "收费通知");
+	NOTICE(11, "收费通知"),
+	RECONFIRM(12, "二次确认");
 
 	private int state;
 

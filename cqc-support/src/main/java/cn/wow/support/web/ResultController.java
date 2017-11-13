@@ -591,7 +591,7 @@ public class ResultController extends AbstractController {
 				model.addAttribute("mPfResult", mPfResult);
 				// 零部件型式结果
 				model.addAttribute("pPfResult", pPfResult);
-			}else if(task.getType() == TaskTypeEnum.PPAP.getState()){
+			}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ){
 				
 				// 基准图谱结果
 				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 1);
@@ -690,7 +690,7 @@ public class ResultController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("state", SamplingTaskEnum.COMPARE.getState());
-		map.put("type", 2);
+		map.put("compareTask", true);
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);

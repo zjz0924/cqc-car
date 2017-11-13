@@ -20,7 +20,7 @@ public class ExamineRecord implements Comparable<ExamineRecord>{
     private String remark;
     // 审核时间
     private Date createTime;
-    // 类型：1-审核记录，2-审批记录，3-确认记录，4-结果对比
+    // 类型：1-审核记录，2-审批记录，3-确认记录，4-结果对比，5-二次确认
     private Integer type;
     // 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（针对审批记录）
     //     1-零部件红外，2-零部件差热，3-零部件热重，4-零部件结论，5-原材料红外，6-原材料差热，7-原材料热重，8-原材料结论，9-异常，重新上传（针对结果对比）

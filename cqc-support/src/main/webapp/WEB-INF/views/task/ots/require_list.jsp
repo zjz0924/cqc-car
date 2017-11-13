@@ -122,7 +122,7 @@
 				
 				$('#requireDialog').dialog({
 					title : '详情',
-					width : 1200,
+					width : 1100,
 					height : 580,
 					closed : false,
 					cache : false,

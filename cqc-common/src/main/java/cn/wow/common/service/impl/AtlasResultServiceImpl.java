@@ -15,6 +15,7 @@ import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.TaskDao;
@@ -110,7 +111,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		}
 		
 		// PPAP任务
-		if (task.getType() == 2) {
+		if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
 			// 已上传完
 			if (task.getMatAtlResult() == 2 && task.getPartsAtlResult() == 2) {
 				task.setState(SamplingTaskEnum.COMPARE.getState());
