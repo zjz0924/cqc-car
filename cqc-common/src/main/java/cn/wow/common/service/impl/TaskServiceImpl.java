@@ -204,7 +204,7 @@ public class TaskServiceImpl implements TaskService{
 		taskDao.update(task);
 		
 		// 任务记录
-		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SEND.getState(), remark, date);
+		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SEND.getState(), remark, date, task.getType());
 		taskRecordDao.insert(taskRecord);
     }
     
@@ -300,7 +300,7 @@ public class TaskServiceImpl implements TaskService{
 			examineRecordDao.insert(examineRecord);
 
 			// 任务记录
-			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, date);
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, date, task.getType());
 			taskRecordDao.insert(taskRecord);
 
 		} else {
@@ -349,7 +349,7 @@ public class TaskServiceImpl implements TaskService{
 			remark = temp + ",不合格原因：" + remark;
 			
 			// 任务记录
-			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date());
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date(), task.getType());
 			taskRecordDao.insert(taskRecord);
 
 			// 确认记录
@@ -388,7 +388,7 @@ public class TaskServiceImpl implements TaskService{
 			examineRecordDao.insert(examineRecord);
 			
 			// 任务记录
-			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.SAVE.getState(), "结果留存", date);
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.SAVE.getState(), "结果留存", date, task.getType());
 			taskRecordDao.insert(taskRecord);
 		}else{
 			// 第一次失败（确认后再进行第2次抽样）
@@ -404,7 +404,7 @@ public class TaskServiceImpl implements TaskService{
 				examineRecordDao.insert(examineRecord);
 				
 				// 任务记录
-				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.REORDER.getState(), "结果不合格，进行第2次抽样，不合格原因：" + remark, date);
+				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.REORDER.getState(), "结果不合格，进行第2次抽样，不合格原因：" + remark, date, task.getType());
 				taskRecordDao.insert(taskRecord);
 			}else{  // 第二次失败
 				task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
@@ -420,7 +420,7 @@ public class TaskServiceImpl implements TaskService{
 				examineRecordDao.insert(examineRecord);
 				
 				// 任务记录
-				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.ALARM.getState(), "结果不合格，发送警告书，不合格原因：" + remark, date);
+				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.ALARM.getState(), "结果不合格，发送警告书，不合格原因：" + remark, date, task.getType());
 				taskRecordDao.insert(taskRecord);
 			}
 		}
@@ -465,7 +465,7 @@ public class TaskServiceImpl implements TaskService{
     	taskDao.update(task);
     	
     	// 操作记录
-    	TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), recordState, remark, new Date());
+    	TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), recordState, remark, new Date(), task.getType());
 		taskRecordDao.insert(taskRecord);
     }
 	
@@ -505,7 +505,7 @@ public class TaskServiceImpl implements TaskService{
 		}
 		
 		// 任务记录
-		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SAVE.getState(), "基准信息已保存", new Date());
+		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SAVE.getState(), "基准信息已保存", new Date(), task.getType());
 		taskRecordDao.insert(taskRecord);
 	}
 	
@@ -713,7 +713,7 @@ public class TaskServiceImpl implements TaskService{
 		examineRecordDao.insert(examineRecord);
 		
 		// 任务记录
-		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.RECONFIRM.getState(), remark, date);
+		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.RECONFIRM.getState(), remark, date, task.getType());
 		taskRecordDao.insert(taskRecord);
     	 
      }

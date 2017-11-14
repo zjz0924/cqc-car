@@ -2,12 +2,21 @@ package cn.wow.common.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -118,6 +127,55 @@ public class ImportExcelUtil {
 				break;
 		}
 		return value;
+	}
+	
+	
+	
+	/**
+	 * 设置头
+	 * 
+	 * @param response
+	 * @param fileName
+	 */
+	public static void setResponseHeader(HttpServletResponse response, String fileName) {
+		try {
+			fileName = new String(fileName.getBytes(), "ISO8859-1");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		response.setContentType("application/octet-stream;charset=ISO8859-1");
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+		response.addHeader("Pargam", "no-cache");
+		response.addHeader("Cache-Control", "no-cache");
+	}
+
+	
+	
+	/**
+	 * 样式
+	 */
+	public static Map<String, CellStyle> createStyles(Workbook wb) {
+
+		Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
+		CellStyle style;
+		
+		Font ztFont = wb.createFont(); 
+		ztFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		
+		style = wb.createCellStyle();
+		style.setAlignment(CellStyle.ALIGN_CENTER);
+		style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setFont(ztFont);
+		styles.put("header", style);
+
+		style = wb.createCellStyle();
+		style.setAlignment(CellStyle.ALIGN_CENTER);
+		style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		styles.put("cell", style);
+
+		return styles;
 	}
 
 }

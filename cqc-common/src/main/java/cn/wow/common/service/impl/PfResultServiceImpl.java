@@ -106,6 +106,7 @@ public class PfResultServiceImpl implements PfResultService{
 		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
 		record.setaId(account.getId());
 		record.setRemark(remark);
+		record.setTaskType(task.getType());
 		taskRecordDao.insert(record);
 
 		taskDao.update(task);

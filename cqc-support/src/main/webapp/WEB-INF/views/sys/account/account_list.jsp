@@ -116,6 +116,7 @@
 			        border:false,
 			        rownumbers: true,
 			        toolbar : toolbar,
+			        height: '400px',
 			        title: "用户信息",
 			        idField: 'id',
 			        columns : [ [  /* {
@@ -139,7 +140,7 @@
 			        }, {
 			            field : 'mobile',
 			            title : '手机号码',
-			            width : '120',
+			            width : '140',
 			            align : 'center',
 			            formatter: formatCellTooltip
 			        }, {
@@ -155,7 +156,7 @@
 			        }, {
 			            field : 'role',
 			            title : '角色',
-			            width : '180',
+			            width : '120',
 			            align : 'center',
 			            formatter: function(val){
 			            	if(val){
@@ -341,25 +342,6 @@
 		
 		
 		<style style="text/css">
-			.datagrid-btable tr {
-				height: 30px;
-			}
-			
-			.datagrid-header {
-				background: linear-gradient(to bottom, #BFDEFF 0, #F2F2F2 100%)
-			}
-			
-			.datagrid-header-row {
-				font-weight: bold;
-				height: 50px
-			}
-			
-			.datagrid-row-over, .datagrid-header td.datagrid-header-over {
-			    background: #e6e6e6;
-			    color: #00438a;
-			    cursor: default;
-			}
-			
 			.lock-unlock {
 				display: inline-block;
 			    width: 16px;

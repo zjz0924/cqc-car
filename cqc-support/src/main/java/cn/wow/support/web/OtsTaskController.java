@@ -300,8 +300,8 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			// 零部件信息
+			Parts parts = null;
 			if(taskType == TaskTypeEnum.OTS.getState()) {
-				Parts parts = null;
 				if (p_id == null) {
 					parts = new Parts();
 					parts.setType(Contants.STANDARD_TYPE);
@@ -382,7 +382,7 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, null, material, Contants.STANDARD_TYPE, t_id, taskType);
+			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, t_id, taskType);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);

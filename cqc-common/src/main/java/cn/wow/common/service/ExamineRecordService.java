@@ -15,4 +15,5 @@ public interface ExamineRecordService {
 
     public List<ExamineRecord> selectAllList(Map<String, Object> map);
 
+    public List<Long> selectTaskIdList(Long aId, int type);
 }

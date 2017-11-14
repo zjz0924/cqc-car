@@ -36,7 +36,7 @@ public class OperationLogController extends AbstractController {
 
 	private static Logger logger = LoggerFactory.getLogger(OperationLogController.class);
 
-	private final static String defaultPageSize = "20";
+	private final static String defaultPageSize = "10";
 
 	@Autowired
 	private OperationLogService operationLogService;

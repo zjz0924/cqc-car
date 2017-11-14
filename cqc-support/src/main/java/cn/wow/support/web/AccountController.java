@@ -2,22 +2,17 @@ package cn.wow.support.web;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -59,7 +54,7 @@ public class AccountController extends AbstractController {
 
 	Logger logger = LoggerFactory.getLogger(AccountController.class);
 
-	private final static String DEFAULT_PAGE_SIZE = "20";
+	private final static String DEFAULT_PAGE_SIZE = "10";
 	
 	private final static String DEFAULT_PWD = "888888";
 
@@ -402,7 +397,7 @@ public class AccountController extends AbstractController {
 		
 		try {
 			// 设置头
-			setResponseHeader(response, filename + ".xlsx");
+			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
 
 			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
 			// 工作簿
@@ -416,7 +411,7 @@ public class AccountController extends AbstractController {
 			sh.setColumnWidth(6, (short) 3000);
 			sh.setColumnWidth(7, (short) 6000);
 			
-			Map<String, CellStyle> styles = createStyles(wb);
+			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
 			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "角色", "邮箱", "状态", "创建时间" };
 			int r = 0;
@@ -449,8 +444,10 @@ public class AccountController extends AbstractController {
 
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
-				cell4.setCellValue(account.getOrg().getName());
-
+				if(account.getOrg() != null) {
+					cell4.setCellValue(account.getOrg().getName());
+				}
+				
 				String roleStr = "";
 				if(account.getRole() != null){
 					roleStr = account.getRole().getName();
@@ -483,6 +480,8 @@ public class AccountController extends AbstractController {
 			os.close();
 		} catch (Exception e) {
 			logger.error("用户清单导出失败");
+			
+			e.printStackTrace();
 		}
 	}
 	
@@ -639,49 +638,7 @@ public class AccountController extends AbstractController {
 	}
 	
 
-	/**
-	 * 设置头
-	 * 
-	 * @param response
-	 * @param fileName
-	 */
-	public void setResponseHeader(HttpServletResponse response, String fileName) {
-		try {
-			fileName = new String(fileName.getBytes(), "ISO8859-1");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		response.setContentType("application/octet-stream;charset=ISO8859-1");
-		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-		response.addHeader("Pargam", "no-cache");
-		response.addHeader("Cache-Control", "no-cache");
-	}
-
-	/**
-	 * 样式
-	 */
-	private Map<String, CellStyle> createStyles(org.apache.poi.ss.usermodel.Workbook wb) {
-
-		Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
-		CellStyle style;
-		
-		Font ztFont = wb.createFont(); 
-		ztFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
-		
-		style = wb.createCellStyle();
-		style.setAlignment(CellStyle.ALIGN_CENTER);
-		style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-		style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
-		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		style.setFont(ztFont);
-		styles.put("header", style);
-
-		style = wb.createCellStyle();
-		style.setAlignment(CellStyle.ALIGN_CENTER);
-		style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-		styles.put("cell", style);
-
-		return styles;
-	}
+	
+	
 
 }

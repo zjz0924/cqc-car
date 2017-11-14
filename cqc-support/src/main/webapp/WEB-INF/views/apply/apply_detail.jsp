@@ -789,6 +789,16 @@
 			color: red;
 			font-weight: bold;
 		}
+		
+		.title-span{
+			display: inline-block;
+			width: 80px;
+		}
+		
+		.input-td{
+			padding-left: 50px;
+			padding-right: 20px;
+		}
 	
 	</style>
 		

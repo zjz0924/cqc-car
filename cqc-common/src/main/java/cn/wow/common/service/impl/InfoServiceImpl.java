@@ -176,6 +176,7 @@ public class InfoServiceImpl implements InfoService {
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(date);
 			record.setCode(taskCode);
+			record.setTaskType(taskType);
 			record.setState(StandardTaskRecordEnum.ENTERING.getState());
 			record.setaId(account.getId());
 			record.setRemark("填写信息");
@@ -191,6 +192,7 @@ public class InfoServiceImpl implements InfoService {
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(date);
 			record.setCode(taskCode);
+			record.setTaskType(taskType);
 			record.setState(StandardTaskRecordEnum.UPDATE.getState());
 			record.setaId(account.getId());
 			record.setRemark("更新信息");
@@ -226,6 +228,7 @@ public class InfoServiceImpl implements InfoService {
 		record.setCreateTime(date);
 		record.setCode(task.getCode());
 		record.setaId(account.getId());
+		record.setTaskType(task.getType());
 		
 		if (type == 1) {
 			// 更新任务状态
@@ -276,6 +279,7 @@ public class InfoServiceImpl implements InfoService {
 		record.setCreateTime(new Date());
 		record.setCode(task.getCode());
 		record.setaId(account.getId());
+		record.setTaskType(task.getType());
 		record.setState(StandardTaskRecordEnum.TRANSMIT.getState());
 		record.setRemark("分配任务到实验室");
 		taskRecordDao.insert(record);
@@ -338,6 +342,7 @@ public class InfoServiceImpl implements InfoService {
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(date);
 			record.setCode(code);
+			record.setTaskType(taskType);
 			record.setState(SamplingTaskRecordEnum.TRANSMIT.getState());
 			record.setaId(account.getId());
 			record.setRemark("下达试验任务");
@@ -355,6 +360,7 @@ public class InfoServiceImpl implements InfoService {
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(new Date());
 			record.setCode(task.getCode());
+			record.setTaskType(taskType);
 			record.setState(SamplingTaskRecordEnum.TRANSMIT.getState());
 			record.setaId(account.getId());
 			record.setRemark("下达试验任务");
@@ -446,6 +452,16 @@ public class InfoServiceImpl implements InfoService {
 				task.setState(StandardTaskEnum.ACCOMPLISH.getState());
 				task.setInfoApply(0);
 				taskDao.update(task);
+				
+				// 操作记录
+				TaskRecord record = new TaskRecord();
+				record.setCreateTime(date);
+				record.setCode(task.getCode());
+				record.setaId(account.getId());
+				record.setTaskType(task.getType());
+				record.setState(StandardTaskRecordEnum.INFO_UPDATE.getState());
+				record.setRemark("修改基本信息");
+				taskRecordDao.insert(record);
 			}
 		}else if(catagory == 7){
 			
@@ -477,12 +493,22 @@ public class InfoServiceImpl implements InfoService {
 			task.setConfirmTime(date);
 			taskDao.update(task);
 			
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(date);
+			record.setCode(task.getCode());
+			record.setaId(account.getId());
+			record.setTaskType(task.getType());
+			record.setState(StandardTaskRecordEnum.RESULT_UPDATE.getState());
+			record.setRemark("修改试验结果信息");
+			taskRecordDao.insert(record);
 		}else{
 			// 操作记录
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(date);
 			record.setCode(task.getCode());
 			record.setaId(account.getId());
+			record.setTaskType(task.getType());
 
 			// 同意
 			if (result == 1) {
@@ -640,6 +666,16 @@ public class InfoServiceImpl implements InfoService {
 				task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
 				task.setInfoApply(0);
 				taskDao.update(task);
+				
+				// 操作记录
+				TaskRecord record = new TaskRecord();
+				record.setCreateTime(date);
+				record.setCode(task.getCode());
+				record.setaId(account.getId());
+				record.setTaskType(task.getType());
+				record.setState(SamplingTaskRecordEnum.INFO_UPDATE.getState());
+				record.setRemark("修改基本信息");
+				taskRecordDao.insert(record);
 			}
 		} else if (catagory == 2) {
 
@@ -671,12 +707,23 @@ public class InfoServiceImpl implements InfoService {
 			task.setConfirmTime(date);
 			taskDao.update(task);
 			
+			// 操作记录
+			TaskRecord record = new TaskRecord();
+			record.setCreateTime(date);
+			record.setCode(task.getCode());
+			record.setaId(account.getId());
+			record.setTaskType(task.getType());
+			record.setState(SamplingTaskRecordEnum.RESULT_UPDATE.getState());
+			record.setRemark("修改试验结果信息");
+			taskRecordDao.insert(record);
+			
 		} else {
 			// 操作记录
 			TaskRecord record = new TaskRecord();
 			record.setCreateTime(date);
 			record.setCode(task.getCode());
 			record.setaId(account.getId());
+			record.setTaskType(task.getType());
 
 			if (result == 1) {
 				task.setState(SamplingTaskEnum.UPLOAD.getState());
@@ -695,9 +742,6 @@ public class InfoServiceImpl implements InfoService {
 			taskDao.update(task);
 			taskRecordDao.insert(record);
 		}
-		
-		
-		
     }
 
     
@@ -712,9 +756,9 @@ public class InfoServiceImpl implements InfoService {
      */
     public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material){
 		task.setInfoApply(1);
-		if(task.getType() == 1){
+		if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()){
 			task.setState(StandardTaskEnum.APPLYING.getState());
-		}else if(task.getType() == 2){
+		}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()){
 			task.setState(SamplingTaskEnum.APPLYING.getState());
 		}
 		taskDao.update(task);
@@ -740,6 +784,20 @@ public class InfoServiceImpl implements InfoService {
 		}
 		
 		applyRecordDao.insert(applyRecord);
+		
+		// 操作记录
+		TaskRecord record = new TaskRecord();
+		record.setCreateTime(new Date());
+		record.setCode(task.getCode());
+		record.setaId(account.getId());
+		record.setTaskType(task.getType());
+		record.setRemark("申请信息修改");
+		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+			record.setState(StandardTaskRecordEnum.INFO_APPLY.getState());
+		} else if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+			record.setState(SamplingTaskRecordEnum.INFO_APPLY.getState());
+		}
+		taskRecordDao.insert(record);
     }
     
     
@@ -755,9 +813,9 @@ public class InfoServiceImpl implements InfoService {
     	Date date = new Date();
     	
     	Task task = taskDao.selectOne(taskId);
-    	if(task.getType() == 1){
+    	if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()){
 			task.setState(StandardTaskEnum.APPLYING.getState());
-		}else if(task.getType() == 2){
+		}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()){
 			task.setState(SamplingTaskEnum.APPLYING.getState());
 		}
     	task.setResultApply(2);
@@ -788,6 +846,20 @@ public class InfoServiceImpl implements InfoService {
     	task.setRemark("");
     	taskDao.insert(task);
     	
+    	// 操作记录
+		TaskRecord record = new TaskRecord();
+		record.setCreateTime(date);
+		record.setCode(task.getCode());
+		record.setaId(account.getId());
+		record.setTaskType(task.getType());
+		record.setRemark("申请修改试验结果");
+		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+			record.setState(StandardTaskRecordEnum.RESULT_APPLY.getState());
+		} else if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+			record.setState(SamplingTaskRecordEnum.RESULT_APPLY.getState());
+		}
+		taskRecordDao.insert(record);
+		
 		// 型式结果
 		if (pfResultList != null && pfResultList.size() > 0) {
 			for (PfResult pf : pfResultList) {

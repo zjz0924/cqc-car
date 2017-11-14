@@ -126,6 +126,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
 		record.setRemark(remark);
 		record.setaId(account.getId());
+		record.setTaskType(task.getType());
 		taskRecordDao.insert(record);
 
 		taskDao.update(task);

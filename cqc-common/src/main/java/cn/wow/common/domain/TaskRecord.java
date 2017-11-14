@@ -17,11 +17,10 @@ public class TaskRecord {
     
     private Account account;
     
-    // 状态：1-基准信息录入，2-基准实验任务的下达，3-基准已经完成审批的修改申请，4-抽样任务的下达，5-抽样实验修改申请
     /** 
      * 	状态：
-     *  OTS、材料研究所任务： 1-基准信息录入，2-审核，3-任务下达，4-任务审批，5-结果上传，6-结果发送，7-结果确认，8-基准保存，9-收费通知
-     *  PPAP、SOP： 1-任务申请，2-任务下达，3-任务审批，4-结果上传，5-结果比对，6-结果发送，7-结果确认，8-结果留存，9-重新下任务，10-发送警告书，11-收费通知
+     *  OTS、材料研究所任务： 1-基准信息录入，2-审核通过，3-审核不通过，4-任务下达，5-审批同意，6-审批不同意，7-结果上传，8-结果发送，9-结果确认，10-基准保存，11-收费通知，12-信息修改，13-申请信息修改，14-申请试验结果修改，15-试验结果修改
+     *  PPAP、SOP： 1-任务下达，2-审批同意，3-审批不同意，4-结果上传，5-结果比对正常，6-结果比对异常，7-结果发送，8-结果确认，9-结果留存，10-重新下任务，11-发送警告书，12-收费通知，13-二次确认，14-申请信息修改，15-申请试验结果修改，16-信息修改，17-试验结果修改
      */
     private Integer state;
      
@@ -29,16 +28,20 @@ public class TaskRecord {
 
     private Date createTime;
     
+    // 任务类型
+    private Integer taskType;
+    
     public TaskRecord(){
     	
     }
 
-    public TaskRecord(String code, Long aId, Integer state, String remark, Date createTime){
+    public TaskRecord(String code, Long aId, Integer state, String remark, Date createTime, int taskType){
     	this.code = code;
     	this.aId = aId;
     	this.state = state;
     	this.remark = remark;
     	this.createTime = createTime;
+    	this.taskType = taskType;
     }
     
     public Long getId() {
@@ -96,4 +99,13 @@ public class TaskRecord {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+
+	public Integer getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(Integer taskType) {
+		this.taskType = taskType;
+	}
+	
 }

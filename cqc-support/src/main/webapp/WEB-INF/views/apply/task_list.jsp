@@ -22,7 +22,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "360px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -34,7 +34,7 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '200',
+						width : '180',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
@@ -56,7 +56,7 @@
 					}, {
 						field : 'org',
 						title : '录入单位',
-						width : '250',
+						width : '200',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -121,6 +121,8 @@
 							'nickName' : $("#q_nickName").textbox("getValue"), 
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
+							'startConfirmTime' : $("#q_startConfirmTime").val(),
+							'endConfirmTime' : $("#q_endConfirmTime").val(),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -134,11 +136,12 @@
 			        url : getRecordUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "360px",
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
 			        idField: 'id',
+			        nowrap: false,   // 自动换行
 					title: '操作记录',
 			        columns : [ [ {
 			            field : 'id', 
@@ -146,13 +149,13 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '180',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
 						field : 'account',
 						title : '操作用户',
-						width : '150',
+						width : '120',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -164,34 +167,9 @@
 						title : '状态',
 						width : '180',
 						align : 'center',
-						formatter : function(val){
-							var str = "";
-							if(val){
-								if(val == 1){
-									str = "基准信息录入";
-								}else if(val == 2){
-									str = "审核通过";
-								}else if(val == 3){
-									str = "审核不通过";
-								}else if(val == 4){
-									str = "任务下达"
-								}else if(val == 5){
-									str = "审批同意";
-								}else if(val == 6){
-									str = "审批不同意";
-								}else if(val == 7){
-									str = "结果上传";
-								}else if(val == 8){
-									str = "结果发送";
-								}else if(val == 9){
-									str = "结果确认";
-								}else if(val == 10){
-									str = "基准保存";
-								}else if(val == 11){
-									str = "收费通知";
-								}
-								return "<span title='" + str + "'>" + str + "</span>";
-							}
+						formatter : function(value,row,index){
+							var str = getTaskRecordState(row.taskType, row.state);
+							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
 						field : 'remark',
@@ -232,6 +210,8 @@
 					'nickName' : $("#q_nickName").textbox("getValue"), 
 					'startCreateTime' : $("#q_startCreateTime").val(),
 					'endCreateTime' : $("#q_endCreateTime").val(),
+					'startConfirmTime' : $("#q_startConfirmTime").val(),
+					'endConfirmTime' : $("#q_endConfirmTime").val()
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -249,6 +229,8 @@
 				$("#q_nickName").textbox('clear');
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
+				$("#q_startConfirmTime").val('');
+				$("#q_endConfirmTime").val('');
 				getData(datagrid, getDataUrl, {});
 			}
 			
@@ -315,7 +297,13 @@
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
 					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+				</div>
 				
+				<div style="margin-top:10px;">
+					<span class="qlabel">完成时间：</span>
+					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
+					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/> &nbsp;&nbsp;&nbsp;&nbsp;
+					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
@@ -339,7 +327,7 @@
 		<style type="text/css">
 			.qlabel{
 				display: inline-block;
-				width: 63px;
+				width: 70px;
 			}
 		</style>
 	</body>	

@@ -21,16 +21,16 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, v_id, p_id, m_id, t_id, a_id, state, pf_result_ids, atlas_result, type, remark,
-		create_time, confirm_time
+		r.id, r.v_id, r.p_id, r.m_id, r.t_id, r.a_id, r.state, r.pf_result_ids, r.atlas_result, r.type, r.remark,
+		r.create_time, r.confirm_time
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="base_columns" /> from apply_record where id = #{id,jdbcType=BIGINT}
+		select <include refid="base_columns" /> from apply_record r where r.id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<select id="getRecordByTaskId" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select <include refid="base_columns" /> from apply_record where t_id = #{taskId,jdbcType=BIGINT} and type = #{type,jdbcType=INTEGER} and state = 0
+		select <include refid="base_columns" /> from apply_record r where r.t_id = #{taskId,jdbcType=BIGINT} and r.type = #{type,jdbcType=INTEGER} and r.state = 0
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -91,28 +91,31 @@
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
 	  	select 
 	    <include refid="base_columns" />
-	      from apply_record
+	      from apply_record r left join task t on t.id = r.t_id
 	     <where>
+	     	<if test="code != null and code != ''">
+				and t.code like concat('%', #{code,jdbcType=VARCHAR}, '%')
+			</if>
 			<if test="aId != null">
-				and a_id = #{aId,jdbcType=BIGINT}
+				and r.a_id = #{aId,jdbcType=BIGINT}
 			</if>
 			<if test="state != null">
-				and state = #{state,jdbcType=INTEGER}
+				and r.state = #{state,jdbcType=INTEGER}
 			</if>
 			<if test="type != null">
-				and type = #{type,jdbcType=INTEGER}
+				and r.type = #{type,jdbcType=INTEGER}
 			</if>
 			<if test="startCreateTime != null and startCreateTime != ''">
-				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+				and r.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="endCreateTime != null and endCreateTime != ''">
-				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+				and r.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="startConfirmTime != null and startConfirmTime != ''">
-				and confirm_time &gt;= #{startConfirmTime, jdbcType=TIMESTAMP}
+				and r.confirm_time &gt;= #{startConfirmTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="endConfirmTime != null and endConfirmTime != ''">
-				and confirm_time &lt;= #{endConfirmTime, jdbcType=TIMESTAMP}
+				and r.confirm_time &lt;= #{endConfirmTime, jdbcType=TIMESTAMP}
 			</if>
 	      </where>
 	      
@@ -121,7 +124,7 @@
 	  			order by ${custom_order_sql}
 	  		</when>
 	  		<otherwise>
-	  			order by id desc
+	  			order by r.id desc
 	  		</otherwise>
 	 	 </choose>
 	  </select>

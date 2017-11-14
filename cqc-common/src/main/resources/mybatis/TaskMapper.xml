@@ -174,7 +174,7 @@
 			</if>
 
 			<if test="aId != null">
-				and t.a_id = #{iId,jdbcType=BIGINT}
+				and t.a_id = #{aId,jdbcType=BIGINT}
 			</if>
 			
 			<if test="tId != null">
@@ -333,7 +333,7 @@
 
 			<!-- 结果确认：待上传列表 -->
 			<if test="confirmTask_wait != null">
-				and ((t.type = 1 and ((t.parts_pat_result = 3  or t.mat_pat_result = 3 or t.parts_atl_result = 3 or t.mat_atl_result = 3) and (t.parts_pat_result != 3  or t.mat_pat_result != 3 or t.parts_atl_result != 3 or t.mat_atl_result != 3))) or (t.type = 4 and ((t.mat_pat_result = 3 or t.mat_atl_result = 3) and (t.mat_pat_result != 3 or or t.mat_atl_result != 3))))
+				and ((t.type = 1 and ((t.parts_pat_result = 3  or t.mat_pat_result = 3 or t.parts_atl_result = 3 or t.mat_atl_result = 3) and (t.parts_pat_result != 3  or t.mat_pat_result != 3 or t.parts_atl_result != 3 or t.mat_atl_result != 3))) or (t.type = 4 and ((t.mat_pat_result = 3 or t.mat_atl_result = 3) and (t.mat_pat_result != 3 or t.mat_atl_result != 3))))
 			</if>
 			
 			<!-- 结果确认：已上传列表 -->
@@ -343,13 +343,23 @@
 
 			<!-- 所有已完成的任务 -->
 			<if test="accomplishTask != null">
-				and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8))) and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
+				and (((t.type = 1 or t.type = 4) and (t.state = 4 or t.state = 5)) or ((t.type = 2 or t.type = 3) and (t.state = 7 or t.state = 8))) and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
 			</if>
 			
 			<!-- 只能看到分配自己实验室的任务 -->
 			<if test="accomplishTask_lab != null">
-				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and ((t.type = 1 and (t.state = 4 or t.state = 5)) or (t.type = 2 and (t.state = 7 or t.state = 8)))  and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
+				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and (((t.type = 1 or t.type = 4) and (t.state = 4 or t.state = 5)) or ((t.type = 2 or t.type = 3) and (t.state = 7 or t.state = 8)))  and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
 			</if>
+			
+			<!-- 任务查询  -->
+			<if test="queryMap != null">
+				and (a.id = #{queryMap.accountId, jdbcType=BIGINT} or parts_atl_id = a.org_id or mat_atl_id = a.org_id or parts_pat_id = a.org_id or mat_pat_id = a.org_id
+				<if test="taskIdList != null">
+					or t.id <foreach collection="queryMap.taskIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+				</if>
+				)
+			</if>
+			
 		</where>
 
 		<choose>

@@ -385,4 +385,80 @@ function getData(id, url, data){
 }
 
 
+function getTaskRecordState(taskType, state){
+	var str = "";
+	if(taskType == 1 || taskType == 4){
+		if(state == 1){
+			str = "基准信息录入";
+		}else if(state == 2){
+			str = "审核通过";
+		}else if(state == 3){
+			str = "审核不通过";
+		}else if(state == 4){
+			str = "任务下达"
+		}else if(state == 5){
+			str = "审批同意";
+		}else if(state == 6){
+			str = "审批不同意";
+		}else if(state == 7){
+			str = "结果上传";
+		}else if(state == 8){
+			str = "结果发送";
+		}else if(state == 9){
+			str = "结果确认";
+		}else if(state == 10){
+			str = "基准保存";
+		}else if(state == 11){
+			str = "收费通知";
+		}else if(state == 12){
+			str = "信息修改";
+		}else if(state == 13){
+			str = "申请信息修改";
+		}else if(state == 14){
+			str = "申请试验结果修改";
+		}else if(state == 15){
+			str = "基本信息修改";
+		}else if(state == 16){
+			str = "试验结果修改";
+		}
+	}else if(taskType == 2 || taskType == 3){
+		if(state == 1){
+			str = "任务下达";
+		}else if(state == 2){
+			str = "审批同意";
+		}else if(state == 3){
+			str = "审批不同意";
+		}else if(state == 4){
+			str = "结果上传"
+		}else if(state == 5){
+			str = "结果比对正常";
+		}else if(state == 6){
+			str = "结果比对异常";
+		}else if(state == 7){
+			str = "结果发送";
+		}else if(state == 8){
+			str = "结果确认";
+		}else if(state == 9){
+			str = "结果留存";
+		}else if(state == 10){
+			str = "重新下任务";
+		}else if(state == 11){
+			str = "发送警告书";
+		}else if(state == 12){
+			str = "收费通知";
+		}else if(state == 13){
+			str = "二次确认";
+		}else if(state == 14){
+			str = "申请信息修改";
+		}else if(state == 15){
+			str = "申请试验结果修改";
+		}else if(state == 16){
+			str = "基础信息修改";
+		}else if(state == 17){
+			str = "试验结果修改";
+		}
+	}
+	return str;
+}
+
 

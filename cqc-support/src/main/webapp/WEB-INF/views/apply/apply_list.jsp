@@ -23,7 +23,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "360px",
 					title: '申请列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -103,10 +103,9 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'code' : $("#q_code").textbox("getValue"), 
-							'orgId': $("#q_org").combotree("getValue"),
-							'nickName' : $("#q_nickName").textbox("getValue"), 
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
+							'type': $("#q_type").combobox("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -119,20 +118,18 @@
 			function doSearch() {
 				var data = {
 					'code' : $("#q_code").textbox("getValue"), 
-					'orgId': $("#q_org").combotree("getValue"),
-					'nickName' : $("#q_nickName").textbox("getValue"), 
 					'startCreateTime' : $("#q_startCreateTime").val(),
 					'endCreateTime' : $("#q_endCreateTime").val(),
+					'type': $("#q_type").combobox("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
 		
 			function doClear() {
-				$("#q_org").combotree("setValue","");
-				$("#q_code").textbox('clear');
-				$("#q_nickName").textbox('clear');
+				$("#q_type").combobox("select","");
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
+				$("#q_code").textbox("setValue", "");
 				getData(datagrid, getDataUrl, {});
 			}
 			
@@ -174,14 +171,15 @@
 					<span class="qlabel">任务号：</span>
 					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel">录入单位：</span>
-					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 138px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">申请类型：</span>
+					<select id="q_type" name="q_type" style="width:140px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+						<option value="">全部</option>
+						<option value="1">信息修改</option>
+						<option value="2">试验结果修改</option>
+					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel">录入用户：</span>
-					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					
-					<span class="qlabel">录入时间：</span>
+					<span class="qlabel">申请时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
 					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
 				

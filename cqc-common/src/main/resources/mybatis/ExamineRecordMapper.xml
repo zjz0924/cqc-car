@@ -63,6 +63,11 @@
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	
+	<!-- 获取taskId -->
+	<select id="selectTaskIdList" resultType="java.lang.Long" parameterType="java.util.Map" >
+		select distinct t_id from examine_record where a_id = #{aId,jdbcType=BIGINT} and type = #{type,jdbcType=INTEGER}
+	</select>
+	
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
 	  	select 
 	    <include refid="base_columns" />
