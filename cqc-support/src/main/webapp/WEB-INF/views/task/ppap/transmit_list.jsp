@@ -121,7 +121,7 @@
 				
 				$('#transmitDialog').dialog({
 					title : '详情',
-					width : 1000,
+					width : 1100,
 					height : 660,
 					closed : false,
 					cache : false,

@@ -31,25 +31,25 @@
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>代码：</span> 
-						<input id="v_code" name="v_code" class="easyui-textbox" value="${facadeBean.info.vehicle.code }" disabled>
+						<input id="v_code" name="v_code" class="easyui-textbox" value="${facadeBean.info.vehicle.code }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>车型：</span> 
-						<input id="v_type" name="v_type" class="easyui-textbox" value="${facadeBean.info.vehicle.type }" disabled>
+						<input id="v_type" name="v_type" class="easyui-textbox" value="${facadeBean.info.vehicle.type }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
-						<input id="v_proTime" name="v_proTime" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" disabled>
+						<input id="v_proTime" name="v_proTime" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产地址：</span> 
-						<input id="v_proAddr" name="v_proAddr" class="easyui-textbox" value="${facadeBean.info.vehicle.proAddr }" disabled>
+						<input id="v_proAddr" name="v_proAddr" class="easyui-textbox" value="${facadeBean.info.vehicle.proAddr }" disabled style="width:150px;">
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<span class="title-span">&nbsp;备注：</span> 
-						<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" disabled>	
+						<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" disabled style="width:150px;">	
 					</td>
 				</tr>
 			</table>
@@ -64,46 +64,46 @@
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>零件号：</span> 
-						<input id="p_code" name="p_code" class="easyui-textbox" value="${facadeBean.info.parts.code }" disabled>
+						<input id="p_code" name="p_code" class="easyui-textbox" value="${facadeBean.info.parts.code }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>名称：</span> 
-						<input id="p_name" name="p_name" class="easyui-textbox" value="${facadeBean.info.parts.name }" disabled>
+						<input id="p_name" name="p_name" class="easyui-textbox" value="${facadeBean.info.parts.name }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-						<input id="p_orgName" name="p_orgName" class="easyui-textbox" value="${facadeBean.info.parts.org.name}" disabled>
+						<input id="p_orgName" name="p_orgName" class="easyui-textbox" value="${facadeBean.info.parts.org.name}" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
-						<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }" disabled>
+						<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }" disabled style="width:150px;">
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
-						<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false" value="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" disabled>
+						<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false" value="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产场地：</span> 
-						<input id="p_place" name="p_place" class="easyui-textbox" value="${facadeBean.info.parts.place }" disabled>
+						<input id="p_place" name="p_place" class="easyui-textbox" value="${facadeBean.info.parts.place }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>关键零件：</span> 
-						<select id="p_isKey" name="p_isKey" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'" disabled>
+						<select id="p_isKey" name="p_isKey" style="width:150px;" class="easyui-combobox" data-options="panelHeight: 'auto'" disabled>
 							<option value="0" <c:if test="${facadeBean.info.parts.isKey == 0 }">selected="selected"</c:if>>否</option>
 							<option value="1" <c:if test="${facadeBean.info.parts.isKey == 1 }">selected="selected"</c:if>>是</option>
 						</select>
 					</td>
 					<td>
 						<span class="title-span">零件型号：</span> 
-						<input id="p_keyCode" name="p_keyCode" class="easyui-textbox" value="${facadeBean.info.parts.keyCode }" disabled>
+						<input id="p_keyCode" name="p_keyCode" class="easyui-textbox" value="${facadeBean.info.parts.keyCode }" disabled style="width:150px;">
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<span class="title-span">&nbsp;备注：</span> 
-						<input id="p_remark" name="p_remark" class="easyui-textbox" value="${facadeBean.info.parts.remark }" disabled>	
+						<input id="p_remark" name="p_remark" class="easyui-textbox" value="${facadeBean.info.parts.remark }" disabled style="width:150px;">	
 					</td>
 				</tr>
 			</table>
@@ -118,37 +118,37 @@
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>材料名称：</span> 
-						<input id="m_matName" name="m_matName" class="easyui-textbox" value="${facadeBean.info.material.matName }" disabled>
+						<input id="m_matName" name="m_matName" class="easyui-textbox" value="${facadeBean.info.material.matName }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
-						<input id="m_proNo" name="m_proNo" class="easyui-textbox" value="${facadeBean.info.material.proNo }" disabled>
+						<input id="m_proNo" name="m_proNo" class="easyui-textbox" value="${facadeBean.info.material.proNo }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-						<input id="m_orgName" name="m_orgName" class="easyui-textbox" value="${facadeBean.info.material.org.name}" disabled>
+						<input id="m_orgName" name="m_orgName" class="easyui-textbox" value="${facadeBean.info.material.org.name}" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
-						<input id="m_matNo" name="m_matNo" class="easyui-textbox" value="${facadeBean.info.material.matNo }" disabled>
+						<input id="m_matNo" name="m_matNo" class="easyui-textbox" value="${facadeBean.info.material.matNo }" disabled style="width:150px;">
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>材料颜色：</span> 
-						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" disabled>
+						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" disabled style="width:150px;">
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>成分表：</span> 
 						<span id="m_pic_span" <c:if test="${empty facadeBean.info.material.pic}">style="display:none;"</c:if>>	
-							<a id="m_pic_a" target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${facadeBean.info.material.pic}</a>
+							<a id="m_pic_a" target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
 						</span>
 						
 					</td>
 					
 					<td>
 						<span class="title-span">备注：</span> 
-						<input id="m_remark" name="m_remark" class="easyui-textbox" value="${facadeBean.info.material.remark }" disabled>	
+						<input id="m_remark" name="m_remark" class="easyui-textbox" value="${facadeBean.info.material.remark }" disabled style="width:150px;">	
 					</td>
 				</tr>
 			</table>
@@ -200,7 +200,7 @@
 			.title-span{
 				display: inline-block;
 				width: 85px;
-				padding-right: 15px;
+				padding-right: 5px;
 				text-align: right; 
 			}
 			
@@ -249,7 +249,6 @@
 					formatter : formatItem,
 					onLoadSuccess:function(){ //默认选中第一条数据
 				        var data= $(this).combobox("getData");
-					
 					    //默认选中第一个
 		                if (data.length > 0) {
 		                	if(!isNull("${facadeBean.iId}")){
@@ -257,6 +256,8 @@
 		                	}else{
 		                		$(this).combobox('select', data[0].id);
 		                	}
+		                }else{
+		                	$(this).combobox('select', '');
 		                }
 					}
 				});

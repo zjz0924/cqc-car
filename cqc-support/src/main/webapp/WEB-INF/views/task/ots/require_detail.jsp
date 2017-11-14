@@ -150,14 +150,16 @@
 						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>成分表：</span> 
+						<span class="title-span">成分表：</span> 
 						<input id="m_pic" name="m_pic" class="easyui-filebox" style="width:150px" data-options="buttonText: '选择'">
 					</td>
 					
 					<c:if test="${ not empty facadeBean.info.material.pic}">
 						<td>
-							<span class="title-span">成分表名称：</span>
-							<span>${facadeBean.info.material.pic }</span> 
+							<span class="title-span">成分表：</span>
+							<span>
+								<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
+							</span> 
 						</td>
 					</c:if>
 					
@@ -303,7 +305,7 @@
 				if(!isRequire("m_matNo", "原材料材料牌号必填")){ return false; }
 				if(!isRequire("m_matColor", "原材料材料颜色必填")){ return false; }
 				
-				var matId = "${facadeBean.info.material.id}";
+				/* var matId = "${facadeBean.info.material.id}";
 				if(isNull(matId)){
 					var fileDir = $("#m_pic").filebox("getValue");
 					if (!isNull(fileDir)) {
@@ -318,7 +320,7 @@
 						$("#m_pic").focus();
 						return false;
 					}
-				}
+				} */
 				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/ots/save?time=" + new Date(),

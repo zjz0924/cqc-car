@@ -27,7 +27,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<c:if test="${taskType == 1 }">
+		<c:if test="${facadeBean.type == 1 }">
 			<div class="title">零部件信息</div>
 			<div style="width: 98%;">
 				<table class="info">
@@ -105,9 +105,7 @@
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
-							<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">
-								<img src="${resUrl}/${facadeBean.info.material.pic}" style="width: 100px;height: 50px;"></img>
-							</a>
+							<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
 						</c:if>
 					</td>
 					<td class="title-td">备注：</td>

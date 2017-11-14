@@ -147,8 +147,7 @@
 					width : '200',
 					align : 'center',
 					formatter : formatCellTooltip
-				} ] ],
-				frozenColumns:[[{
+				},{
 					field : '_operation',
 					title : '操作',
 					width : '80',
@@ -156,8 +155,7 @@
 					formatter : function(value,row,index){
 						return '<a href="javascript:void(0)" onclick="closeDialog('+ index +')">选择</a>';  	
 					}
-				  }
-				]]
+				  } ] ]
 			});
 	
 			// 分页信息

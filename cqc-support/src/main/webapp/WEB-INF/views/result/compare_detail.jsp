@@ -103,9 +103,7 @@
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
-							<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">
-								<img src="${resUrl}/${facadeBean.info.material.pic}" style="width: 100px;height: 50px;"></img>
-							</a>
+							<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
 						</c:if>
 					</td>
 					<td class="title-td">备注：</td>

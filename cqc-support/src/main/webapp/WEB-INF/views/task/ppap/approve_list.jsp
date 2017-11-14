@@ -29,7 +29,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "380px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -41,13 +41,13 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '220',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
 						field : 'infoApply',
 						title : '类型',
-						width : '150',
+						width : '130',
 						align : 'center',
 						formatter : function(value,row,index){
 							var str = "新增任务";
@@ -83,13 +83,13 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '220',
+						width : '210',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '120',
+						width : '110',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="approveDetail('+ row.id +')">审批</a>';  	
@@ -128,7 +128,7 @@
 			        url : getRecordUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "380px",
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
@@ -140,7 +140,7 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '220',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
@@ -158,20 +158,9 @@
 						title : '状态',
 						width : '180',
 						align : 'center',
-						formatter : function(val){
-							var str = "";
-							if(val){
-								if(val == 1){
-									str = "任务下达";
-								}else if(val == 2){
-									str = "审批同意";
-								}else if(val == 3){
-									str = "审批不同意";
-								}else if(val == 4){
-									str = "结果上传";
-								}
-								return "<span title='" + str + "'>" + str + "</span>";
-							}
+						formatter : function(value,row,index){
+							var str = getTaskRecordState(row.taskType, row.state);
+							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
 						field : 'remark',
@@ -182,7 +171,7 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '200',
+						width : '180',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}  ] ]
@@ -260,18 +249,18 @@
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
-					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 115px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入单位：</span>
-					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 138px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 115px;">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入用户：</span>
-					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 115px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					
 					<span class="qlabel">录入时间：</span>
-					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:105px;display:inline-block"/> - 
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:105px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>

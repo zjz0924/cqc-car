@@ -239,6 +239,7 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("recordList", recordList);
 		}
 
+		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
 		return "task/ots/require_detail";
 	}
@@ -585,6 +586,7 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("recordList", recordList);
 		}
 
+		model.addAttribute("taskType", taskType);
 		model.addAttribute("resUrl", resUrl);
 		return "task/ots/transmit_detail";
 	}
