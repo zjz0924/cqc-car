@@ -36,8 +36,9 @@
 		<!--banner结束-->
 		
 		<div class="main">
-		
-		
+			<div style="background-color:white;margin-left: 20px;margin-right:20px;margin-top: 20px;height:650px;">
+				<div style="padding-top:30px;padding-left:15px;font-size: 20px;">欢迎使用上汽通用五菱材料管理平台</div>
+			</div>
 		</div>
 		
 		<!-- footer -->

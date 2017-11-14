@@ -18,7 +18,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "380px",
 					title: '费用清单',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -81,7 +81,7 @@
 					}, {
 						field : 'labResult',
 						title : '实验结果',
-						width : '250',
+						width : '120',
 						align : 'center',
 						formatter : function(val){
 							if(val == 1){
@@ -122,10 +122,11 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'code' : $("#q_code").textbox("getValue"), 
-							'orgId': $("#q_org").combotree("getValue"),
-							'nickName' : $("#q_nickName").textbox("getValue"), 
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
+							'taskType': $("#taskType").combobox("getValue"),
+							'labType': $("#labType").combobox("getValue"),
+							'labResult': $("#labResult").combobox("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -137,10 +138,11 @@
 			function doSearch() {
 				var data = {
 					'code' : $("#q_code").textbox("getValue"), 
-					'orgId': $("#q_org").combotree("getValue"),
-					'nickName' : $("#q_nickName").textbox("getValue"), 
 					'startCreateTime' : $("#q_startCreateTime").val(),
 					'endCreateTime' : $("#q_endCreateTime").val(),
+					'taskType': $("#taskType").combobox("getValue"),
+					'labType': $("#labType").combobox("getValue"),
+					'labResult': $("#labResult").combobox("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -153,11 +155,12 @@
 			}
 		
 			function doClear() {
-				$("#q_org").combotree("setValue","");
 				$("#q_code").textbox('clear');
-				$("#q_nickName").textbox('clear');
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
+				$("#taskType").combobox("select", "");
+				$("#labType").combobox("select", "");
+				$("#labResult").combobox("select", "");
 				getData(datagrid, getDataUrl, {});
 			}
 			
@@ -224,16 +227,18 @@
 						<option value="">全部</option>	
 						<option value="1">合格</option>
 						<option value="2">不合格</option>
-					</select> &nbsp;&nbsp;&nbsp;&nbsp;
-					
-					
-					<span class="qlabel">录入时间：</span>
+					</select>
+				</div>
+				
+				<div style="margin-top: 10px;">
+					<span class="qlabel">创建时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
 					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
+				
 			</div>
 			
 			<div style="margin-top:10px;">

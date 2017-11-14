@@ -27,53 +27,55 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">零部件信息</div>
-		<div style="width: 98%;">
-			<table class="info">
-				<tr>
-					<td class="title-td">代码：</td>
-					<td class="value-td">${facadeBean.task.info.parts.code}</td>
-					<td class="title-td">名称：</td>
-					<td class="value-td">${facadeBean.task.info.parts.name}</td>
-				</tr>
-				<tr>
-					<td class="title-td">生产商：</td>
-					<td class="value-td">${facadeBean.task.info.parts.org.name}</td>
-					<td class="title-td">生产批号：</td>
-					<td class="value-td">${facadeBean.task.info.parts.proNo}</td>
-				</tr>
-				<tr>
-					<td class="title-td">生产日期：</td>
-					<td class="value-td"><fmt:formatDate value='${facadeBean.task.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-					<td class="title-td">生产地址：</td>
-					<td class="value-td">${facadeBean.task.info.parts.place}</td>
-				</tr>
-				<tr>
-					<td class="title-td">关键零件：</td>
-					<td class="value-td">
-						<c:choose>
-							<c:when test="${facadeBean.task.info.parts.isKey == 0}">
-								否
-							</c:when>
-							<c:otherwise>
-								是
-							</c:otherwise>
-						</c:choose>
-					</td>
-					<td class="title-td">零件型号</td>
-					<td class="value-td">
-						${facadeBean.task.info.parts.keyCode}
-					</td>
-				</tr>
-				
-				<tr>
-					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.task.info.parts.remark}</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		<c:if test="${facadeBean.task.type != 4}">
+			<div class="title">零部件信息</div>
+			<div style="width: 98%;">
+				<table class="info">
+					<tr>
+						<td class="title-td">代码：</td>
+						<td class="value-td">${facadeBean.task.info.parts.code}</td>
+						<td class="title-td">名称：</td>
+						<td class="value-td">${facadeBean.task.info.parts.name}</td>
+					</tr>
+					<tr>
+						<td class="title-td">生产商：</td>
+						<td class="value-td">${facadeBean.task.info.parts.org.name}</td>
+						<td class="title-td">生产批号：</td>
+						<td class="value-td">${facadeBean.task.info.parts.proNo}</td>
+					</tr>
+					<tr>
+						<td class="title-td">生产日期：</td>
+						<td class="value-td"><fmt:formatDate value='${facadeBean.task.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
+						<td class="title-td">生产地址：</td>
+						<td class="value-td">${facadeBean.task.info.parts.place}</td>
+					</tr>
+					<tr>
+						<td class="title-td">关键零件：</td>
+						<td class="value-td">
+							<c:choose>
+								<c:when test="${facadeBean.task.info.parts.isKey == 0}">
+									否
+								</c:when>
+								<c:otherwise>
+									是
+								</c:otherwise>
+							</c:choose>
+						</td>
+						<td class="title-td">零件型号</td>
+						<td class="value-td">
+							${facadeBean.task.info.parts.keyCode}
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="title-td">备注：</td>
+						<td class="value-td">${facadeBean.task.info.parts.remark}</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		</c:if>
 		
 		<div class="title">原材料信息</div>
 		<div style="width: 98%;">
@@ -103,9 +105,7 @@
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.task.info.material.pic}">
-							<a target="_blank" href="${resUrl}/${facadeBean.task.info.material.pic}">
-								<img src="${resUrl}/${facadeBean.task.info.material.pic}" style="width: 100px;height: 50px;"></img>
-							</a>
+							<a target="_blank" href="${resUrl}/${facadeBean.task.info.material.pic}">${fn:substringAfter(facadeBean.task.info.material.pic, "/")}</a>
 						</c:if>
 					</td>
 					<td class="title-td">备注：</td>
@@ -115,72 +115,74 @@
 		</div>
 		
 		<!-- OTS 结果确认  -->
-		<c:if test="${facadeBean.task.type == 1}">
+		<c:if test="${facadeBean.task.type == 1 || facadeBean.task.type == 4}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">试验结果</div>
 			
-			<c:if test="${facadeBean.labType == 2}">
-				<div class="title" style="margin-top:15px;">零部件型式试验结果</div>
-				<c:forEach items="${pPfResult}" var="m">
-					<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
-						第${m.key}次试验
-						<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
-					</div>
-					<c:forEach items="${m.value}" var="vo" varStatus="vst">
+			<c:if test="${facadeBean.task.type == 1}">
+				<c:if test="${facadeBean.labType == 2}">
+					<div class="title" style="margin-top:15px;">零部件型式试验结果</div>
+					<c:forEach items="${pPfResult}" var="m">
+						<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
+							第${m.key}次试验
+							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
+						</div>
+						<c:forEach items="${m.value}" var="vo" varStatus="vst">
+							<table class="info">
+								<tr>
+									<td class="title-td">试验项目：</td>
+									<td class="value-td" colspan="3">${vo.project}</td>
+									
+								</tr>
+								<tr>
+									<td class="title-td">参考标准：</td>
+									<td class="value-td">${vo.standard}</td>
+									<td class="title-td">试验要求：</td>
+									<td class="value-td">${vo.require}</td>
+								</tr>
+								<tr>
+									<td class="title-td">试验结果：</td>
+									<td class="value-td">${vo.result}</td>
+									<td class="title-td">结果评价：</td>
+									<td class="value-td">${vo.evaluate}</td>
+								</tr>
+								
+								<tr>
+									<td></td>	
+								</tr>
+							</table>
+						</c:forEach>
+					</c:forEach>
+				</c:if>
+				
+				<c:if test="${facadeBean.labType == 1}">
+					<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
+					<c:forEach items="${pAtlasResult}" var="m">
+						<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
+							第${m.key}次试验
+							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
+						</div>
 						<table class="info">
 							<tr>
-								<td class="title-td">试验项目：</td>
-								<td class="value-td" colspan="3">${vo.project}</td>
-								
+								<td class="title-td">图谱类型</td>
+								<td class="title-td">图谱描述</td>
+								<td class="title-td">选择图谱</td>
 							</tr>
-							<tr>
-								<td class="title-td">参考标准：</td>
-								<td class="value-td">${vo.standard}</td>
-								<td class="title-td">试验要求：</td>
-								<td class="value-td">${vo.require}</td>
-							</tr>
-							<tr>
-								<td class="title-td">试验结果：</td>
-								<td class="value-td">${vo.result}</td>
-								<td class="title-td">结果评价：</td>
-								<td class="value-td">${vo.evaluate}</td>
-							</tr>
-							
-							<tr>
-								<td></td>	
-							</tr>
+						
+							<c:forEach items="${m.value}" var="vo" varStatus="vst">
+								<tr>
+									<td class="value-td">
+										<c:if test="${vo.type == 1}">红外光分析</c:if>
+										<c:if test="${vo.type == 2}">差热扫描</c:if>
+										<c:if test="${vo.type == 3}">热重分析</c:if>
+									</td>
+									<td class="value-td">${vo.remark}</td>
+									<td class="value-td"><a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a></td>
+								</tr>
+							</c:forEach>
 						</table>
 					</c:forEach>
-				</c:forEach>
-			</c:if>
-			
-			<c:if test="${facadeBean.labType == 1}">
-				<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
-				<c:forEach items="${pAtlasResult}" var="m">
-					<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
-						第${m.key}次试验
-						<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
-					</div>
-					<table class="info">
-						<tr>
-							<td class="title-td">图谱类型</td>
-							<td class="title-td">图谱描述</td>
-							<td class="title-td">选择图谱</td>
-						</tr>
-					
-						<c:forEach items="${m.value}" var="vo" varStatus="vst">
-							<tr>
-								<td class="value-td">
-									<c:if test="${vo.type == 1}">红外光分析</c:if>
-									<c:if test="${vo.type == 2}">差热扫描</c:if>
-									<c:if test="${vo.type == 3}">热重分析</c:if>
-								</td>
-								<td class="value-td">${vo.remark}</td>
-								<td class="value-td"><a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a></td>
-							</tr>
-						</c:forEach>
-					</table>
-				</c:forEach>
+				</c:if>
 			</c:if>
 			
 			<c:if test="${facadeBean.labType == 4}">
@@ -249,7 +251,7 @@
 		</c:if>
 		
 		<!-- PPAP 对比结果确认 -->
-		<c:if test="${facadeBean.task.type == 2}">
+		<c:if test="${facadeBean.task.type == 2 || facadeBean.task.type == 3}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">对比结果</div>
 			

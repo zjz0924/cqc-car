@@ -79,10 +79,17 @@ public class CostController extends AbstractController {
 
 	/**
 	 * 获取数据
+	 * @param startCreateTime  创建时间
+	 * @param endCreateTime    创建时间
+	 * @param code             任务编码
+	 * @param type             类型：0-未发送列表 ，1-已发送列表
+	 * @param taskType         任务类型
+	 * @param labType          实验类型
+	 * @param labResult        实验结果
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
-	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startCreateTime, String endCreateTime, String code, int type) {
+	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startCreateTime, String endCreateTime, String code, int type, String taskType, String labType, String labResult) {
 		
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		
@@ -93,7 +100,7 @@ public class CostController extends AbstractController {
 		}
 
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "t.code asc, c.state asc");
+		map.put("custom_order_sql", "c.create_time desc, t.code asc, c.state asc");
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
@@ -103,6 +110,15 @@ public class CostController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime);
+		}
+		if (StringUtils.isNotBlank(taskType)) {
+			map.put("taskType", taskType);
+		}
+		if (StringUtils.isNotBlank(labType)) {
+			map.put("labType", labType);
+		}
+		if (StringUtils.isNotBlank(labResult)) {
+			map.put("labResult", labResult);
 		}
 		
 		if (type == 1) {
@@ -136,7 +152,7 @@ public class CostController extends AbstractController {
 		if (StringUtils.isNotBlank(id)) {
 			CostRecord costRecord = costRecordService.selectOne(Long.parseLong(id));
 
-			if (costRecord.getTask().getType() == TaskTypeEnum.OTS.getState()) { // OTS 结果确认
+			if (costRecord.getTask().getType() == TaskTypeEnum.OTS.getState() || costRecord.getTask().getType() == TaskTypeEnum.GS.getState() ) { // OTS 结果确认
 				// 性能结果
 				Map<String, Object> pfMap = new HashMap<String, Object>();
 				pfMap.put("tId", costRecord.getTask().getId());
@@ -165,7 +181,7 @@ public class CostController extends AbstractController {
 				model.addAttribute("mPfResult", mPfResult);
 				// 零部件型式结果
 				model.addAttribute("pPfResult", pPfResult);
-			} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState()) {
+			} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState() || costRecord.getTask().getType() == TaskTypeEnum.SOP.getState()) {
 
 				// 基准图谱结果
 				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(costRecord.getTask().getiId(), 1);
@@ -173,7 +189,7 @@ public class CostController extends AbstractController {
 				
 				// 抽样图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();
-				atMap.put("tId", id);
+				atMap.put("tId", costRecord.gettId());
 				atMap.put("custom_order_sql", "exp_no desc limit 6");
 				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
 
@@ -186,7 +202,7 @@ public class CostController extends AbstractController {
 				// 原材料图谱结果
 				Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult, sl_mAtlasResult);
 				// 对比结果
-				Map<String, List<ExamineRecord>> compareResult = atlasResultService.assembleCompareResult(Long.parseLong(id));
+				Map<String, List<ExamineRecord>> compareResult = atlasResultService.assembleCompareResult(costRecord.gettId());
 
 				model.addAttribute("mAtlasResult", mAtlasResult);
 				model.addAttribute("pAtlasResult", pAtlasResult);
@@ -205,6 +221,7 @@ public class CostController extends AbstractController {
 			model.addAttribute("facadeBean", costRecord);
 		}
 		
+		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("type", type);
 		return "cost/cost_detail";
 	}

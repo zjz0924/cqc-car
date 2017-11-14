@@ -167,25 +167,21 @@ public class TaskServiceImpl implements TaskService{
     	String remark = "";
     	
     	if(StringUtils.isNotBlank(pAtlOrgVal)){
-    		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content);
     		task.setPartsAtlResult(3);
     		remark += "零部件图谱试验、";
     	}
     	
     	if(StringUtils.isNotBlank(pPatOrgVal)){
-    		send(account, task, date, pPatOrgVal, "零部件型式试验", title, content);
     		task.setPartsPatResult(3);
     		remark += "零部件型式试验、";
     	}
     	
     	if(StringUtils.isNotBlank(mAtlOrgVal)){
-    		send(account, task, date, mAtlOrgVal, "原材料图谱试验", title, content);
     		task.setMatAtlResult(3);
     		remark += "原材料图谱试验、";
     	}
     	
     	if(StringUtils.isNotBlank(mPatOrgVal)){
-    		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content);
     		task.setMatPatResult(3);
     		remark += "原材料型式试验、";
     	}
@@ -206,6 +202,24 @@ public class TaskServiceImpl implements TaskService{
 		// 任务记录
 		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SEND.getState(), remark, date, task.getType());
 		taskRecordDao.insert(taskRecord);
+		
+		
+		// 发送结果（最后发送，防止事务提交失败，还是发送结果）
+		if(StringUtils.isNotBlank(pAtlOrgVal)){
+    		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content);
+    	}
+		
+		if(StringUtils.isNotBlank(pPatOrgVal)){
+    		send(account, task, date, pPatOrgVal, "零部件型式试验", title, content);
+    	}
+		
+		if(StringUtils.isNotBlank(mAtlOrgVal)){
+    		send(account, task, date, mAtlOrgVal, "原材料图谱试验", title, content);
+    	}
+    	
+    	if(StringUtils.isNotBlank(mPatOrgVal)){
+    		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content);
+    	}
     }
     
     
@@ -364,8 +378,10 @@ public class TaskServiceImpl implements TaskService{
 		if (type != 5) {
 			costRecordList.add(getCostRecord(account, date, task, type, result));
 		} else {
-			costRecordList.add(getCostRecord(account, date, task, 1, result));
-			costRecordList.add(getCostRecord(account, date, task, 2, result));
+			if(task.getType() == TaskTypeEnum.OTS.getState()) {
+				costRecordList.add(getCostRecord(account, date, task, 1, result));
+				costRecordList.add(getCostRecord(account, date, task, 2, result));
+			}
 			costRecordList.add(getCostRecord(account, date, task, 3, result));
 			costRecordList.add(getCostRecord(account, date, task, 4, result));
 		}

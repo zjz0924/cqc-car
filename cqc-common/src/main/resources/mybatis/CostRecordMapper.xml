@@ -95,6 +95,9 @@
 			<if test="tId != null">
 				and c.t_id = #{tId,jdbcType=BIGINT}
 			</if>
+			<if test="taskType != null">
+				and t.type = #{taskType,jdbcType=INTEGER}
+			</if>
 			<if test="code != null">
 				and t.code like concat('%', #{code,jdbcType=VARCHAR} ,'%')
 			</if>
@@ -124,6 +127,9 @@
 			</if>
 			<if test="endSendTime != null and endSendTime != ''">
 				and c.send_time &lt;= #{endSendTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="labType != null">
+				and c.lab_type = #{labType,jdbcType=INTEGER}
 			</if>
 	      </where>
 	      

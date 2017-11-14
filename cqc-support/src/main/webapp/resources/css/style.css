@@ -259,8 +259,8 @@ textarea
 
 
 /*主体样式*/
-.main{ width:100%; min-width:1280px;height:1285px; overflow:hidden; background:#7f7f7f;}
-.main_in{ width:1280px; height:1285px; margin:0 auto; overflow:hidden;}
+.main{ width:100%; min-width:700px;height:700px; overflow:hidden; background:#7f7f7f;}
+.main_in{ width:700px; height:700px; margin:0 auto; overflow:hidden;}
 
 /*主体左侧样式*/
 .main_in_le{ width:489px; height:1285px; float:left; margin-right:8px; overflow:hidden;}
