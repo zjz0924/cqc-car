@@ -52,6 +52,27 @@
 					<td class="title-td">备注：</td>
 					<td class="value-td"><c:if test="${facadeBean.state == 11}">${facadeBean.remark}</c:if></td>
 				</tr>
+				<tr>
+					<td class="title-td">结果：</td>
+					<td class="value-td">
+						<c:if test="${(facadeBean.type == 1 or facadeBean.type == 4) and facadeBean.state == 4}">
+							<c:if test="${facadeBean.failNum == 0}">合格</c:if>
+							<c:if test="${facadeBean.failNum == 1}">一次不合格</c:if>
+							<c:if test="${facadeBean.failNum == 2}">二次不合格</c:if>
+						</c:if>
+						<c:if test="${(facadeBean.type == 2 or facadeBean.type == 3) and facadeBean.state == 7}">
+							<c:if test="${facadeBean.failNum == 0}">合格</c:if>
+							<c:if test="${facadeBean.failNum == 1}">一次不合格</c:if>
+							<c:if test="${facadeBean.failNum == 2}">二次不合格</c:if>
+						</c:if>
+					</td>
+					<td class="title-td">原因：</td>
+					<td class="value-td">
+						<c:if test="${facadeBean.failNum >= 0}">
+							${facadeBean.remark}
+						</c:if>
+					</td>
+				</tr>
 			</table>
 		</div>
 	

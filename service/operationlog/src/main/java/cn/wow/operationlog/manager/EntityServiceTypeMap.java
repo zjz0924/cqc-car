@@ -39,9 +39,6 @@ public final class EntityServiceTypeMap {
 		typeMap.put(Org.class.getName(), ServiceType.SYSTEM);
 		typeMap.put(Menu.class.getName(), ServiceType.SYSTEM);
 		typeMap.put(Dictionary.class.getName(), ServiceType.SYSTEM);
-		typeMap.put(Vehicle.class.getName(), ServiceType.INFO);
-		typeMap.put(Parts.class.getName(), ServiceType.INFO);
-		typeMap.put(Material.class.getName(), ServiceType.INFO);
 		
 		//DAO 类型
 		daoMap.clear();
@@ -51,10 +48,7 @@ public final class EntityServiceTypeMap {
 		daoMap.put(Org.class.getName(), "cn.wow.common.dao.OrgDao.selectOne");
 		daoMap.put(Menu.class.getName(), "cn.wow.common.dao.MenuDao.selectOne");
 		daoMap.put(RoleGroup.class.getName(), "cn.wow.common.dao.RoleGroupDao.selectOne");
-		daoMap.put(Vehicle.class.getName(), "cn.wow.common.dao.VehicleDao.selectOne");
 		daoMap.put(Dictionary.class.getName(), "cn.wow.common.dao.DictionaryDao.selectOne");
-		daoMap.put(Parts.class.getName(), "cn.wow.common.dao.PartsDao.selectOne");
-		daoMap.put(Material.class.getName(), "cn.wow.common.dao.MaterialDao.selectOne");
 	}
 
 	public static ServiceType getServiceType(Class<?> clazz) {

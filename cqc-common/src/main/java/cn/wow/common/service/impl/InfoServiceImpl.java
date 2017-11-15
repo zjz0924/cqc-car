@@ -35,8 +35,11 @@ import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
@@ -75,6 +78,8 @@ public class InfoServiceImpl implements InfoService {
 	private ApplyRecordService applyRecordService;
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private OperationLogService operationLogService;
 	
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -136,6 +141,8 @@ public class InfoServiceImpl implements InfoService {
 			materialDao.update(material);
 		}
 
+		String logDetail = "";
+		
 		if(taskId == null){
 			// 信息
 			Info info = new Info();
@@ -181,6 +188,8 @@ public class InfoServiceImpl implements InfoService {
 			record.setaId(account.getId());
 			record.setRemark("填写信息");
 			taskRecordDao.insert(record);
+			
+			logDetail = "任务申请，任务号：" + task.getCode();
 		}else{
 			Task task = taskDao.selectOne(taskId);
 			if(task.getState() == StandardTaskEnum.EXAMINE_NOTPASS.getState()){
@@ -197,8 +206,11 @@ public class InfoServiceImpl implements InfoService {
 			record.setaId(account.getId());
 			record.setRemark("更新信息");
 			taskRecordDao.insert(record);
+			
+			logDetail = "编辑任务，任务号：" + task.getCode();
 		}
 		
+		addLog(account.getUserName(), OperationType.APPLY, ServiceType.TASK, logDetail);
 	}
 
 	/**
@@ -242,6 +254,10 @@ public class InfoServiceImpl implements InfoService {
 			record.setRemark(remark);
 		}
 		taskRecordDao.insert(record);
+		
+		String str = type == 1 ? "通过" : "不通过";
+		String logDetail = "任务：" + task.getCode() + "，审核" + str;
+		addLog(account.getUserName(), OperationType.EXAMINE, ServiceType.TASK, logDetail);
 	}
 
 	/**
@@ -283,6 +299,9 @@ public class InfoServiceImpl implements InfoService {
 		record.setState(StandardTaskRecordEnum.TRANSMIT.getState());
 		record.setRemark("分配任务到实验室");
 		taskRecordDao.insert(record);
+		
+		String logDetail = "下达任务，任务号：" + task.getCode() ;
+		addLog(account.getUserName(), OperationType.TRANSMIT, ServiceType.TASK, logDetail);
 	}
 	
 	
@@ -298,7 +317,8 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matPatId     原材料型式实验室ID
 	 */
 	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType) {
-
+		String taskCode = "";
+		
 		if (t_id == null) {
 			Date date = new Date();
 			String code = generateTaskCode(date);
@@ -348,6 +368,7 @@ public class InfoServiceImpl implements InfoService {
 			record.setRemark("下达试验任务");
 			taskRecordDao.insert(record);
 
+			taskCode = task.getCode();
 		} else {
 			Task task = taskDao.selectOne(t_id);
 			task.setiId(i_id);
@@ -365,8 +386,13 @@ public class InfoServiceImpl implements InfoService {
 			record.setaId(account.getId());
 			record.setRemark("下达试验任务");
 			taskRecordDao.insert(record);
+			
+			taskCode = task.getCode();
 		}
 
+		String logDetail = "下达任务，任务号：" + taskCode ;
+		addLog(account.getUserName(), OperationType.TRANSMIT, ServiceType.TASK, logDetail);
+		
 		return true;
 	}
 	    
@@ -574,6 +600,9 @@ public class InfoServiceImpl implements InfoService {
 			taskRecordDao.insert(record);
 			
 			taskDao.update(task);
+			
+			String logDetail = "审批任务，任务号：" + task.getCode() + "，审批结果：" + remark;
+			addLog(account.getUserName(), OperationType.APPROVE, ServiceType.TASK, logDetail);
 		}
 	}
 	
@@ -742,6 +771,9 @@ public class InfoServiceImpl implements InfoService {
 			taskDao.update(task);
 			taskRecordDao.insert(record);
 		}
+		
+		String logDetail = "审批任务，任务号：" + task.getCode() + "，审批结果：" + remark;
+		addLog(account.getUserName(), OperationType.APPROVE, ServiceType.TASK, logDetail);
     }
 
     
@@ -798,6 +830,9 @@ public class InfoServiceImpl implements InfoService {
 			record.setState(SamplingTaskRecordEnum.INFO_APPLY.getState());
 		}
 		taskRecordDao.insert(record);
+		
+		String logDetail = "申请信息修改，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.APPLY_INFO, ServiceType.APPLY, logDetail);
     }
     
     
@@ -889,6 +924,8 @@ public class InfoServiceImpl implements InfoService {
 		applyRecord.setType(2);
 		applyRecordDao.insert(applyRecord);
 		
+		String logDetail = "申请试验结果修改，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.APPLY_RESULT, ServiceType.APPLY, logDetail);
     }
     
     
@@ -944,4 +981,10 @@ public class InfoServiceImpl implements InfoService {
 		}
 	}
 	
+	/**
+	 *  添加日志
+	 */
+	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
+		operationLogService.save(userName, operationType, serviceType, logDetail);
+	}
 }

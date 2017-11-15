@@ -20,7 +20,10 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.PfResultService;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
 
@@ -36,6 +39,8 @@ public class PfResultServiceImpl implements PfResultService{
     private TaskDao taskDao;
     @Autowired
     private TaskRecordDao taskRecordDao;
+    @Autowired
+	private OperationLogService operationLogService;
 
     public PfResult selectOne(Long id){
     	return pfResultDao.selectOne(id);
@@ -110,6 +115,9 @@ public class PfResultServiceImpl implements PfResultService{
 		taskRecordDao.insert(record);
 
 		taskDao.update(task);
+		
+		String logDetail =  remark + "，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.UPLOAD_PF, ServiceType.LAB, logDetail);
     }
     
 	// 获取性能结果是哪种结果（零部件、原材料、全部）
@@ -173,5 +181,13 @@ public class PfResultServiceImpl implements PfResultService{
 		pfMap.put("catagory", type);
 
 		return this.selectAllList(pfMap);
+	}
+	
+	
+	/**
+	 *  添加日志
+	 */
+	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
+		operationLogService.save(userName, operationType, serviceType, logDetail);
 	}
 }

@@ -57,50 +57,54 @@ public class OperationLogController extends AbstractController {
 		List<FieldValue> dataList = new ArrayList<FieldValue>();
 
 		OperationLog operationLog = operationLogService.selectOne(id);
-		try {
-			String detailStr = operationLog.getDetail();
-			Map<String, String> strMap = null;
+		if (!"任务管理".equals(operationLog.getType())) {
+			try {
+				String detailStr = operationLog.getDetail();
+				Map<String, String> strMap = null;
 
-			if (!StringUtils.isEmpty(detailStr)) {
-				strMap = JsonUtil.fromJson(detailStr);
-			}
+				if (!StringUtils.isEmpty(detailStr)) {
+					strMap = JsonUtil.fromJson(detailStr);
+				}
 
-			if (strMap != null && strMap.containsKey(OpLogDetailCoder.KEY_ENTITYTYPE)) {
-				Map<String, String> oldJsonDetail = null;
-				Map<String, String> newJsonDetail = null;
-				
-				boolean isCollection = OpLogDetailCoder.isCollection(strMap.get(OpLogDetailCoder.KEY_ENTITYTYPE));
-				if (strMap.get(OpLogDetailCoder.KEY_OLDENTITY) != null) {
-					if (isCollection) {
-						oldJsonDetail = new HashMap<String, String>();
-						oldJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_OLDENTITY));
-					} else {
-						oldJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(strMap.get(OpLogDetailCoder.KEY_OLDENTITY), Map.class, String.class, Object.class));
+				if (strMap != null && strMap.containsKey(OpLogDetailCoder.KEY_ENTITYTYPE)) {
+					Map<String, String> oldJsonDetail = null;
+					Map<String, String> newJsonDetail = null;
+
+					boolean isCollection = OpLogDetailCoder.isCollection(strMap.get(OpLogDetailCoder.KEY_ENTITYTYPE));
+					if (strMap.get(OpLogDetailCoder.KEY_OLDENTITY) != null) {
+						if (isCollection) {
+							oldJsonDetail = new HashMap<String, String>();
+							oldJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_OLDENTITY));
+						} else {
+							oldJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(
+									strMap.get(OpLogDetailCoder.KEY_OLDENTITY), Map.class, String.class, Object.class));
+						}
+					}
+					if (strMap.get(OpLogDetailCoder.KEY_ENTITY) != null) {
+						if (isCollection) {
+							newJsonDetail = new HashMap<String, String>();
+							newJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_ENTITY));
+						} else {
+							newJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(
+									strMap.get(OpLogDetailCoder.KEY_ENTITY), Map.class, String.class, Object.class));
+						}
+					}
+
+					dataList = toFacade(newJsonDetail, oldJsonDetail);
+					model.addAttribute("operation", strMap.get(OpLogDetailCoder.KEY_OPERATION));
+				} else {
+					if (strMap != null && strMap.get(OpLogDetailCoder.KEY_FROM) != null) {
+						FieldValue val = new FieldValue();
+						val.setName(strMap.get(OpLogDetailCoder.KEY_NAME));
+						val.setNewValue(strMap.get(OpLogDetailCoder.KEY_TO));
+						val.setOldValue(strMap.get(OpLogDetailCoder.KEY_FROM));
+
+						dataList.add(val);
 					}
 				}
-				if (strMap.get(OpLogDetailCoder.KEY_ENTITY) != null) {
-					if (isCollection) {
-						newJsonDetail = new HashMap<String, String>();
-						newJsonDetail.put("Entities", strMap.get(OpLogDetailCoder.KEY_ENTITY));
-					} else {
-						newJsonDetail = onlyParseFirstLevel(JsonUtil.fromJson(strMap.get(OpLogDetailCoder.KEY_ENTITY), Map.class, String.class, Object.class));
-					}
-				}
-				
-				dataList = toFacade(newJsonDetail, oldJsonDetail);
-				model.addAttribute("operation", strMap.get(OpLogDetailCoder.KEY_OPERATION));
-			}else{
-				if(strMap != null && strMap.get(OpLogDetailCoder.KEY_FROM) != null){
-					FieldValue val = new FieldValue();
-					val.setName(strMap.get(OpLogDetailCoder.KEY_NAME));
-					val.setNewValue(strMap.get(OpLogDetailCoder.KEY_TO));
-					val.setOldValue(strMap.get(OpLogDetailCoder.KEY_FROM));
-					
-					dataList.add(val);
-				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 
 		model.addAttribute("opeartionLog", operationLog);

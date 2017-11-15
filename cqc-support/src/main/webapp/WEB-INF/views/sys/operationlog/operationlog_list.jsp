@@ -122,24 +122,24 @@
 	
 	<body>
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
-			用户名：<input id="account" name="account" class="easyui-textbox" style="width: 150px;"> &nbsp;&nbsp;&nbsp;
+			用户名：<input id="account" name="account" class="easyui-textbox" style="width: 130px;"> &nbsp;&nbsp;&nbsp;
 			
-			类型：<select id="type" name="type" class="easyui-combobox" style="width: 150px;" data-options="panelHeight:'auto'"> 
+			类型：<select id="type" name="type" class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'"> 
 				<option value="">全部</option>
 				<c:forEach items="${typeList}" var="vo">
 					<option value="${vo}">${vo}</option>
 				</c:forEach>
 			</select> &nbsp;&nbsp;&nbsp;
 			
-			操作：<select id="operation" name="operation" class="easyui-combobox" data-options="panelHeight:'auto'" style="width: 150px;margin-right:20px;" >
+			<%-- 操作：<select id="operation" name="operation" class="easyui-combobox" data-options="panelHeight:'auto'" style="width: 130px;margin-right:20px;" >
 				<option value="">全部</option>
 				<c:forEach items="${operationList}" var="vo">
 	                  <option value="${vo}">${vo}</option>
 	               </c:forEach>
-			</select>&nbsp;&nbsp;&nbsp;
+			</select> --%>&nbsp;&nbsp;&nbsp;
 	
-			 时间：<input type="text" id="startTimeFrom" name="startTimeFrom" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'startTimeTo\')}'})" class="textbox" style="line-height: 23px;width:150px;display:inline-block"/> -
-	            <input type="text" id="startTimeTo" name="startTimeTo" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTimeFrom\')}'})" class="textbox" style="line-height: 23px;width:150px;display:inline-block"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 时间：<input type="text" id="startTimeFrom" name="startTimeFrom" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'startTimeTo\')}'})" class="textbox" style="line-height: 23px;width:130px;display:inline-block"/> -
+	            <input type="text" id="startTimeTo" name="startTimeTo" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startTimeFrom\')}'})" class="textbox" style="line-height: 23px;width:130px;display:inline-block"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doClear()">清空</a>

@@ -16,6 +16,9 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.ApplyRecordService;
+import cn.wow.common.service.OperationLogService;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 
@@ -29,6 +32,8 @@ public class ApplyRecordServiceImpl implements ApplyRecordService{
     private ApplyRecordDao applyRecordDao;
     @Autowired
     private TaskDao taskDao;
+    @Autowired
+	private OperationLogService operationLogService;
 
     public ApplyRecord selectOne(Long id){
     	return applyRecordDao.selectOne(id);
@@ -90,11 +95,22 @@ public class ApplyRecordServiceImpl implements ApplyRecordService{
 		task.setResultApply(0);
 		taskDao.update(task);
 		
-		
 		applyRecord.setConfirmTime(date);
 		applyRecord.setState(3);
 		applyRecord.setRemark(remark);
 		applyRecordDao.update(applyRecord);
+		
+		// 操作日志
+    	String logDetail =  "中止申请，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.END, ServiceType.APPLY, logDetail);
+	}
+	
+	
+	/**
+	 *  添加日志
+	 */
+	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
+		operationLogService.save(userName, operationType, serviceType, logDetail);
 	}
 	
 }

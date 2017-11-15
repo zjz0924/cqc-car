@@ -49,7 +49,7 @@
 					}, {
 						field : 'type',
 						title : '任务类型',
-						width : '120',
+						width : '110',
 						align : 'center',
 						formatter : function(val){
 							var str = "材料研究所任务"
@@ -111,6 +111,39 @@
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
+						field : 'failNum',
+						title : '结果',
+						width : '80',
+						align : 'center',
+						formatter : function(value,row,index){
+							var str = "";
+							var color = "red";
+							if(row.type == 1 || row.type == 4){
+								if(row.state == 4){
+									if(row.failNum == 0){
+										str = "合格";
+										color = "green";
+									}else if(row.failNum == 1){
+										str = "一次不合格";
+									}else if(row.failNum == 2){
+										str = "二次不合格";
+									}
+								}
+							}else if(row.type == 2 || row.type == 3){
+								if(row.state == 7){
+									if(row.failNum == 0){
+										str = "合格";
+										color = "green";
+									}else if(row.failNum == 1){
+										str = "一次不合格";
+									}else if(row.failNum == 2){
+										str = "二次不合格";
+									}
+								}
+							}
+							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
+						}
+					}, {
 						field : 'org',
 						title : '录入单位',
 						width : '160',
@@ -133,19 +166,19 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '150',
+						width : '130',
 						align : 'center',
 						formatter : DateTimeFormatter
 					},{
 						field : 'confirmTime',
 						title : '完成时间',
-						width : '150',
+						width : '130',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '100',
+						width : '80',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">详情</a>';  	

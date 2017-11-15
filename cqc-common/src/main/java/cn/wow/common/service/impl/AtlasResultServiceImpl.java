@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
@@ -27,6 +30,7 @@ import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.OperationLogService;
 
 @Service
 @Transactional
@@ -42,6 +46,8 @@ public class AtlasResultServiceImpl implements AtlasResultService{
     private TaskDao taskDao;
     @Autowired
     private ExamineRecordDao examineRecordDao;
+    @Autowired
+	private OperationLogService operationLogService;
     
 
     public AtlasResult selectOne(Long id){
@@ -117,7 +123,6 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 				task.setState(SamplingTaskEnum.COMPARE.getState());
 			}
 		}
-		
 
 		// 操作记录
 		TaskRecord record = new TaskRecord();
@@ -130,6 +135,9 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		taskRecordDao.insert(record);
 
 		taskDao.update(task);
+		
+		String logDetail =  remark + "，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.UPLOAD_ATL, ServiceType.LAB, logDetail);
 	}
 
 	
@@ -250,6 +258,14 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		pAtMap.put("expNo", this.getExpNoByCatagory(taskId, type));
 		pAtMap.put("catagory", type);
 		return this.selectAllList(pAtMap);
+	}
+	
+	
+	/**
+	 *  添加日志
+	 */
+	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
+		operationLogService.save(userName, operationType, serviceType, logDetail);
 	}
 	
 }

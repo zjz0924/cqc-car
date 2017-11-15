@@ -33,7 +33,7 @@
 	            }
 	        }, '-',  {
 				text : '删除',
-				iconCls : 'icon-delete',
+				iconCls : 'icon-cancel',
 				handler : function() {
 					var row = $("#" + datagrid).datagrid('getSelected');
 	            	if(isNull(row)){
@@ -41,7 +41,7 @@
 	            		return;
 	            	}
 	            	
-	            	 $.messager.confirm('系统提示', "此操作将删除该用户密码，您确定要继续吗？", function(r){
+	            	 $.messager.confirm('系统提示', "此操作将删除该字典，您确定要继续吗？", function(r){
 	                     if (r){
 	                         $.ajax({
 	                         	url: "${ctx}/dictionary/delete",
@@ -69,7 +69,7 @@
 			        url : url,
 			      //  checkOnSelect: true,
 			        singleSelect : true, /*是否选中一行*/
-			        height: 'auto',
+			        height: '380px',
 			        width:'auto', 
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,

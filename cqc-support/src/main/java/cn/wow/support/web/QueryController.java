@@ -42,6 +42,8 @@ import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.SamplingTaskEnum;
+import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Controller
@@ -250,7 +252,7 @@ public class QueryController extends AbstractController {
 			
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "任务号", "任务类型", "状态", "录入单位", "录入用户", "录入时间", "完成时间"};
+			String[] titles = { "任务号", "任务类型", "状态", "录入单位", "录入用户", "录入时间", "完成时间", "结果"};
 			int r = 0;
 			
 			Row titleRow = sh.createRow(0);
@@ -347,6 +349,33 @@ public class QueryController extends AbstractController {
 				if(task.getConfirmTime() != null) {
 					cell7.setCellValue(sdf.format(task.getConfirmTime()));
 				}
+				
+				String result = "";
+				Cell cell8 = contentRow.createCell(7);
+				cell8.setCellStyle(styles.get("cell"));
+				if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+					if(task.getState() == StandardTaskEnum.ACCOMPLISH.getState()) {
+						if(task.getFailNum() == 0) {
+							result = "合格";
+						}else if(task.getFailNum() == 1) {
+							result = "一次不合格";
+						}else {
+							result = "两次不合格";
+						}
+					}
+				}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					if(task.getState() == SamplingTaskEnum.ACCOMPLISH.getState()) {
+						if(task.getFailNum() == 0) {
+							result = "合格";
+						}else if(task.getFailNum() == 1) {
+							result = "一次不合格";
+						}else {
+							result = "两次不合格";
+						}
+					}
+				}
+				cell8.setCellValue(result);
+				
 				r++;
 			}
 

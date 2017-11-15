@@ -35,51 +35,57 @@
 	</div>	
 	
 	<div style="margin-top:10px;">
-		<div style="font-weight:bold;">Detail Information</div>
+		<div style="font-weight:bold;margin-left:10px;">Detail Information</div>
 		
-		<c:if test="${not empty dataList}">
-			<c:choose>
-				<c:when test="${opeartionLog.operation != 'Move' }">
-					<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;">
-						<thead>
-							<tr>
-								<th>Field</th>
-								<th>Value</th>
-								
-								<c:if test="${operation == '编辑'}">
-									<th>Old Value</th>
-								</c:if>
-							</tr>
-						</thead>
-						
+		<c:choose>
+			<c:when test="${not empty dataList}">
+				<c:choose>
+					<c:when test="${opeartionLog.operation != 'Move' }">
+						<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;">
+							<thead>
+								<tr>
+									<th>Field</th>
+									<th>Value</th>
+									
+									<c:if test="${operation == '编辑'}">
+										<th>Old Value</th>
+									</c:if>
+								</tr>
+							</thead>
+							
+							<c:forEach items="${dataList}" var="vo" > 
+								<tr>
+									<td>${vo.name}</td>
+									<c:choose>
+										<c:when test="${opeartionLog.operation == '编辑'}">
+											<td>${vo.newValue}</td>
+											<td>${vo.oldValue}</td>
+										</c:when>
+										<c:when test="${opeartionLog.operation == '新建'}">
+											<td>${vo.newValue}</td>
+										</c:when>
+										<c:otherwise>
+											<td>${vo.oldValue}</td>
+										</c:otherwise>
+									</c:choose>
+								</tr>
+							</c:forEach> 
+						</table>
+					</c:when>
+					<c:otherwise>
 						<c:forEach items="${dataList}" var="vo" > 
-							<tr>
-								<td>${vo.name}</td>
-								<c:choose>
-									<c:when test="${opeartionLog.operation == '编辑'}">
-										<td>${vo.newValue}</td>
-										<td>${vo.oldValue}</td>
-									</c:when>
-									<c:when test="${opeartionLog.operation == '新建'}">
-										<td>${vo.newValue}</td>
-									</c:when>
-									<c:otherwise>
-										<td>${vo.oldValue}</td>
-									</c:otherwise>
-								</c:choose>
-							</tr>
-						</c:forEach> 
-					</table>
-				</c:when>
-				<c:otherwise>
-					<c:forEach items="${dataList}" var="vo" > 
-						<p>区域名称： ${vo.name}</p>
-						<p>从： ${vo.oldValue}</p>
-						<p>到: ${vo.newValue }</p>
-					</c:forEach>
-				</c:otherwise>
-			</c:choose>	
-		</c:if>
+							<p>区域名称： ${vo.name}</p>
+							<p>从： ${vo.oldValue}</p>
+							<p>到: ${vo.newValue }</p>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>	
+			</c:when>
+			<c:otherwise>
+				<div style="margin-left: 10px;margin-top: 5px;">${opeartionLog.detail }</div>
+			</c:otherwise>
+		</c:choose>
+	
 	</div>
 	
 	<style type="text/css">

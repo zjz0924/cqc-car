@@ -45,6 +45,7 @@ import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.PartsService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskRecordService;
@@ -52,6 +53,8 @@ import cn.wow.common.service.TaskService;
 import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
@@ -483,9 +486,9 @@ public class OtsTaskController extends AbstractController {
 	@RequestMapping(value = "/examine")
 	public AjaxVO examine(HttpServletRequest request, Model model, Long id, int type, String remark) {
 		AjaxVO vo = new AjaxVO();
-
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		try {
-			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			infoService.examine(account, id, type, remark);
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);

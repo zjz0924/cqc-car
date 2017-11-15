@@ -12,10 +12,10 @@ import java.io.Serializable;
  */
 public enum ServiceType implements Serializable {
 	ACCOUNT("用户管理"), 
-	USER_LOGIN("用户登录"),
-	USER_LOGOUT("用户登出"), 
-	SYSTEM("菜单管理"),
-	INFO("信息录入");
+	SYSTEM("系统管理"),
+	APPLY("申请管理"),
+	LAB("实验管理"),
+	TASK("任务管理");
 
 	private String displayName;
 

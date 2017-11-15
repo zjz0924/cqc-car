@@ -352,6 +352,7 @@
 			.title_span{
 				display: inline-block;
 				width: 70px;
+				text-align: right;
 			}
 		</style>
 		
@@ -361,28 +362,28 @@
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
 				<span class="title_span">用户名：</span>
-				<input id="q_account" name="q_account" class="easyui-textbox" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="q_account" name="q_account" class="easyui-textbox" style="width: 130px;">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<span class="title_span">姓名：</span>
-				<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 130px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 			
 				<span class="title_span">状态:</span> 
-				<select id="q_lock" name="q_lock"  class="easyui-combobox" style="width: 140px;" data-options="panelHeight:'auto'">
+				<select id="q_lock" name="q_lock"  class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'">
 				   <option value="">全部</option>
 		           <option value="N" <c:if test="${lock == 'N'}">selected=selected</c:if>>正常</option>
 		           <option value="Y" <c:if test="${lock == 'Y'}">selected=selected</c:if>>锁定</option>
 		      	</select>&nbsp;&nbsp;&nbsp;&nbsp;
 		      	
 		      	<span class="title_span">机构：</span>
-		      	<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
+		      	<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 130px;">&nbsp;&nbsp;&nbsp;&nbsp;
 		      	
 		      	<span class="title_span">角色： </span>
-		      	<input id="q_role" name="q_role" style="width: 140px;">
+		      	<input id="q_role" name="q_role" style="width: 130px;">
 			</div>
 		
-			<div style="margin-top:15px;">
+			<div style="margin-top:10px;">
 				<span class="title_span">手机号码：</span>
-				<input id="q_mobile" name="q_mobile" class="easyui-textbox" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="q_mobile" name="q_mobile" class="easyui-textbox" style="width: 130px;">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<span class="title_span">创建时间：</span>
 				<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 

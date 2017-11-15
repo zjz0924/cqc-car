@@ -99,7 +99,7 @@
 		$(function(){
 			$('#role').combotree({
 				url: '${ctx}/role/tree',
-				multiple: true,
+				multiple: false,
 				animate: true,
 				disabled: true 
 			});

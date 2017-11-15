@@ -36,9 +36,12 @@ import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.mailSender.MailInfo;
 import cn.wow.common.utils.mailSender.MailSender;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
@@ -104,6 +107,8 @@ public class TaskServiceImpl implements TaskService{
     private ExamineRecordDao examineRecordDao;
     @Autowired
     private CostRecordDao costRecordDao;
+    @Autowired
+	private OperationLogService operationLogService;
 
     public Task selectOne(Long id){
     	return taskDao.selectOne(id);
@@ -220,6 +225,10 @@ public class TaskServiceImpl implements TaskService{
     	if(StringUtils.isNotBlank(mPatOrgVal)){
     		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content);
     	}
+    	
+    	// 操作日志
+    	String logDetail =  remark + "，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.SEND, ServiceType.LAB, logDetail);
     }
     
     
@@ -386,6 +395,10 @@ public class TaskServiceImpl implements TaskService{
 			costRecordList.add(getCostRecord(account, date, task, 4, result));
 		}
 		costRecordDao.batchAdd(costRecordList);
+		
+		// 操作日志
+    	String logDetail =  remark + "，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.CONFIRM, ServiceType.LAB, logDetail);
 	}
 	
 	/**
@@ -426,6 +439,7 @@ public class TaskServiceImpl implements TaskService{
 				task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
 				task.setFailNum(task.getFailNum() + 1);
 				task.setRemark(remark);
+				task.setConfirmTime(new Date());
 				taskDao.update(task);
 				
 				// 发送警告书
@@ -446,6 +460,10 @@ public class TaskServiceImpl implements TaskService{
 		costRecordList.add(getCostRecord(account, date, task, 1, result));
 		costRecordList.add(getCostRecord(account, date, task, 3, result));
 		costRecordDao.batchAdd(costRecordList);
+		
+		// 操作日志
+    	String logDetail =  remark + "，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.CONFIRM, ServiceType.LAB, logDetail);
 	}
 	
 	
@@ -483,6 +501,10 @@ public class TaskServiceImpl implements TaskService{
     	// 操作记录
     	TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), recordState, remark, new Date(), task.getType());
 		taskRecordDao.insert(taskRecord);
+		
+		// 操作日志
+    	String logDetail =  remark + "，任务号：" + task.getCode();
+		addLog(account.getUserName(), OperationType.COMPARE, ServiceType.LAB, logDetail);
     }
 	
 	
@@ -699,7 +721,7 @@ public class TaskServiceImpl implements TaskService{
 			subTask.setOrgId(account.getOrgId());
 			subTask.setState(SamplingTaskEnum.APPROVE.getState());
 			subTask.setType(task.getType());
-			subTask.setFailNum(0);
+			subTask.setFailNum(1);
 			subTask.setaId(account.getId());
 			subTask.setMatAtlResult(0);
 			subTask.setMatPatResult(0);
@@ -762,4 +784,11 @@ public class TaskServiceImpl implements TaskService{
 		return taskNum;
 	}
 	
+	
+	/**
+	 *  添加日志
+	 */
+	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
+		operationLogService.save(userName, operationType, serviceType, logDetail);
+	}
 }
