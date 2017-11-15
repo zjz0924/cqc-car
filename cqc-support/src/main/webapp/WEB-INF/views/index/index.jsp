@@ -38,6 +38,11 @@
 		<div class="main">
 			<div style="background-color:white;margin-left: 20px;margin-right:20px;margin-top: 20px;height:650px;">
 				<div style="padding-top:30px;padding-left:15px;font-size: 20px;">欢迎使用上汽通用五菱材料管理平台</div>
+				
+				<div style="margin-left:15px;margin-top: 25px;">
+					<div style="font-weight:bold;color: #1874CD;font-size:16px;">温馨提示：</div>
+					<div style="margin-top:10px;font-size:14px;">您还有 <span style="font-weight:bold;color:red;">${unread}</span> 条消息未读，请及时阅读。</div>
+				</div>
 			</div>
 		</div>
 		

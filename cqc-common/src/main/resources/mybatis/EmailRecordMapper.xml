@@ -12,14 +12,17 @@
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="orgin_email" property="orginEmail" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		
+		<association property="task" javaType="cn.wow.common.domain.Task" column="task_id" select="cn.wow.common.dao.TaskDao.selectOne"/> 
+		<association property="account" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, subject, content, addr, task_id, a_id, state, type, orgin_email, create_time
+		r.id, r.subject, r.content, r.addr, r.task_id, r.a_id, r.state, r.type, r.orgin_email, r.create_time
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="base_columns" /> from email_record where id = #{id,jdbcType=BIGINT}
+		select <include refid="base_columns" /> from email_record r where r.id = #{id,jdbcType=BIGINT}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -71,31 +74,37 @@
 	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
 	  	select 
 	    <include refid="base_columns" />
-	      from email_record
+	      from email_record r left join task t on t.id = r.task_id
 	     <where>
+	     	<if test="code != null and code != ''">
+				and t.code like concat('%', #{code,jdbcType=VARCHAR}, '%')
+			</if>
 			<if test="subject != null">
-				and subject like concat('%',#{subject,jdbcType=VARCHAR},'%')
+				and r.subject like concat('%',#{subject,jdbcType=VARCHAR},'%')
 			</if>
 			<if test="taskId != null">
-				and task_id = #{taskId,jdbcType=BIGINT}
+				and r.task_id = #{taskId,jdbcType=BIGINT}
 			</if>
 			<if test="aId != null">
-				and a_id = #{aId,jdbcType=BIGINT}
+				and r.a_id = #{aId,jdbcType=BIGINT}
 			</if>
 			<if test="state != null">
-				and state = #{state,jdbcType=INTEGER}
+				and r.state = #{state,jdbcType=INTEGER}
 			</if>
 			<if test="type != null">
-				and type = #{type,jdbcType=INTEGER}
+				and r.type = #{type,jdbcType=INTEGER}
 			</if>
 			<if test="orginEmail != null">
-				and orgin_email like concat('%',#{orginEmail,jdbcType=VARCHAR},'%')
+				and r.orgin_email like concat('%',#{orginEmail,jdbcType=VARCHAR},'%')
 			</if>
 			<if test="startCreateTime != null and startCreateTime != ''">
-				and create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
+				and r.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="endCreateTime != null and endCreateTime != ''">
-				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+				and r.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="addr != null">
+				and find_in_set(#{addr,jdbcType=VARCHAR}, addr)
 			</if>
 	      </where>
 	      

@@ -253,7 +253,7 @@
 		<!-- PPAP 对比结果确认 -->
 		<c:if test="${facadeBean.task.type == 2 || facadeBean.task.type == 3}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-			<div class="title">对比结果</div>
+			<div class="title">对比结果</div> ${facadeBean.labType}
 			
 			<div style="margin-left: 15px;">
 				<c:if test="${facadeBean.labType == 1 }">
@@ -287,7 +287,7 @@
 					</c:forEach>
 				</c:if>
 					
-				<c:if test="${facadeBean.labType == 2 }">
+				<c:if test="${facadeBean.labType == 3 }">
 					<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
 					<c:forEach items="${mAtlasResult}" var="m">
 						<div style="margin-bottom: 10px;">
@@ -331,7 +331,7 @@
 					</tr>
 					
 					<c:forEach items="${compareResult}" var="m">
-						<c:if test="${(facadeBean.labType == 1 and m.key == '零部件') or (facadeBean.labType == 2 and m.key == '原材料')}">
+						<c:if test="${(facadeBean.labType == 1 and m.key == '零部件') or (facadeBean.labType == 3 and m.key == '原材料')}">
 							<tr>
 								<td style="font-weight:bold;">${m.key}</td>
 								<c:forEach items="${m.value}" var="vo" varStatus="vst">

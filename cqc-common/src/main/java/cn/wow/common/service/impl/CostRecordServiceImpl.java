@@ -21,7 +21,10 @@ import cn.wow.common.domain.CostRecord;
 import cn.wow.common.domain.EmailRecord;
 import cn.wow.common.domain.ExpItem;
 import cn.wow.common.service.CostRecordService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.TaskService;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 
@@ -39,6 +42,8 @@ public class CostRecordServiceImpl implements CostRecordService{
     private AccountDao accountDao;
     @Autowired
     private TaskService taskService;
+    @Autowired
+	private OperationLogService operationLogService;
 
     public CostRecord selectOne(Long id){
     	return costRecordDao.selectOne(id);
@@ -84,6 +89,27 @@ public class CostRecordServiceImpl implements CostRecordService{
 		
 		// 发送邮件
 		taskService.sendCost(account, orgs, costRecord, itemList);
+		
+		// 操作日志
+		String lab = "";
+		if(costRecord.getLabType() == 1) {
+			lab = "零部件图谱试验费用单";
+		}else if(costRecord.getLabType() == 2) {
+			lab = "零部件型式试验费用单";
+		}else if(costRecord.getLabType() == 3) {
+			lab = "原材料图谱试验费用单";
+		}else {
+			lab = "原材料型式试验费用单";
+		}
+		String logDetail = "任务：" + costRecord.getTask().getCode() + "," + lab;
+		addLog(account.getUserName(), OperationType.SEND_COST, ServiceType.COST, logDetail);
 	}
 
+	
+	/**
+	 *  添加日志
+	 */
+	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
+		operationLogService.save(userName, operationType, serviceType, logDetail);
+	}
 }

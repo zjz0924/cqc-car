@@ -15,6 +15,7 @@ public enum ServiceType implements Serializable {
 	SYSTEM("系统管理"),
 	APPLY("申请管理"),
 	LAB("实验管理"),
+	COST("费用管理"),
 	TASK("任务管理");
 
 	private String displayName;

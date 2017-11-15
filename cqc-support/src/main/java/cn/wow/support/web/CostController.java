@@ -47,7 +47,7 @@ import cn.wow.common.utils.taskState.TaskTypeEnum;
 @RequestMapping(value = "cost")
 public class CostController extends AbstractController {
 
-	Logger logger = LoggerFactory.getLogger(DictionaryController.class);
+	Logger logger = LoggerFactory.getLogger(CostController.class);
 
 	private final static String DEFAULT_PAGE_SIZE = "10";
 

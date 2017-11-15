@@ -211,19 +211,19 @@ public class TaskServiceImpl implements TaskService{
 		
 		// 发送结果（最后发送，防止事务提交失败，还是发送结果）
 		if(StringUtils.isNotBlank(pAtlOrgVal)){
-    		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content);
+    		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content, 1);
     	}
 		
 		if(StringUtils.isNotBlank(pPatOrgVal)){
-    		send(account, task, date, pPatOrgVal, "零部件型式试验", title, content);
+    		send(account, task, date, pPatOrgVal, "零部件型式试验", title, content, 1);
     	}
 		
 		if(StringUtils.isNotBlank(mAtlOrgVal)){
-    		send(account, task, date, mAtlOrgVal, "原材料图谱试验", title, content);
+    		send(account, task, date, mAtlOrgVal, "原材料图谱试验", title, content, 1);
     	}
     	
     	if(StringUtils.isNotBlank(mPatOrgVal)){
-    		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content);
+    		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content, 1);
     	}
     	
     	// 操作日志
@@ -443,7 +443,7 @@ public class TaskServiceImpl implements TaskService{
 				taskDao.update(task);
 				
 				// 发送警告书
-				send(account, task, date, orgs, remark, alarmTitle, alarmContent);
+				send(account, task, date, orgs, remark, alarmTitle, alarmContent, 3);
 				
 				// 确认记录
 				ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "第二次抽样结果不合格，原因：" + remark, 3, null, date, TaskTypeEnum.PPAP.getState());
@@ -549,7 +549,7 @@ public class TaskServiceImpl implements TaskService{
 	
 
 	// 发送邮件
-	protected void send(Account account, Task task, Date date, String orgs, String tips, String title, String content) throws Exception{
+	protected void send(Account account, Task task, Date date, String orgs, String tips, String title, String content, int type) throws Exception{
 		// 机构ID
 		String[] orgsList = orgs.split(",");
 		List<Long> orgIdList = new ArrayList<Long>();
@@ -582,7 +582,8 @@ public class TaskServiceImpl implements TaskService{
 			sendEmail(title, content, addr, 1);
 			
 			// 邮件记录
-			EmailRecord emailRecord = new EmailRecord(title, content, addr, task.getId(), account.getId(), 1, 1, mailUser, date);
+			addr = addr.replaceAll(";", ","); //数据库查询时，只能用,分隔
+			EmailRecord emailRecord = new EmailRecord(title, content, addr, task.getId(), account.getId(), 1, type, mailUser, date);
 			emailRecordDao.insert(emailRecord);
 		}
 	}
@@ -650,8 +651,9 @@ public class TaskServiceImpl implements TaskService{
 			// 发送邮件
 			sendEmail(costTitle, costContent + tempContent, addr, 2);
 
+			addr = addr.replaceAll(";", ",");
 			// 邮件记录
-			EmailRecord emailRecord = new EmailRecord(costTitle, costContent + tempContent, addr, costRecord.getTask().getId(), account.getId(), 1, 1, mailUser, date);
+			EmailRecord emailRecord = new EmailRecord(costTitle, costContent + tempContent, addr, costRecord.getTask().getId(), account.getId(), 1, 2, mailUser, date);
 			emailRecordDao.insert(emailRecord);
 		}
 	}

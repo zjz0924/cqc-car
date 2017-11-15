@@ -9,10 +9,10 @@
 				<c:when test="${facadeBean.task.type == 1}">
 					OTS阶段任务
 				</c:when>
-				<c:when test="">
+				<c:when test="${facadeBean.task.type == 2}">
 					PPAP阶段任务
 				</c:when>
-				<c:when test="">
+				<c:when test="${facadeBean.task.type == 3}">
 					SOP阶段任务
 				</c:when>
 				<c:otherwise>

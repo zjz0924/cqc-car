@@ -15,9 +15,15 @@ public class EmailRecord {
     private String addr;
     // 任务ID
     private Long taskId;
+    
+    private Task task;
+    
     // 操作人ID
     private Long aId;
-    // 状态
+    
+    private Account account;
+    
+    // 状态：1-未查看，2-已查看
     private Integer state;
     // 类型：1-结果发送，2-收费通知，3-警告书
     private Integer type;
@@ -122,4 +128,21 @@ public class EmailRecord {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+	
 }
