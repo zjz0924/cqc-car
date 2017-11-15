@@ -106,5 +106,27 @@
 	 	 </choose>
 	  </select>
 	
+	  <!-- 获取ID集合 -->
+	  <select id="selectIdList" resultType="java.lang.Long" parameterType="java.util.Map" >
+	  	select id from info
+	     <where>
+			<if test="vId != null">
+				and v_id = #{vId,jdbcType=BIGINT}
+			</if>
+			<if test="pId != null">
+				and p_id = #{pId,jdbcType=BIGINT}
+			</if>
+			<if test="mId != null">
+				and m_id = #{mId,jdbcType=BIGINT}
+			</if>
+			<if test="type != null">
+				and type = #{type,jdbcType=INTEGER}
+			</if>
+			<if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			</if>
+	      </where>
+	  </select>
+	
 	
 </mapper>

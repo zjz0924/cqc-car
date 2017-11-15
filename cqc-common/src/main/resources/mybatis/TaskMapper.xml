@@ -360,6 +360,11 @@
 				)
 			</if>
 			
+			<!-- 信息ID -->
+			<if test="iIdList != null">
+				and t.i_id in <foreach collection="iIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
+			
 		</where>
 
 		<choose>

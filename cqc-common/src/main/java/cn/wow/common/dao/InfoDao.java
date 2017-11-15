@@ -1,5 +1,10 @@
 package cn.wow.common.dao;
 
-public interface InfoDao extends SqlDao{
+import java.util.List;
+import java.util.Map;
+
+public interface InfoDao extends SqlDao {
+
+	public List<Long> selectIdList(Map<String, Object> map);
 
 }

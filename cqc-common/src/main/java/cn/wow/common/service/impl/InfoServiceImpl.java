@@ -890,6 +890,15 @@ public class InfoServiceImpl implements InfoService {
 		applyRecordDao.insert(applyRecord);
 		
     }
+    
+    
+    /**
+     * 获取信息ID列表
+     */
+	public List<Long> selectIdList(Map<String, Object> map) {
+		return infoDao.selectIdList(map);
+	}
+    
 	
 	
 	/**

@@ -108,4 +108,10 @@ public interface InfoService {
      */
     public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList);
     
+    
+    /**
+     * 获取信息ID列表
+     */
+    public List<Long> selectIdList(Map<String, Object> map);
+    
 }
