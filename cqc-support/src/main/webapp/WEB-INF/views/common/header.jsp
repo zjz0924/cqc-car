@@ -76,8 +76,8 @@
 			<h2>上汽通用五菱材料管理平台</h2>
 			<div class="ri">
 				<p>
-					<a href='javascript:void(0)' onclick="accountInfo()"><span><img src='../../resources/img/icon_11.png' /></span>${currentAccount.nickName }，晚上好</a>&nbsp;&nbsp;
-					<a href="${ctx}/loginout" class="loginOut"><img src='../../resources/img/icon_04.png' />退出</a> 
+					<a href='javascript:void(0)' onclick="accountInfo()"><span><img src='${ctx}/resources/img/icon_11.png' /></span>${currentAccount.nickName }，晚上好</a>&nbsp;&nbsp;
+					<a href="${ctx}/loginout" class="loginOut"><img src='${ctx}/resources/img/icon_04.png' />退出</a> 
 				</p>
 			</div>
 			

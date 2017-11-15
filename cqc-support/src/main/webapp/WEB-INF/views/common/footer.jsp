@@ -24,7 +24,7 @@
 	                </tr>
 	            </table>
 	            <hr />
-	            <img src='../../resources/img/img_01.png' />
+	            <img src='${ctx}/resources/img/img_01.png' />
 	            <p>上汽通用五菱汽车股份有限公司供应商质量管理部</p>
 	        </div>
 	        <div class="ri">

@@ -22,13 +22,13 @@
 		        <div id="example">
 		            <div id="slides">
 		                <div class="slides_container">
-		                    <div><a href="#"><img src="../../resources/img/gundong/banner_04.png" /></a></div>
-		                    <div><a href="#"><img src="../../resources/img/gundong/banner_05.png" /></a></div>
-		                    <div><a href="#"><img src="../../resources/img/gundong/banner_06.png" /></a></div>
-		                    <div><a href="#"><img src="../../resources/img/gundong/banner_07.png" /></a></div>
+		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_04.png" /></a></div>
+		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_05.png" /></a></div>
+		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_06.png" /></a></div>
+		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_07.png" /></a></div>
 		                </div>
-		                <a href="#" class="prev"><img src="../../resources/img/arrow-prev.png" alt="Arrow Prev"></a>
-		                <a href="#" class="next"><img src="../../resources/img/arrow-next.png" alt="Arrow Next"></a>
+		                <a href="#" class="prev"><img src="${ctx}/resources/img/arrow-prev.png" alt="Arrow Prev"></a>
+		                <a href="#" class="next"><img src="${ctx}/resources/img/arrow-next.png" alt="Arrow Next"></a>
 		            </div>
 		        </div>
 		    </div>
