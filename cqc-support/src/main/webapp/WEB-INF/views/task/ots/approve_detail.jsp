@@ -509,6 +509,9 @@
 	</style>
 	
 	<script type="text/javascript">
+		// 是否提交中
+		var saving = false;
+	
 		$(function(){
 			
 			var approveType = "${approveType}";
@@ -555,6 +558,11 @@
 	
 		
 		function approve(result, remark, catagory){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			$.ajax({
 				url: "${ctx}/ots/approve",
 				data: {
@@ -567,6 +575,7 @@
 					if(data.success){
 						var approveType = "${approveType}";
 						var taskType = "${taskType}";
+						saving = false;
 						
 						// 正常流程
 						if(approveType == 3){

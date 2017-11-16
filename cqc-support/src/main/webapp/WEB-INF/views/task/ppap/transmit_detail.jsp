@@ -239,6 +239,8 @@
 		
 		<script type="text/javascript">
 			var standardUrl = '${ctx}/ppap/standard';
+			// 是否提交中
+			var saving = false;
 			
 			$(function(){
 				// 基准选择
@@ -315,6 +317,11 @@
 			});
 
 			function save() {
+				if(saving){
+					return false;
+				}
+				saving = true;
+				
 				var t_id = $("#t_id").val();
 				var v_id = $("#v_id").val();
 				var p_id = $("#p_id").val();
@@ -322,22 +329,26 @@
 
 				if (isNull(v_id)) {
 					errorMsg("请选择整车信息");
+					saving = false;
 					return false;
 				}
 
 				if (isNull(p_id)) {
 					errorMsg("请选择零部件信息");
+					saving = false;
 					return false;
 				}
 
 				if (isNull(m_id)) {
 					errorMsg("请选择原材料信息");
+					saving = false;
 					return false;
 				}
 				
 				var iId = $("#standard").combobox("getValue");
 				if(isNull(iId)){
 					errorMsg("请选择基准");
+					saving = false;
 					return false;
 				}
 
@@ -354,6 +365,7 @@
 						"taskType": "${taskType}"
 					},
 					success : function(data) {
+						saving = false;
 						if (data.success) {
 							tipMsg(data.msg, function() {
 								window.location.reload();

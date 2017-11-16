@@ -193,9 +193,18 @@ public class QueryController extends AbstractController {
 				}
 			}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ){
 				if(task.getState() >= 6) {
+					
+					Long iId = task.getiId();
+					
+					// 如果是修改生成的记录，基准图谱要取父任务的iID的基准
+					if(task.gettId() != null) {
+						Task pTask = taskService.selectOne(task.gettId());
+						iId = pTask.getiId();
+					}
+					
 					// 基准图谱结果
-					List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 1);
-					List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 2);
+					List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(iId, 1);
+					List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(iId, 2);
 					
 					// 抽样图谱结果
 					Map<String, Object> atMap = new HashMap<String, Object>();

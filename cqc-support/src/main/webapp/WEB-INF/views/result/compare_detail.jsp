@@ -133,10 +133,20 @@
 				<table>
 					<tr>
 						<td style="padding-left: 15px;">
-							<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+							<c:if test="${not empty m.value.standard_pic }">
+								<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+							</c:if>
+							<c:if test="${empty m.value.standard_pic }">
+								<span class="img-span">基准图谱为空</span>
+							</c:if>
 						</td>
 						<td style="padding-left: 35px;">
-							<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+							<c:if test="${not empty m.value.sampling_pic }">
+								<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+							</c:if>
+							<c:if test="${empty m.value.sampling_pic }">
+								<span class="img-span">抽样图谱为空</span>
+							</c:if>
 						</td>
 					</tr>
 				</table>
@@ -163,10 +173,20 @@
 				<table>
 					<tr>
 						<td style="padding-left: 15px;">
-							<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
+							<c:if test="${not empty m.value.standard_pic }">
+								<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
+							</c:if>
+							<c:if test="${empty m.value.standard_pic }">
+								<span class="img-span">基准图谱为空</span>
+							</c:if>
 						</td>
 						<td style="padding-left: 35px;">
-							<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
+							<c:if test="${not empty m.value.sampling_pic }">
+								<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
+							</c:if>
+							<c:if test="${empty m.value.sampling_pic }">
+								<span class="img-span">抽样图谱为空</span>
+							</c:if>
 						</td>
 					</tr>
 				</table>
@@ -277,7 +297,15 @@
 	</div>
 			
 	<script type="text/javascript">
-		function doSubmit(state){			
+		// 是否提交中
+		var saving = false;
+	
+		function doSubmit(state){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			// 零部件
 			var p_inf = $("input[name='p_inf']:checked").val();
 			var p_inf_remark = $("#p_inf_remark").val();
@@ -327,6 +355,7 @@
 					"state": state
 				},
 				success: function(data){
+					saving = false;
 					if(data.success){
 						closeDialog(data.msg);
 					}else{
@@ -398,6 +427,15 @@
 			display: inline-block;
 		}
 		
+		
+		.img-span{
+			width: 400px;
+			height: 250px;
+			display:inline-block;
+			border:0.5px dashed #C9C9C9;
+			text-align:center;
+			line-height:250px;
+		}
 	</style>
 	
 </body>

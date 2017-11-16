@@ -352,10 +352,17 @@
 			
 	
 	<script type="text/javascript">
+		// 是否提交中
+		var saving = false;
+	
 		// 图谱结果保存
 		function doSubmit(){
-			var taskType = "${facadeBean.type}";
+			if(saving){
+				return false;
+			}
+			saving = true;
 			
+			var taskType = "${facadeBean.type}";
 			var m_arTable = $("#m_arTable").length;
 			
 			if(taskType != 4){
@@ -370,10 +377,12 @@
 						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
 							$("#p_tg_error").html("图片格式");
 							$("#p_tgLab_pic").focus();
+							saving = false;
 							return false;
 						}
 					}else{
 						$("#p_tg_error").html("必选");
+						saving = false;
 						return false;
 					}
 					$("#p_tg_error").html("");
@@ -385,10 +394,12 @@
 						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
 							$("#p_inf_error").html("图片格式");
 							$("#p_infLab_pic").focus();
+							saving = false;
 							return false;
 						}
 					}else{
 						$("#p_inf_error").html("必选");
+						saving = false;
 						return false;
 					}
 					$("#p_inf_error").html("");
@@ -400,10 +411,12 @@
 						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
 							$("#p_dt_error").html("图片格式");
 							$("#p_dtLab_pic").focus();
+							saving = false;
 							return false;
 						}
 					}else{
 						$("#p_dt_error").html("必选");
+						saving = false;
 						return false;
 					}
 					$("#p_dt_error").html("");
@@ -419,10 +432,12 @@
 					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
 						$("#m_tg_error").html("图片格式");
 						$("#m_tgLab_pic").focus();
+						saving = false;
 						return false;
 					}
 				}else{
 					$("#m_tg_error").html("必选");
+					saving = false;
 					return false;
 				}
 				$("#m_tg_error").html("");
@@ -434,10 +449,12 @@
 					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
 						$("#m_inf_error").html("图片格式");
 						$("#m_infLab_pic").focus();
+						saving = false;
 						return false;
 					}
 				}else{
 					$("#m_inf_error").html("必选");
+					saving = false;
 					return false;
 				}
 				$("#m_inf_error").html("");
@@ -449,10 +466,12 @@
 					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
 						$("#m_dt_error").html("图片格式");
 						$("#m_dtLab_pic").focus();
+						saving = false;
 						return false;
 					}
 				}else{
 					$("#m_dt_error").html("必选");
+					saving = false;
 					return false;
 				}
 				$("#m_dt_error").html("");
@@ -462,6 +481,7 @@
 				url: "${ctx}/result/atlasUpload?time=" + new Date(),
 				dataType : 'text',
 				success:function(msg){
+					saving = false;
 					var data = eval('(' + msg + ')');
 					if(data.success){
 						closeDialog(data.msg);
@@ -474,6 +494,11 @@
 		
 		// 型式试验结果上传
 		function upload(){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			var dataArray = [];
 			var date = new Date();
 			var flag = true;
@@ -489,12 +514,14 @@
 				if(p_pfTable > 0){
 					if($("tr[p_num]").length < 1){
 						$("#patternError").html("请添加零部件试验结果");
+						saving = false;
 						return false;
 					}
 					$("#patternError").html("");
 					
 					p_result = assemble("p", date);
 					if(p_result == false){
+						saving = false;
 						return false;
 					}
 				}
@@ -504,12 +531,14 @@
 			if(m_pfTable > 0){
 				if($("tr[m_num]").length < 1){
 					$("#patternError").html("请添加原材料试验结果");
+					saving = false;
 					return false;
 				}
 				$("#patternError").html("");
 				
 				m_result = assemble("m", date);
 				if(m_result == false){
+					saving = false;
 					return false;
 				}
 			}
@@ -525,6 +554,7 @@
 					"result": JSON.stringify(dataArray)  
 				},
 				success:function(data){
+					saving = false;
 					if(data.success){
 						closeDialog(data.msg);
 					}else{

@@ -36,6 +36,13 @@
 					#{state,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{orginEmail,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
 	</insert>
 	
+	<insert id="batchAdd" parameterType="java.util.List">
+		insert into email_record (subject, content, addr, task_id, a_id, state, type, orgin_email, create_time) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.subject,jdbcType=VARCHAR}, #{item.content,jdbcType=VARCHAR}, #{item.addr,jdbcType=VARCHAR}, #{item.taskId,jdbcType=BIGINT}, #{item.aId,jdbcType=BIGINT},
+			 #{item.state,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER}, #{item.orginEmail,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP})
+		</foreach>
+	</insert> 
 	
 	<update id="update" parameterType="cn.wow.common.domain.EmailRecord">
 		update email_record
@@ -104,7 +111,7 @@
 				and r.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 			</if>
 			<if test="addr != null">
-				and find_in_set(#{addr,jdbcType=VARCHAR}, addr)
+				and r.addr = #{addr,jdbcType=VARCHAR}
 			</if>
 	      </where>
 	      

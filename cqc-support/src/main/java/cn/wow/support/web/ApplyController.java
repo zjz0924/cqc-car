@@ -434,7 +434,7 @@ public class ApplyController extends AbstractController {
 				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile, date);
 			}
 
-			if (task.getType() != TaskTypeEnum.GS.getState()) {
+			if (task.getType() == TaskTypeEnum.GS.getState()) {
 				if (vehicle == null && material == null) {
 					vo.setSuccess(false);
 					vo.setMsg("请输入要修改的信息");
@@ -693,6 +693,9 @@ public class ApplyController extends AbstractController {
 			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile) throws Exception {
 
 		List<AtlasResult> dataList = new ArrayList<AtlasResult>();
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String dateStr = sdf.format(date);
 
 		// 零部件-图谱结果（只取最后一次实验）
 		Map<String, Object> pAtMap = new HashMap<String, Object>();
@@ -701,35 +704,62 @@ public class ApplyController extends AbstractController {
 		pAtMap.put("catagory", 1);
 		List<AtlasResult> pAtlasResult = atlasResultService.selectAllList(pAtMap);
 
-		for (AtlasResult at : pAtlasResult) {
-			if (at.getType() == 1) { // 红外光分析
-				if (StringUtils.isNotBlank(p_infLab)) {
-					at.setRemark(p_infLab);
-				}
-				if (p_infile != null && !p_infile.isEmpty()) {
-					String pic = uploadImg(p_infile, atlasUrl + taskId + "apply/parts/inf/", false);
-					at.setPic(pic);
-				}
-			} else if (at.getType() == 2) { // 差热分析
-				if (StringUtils.isNotBlank(p_dtLab)) {
-					at.setRemark(p_dtLab);
-				}
+		if(pAtlasResult != null && pAtlasResult.size() > 0) {
+			for (AtlasResult at : pAtlasResult) {
+				if (at.getType() == 1) { // 红外光分析
+					if (StringUtils.isNotBlank(p_infLab)) {
+						at.setRemark(p_infLab);
+					}
+					if (p_infile != null && !p_infile.isEmpty()) {
+						String pic = uploadImg(p_infile, atlasUrl + taskId + "/apply/parts/inf/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
+				} else if (at.getType() == 2) { // 差热分析
+					if (StringUtils.isNotBlank(p_dtLab)) {
+						at.setRemark(p_dtLab);
+					}
 
-				if (p_dtfile != null && !p_dtfile.isEmpty()) {
-					String pic = uploadImg(p_dtfile, atlasUrl + taskId + "/apply/parts/dt/", false);
-					at.setPic(pic);
-				}
-			} else { // 热重分析
-				if (StringUtils.isNotBlank(p_tgLab)) {
-					at.setRemark(p_tgLab);
-				}
+					if (p_dtfile != null && !p_dtfile.isEmpty()) {
+						String pic = uploadImg(p_dtfile, atlasUrl + taskId + "/apply/parts/dt/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
+				} else { // 热重分析
+					if (StringUtils.isNotBlank(p_tgLab)) {
+						at.setRemark(p_tgLab);
+					}
 
-				if (p_tgfile != null && !p_tgfile.isEmpty()) {
-					String pic = uploadImg(p_tgfile, atlasUrl + taskId + "apply/parts/tg/", false);
-					at.setPic(pic);
+					if (p_tgfile != null && !p_tgfile.isEmpty()) {
+						String pic = uploadImg(p_tgfile, atlasUrl + taskId + "/apply/parts/tg/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
 				}
 			}
+		}else {
+			 // 红外光分析
+			if (p_infile != null && !p_infile.isEmpty()) {
+				String pic = uploadImg(p_infile, atlasUrl + taskId + "/apply/parts/inf/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 1, pic, p_infLab, 1, 1, date);
+				
+				dataList.add(at);
+			}
+
+			// 差热分析
+			if (p_dtfile != null && !p_dtfile.isEmpty()) {
+				String pic = uploadImg(p_dtfile, atlasUrl + taskId + "/apply/parts/dt/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 2, pic, p_dtLab, 1, 1, date);
+				
+				dataList.add(at);
+			}
+
+			// 热重分析
+			if (p_tgfile != null && !p_tgfile.isEmpty()) {
+				String pic = uploadImg(p_tgfile, atlasUrl + taskId + "/apply/parts/tg/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 3, pic, p_tgLab, 1, 1, date);
+				
+				dataList.add(at);
+			}
 		}
+		
 
 		// 原材料-图谱结果（只取最后一次实验）
 		Map<String, Object> mAtMap = new HashMap<String, Object>();
@@ -738,36 +768,63 @@ public class ApplyController extends AbstractController {
 		mAtMap.put("expNo", atlasResultService.getExpNoByCatagory(taskId, 2));
 		List<AtlasResult> mAtlasResult = atlasResultService.selectAllList(mAtMap);
 
-		for (AtlasResult at : mAtlasResult) {
-			if (at.getType() == 1) { // 红外光分析
-				if (StringUtils.isNotBlank(m_infLab)) {
-					at.setRemark(m_infLab);
-				}
+		if (mAtlasResult != null && mAtlasResult.size() > 0) {
+			for (AtlasResult at : mAtlasResult) {
+				if (at.getType() == 1) { // 红外光分析
+					if (StringUtils.isNotBlank(m_infLab)) {
+						at.setRemark(m_infLab);
+					}
 
-				if (m_infile != null && !m_infile.isEmpty()) {
-					String pic = uploadImg(m_infile, atlasUrl + taskId + "apply/material/inf/", false);
-					at.setPic(pic);
-				}
-			} else if (at.getType() == 2) { // 差热分析
-				if (StringUtils.isNotBlank(m_dtLab)) {
-					at.setRemark(m_dtLab);
-				}
+					if (m_infile != null && !m_infile.isEmpty()) {
+						String pic = uploadImg(m_infile, atlasUrl + taskId + "/apply/material/inf/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
+				} else if (at.getType() == 2) { // 差热分析
+					if (StringUtils.isNotBlank(m_dtLab)) {
+						at.setRemark(m_dtLab);
+					}
 
-				if (m_dtfile != null && !m_dtfile.isEmpty()) {
-					String pic = uploadImg(m_dtfile, atlasUrl + taskId + "/apply/material/dt/", false);
-					at.setPic(pic);
-				}
-			} else { // 热重分析
-				if (StringUtils.isNotBlank(m_tgLab)) {
-					at.setRemark(m_tgLab);
-				}
+					if (m_dtfile != null && !m_dtfile.isEmpty()) {
+						String pic = uploadImg(m_dtfile, atlasUrl + taskId + "/apply/material/dt/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
+				} else { // 热重分析
+					if (StringUtils.isNotBlank(m_tgLab)) {
+						at.setRemark(m_tgLab);
+					}
 
-				if (m_tgfile != null && !m_tgfile.isEmpty()) {
-					String pic = uploadImg(m_tgfile, atlasUrl + taskId + "apply/material/tg/", false);
-					at.setPic(pic);
+					if (m_tgfile != null && !m_tgfile.isEmpty()) {
+						String pic = uploadImg(m_tgfile, atlasUrl + taskId + "/apply/material/tg/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
 				}
 			}
+		}else {
+			 // 红外光分析
+			if (m_infile != null && !m_infile.isEmpty()) {
+				String pic = uploadImg(m_infile, atlasUrl + taskId + "/apply/material/inf/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 1, pic, m_infLab, 2, 1, date);
+				
+				dataList.add(at);
+			}
+
+			// 差热分析
+			if (m_dtfile != null && !m_dtfile.isEmpty()) {
+				String pic = uploadImg(m_dtfile, atlasUrl + taskId + "/apply/material/dt/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 2, pic, m_dtLab, 2, 1, date);
+				
+				dataList.add(at);
+			}
+
+			// 热重分析
+			if (m_tgfile != null && !m_tgfile.isEmpty()) {
+				String pic = uploadImg(m_tgfile, atlasUrl + taskId + "/apply/material/tg/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 3, pic, m_tgLab, 2, 1, date);
+				
+				dataList.add(at);
+			}
 		}
+		
 
 		if (pAtlasResult != null && pAtlasResult.size() > 0) {
 			dataList.addAll(pAtlasResult);

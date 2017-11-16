@@ -164,7 +164,15 @@
 	</style>
 	
 	<script type="text/javascript">
+		// 是否提交中
+		var saving = false;
+	
 		function examine(id, type, remark){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			$.ajax({
 				url: "${ctx}/ots/examine",
 				data: {
@@ -176,6 +184,7 @@
 					if(data.success){
 						closeDialog(data.msg);
 					}else{
+						saving = false;
 						errorMsg(data.msg);						
 					}
 				}

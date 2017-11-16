@@ -209,7 +209,7 @@ public class TaskServiceImpl implements TaskService{
 		taskRecordDao.insert(taskRecord);
 		
 		
-		// 发送结果（最后发送，防止事务提交失败，还是发送结果）
+		// 发送结果（最后发送，防止事务提交失败）
 		if(StringUtils.isNotBlank(pAtlOrgVal)){
     		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content, 1);
     	}
@@ -387,7 +387,7 @@ public class TaskServiceImpl implements TaskService{
 		if (type != 5) {
 			costRecordList.add(getCostRecord(account, date, task, type, result));
 		} else {
-			if(task.getType() == TaskTypeEnum.OTS.getState()) {
+			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 				costRecordList.add(getCostRecord(account, date, task, 1, result));
 				costRecordList.add(getCostRecord(account, date, task, 2, result));
 			}
@@ -548,43 +548,45 @@ public class TaskServiceImpl implements TaskService{
 	}
 	
 
-	// 发送邮件
+	/**
+	 *  发送邮件
+	 * @param account    用户
+	 * @param task       任务
+	 * @param date       日期
+	 * @param orgs       机构ID
+	 * @param tips       提示
+	 * @param title      标题
+	 * @param content    内容
+	 * @param type       类型：1-结果发送，2-收费通知，3-警告书 
+	 */ 
 	protected void send(Account account, Task task, Date date, String orgs, String tips, String title, String content, int type) throws Exception{
-		// 机构ID
-		String[] orgsList = orgs.split(",");
-		List<Long> orgIdList = new ArrayList<Long>();
-		for (String str : orgsList) {
-			if (StringUtils.isNotBlank(str)) {
-				orgIdList.add(Long.parseLong(str));
-			}
-		}
-
-		// 用户列表
-		Map<String, Object> aMap = new PageMap(false);
-		aMap.put("orgs", orgIdList);
-		List<Account> accountList = accountDao.selectAllList(aMap);
+		
+		List<Account> accountList = getAccountList(orgs);
 		
 		if (accountList != null && accountList.size() > 0) {
-			String addr = "";
+			List<EmailRecord> emailRecordList = new ArrayList<EmailRecord>();
+			StringBuffer addrs = new StringBuffer("");
+			
 			for (Account ac : accountList) {
 				if (StringUtils.isNotBlank(ac.getEmail())) {
-					addr += ac.getEmail() + ";";
+					addrs.append(ac.getEmail() + ";");
+					
+					// 邮件记录
+					EmailRecord emailRecord = new EmailRecord(title, content, ac.getEmail(), task.getId(), account.getId(), 1, type, mailUser, date);
+					emailRecordList.add(emailRecord);
 				}
 			}
 			
-			if(StringUtils.isNotBlank(addr)){
-				addr = addr.substring(0, addr.length() - 1);
-			}
-			
+			// 邮件内容
 			content = MessageFormat.format(content, new Object[] { task.getCode(), tips });	
 			
-			// 发送邮件
-			sendEmail(title, content, addr, 1);
-			
 			// 邮件记录
-			addr = addr.replaceAll(";", ","); //数据库查询时，只能用,分隔
-			EmailRecord emailRecord = new EmailRecord(title, content, addr, task.getId(), account.getId(), 1, type, mailUser, date);
-			emailRecordDao.insert(emailRecord);
+			if(emailRecordList.size() > 0) {
+				emailRecordDao.batchAdd(emailRecordList);
+			}
+			
+			// 发送文本邮件
+			sendEmail(title, content, addrs.toString(), 1);
 		}
 	}
 	
@@ -597,33 +599,10 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	public void sendCost(Account account, String orgs, CostRecord costRecord, List<ExpItem> itemList) throws Exception {
 		Date date = new Date();
-		
-		// 机构ID
-		String[] orgsList = orgs.split(",");
-		List<Long> orgIdList = new ArrayList<Long>();
-		for (String str : orgsList) {
-			if (StringUtils.isNotBlank(str)) {
-				orgIdList.add(Long.parseLong(str));
-			}
-		}
-
-		// 用户列表
-		Map<String, Object> aMap = new PageMap(false);
-		aMap.put("orgs", orgIdList);
-		List<Account> accountList = accountDao.selectAllList(aMap);
+		List<Account> accountList = getAccountList(orgs);
 
 		if (accountList != null && accountList.size() > 0) {
-			String addr = "";
-			for (Account ac : accountList) {
-				if (StringUtils.isNotBlank(ac.getEmail())) {
-					addr += ac.getEmail() + ";";
-				}
-			}
-
-			if (StringUtils.isNotBlank(addr)) {
-				addr = addr.substring(0, addr.length() - 1);
-			}
-
+			
 			String labType = "";
 			if(costRecord.getLabType() == 1){
 				labType = "零部件图谱试验";
@@ -634,27 +613,38 @@ public class TaskServiceImpl implements TaskService{
 			}else{
 				labType = "原材料型式试验";
 			}
-			
 			costContent = MessageFormat.format(costContent, new Object[] { costRecord.getTask().getCode(), labType });
 			
 			// 费用列表
-			String tempContent = "<div><table style='margin-left: 5px;font-size: 14px;'><tr style='height: 30px'><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>序号</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>试验项目</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>参考标准</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>单价（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>数量</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>价格（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>备注</td></tr>";
-
+			StringBuffer tempContent = new StringBuffer("<div><table style='margin-left: 5px;font-size: 14px;'><tr style='height: 30px'><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>序号</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>试验项目</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>参考标准</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>单价（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>数量</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>价格（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>备注</td></tr>");
 			if (itemList != null && itemList.size() > 0) {
 				for (int i = 0; i < itemList.size(); i++) {
 					ExpItem item = itemList.get(i);
-					tempContent += "<tr style='height: 30px'><td style='background: #f5f5f5;padding-left: 5px;'>" + (i + 1) + "</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getProject() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getStandard() +"</td><td>"+ item.getPrice() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getNum() +"</td><td>"+ item.getTotal() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getRemark() +"</td></tr>";
+					tempContent.append("<tr style='height: 30px'><td style='background: #f5f5f5;padding-left: 5px;'>" + (i + 1) + "</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getProject() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getStandard() +"</td><td>"+ item.getPrice() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getNum() +"</td><td>"+ item.getTotal() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getRemark() +"</td></tr>");
 				}
 			}
-			tempContent += "</table></div>";
+			tempContent.append("</table></div>");
+			
+			StringBuffer addrs = new StringBuffer("");
+			List<EmailRecord> emailRecordList = new ArrayList<EmailRecord>();
+			
+			for (Account ac : accountList) {
+				if (StringUtils.isNotBlank(ac.getEmail())) {
+					addrs.append(ac.getEmail() + ";");
+					
+					// 邮件记录
+					EmailRecord emailRecord = new EmailRecord(costTitle, costContent + tempContent.toString(), ac.getEmail(), costRecord.getTask().getId(), account.getId(), 1, 2, mailUser, date);
+					emailRecordList.add(emailRecord);
+				}
+			}
 
-			// 发送邮件
-			sendEmail(costTitle, costContent + tempContent, addr, 2);
-
-			addr = addr.replaceAll(";", ",");
 			// 邮件记录
-			EmailRecord emailRecord = new EmailRecord(costTitle, costContent + tempContent, addr, costRecord.getTask().getId(), account.getId(), 1, 2, mailUser, date);
-			emailRecordDao.insert(emailRecord);
+			if(emailRecordList.size() > 0) {
+				emailRecordDao.batchAdd(emailRecordList);
+			}
+
+			// 发送Html邮件
+			sendEmail(costTitle, costContent + tempContent.toString(), addrs.toString(), 2);
 		}
 	}
 	
@@ -784,6 +774,29 @@ public class TaskServiceImpl implements TaskService{
 			taskNum = taskList.size() + 1;
 		}
 		return taskNum;
+	}
+	
+	
+	/**
+	 * 获取用户列表
+	 * @param orgs  机构ID
+	 */
+	List<Account> getAccountList(String orgs) {
+		// 机构ID
+		String[] orgsList = orgs.split(",");
+		List<Long> orgIdList = new ArrayList<Long>();
+		for (String str : orgsList) {
+			if (StringUtils.isNotBlank(str)) {
+				orgIdList.add(Long.parseLong(str));
+			}
+		}
+
+		// 用户列表
+		Map<String, Object> aMap = new PageMap(false);
+		aMap.put("orgs", orgIdList);
+		List<Account> accountList = accountDao.selectAllList(aMap);
+
+		return accountList;
 	}
 	
 	

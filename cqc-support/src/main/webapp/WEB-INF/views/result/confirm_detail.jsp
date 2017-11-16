@@ -480,6 +480,9 @@
 	</div>
 			
 	<script type="text/javascript">
+		// 是否提交中
+		var saving = false;
+	
 		$(function(){
 			var failNum = "${facadeBean.failNum}";
 			if(failNum == 1){
@@ -509,6 +512,11 @@
 		});
 	
 		function doSubmit(result, type){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			var remark = "";
 			if(result == 2){
 				$('#saveBtn2').linkbutton('disable');
@@ -519,6 +527,7 @@
 				if(isNull(remark)){
 					$("#remark_error").html("请填写原因");
 					$('#saveBtn2').linkbutton('enable');
+					saving = false;
 					return false;
 				}else{
 					$("#remark_error").html("");
@@ -536,6 +545,7 @@
 				},
 				success: function(data){
 					$('#saveBtn2').linkbutton('enable');
+					saving = false;
 					if(data.success){
 						if(result == 1){
 							if(type == 1){
@@ -586,6 +596,11 @@
 		}
 		
 		function pass(result){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			var remark = "";
 			var labId_val;
 			
@@ -602,6 +617,7 @@
 				if(isNull(remark)){
 					$("#remark_error").html("请填写原因");
 					$('#saveBtn2').linkbutton('enable');
+					saving = false;
 					return false;
 				}else{
 					$("#remark_error").html("");
@@ -620,6 +636,7 @@
 					"orgs": labId_val
 				},
 				success: function(data){
+					saving = false;
 					if(data.success){
 						if(result == 2){
 							doCancel();

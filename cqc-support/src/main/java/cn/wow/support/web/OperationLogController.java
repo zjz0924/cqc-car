@@ -57,7 +57,7 @@ public class OperationLogController extends AbstractController {
 		List<FieldValue> dataList = new ArrayList<FieldValue>();
 
 		OperationLog operationLog = operationLogService.selectOne(id);
-		if (!"任务管理".equals(operationLog.getType())) {
+		if (!"任务管理".equals(operationLog.getType()) && !"费用管理".equals(operationLog.getType()) && !"申请管理".equals(operationLog.getType()) && !"实验管理".equals(operationLog.getType()) && !"任务管理".equals(operationLog.getType())) {
 			try {
 				String detailStr = operationLog.getDetail();
 				Map<String, String> strMap = null;

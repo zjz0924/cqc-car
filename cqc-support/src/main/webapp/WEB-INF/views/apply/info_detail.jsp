@@ -308,6 +308,9 @@
 		</style>
 		
 		<script type="text/javascript">
+			// 是否提交中
+			var saving = false;
+		
 			$(function(){
 				var taskType = "${facadeBean.type}";
 				if(taskType != 4){
@@ -352,12 +355,19 @@
 			});
 		
 			function save(){
+				if(saving){
+					return false;
+				}
+				saving = true;
+				
 				$("#exception_error").html("");
 				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/apply/applyInfoSave?time=" + new Date(),
 					dataType : 'text',
 					success:function(msg){
+						saving = false;
+						
 						var data = eval('(' + msg + ')');
 						if(data.success){
 							closeDialog(data.msg, "infoDetailDialog");

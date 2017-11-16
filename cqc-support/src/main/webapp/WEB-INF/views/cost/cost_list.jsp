@@ -33,7 +33,9 @@
 						width : '180',
 						align : 'center',
 						formatter : function(val){
-							return "<span title='" + val.code + "'>" + val.code + "</span>";
+							if(val){
+								return "<span title='" + val.code + "'>" + val.code + "</span>";
+							}
 						}
 					}, {
 						field : 'taskType',
@@ -41,16 +43,20 @@
 						width : '150',
 						align : 'center',
 						formatter:function(value,row,index){
-							var val = row.task.type;
 							var str = "";
-							if(val == 1){
-								str = "OTS阶段任务";
-							}else if(val == 2){
-								str = "PPAP阶段任务";
-							}else if(val == 3){
-								str = "SOP阶段任务";
-							}else{
-								str = "材料研究所任务";
+							
+							if(!isNull(row.task)){
+								var val = row.task.type;
+								
+								if(val == 1){
+									str = "OTS阶段任务";
+								}else if(val == 2){
+									str = "PPAP阶段任务";
+								}else if(val == 3){
+									str = "SOP阶段任务";
+								}else{
+									str = "材料研究所任务";
+								}
 							}
 							return "<span title='" + str+ "'>" + str + "</span>"; 
 						}

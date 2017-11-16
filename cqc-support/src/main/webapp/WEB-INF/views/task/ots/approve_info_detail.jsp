@@ -353,7 +353,15 @@
 	</form>
 	
 	<script type="text/javascript">
+		// 是否提交中
+		var saving = false;
+	
 		function approve(result, remark, catagory){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			$("#errorMsg").html("");
 			
 			$.ajax({
@@ -365,6 +373,7 @@
 					"catagory": catagory
 				},
 				success: function(data){
+					saving = false;
 					if(data.success){
 						closeDialog(data.msg);
 					}else{

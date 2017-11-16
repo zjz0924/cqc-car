@@ -25,7 +25,9 @@ import cn.wow.common.service.PfResultService;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Service
 @Transactional
@@ -108,7 +110,11 @@ public class PfResultServiceImpl implements PfResultService{
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(dataList.get(0).getCreateTime());
 		record.setCode(task.getCode());
-		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
+		if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+			record.setState(StandardTaskRecordEnum.UPLOAD.getState());
+		}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+			record.setState(SamplingTaskRecordEnum.UPLOAD.getState());
+		}
 		record.setaId(account.getId());
 		record.setRemark(remark);
 		record.setTaskType(task.getType());

@@ -116,7 +116,7 @@
 			function detail(id) {
 				var url = "${ctx}/ppap/transmitDetail?taskType=${taskType}";
 				if(!isNull(id)){
-					url += "?id=" + id;
+					url += "&id=" + id;
 				}
 				
 				$('#transmitDialog').dialog({

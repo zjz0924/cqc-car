@@ -17,6 +17,7 @@ import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
+import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
 import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 import cn.wow.common.dao.AtlasResultDao;
@@ -128,7 +129,11 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		TaskRecord record = new TaskRecord();
 		record.setCreateTime(time);
 		record.setCode(task.getCode());
-		record.setState(StandardTaskRecordEnum.UPLOAD.getState());
+		if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+			record.setState(StandardTaskRecordEnum.UPLOAD.getState());
+		}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+			record.setState(SamplingTaskRecordEnum.UPLOAD.getState());
+		}
 		record.setRemark(remark);
 		record.setaId(account.getId());
 		record.setTaskType(task.getType());
@@ -169,7 +174,12 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		}
 
 		for (AtlasResult ar : sl_atlasResult) {
-			CompareVO vo = map.get(ar.getType());
+			CompareVO vo = null;
+			if(map.get(ar.getType()) == null) {
+				vo = new CompareVO();
+			}else {
+				vo = map.get(ar.getType());
+			}
 			vo.setSampling_pic(ar.getPic());
 			map.put(ar.getType(), vo);
 		}

@@ -230,6 +230,8 @@
 		var matAtlId;
 		var partsPatId;
 		var matPatId;
+		// 是否提交中
+		var saving = false;
 		
 		$(function(){	
 			var taskType = "${taskType}";
@@ -352,11 +354,17 @@
 			var partsPatId_val;
 			var matPatId_val;
 			
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			if(taskType == 1){
 				if(isNull(partsAtlId)){
 					partsAtlId_val = $("#partsAtlId").combotree("getValue");
 					if(isNull(partsAtlId_val)){
 						errorMsg("请为零部件图谱试验选择实验室");
+						saving = false;
 						return false;
 					}
 				}
@@ -365,6 +373,7 @@
 					partsPatId_val = $("#partsPatId").combotree("getValue");
 					if(isNull(partsPatId_val)){
 						errorMsg("请为零部件型式试验选择实验室");
+						saving = false;
 						return false;
 					}
 				}
@@ -374,6 +383,7 @@
 				matAtlId_val = $("#matAtlId").combotree("getValue");
 				if(isNull(matAtlId_val)){
 					errorMsg("请为原材料图谱试验选择实验室");
+					saving = false;
 					return false;
 				}
 			}
@@ -382,6 +392,7 @@
 				matPatId_val = $("#matPatId").combotree("getValue");
 				if(isNull(matPatId_val)){
 					errorMsg("请为原材料型式试验选择实验室");
+					saving = false;
 					return false;
 				}
 			}
@@ -400,6 +411,7 @@
 						$("#dlg").dialog("close");
 						closeDialog(data.msg);
 					}else{
+						saving = false;
 						errorMsg(data.msg);						
 					}
 				}

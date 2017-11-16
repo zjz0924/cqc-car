@@ -223,6 +223,9 @@
 		</style>
 		
 		<script type="text/javascript">
+			// 是否提交中
+			var saving = false;
+			
 			$(function(){
 				var taskType = "${taskType}";
 				
@@ -270,40 +273,44 @@
 				   }
 				});
 				
-				
 				// 设置机构的值
 				$('#m_orgId').combotree('setValue', "${facadeBean.info.material.orgId}");
 				
 			});
 		
 			function save(){
+				if(saving){
+					return false;
+				}
+				saving = true;
+				
 				// 整车信息
-				if(!isRequire("v_code", "整车代码必填")){ return false; }
-				if(!isRequire("v_type", "车型必填")){ return false; }
-				if(!isRequire("v_proTime", "整车生产日期必填")){ return false; }
-				if(!isRequire("v_proAddr", "整车生产地址必填")){ return false; }
+				if(!isRequire("v_code", "整车代码必填")){ saving = false; return false; }
+				if(!isRequire("v_type", "车型必填")){ saving = false; return false; }
+				if(!isRequire("v_proTime", "整车生产日期必填")){ saving = false; return false; }
+				if(!isRequire("v_proAddr", "整车生产地址必填")){ saving = false; return false; }
 				
 				// 零部件信息
 				var taskType = "${taskType}";
 				if(taskType == 1){
-					if(!isRequire("p_code", "零部号必填")){ return false; }
-					if(!isRequire("p_name", "零部件名称必填")){ return false; }
-					if(!isRequire("p_orgId", "零部件生产商必填")){ return false; }
-					if(!isRequire("p_proTime", "零部件生产日期必填")){ return false; }
-					if(!isRequire("p_place", "零部件生产场地必填")){ return false; }
-					if(!isRequire("p_proNo", "零部件生产批号必填")){ return false; }
+					if(!isRequire("p_code", "零部号必填")){ saving = false; return false; }
+					if(!isRequire("p_name", "零部件名称必填")){ saving = false; return false; }
+					if(!isRequire("p_orgId", "零部件生产商必填")){ saving = false; return false; }
+					if(!isRequire("p_proTime", "零部件生产日期必填")){ saving = false; return false; }
+					if(!isRequire("p_place", "零部件生产场地必填")){ saving = false; return false; }
+					if(!isRequire("p_proNo", "零部件生产批号必填")){ saving = false; return false; }
 					var isKey = $("#p_isKey").val();
 					if(isKey == 1){
-						if(!isRequire("p_keyCode", "零件型号必填")){ return false; }
+						if(!isRequire("p_keyCode", "零件型号必填")){ saving = false; return false; }
 					}
 				}
 				
 				// 原材料信息
-				if(!isRequire("m_matName", "原材料名称必填")){ return false; }
-				if(!isRequire("m_proNo", "原材料生产批号必填")){ return false; }
-				if(!isRequire("m_orgId", "材料生产商必填")){ return false; }
-				if(!isRequire("m_matNo", "原材料材料牌号必填")){ return false; }
-				if(!isRequire("m_matColor", "原材料材料颜色必填")){ return false; }
+				if(!isRequire("m_matName", "原材料名称必填")){ saving = false; return false; }
+				if(!isRequire("m_proNo", "原材料生产批号必填")){ saving = false; return false; }
+				if(!isRequire("m_orgId", "材料生产商必填")){ saving = false; return false; }
+				if(!isRequire("m_matNo", "原材料材料牌号必填")){ saving = false; return false; }
+				if(!isRequire("m_matColor", "原材料材料颜色必填")){ saving = false; return false; }
 				
 				/* var matId = "${facadeBean.info.material.id}";
 				if(isNull(matId)){
@@ -332,6 +339,7 @@
 								window.location.reload();
 							});
 						}else{
+							saving = false; 
 							errorMsg(data.msg);
 						}
 					}

@@ -100,9 +100,6 @@
 							}
 						}
 					}  ] ],
-					onDblClickRow : function(rowIndex, rowData) {
-						infoDetail(rowData.id);
-					},
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
 						getRecordList(rowData.code);

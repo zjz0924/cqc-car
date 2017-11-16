@@ -41,7 +41,7 @@
 			<c:when test="${not empty dataList}">
 				<c:choose>
 					<c:when test="${opeartionLog.operation != 'Move' }">
-						<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;">
+						<table class="table table-bordered table-striped table-condensed table-hover" style="width: 70%;margin-left: 5px;">
 							<thead>
 								<tr>
 									<th>Field</th>

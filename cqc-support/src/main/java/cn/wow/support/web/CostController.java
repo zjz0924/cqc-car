@@ -28,11 +28,13 @@ import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.ExpItem;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CostRecordService;
 import cn.wow.common.service.ExpItemService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
+import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
@@ -61,6 +63,8 @@ public class CostController extends AbstractController {
 	private PfResultService pfResultService;
 	@Autowired
 	private ExpItemService expItemService;
+	@Autowired
+	private TaskService taskService;
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model, int type) {
@@ -182,10 +186,17 @@ public class CostController extends AbstractController {
 				// 零部件型式结果
 				model.addAttribute("pPfResult", pPfResult);
 			} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState() || costRecord.getTask().getType() == TaskTypeEnum.SOP.getState()) {
-
+				Long iId = costRecord.getTask().getiId();
+				
+				// 如果是修改生成的记录，基准图谱要取父任务的iID的基准
+				if(costRecord.getTask().gettId() != null) {
+					Task pTask = taskService.selectOne(costRecord.getTask().gettId());
+					iId = pTask.getiId();
+				}
+				
 				// 基准图谱结果
-				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(costRecord.getTask().getiId(), 1);
-				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(costRecord.getTask().getiId(), 2);
+				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(iId, 1);
+				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(iId, 2);
 				
 				// 抽样图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();

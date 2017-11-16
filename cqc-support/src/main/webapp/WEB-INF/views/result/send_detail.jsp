@@ -277,7 +277,9 @@
 		var pAtlOrg;
 		var pPatOrg;
 		var mAtlOrg;
-		var mPatOrg 
+		var mPatOrg; 
+		// 是否提交中
+		var saving = false;
 	
 		$(function(){
 			// 零部件图谱试验结果
@@ -382,6 +384,11 @@
 	
 		// 发送结果保存
 		function doSubmit(type){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			var pAtlOrgVal = "";
 			var pPatOrgVal = "";
 			var mAtlOrgVal = "";
@@ -398,6 +405,7 @@
 					$("#sendBtn").show();
 					$("#cancelBtn").show();
 					$("#atlasError").html("");
+					saving = false;
 					return false;
 				}
 				$("#pAtlOrgError").html("");
@@ -410,6 +418,7 @@
 					$("#sendBtn").show();
 					$("#cancelBtn").show();
 					$("#atlasError").html("");
+					saving = false;
 					return false;
 				}
 				$("#pPatOrgError").html("");
@@ -422,6 +431,7 @@
 					$("#sendBtn").show();
 					$("#cancelBtn").show();
 					$("#atlasError").html("");
+					saving = false;
 					return false;
 				}
 				$("#mAtlOrgError").html("");
@@ -434,6 +444,7 @@
 					$("#sendBtn").show();
 					$("#cancelBtn").show();
 					$("#atlasError").html("");
+					saving = false;
 					return false;
 				}
 				$("#mPatOrgError").html("");
@@ -449,6 +460,7 @@
 					"mPatOrgVal": mPatOrgVal.toString(),
 				},
 				success: function(data){
+					saving = false;
 					if(data.success){
 						closeDialog(data.msg);
 					}else{

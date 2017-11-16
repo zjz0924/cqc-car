@@ -243,7 +243,15 @@
 	</div>
 			
 	<script type="text/javascript">
+		// 是否提交中
+		var saving = false;
+	
 		function doSubmit(result){
+			if(saving){
+				return false;
+			}
+			saving = true;
+			
 			var remark = "";
 			
 			if(result == 2){
@@ -254,6 +262,7 @@
 				if(isNull(remark)){
 					$("#remark_error").html("请填写原因");
 					$('#saveBtn2').linkbutton('enable');
+					saving = false;
 					return false;
 				}else{
 					$("#remark_error").html("");
@@ -270,6 +279,7 @@
 					"remark": remark
 				},
 				success: function(data){
+					saving = false;
 					if(data.success){
 						if(result == 2){
 							doCancel();

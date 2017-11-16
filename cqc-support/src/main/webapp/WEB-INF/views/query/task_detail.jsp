@@ -344,10 +344,20 @@
 								<table>
 									<tr>
 										<td style="padding-left: 15px;">
-											<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+											<c:if test="${not empty m.value.standard_pic }">
+												<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+											</c:if>
+											<c:if test="${empty m.value.standard_pic }">
+												<span class="img-span">基准图谱为空</span>
+											</c:if>
 										</td>
 										<td style="padding-left: 35px;">
-											<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+											<c:if test="${not empty m.value.sampling_pic }">
+												<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+											</c:if>
+											<c:if test="${empty m.value.sampling_pic }">
+												<span class="img-span">抽样图谱为空</span>
+											</c:if>
 										</td>
 									</tr>
 								</table>
@@ -374,10 +384,20 @@
 								<table>
 									<tr>
 										<td style="padding-left: 15px;">
-											<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
+											<c:if test="${not empty m.value.standard_pic }">
+												<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+											</c:if>
+											<c:if test="${empty m.value.standard_pic }">
+												<span class="img-span">基准图谱为空</span>
+											</c:if>
 										</td>
 										<td style="padding-left: 35px;">
-											<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
+											<c:if test="${not empty m.value.sampling_pic }">
+												<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+											</c:if>
+											<c:if test="${empty m.value.sampling_pic }">
+												<span class="img-span">抽样图谱为空</span>
+											</c:if>
 										</td>
 									</tr>
 								</table>
@@ -451,6 +471,14 @@
 			padding-left: 5px;
 		}
 		
+		.img-span{
+			width: 400px;
+			height: 250px;
+			display:inline-block;
+			border:0.5px dashed #C9C9C9;
+			text-align:center;
+			line-height:250px;
+		}
 	</style>
 	
 </body>
