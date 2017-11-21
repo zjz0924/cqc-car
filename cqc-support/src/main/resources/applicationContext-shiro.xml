@@ -147,7 +147,7 @@
                 /verifycode = anon
                 /checkverify = anon
                 /api/* = anon
-                /**/* = user,sysUser
+                /**/** = user, sysUser
             </value>
         </property>
     </bean>

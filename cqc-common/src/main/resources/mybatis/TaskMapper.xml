@@ -354,8 +354,8 @@
 			<!-- 任务查询  -->
 			<if test="queryMap != null">
 				and (a.id = #{queryMap.accountId, jdbcType=BIGINT} or parts_atl_id = a.org_id or mat_atl_id = a.org_id or parts_pat_id = a.org_id or mat_pat_id = a.org_id
-				<if test="taskIdList != null">
-					or t.id <foreach collection="queryMap.taskIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+				<if test="queryMap.taskIdList != null">
+					or t.id in <foreach collection="queryMap.taskIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
 				</if>
 				)
 			</if>

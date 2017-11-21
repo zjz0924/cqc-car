@@ -57,7 +57,7 @@
 					<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" data-options="validType:'phone'">
 				</div>
 				<div class="data-cell-right">
-					<span class="title-span">邮箱：</span> 
+					<span class="title-span"><span class="req-span">*</span>邮箱：</span> 
 					<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'">
 				</div>
 			</div>
@@ -222,6 +222,8 @@
 				errAccount("org_error", "");
 			}
 			$("#orgId").val(orgId);
+			
+			if(!isRequire("email", "邮箱必填")){ return false; }
 			
 			var signType = $("#signType").val();
 			if(signType == 2){

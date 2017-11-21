@@ -459,7 +459,7 @@
 					<span id="remark_error" style="color:red;"></span>
 				</div>
 				
-				<c:if test="${facadeBean.failNum == 1 }">
+				<c:if test="${not empty facadeBean.tId}">
 					<div style="margin-top: 10px;">
 						发送警告书：<input id="labId" name="labId">
 					</div>
@@ -484,8 +484,8 @@
 		var saving = false;
 	
 		$(function(){
-			var failNum = "${facadeBean.failNum}";
-			if(failNum == 1){
+			var tId = "${facadeBean.tId}";
+			if(!isNull(tId)){
 				// 零部件图谱
 				$('#labId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
@@ -609,8 +609,8 @@
 				
 				remark = $("#remark").val();
 				
-				var failNum = "${facadeBean.failNum}";
-				if(failNum == 1){
+				var tId = "${facadeBean.tId}";
+				if(!isNull(tId)){
 					labId_val = $("#labId").combotree("getValue");
 				}
 				
@@ -646,6 +646,7 @@
 						if(result == 1){
 							$("#errorMsg").html(data.msg);
 							$('#saveBtn1').linkbutton('enable');
+							$('#saveBtn2').linkbutton('enable');
 						}else{
 							$("#result_error").html(data.msg);
 							$('#saveBtn2').linkbutton('enable');
@@ -662,6 +663,7 @@
 			
 			$("#remark").textbox("setValue", "");
 			$("#dlg").dialog("open");
+			$('#dlg').window('center');
 		}
 		
 		function doCancel(){

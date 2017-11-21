@@ -421,7 +421,7 @@ public class TaskServiceImpl implements TaskService{
 			taskRecordDao.insert(taskRecord);
 		}else{
 			// 第一次失败（确认后再进行第2次抽样）
-			if(task.getFailNum() == 0){
+			if(task.getFailNum() == 0 && task.gettId() == null){
 				task.setState(SamplingTaskEnum.RECONFIRM.getState());
 				task.setFailNum(task.getFailNum() + 1);
 				task.setConfirmTime(new Date());
@@ -437,7 +437,7 @@ public class TaskServiceImpl implements TaskService{
 				taskRecordDao.insert(taskRecord);
 			}else{  // 第二次失败
 				task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
-				task.setFailNum(task.getFailNum() + 1);
+				task.setFailNum(2);
 				task.setRemark(remark);
 				task.setConfirmTime(new Date());
 				taskDao.update(task);
@@ -713,7 +713,7 @@ public class TaskServiceImpl implements TaskService{
 			subTask.setOrgId(account.getOrgId());
 			subTask.setState(SamplingTaskEnum.APPROVE.getState());
 			subTask.setType(task.getType());
-			subTask.setFailNum(1);
+			subTask.setFailNum(0);
 			subTask.setaId(account.getId());
 			subTask.setMatAtlResult(0);
 			subTask.setMatPatResult(0);

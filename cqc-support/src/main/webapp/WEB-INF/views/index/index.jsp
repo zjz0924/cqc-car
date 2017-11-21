@@ -11,6 +11,20 @@
 
 		<script src="${ctx}/resources/js/jquery-2.1.1.min.js"></script>
 		<script src="${ctx}/resources/js/slides.js"></script>
+		
+		<style type="text/css">
+			.title-sytle{
+				display:inline-block;
+				width: 80px;
+				text-align: right;
+				padding-right: 10px;
+			}
+			
+			.row-style{
+				height: 35px;
+			}
+		
+		</style>
 	</head>
 
 	<body style="margin:0px;">
@@ -37,9 +51,17 @@
 		
 		<div class="main">
 			<div style="background-color:white;margin-left: 20px;margin-right:20px;margin-top: 20px;height:650px;">
-				<div style="padding-top:30px;padding-left:15px;font-size: 20px;">欢迎使用上汽通用五菱材料管理平台</div>
+				<div style="padding-top:30px;padding-left:35px;font-size: 20px;">欢迎进入上汽通用五菱材料管理平台！</div>
+				<div style="padding-left:40px;margin-top: 20px;font-size: 16px;">
+					<p class="row-style"><span class="title-sytle">您好：</span>${currentAccount.userName }</p>
+					<p class="row-style"><span class="title-sytle">角色：</span>${currentAccount.role.name }</p>
+					<p class="row-style"><span class="title-sytle">机构：</span>${currentAccount.org.name }</p>
+					<p class="row-style"><span class="title-sytle">登录账号：</span>${currentAccount.userName }</p>
+					<p class="row-style"><span class="title-sytle">真实姓名：</span>${currentAccount.nickName }</p>
+					<p class="row-style"><span class="title-sytle">联系电话：</span>${ currentAccount.mobile }</p>
+				</div>
 				
-				<div style="margin-left:15px;margin-top: 25px;">
+				<div style="margin-left:35px;margin-top: 25px;">
 					<div style="font-weight:bold;color: #1874CD;font-size:16px;">温馨提示：</div>
 					<div style="margin-top:10px;font-size:14px;">您还有 <span style="font-weight:bold;color:red;">${unread}</span> 条消息未读，请及时阅读。</div>
 				</div>

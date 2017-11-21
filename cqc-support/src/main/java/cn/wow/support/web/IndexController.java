@@ -37,17 +37,19 @@ public class IndexController {
 		
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		
-		// 未读消息
-		Map<String, Object> map = new PageMap(false);
-		map.put("addr", account.getEmail());
-		map.put("state", 1);
-		List<EmailRecord> dataList = emailRecordService.selectAllList(map);
-		
-		int unread = 0;
-		if (dataList != null && dataList.size() > 0) {
-			unread = dataList.size();
+		if(account != null) {
+			// 未读消息
+			Map<String, Object> map = new PageMap(false);
+			map.put("addr", account.getEmail());
+			map.put("state", 1);
+			List<EmailRecord> dataList = emailRecordService.selectAllList(map);
+			
+			int unread = 0;
+			if (dataList != null && dataList.size() > 0) {
+				unread = dataList.size();
+			}
+			model.addAttribute("unread", unread);
 		}
-		model.addAttribute("unread", unread);
 		return "index/index";
 	}
 	
