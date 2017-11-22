@@ -1,6 +1,7 @@
 package cn.wow.common.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -430,9 +431,12 @@ public class InfoServiceImpl implements InfoService {
 					Info info = task.getInfo();
 					
 					if (applyRecord.getpId() != null) {
-						Parts oldParts = info.getParts();
-						oldParts.setState(2);
-						partsDao.update(oldParts);
+						//先检查有没有在用
+						if(!isUse(info.getId(), info.getpId(), 2)) {
+							Parts oldParts = info.getParts();
+							oldParts.setState(2);
+							partsDao.update(oldParts);
+						}
 						
 						Parts parts = partsDao.selectOne(applyRecord.getpId());
 						parts.setState(1);
@@ -442,9 +446,12 @@ public class InfoServiceImpl implements InfoService {
 					}
 
 					if (applyRecord.getvId() != null) {
-						Vehicle oldVehicle = info.getVehicle();
-						oldVehicle.setState(2);
-						vehicleDao.update(oldVehicle);
+						//先检查有没有在用
+						if(!isUse(info.getId(), info.getvId(), 1)) {
+							Vehicle oldVehicle = info.getVehicle();
+							oldVehicle.setState(2);
+							vehicleDao.update(oldVehicle);
+						}
 						
 						Vehicle vehicle = vehicleDao.selectOne(applyRecord.getvId());
 						vehicle.setState(1);
@@ -454,9 +461,12 @@ public class InfoServiceImpl implements InfoService {
 					}
 
 					if (applyRecord.getmId() != null) {
-						Material oldMaterial = info.getMaterial();
-						oldMaterial.setState(2);
-						materialDao.update(oldMaterial);
+						// 先检查有没有在用
+						if (!isUse(info.getId(), info.getmId(), 3)) {
+							Material oldMaterial = info.getMaterial();
+							oldMaterial.setState(2);
+							materialDao.update(oldMaterial);
+						}
 						
 						Material material = materialDao.selectOne(applyRecord.getmId());
 						material.setState(1);
@@ -639,7 +649,7 @@ public class InfoServiceImpl implements InfoService {
 
 					if (applyRecord.getpId() != null) {
 						//先检查有没有在用
-						if(isUse(info.getId(), info.getpId(), 2)) {
+						if(!isUse(info.getId(), info.getpId(), 2)) {
 							Parts oldParts = info.getParts();
 							oldParts.setState(2);
 							partsDao.update(oldParts);
@@ -654,7 +664,7 @@ public class InfoServiceImpl implements InfoService {
 
 					if (applyRecord.getvId() != null) {
 						//先检查有没有在用
-						if(isUse(info.getId(), info.getvId(), 1)) {
+						if(!isUse(info.getId(), info.getvId(), 1)) {
 							Vehicle oldVehicle = info.getVehicle();
 							oldVehicle.setState(2);
 							vehicleDao.update(oldVehicle);
@@ -669,7 +679,7 @@ public class InfoServiceImpl implements InfoService {
 
 					if (applyRecord.getmId() != null) {
 						// 先检查有没有在用
-						if (isUse(info.getId(), info.getmId(), 3)) {
+						if (!isUse(info.getId(), info.getmId(), 3)) {
 							Material oldMaterial = info.getMaterial();
 							oldMaterial.setState(2);
 							materialDao.update(oldMaterial);
@@ -915,6 +925,29 @@ public class InfoServiceImpl implements InfoService {
 			atlasResultDao.batchAdd(atlResultList);
 		}
 		
+		// 对比结论
+		if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+			Map<String, Object> rMap = new PageMap(false);
+			rMap.put("type", 4);
+			rMap.put("catagorys", 8);
+			rMap.put("taskId", taskId);
+			List<ExamineRecord> recordList = examineRecordDao.selectAllList(rMap);
+			
+			if (recordList != null && recordList.size() > 0) {
+				List<ExamineRecord> newList = new ArrayList<ExamineRecord>();
+				for (ExamineRecord rd : recordList) {
+					rd.settId(task.getId());
+					rd.setCreateTime(date);
+					rd.setId(null);
+					newList.add(rd);
+				}
+				
+				if (newList.size() > 0) {
+					examineRecordDao.batchAdd(newList);
+				}
+			}
+		}
+		
 		// 申请记录
 		ApplyRecord applyRecord = new ApplyRecord();
 		applyRecord.setaId(account.getId());
@@ -965,6 +998,7 @@ public class InfoServiceImpl implements InfoService {
 		} else {
 			map.put("mId", id);
 		}
+		map.put("state", 1);
 
 		List<Info> infoList = infoDao.selectAllList(map);
 		boolean flag = false;

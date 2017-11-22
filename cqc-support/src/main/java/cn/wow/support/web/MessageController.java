@@ -84,16 +84,20 @@ public class MessageController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "r.create_time desc");
-		map.put("addr", account.getEmail());
+		
+		// 非超级管理员
+		if(account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())){
+			map.put("addr", account.getEmail());
+		}
 		
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (state != null) {
 			map.put("state", state);

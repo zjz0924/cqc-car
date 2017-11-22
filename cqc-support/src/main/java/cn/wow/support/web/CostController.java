@@ -110,10 +110,10 @@ public class CostController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(taskType)) {
 			map.put("taskType", taskType);

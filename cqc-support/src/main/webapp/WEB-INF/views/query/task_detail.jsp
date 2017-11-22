@@ -50,7 +50,7 @@
 						</c:if>
 					</td>
 					<td class="title-td">备注：</td>
-					<td class="value-td"><c:if test="${facadeBean.state == 11}">${facadeBean.remark}</c:if></td>
+					<td class="value-td"><c:if test="${facadeBean.state == 6 or facadeBean.state == 11}">${facadeBean.remark}</c:if></td>
 				</tr>
 				<tr>
 					<td class="title-td">结果：</td>
@@ -478,6 +478,14 @@
 			border:0.5px dashed #C9C9C9;
 			text-align:center;
 			line-height:250px;
+		}
+		
+		.title1 {
+			margin-left: 10px;
+			margin-bottom: 8px;
+			font-size: 14px;
+			color: red;
+    		font-weight: bold;
 		}
 	</style>
 	

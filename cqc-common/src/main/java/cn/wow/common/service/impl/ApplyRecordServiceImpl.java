@@ -21,6 +21,11 @@ import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.SamplingTaskEnum;
+import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
+import cn.wow.common.utils.taskState.StandardTaskEnum;
+import cn.wow.common.utils.taskState.StandardTaskRecordEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Service
 @Transactional
@@ -88,11 +93,22 @@ public class ApplyRecordServiceImpl implements ApplyRecordService{
 			// 父任务
 			Task pTask = taskDao.selectOne(task.gettId());
 			pTask.setResultApply(0);
+			if (pTask.getType() == TaskTypeEnum.OTS.getState() || pTask.getType() == TaskTypeEnum.GS.getState()) {
+				pTask.setState(StandardTaskEnum.ACCOMPLISH.getState());
+			} else if (pTask.getType() == TaskTypeEnum.PPAP.getState() || pTask.getType() == TaskTypeEnum.SOP.getState()) {
+				pTask.setState(SamplingTaskEnum.ACCOMPLISH.getState());
+			}
 			taskDao.update(pTask);
 		}
 		
 		task.setConfirmTime(date);
+		task.setRemark(remark);
 		task.setResultApply(0);
+		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+			task.setState(StandardTaskEnum.END.getState());
+		} else if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+			task.setState(SamplingTaskEnum.END.getState());
+		}
 		taskDao.update(task);
 		
 		applyRecord.setConfirmTime(date);

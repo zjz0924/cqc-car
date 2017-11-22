@@ -9,6 +9,7 @@ import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Multipart;
+import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -78,7 +79,9 @@ public class MailSender {
 			// 发送邮件
 			Transport.send(mailMessage);
 
-		} catch (Exception e) {
+		}catch(SendFailedException ex) { 
+			return true;
+		}catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception(e);
 		}
@@ -154,6 +157,8 @@ public class MailSender {
 			// 发送邮件
 			Transport.send(mailMessage);
 
+		} catch(SendFailedException ex) { 
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

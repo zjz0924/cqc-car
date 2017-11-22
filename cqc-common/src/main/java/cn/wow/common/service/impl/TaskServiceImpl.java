@@ -136,7 +136,7 @@ public class TaskServiceImpl implements TaskService{
      * @param subject  主题
      * @param content  内容
      * @param addr     接收人地址（多个邮件地址以";"分隔）
-     * @param type     1:text 2:html
+     * @param type     类型：1-text 2-html
      */
     public boolean sendEmail(String subject, String content, String addr, int type) throws Exception{
     	MailSender mailSender = MailSender.getInstance();

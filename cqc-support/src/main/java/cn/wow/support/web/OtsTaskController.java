@@ -194,10 +194,10 @@ public class OtsTaskController extends AbstractController {
 		map.put("type", taskType);
 
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 
 		// 除了超级管理员，其它用户只能查看自己录入的申请记录
@@ -436,10 +436,10 @@ public class OtsTaskController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime  + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -545,10 +545,10 @@ public class OtsTaskController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime  + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -710,10 +710,10 @@ public class OtsTaskController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -750,6 +750,7 @@ public class OtsTaskController extends AbstractController {
 					ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
 					
 					if(applyRecord != null){
+						// GS任务没有零部件
 						if (taskType == TaskTypeEnum.OTS.getState() && applyRecord.getpId() != null) {
 							Parts newParts = partsService.selectOne(applyRecord.getpId());
 							model.addAttribute("newParts", newParts);
@@ -761,7 +762,7 @@ public class OtsTaskController extends AbstractController {
 						}
 
 						if (applyRecord.getmId() != null) {
-							Material newMaterial = materialService.selectOne(applyRecord.getvId());
+							Material newMaterial = materialService.selectOne(applyRecord.getmId());
 							model.addAttribute("newMaterial", newMaterial);
 						}
 					}

@@ -176,10 +176,10 @@ public class PpapTaskController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -309,10 +309,10 @@ public class PpapTaskController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -360,7 +360,7 @@ public class PpapTaskController extends AbstractController {
 						}
 
 						if (applyRecord.getmId() != null) {
-							Material newMaterial = materialService.selectOne(applyRecord.getvId());
+							Material newMaterial = materialService.selectOne(applyRecord.getmId());
 							model.addAttribute("newMaterial", newMaterial);
 						}
 					}
@@ -470,10 +470,10 @@ public class PpapTaskController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);

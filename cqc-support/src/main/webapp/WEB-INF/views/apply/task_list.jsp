@@ -297,7 +297,7 @@
 				</div>
 				
 				<div style="margin-top:10px;">
-					<span class="qlabel">完成时间：</span>
+					<span class="qlabel">确认时间：</span>
 					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
 					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/> &nbsp;&nbsp;&nbsp;&nbsp;
 					

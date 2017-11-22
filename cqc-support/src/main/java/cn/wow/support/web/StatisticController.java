@@ -57,10 +57,10 @@ public class StatisticController {
 		Map<String, Object> qMap = new PageMap(false);
 		
 		if (StringUtils.isNotBlank(startConfirmTime)) {
-			qMap.put("startConfirmTime", startConfirmTime);
+			qMap.put("startConfirmTime", startConfirmTime  + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endConfirmTime)) {
-			qMap.put("endConfirmTime", endConfirmTime);
+			qMap.put("endConfirmTime", endConfirmTime  + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(taskType)) {
 			qMap.put("type", taskType);

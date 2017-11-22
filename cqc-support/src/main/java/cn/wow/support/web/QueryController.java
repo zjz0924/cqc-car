@@ -100,16 +100,16 @@ public class QueryController extends AbstractController {
 			map.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime);
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime);
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(startConfirmTime)) {
-			map.put("startConfirmTime", startConfirmTime);
+			map.put("startConfirmTime", startConfirmTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endConfirmTime)) {
-			map.put("endConfirmTime", endConfirmTime);
+			map.put("endConfirmTime", endConfirmTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);

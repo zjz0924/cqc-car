@@ -6,5 +6,5 @@ import java.util.Map;
 public interface InfoDao extends SqlDao {
 
 	public List<Long> selectIdList(Map<String, Object> map);
-
+	
 }
