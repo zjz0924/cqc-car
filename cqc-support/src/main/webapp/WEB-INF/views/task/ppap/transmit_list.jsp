@@ -126,7 +126,10 @@
 					closed : false,
 					cache : false,
 					href : url,
-					modal : true
+					modal : true,
+					onClose: function(){
+						window.location.reload();
+					}
 				});
 				$('#transmitDialog').window('center');
 			}

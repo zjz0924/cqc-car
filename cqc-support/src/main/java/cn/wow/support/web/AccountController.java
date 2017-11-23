@@ -68,7 +68,8 @@ public class AccountController extends AbstractController {
 	@Autowired
 	private OrgService orgService;
 
-	private List<Account> data = new ArrayList<Account>();
+	// 查询的条件，用于导出
+	private Map<String, Object> queryMap = new PageMap(false);
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
@@ -91,36 +92,45 @@ public class AccountController extends AbstractController {
 			request.setAttribute("pageSize", DEFAULT_PAGE_SIZE);
 		}
 
+		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "username asc");
-
+		queryMap.put("custom_order_sql", "username asc");
+		
 		if (StringUtils.isNotBlank(userName)) {
 			map.put("qUserName", userName);
+			queryMap.put("qUserName", userName);
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
+			queryMap.put("nickName", nickName);
 		}
 		if (StringUtils.isNotBlank(lock)) {
 			map.put("lock", lock);
+			queryMap.put("lock", lock);
 		}
 		if (StringUtils.isNotBlank(mobile)) {
 			map.put("mobile", mobile);
+			queryMap.put("mobile", mobile);
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+			queryMap.put("orgId", orgId);
 		}
 		if (StringUtils.isNotBlank(roleId)) {
 			map.put("roleId", roleId.substring(roleId.indexOf("_") + 1));
+			queryMap.put("roleId", roleId.substring(roleId.indexOf("_") + 1));
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
+			queryMap.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 
 		List<Account> dataList = accountService.selectAllList(map);
-		data = dataList;
 
 		// 分页
 		Page<Account> pageList = (Page<Account>) dataList;
@@ -425,10 +435,12 @@ public class AccountController extends AbstractController {
 			}
 			
 			++r;
-			for (int j = 0; j < data.size(); j++) {// 添加数据
+			
+			List<Account> dataList = accountService.selectAllList(queryMap);
+			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
 				contentRow.setHeight((short) 400);
-				Account account = data.get(j);
+				Account account = dataList.get(j);
 
 				Cell cell1 = contentRow.createCell(0);
 				cell1.setCellStyle(styles.get("cell"));

@@ -65,7 +65,8 @@ public class QueryController extends AbstractController {
 	@Autowired
 	private PfResultService pfResultService;
 	
-	private List<Task> data = new ArrayList<Task>();
+	// 查询的条件，用于导出
+	private Map<String, Object> queryMap = new PageMap(false);
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
@@ -95,30 +96,39 @@ public class QueryController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
+		queryMap.put("custom_order_sql", "t.create_time desc");
 		
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
+			queryMap.put("code", code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
+			queryMap.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(startConfirmTime)) {
 			map.put("startConfirmTime", startConfirmTime + " 00:00:00");
+			queryMap.put("startConfirmTime", startConfirmTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endConfirmTime)) {
 			map.put("endConfirmTime", endConfirmTime + " 23:59:59");
+			queryMap.put("endConfirmTime", endConfirmTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
+			queryMap.put("nickName", nickName);
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+			queryMap.put("orgId", orgId);
 		}
 		if (StringUtils.isNotBlank(taskType)) {
 			map.put("type", taskType);
+			queryMap.put("type", taskType);
 		}
 		
 		/**
@@ -127,19 +137,19 @@ public class QueryController extends AbstractController {
 		 * 3) 实验室，只看需要我上传结果的任务
 		 */
 		if (!Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-			Map<String, Object> queryMap = new HashMap<String, Object>();
-			queryMap.put("accountId", account.getId());
+			Map<String, Object> tMap = new HashMap<String, Object>();
+			tMap.put("accountId", account.getId());
 
 			// 审批过的任务ID
 			List<Long> taskIdList = examineRecordService.selectTaskIdList(account.getId(), 2);
 			if (taskIdList != null && taskIdList.size() > 0) {
-				queryMap.put("taskIdList", taskIdList);
+				tMap.put("taskIdList", taskIdList);
 			}
-			map.put("queryMap", queryMap);
+			map.put("queryMap", tMap);
+			queryMap.put("queryMap", tMap);
 		}
 		
 		List<Task> dataList = taskService.selectAllList(map);
-		data = dataList;
 		
 		// 分页
 		Page<Task> pageList = (Page<Task>) dataList;
@@ -273,10 +283,11 @@ public class QueryController extends AbstractController {
 			}
 			
 			++r;
-			for (int j = 0; j < data.size(); j++) {// 添加数据
+			List<Task> dataList = taskService.selectAllList(queryMap);
+			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
 				contentRow.setHeight((short) 400);
-				Task task = data.get(j);
+				Task task = dataList.get(j);
 
 				Cell cell1 = contentRow.createCell(0);
 				cell1.setCellStyle(styles.get("cell"));

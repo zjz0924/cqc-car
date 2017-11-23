@@ -204,7 +204,7 @@
 							'nickName' : $("#q_nickName").textbox("getValue"),
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
-							'mobile': $("#q_startTimeTo").textbox("getValue"),
+							'mobile': $("#q_mobile").textbox("getValue"),
 							'lock': $("#q_lock").val(),
 							'orgId': $("#q_org").combotree("getValue"),
 							'roleId': $("#q_role").combotree("getValue"),
