@@ -103,6 +103,12 @@
 		                    }
 		                });
 				}
+		 	 }, '-',  {
+				text : '导入模块',
+				iconCls : 'icon-large-smartart',
+				handler : function() {
+					window.location.href = "${ctx}/resources/template/用户导入模板.xlsx";
+				}
 			}];
 			
 		
@@ -265,7 +271,7 @@
 			function accountInfo(url) {
 				$('#accountDialog').dialog({
 					title : '用户信息',
-					width : 800,
+					width : 850,
 					height : 450,
 					closed : false,
 					cache : false,

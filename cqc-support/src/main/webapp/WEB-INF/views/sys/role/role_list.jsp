@@ -371,6 +371,7 @@
 				display: inline-block;
 				width: 80px;
 				font-weight:bold;
+				padding-right: 20px;
 			}
 		</style>
 	</head>

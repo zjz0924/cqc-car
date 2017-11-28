@@ -34,7 +34,7 @@
 		
 			<div class="title">整车信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
-				<a href="javascript:void(0)" onclick="addVehicle()" title="新增"><i class="icon icon-edit"></i></a>
+				<a href="javascript:void(0)" onclick="addVehicle()" title="清空"><i class="icon icon-edit"></i></a>
 			</div>
 			
 			<table class="info">
@@ -69,7 +69,7 @@
 			<div style="margin-left: 10px;margin-top:20px;">
 				<div class="title">零部件信息&nbsp;&nbsp;
 					<a href="javascript:void(0)" onclick="partsInfo()"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
-					<a href="javascript:void(0)" onclick="addParts()" title="新增"><i class="icon icon-edit"></i></a>
+					<a href="javascript:void(0)" onclick="addParts()" title="清空"><i class="icon icon-edit"></i></a>
 				</div>
 				
 				<table class="info">
@@ -102,13 +102,13 @@
 						</td>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>关键零件：</span> 
-							<select id="p_isKey" name="p_isKey" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto'" <c:if test="${facadeBean.info.parts.state == 1}">disabled</c:if>>
+							<select id="p_isKey" name="p_isKey" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto', onChange: function(n, o){isKeyChange()}" <c:if test="${facadeBean.info.parts.state == 1}">disabled</c:if>>
 								<option value="0" <c:if test="${facadeBean.info.parts.isKey == 0 }">selected="selected"</c:if>>否</option>
 								<option value="1" <c:if test="${facadeBean.info.parts.isKey == 1 }">selected="selected"</c:if>>是</option>
 							</select>
 						</td>
 						<td>
-							<span class="title-span">零件型号：</span> 
+							<span class="title-span"><span class="req-span" id="keyCode_req" style="display:none;">*</span>零件型号：</span> 
 							<input id="p_keyCode" name="p_keyCode" class="easyui-textbox" value="${facadeBean.info.parts.keyCode }" <c:if test="${facadeBean.info.parts.state == 1}">disabled</c:if> style="width:150px;">
 						</td>
 					</tr>
@@ -293,7 +293,7 @@
 				// 零部件信息
 				var taskType = "${taskType}";
 				if(taskType == 1){
-					if(!isRequire("p_code", "零部号必填")){ saving = false; return false; }
+					if(!isRequire("p_code", "零件号必填")){ saving = false; return false; }
 					if(!isRequire("p_name", "零部件名称必填")){ saving = false; return false; }
 					if(!isRequire("p_orgId", "零部件生产商必填")){ saving = false; return false; }
 					if(!isRequire("p_proTime", "零部件生产日期必填")){ saving = false; return false; }
@@ -438,6 +438,16 @@
 				$("#p_isKey").combobox('select', 0);
 				$("#p_orgId").combotree("setValue","");
 				$("#p_id").val("");
+			}
+			
+			function isKeyChange(){
+				var isKey = $("#p_isKey").combobox('getValue');
+				
+				if(isKey == 0){
+					$("#keyCode_req").hide();
+				}else{
+					$("#keyCode_req").show();
+				}
 			}
 		</script>
 	

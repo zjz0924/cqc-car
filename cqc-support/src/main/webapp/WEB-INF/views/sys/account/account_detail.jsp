@@ -11,13 +11,13 @@
 			<div class="data-row">
 				<div class="data-cell-left">
 					<span class="title-span"><span class="req-span">*</span>用户名：</span> 
-					<input id="userName" name="userName" value="${facadeBean.userName}" <c:if test="${not empty facadeBean.id}">disabled</c:if> class="easyui-textbox">
+					<input id="userName" name="userName" value="${facadeBean.userName}" <c:if test="${not empty facadeBean.id}">disabled</c:if> class="easyui-textbox" style="width:220px;">
 					<span id="userName_error" class="error-message"></span>
 				</div>
 				
 				<div class="data-cell-right">
 					<span class="title-span"><span class="req-span">*</span>姓名：</span> 
-					<input id="nickName" name="nickName" class="easyui-textbox" value="${facadeBean.nickName}">
+					<input id="nickName" name="nickName" class="easyui-textbox" value="${facadeBean.nickName}" style="width:220px;">
 					<span id="nickName_error" class="error-message"></span>
 				</div>
 			</div>
@@ -26,13 +26,13 @@
 	            <div class="data-row">
 	            	<div class="data-cell-left">
 						<span class="title-span"><span class="req-span">*</span>密码：</span> 
-						<input id="password" name="password" class="easyui-passwordbox">
+						<input id="password" name="password" class="easyui-passwordbox" style="width:220px;">
 						<span id="password_error" class="error-message"></span>
 					</div>
 				
 					<div class="data-cell-right">
 						<span class="title-span"><span class="req-span">*</span>确认密码：</span> 
-						<input id="repeatPassword" name="repeatPassword" class="easyui-passwordbox">
+						<input id="repeatPassword" name="repeatPassword" class="easyui-passwordbox" style="width:220px;">
 						<span id="repeatPassword_error" class="error-message"></span>
 					</div>
 				</div>
@@ -54,11 +54,12 @@
 			<div class="data-row">
 				<div class="data-cell-left">
 					<span class="title-span">手机：</span> 
-					<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" data-options="validType:'phone'">
+					<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" style="width:220px;">
+					<span id="mobile_error" class="error-message"></span>
 				</div>
 				<div class="data-cell-right">
 					<span class="title-span"><span class="req-span">*</span>邮箱：</span> 
-					<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'">
+					<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'" style="width:220px;">
 					<span id="email_error" class="error-message"></span>
 				</div>
 			</div>
@@ -85,12 +86,12 @@
 			
 			<div class="data-row">
 				<span class="title-span">备注：</span> 
-				<input id="remark" name="remark" class="easyui-textbox" multiline="true" value="${facadeBean.remark }" style="height:50px">		
+				<input id="remark" name="remark" class="easyui-textbox" multiline="true" value="${facadeBean.remark }" style="height:50px;width: 220px">		
 			</div>
 			
 			<div class="data-row" style="margin-top:30px;">
 				<span class="title-span">签名来源：</span> 
-				<select id="signType" class="easyui-combobox" name="signType" data-options="panelHeight:'auto'" style="width:171px;">
+				<select id="signType" class="easyui-combobox" name="signType" data-options="panelHeight:'auto'" style="width:220px;">
 				    <option value="1" <c:if test="${facadeBean.signType == 1}">selected="selected"</c:if>>登录用户姓名</option>
 				    <option value="2" <c:if test="${facadeBean.signType == 2}">selected="selected"</c:if>>使用图片签名</option>
 				</select>
@@ -98,7 +99,7 @@
 			
 			<div class="data-row" style="margin-top:5px;">
 				<span class="title-span">签名图片：</span> 
-				<input id="pic" name="pic" class="easyui-filebox" style="width:171px" data-options="buttonText: '选择'">
+				<input id="pic" name="pic" class="easyui-filebox" style="width:220px" data-options="buttonText: '选择'">
 				<span id="pic_error" class="error-message"></span>
 			</div>
 			 
@@ -122,7 +123,8 @@
 			$('#role').combotree({
 				url: '${ctx}/role/tree',
 				multiple: false,
-				animate: true	
+				animate: true,
+				width: '220px'
 			});
 			
 			// 只有角色才能选择
@@ -138,7 +140,8 @@
 			});
 			
 			$('#org').combotree({
-				url: '${ctx}/org/tree'
+				url: '${ctx}/org/tree',
+				width: '220px'
 			});
 			
 			// 只能选择最底层机构
@@ -168,25 +171,25 @@
 		function saveAccount(){
 			var userName = $("#userName").textbox("getValue");
 			
-			if(!isRequire("userName", "用户名必填")){ return false; }
+			if(!isRequire("userName", "必填")){ return false; }
 			
 			var accountId = $("#id").val();
 			if(isNull(accountId)){
 				var password = $("#password").val();
 				var repeatPassword = $("#repeatPassword").val();
 				
-				if(!isRequire("password", "密码必填")){ return false; }
-				if(!isRequire("repeatPassword", "确认密码必填")){ return false; }
+				if(!isRequire("password", "必填")){ return false; }
+				if(!isRequire("repeatPassword", "必填")){ return false; }
 				
 				if(password != repeatPassword){
-					errAccount("password_error", "两次密码不一致");
+					errAccount("password_error", "密码不一致");
 					return false;
 				}else{
 					errAccount("repeatPassword_error", "");
 				}
 			}
 			
-			if(!isRequire("nickName", "姓名必填")){ return false; }
+			if(!isRequire("nickName", "必填")){ return false; }
 			
 			var roleId = "";
 			var roleVals = $("#role").combotree('getValues');
@@ -203,7 +206,7 @@
 				}
 			}
 			if(isNull(roleId)){
-				errAccount("role_error", "请选择角色");
+				errAccount("role_error", "必选");
 				return false;
 			}else{
 				errAccount("role_error", "");
@@ -217,70 +220,83 @@
 				orgId = selecteNode.id;
 			}
 			if(isNull(orgId)){
-				errAccount("org_error", "请选择机构");
+				errAccount("org_error", "必选");
 				return false;
 			}else{
 				errAccount("org_error", "");
 			}
 			$("#orgId").val(orgId);
 			
-			if(!isRequire("email", "邮箱必填")){
+			var mobile = $("#mobile").val();
+			if (!isNull(mobile)) {
+				if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(mobile))) {
+					$("#mobile_error").html("格式不下确");
+					return false;
+				}else{
+					$("#mobile_error").html("");
+				}
+			}else{
+				$("#mobile_error").html("");
+			}
+
+			if (!isRequire("email", "必填")) {
 				return false;
 			}
-			
+
 			var signType = $("#signType").val();
-			if(signType == 2){
+			if (signType == 2) {
 				var fileDir = $("#pic").filebox("getValue");
 				if (!isNull(fileDir)) {
 					var suffix = fileDir.substr(fileDir.lastIndexOf("."));
-					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+					if (".jpg" != suffix && ".png" != suffix
+							&& ".jpeg" != suffix && ".gif" != suffix) {
 						$("#pic_error").html("请选择图片格式文件导入！");
 						return false;
 					}
-				}else{
+				} else {
 					var pic = '${facadeBean.pic}';
-					if(isNull(pic)){
+					if (isNull(pic)) {
 						$("#pic_error").html("请选择要上传的签名图片");
 						return false;
 					}
 				}
-			}else{
+			} else {
 				$("#pic_error").html("");
 			}
-			
+
 			$('#accountForm').ajaxSubmit({
-				url: "${ctx}/account/save?time=" + new Date(),
+				url : "${ctx}/account/save?time=" + new Date(),
 				dataType : 'text',
-				success:function(msg){
+				success : function(msg) {
 					var data = eval('(' + msg + ')');
-					if(data.success){
+					if (data.success) {
 						closeAccountDialog(data.msg);
-					}else{
-						if(data.data == "userName"){
+					} else {
+						if (data.data == "userName") {
 							errAccount("userName_error", data.msg);
-						}else{
+						} else {
 							errAccount("exception_error", data.msg);
 						}
 					}
 				}
 			});
 		}
-		
-		function errAccount(id, message){
-            $("#" + id).html(message);
-        }
-		
+
+		function errAccount(id, message) {
+			$("#" + id).html(message);
+		}
+
 		/**
-		  * 判断是否必填
-		  * id: 属性ID
-		  * emsg: 错误信息
-		*/
-		function isRequire(id, emsg){
+		 * 判断是否必填
+		 * id: 属性ID
+		 * emsg: 错误信息
+		 */
+		function isRequire(id, emsg) {
 			var val = $("#" + id).val();
-			if(isNull(val)){
+			if (isNull(val)) {
 				errAccount(id + "_error", emsg);
 				return false;
-			}else{
+			} else {
 				errAccount(id + "_error", "");
 				return true;
 			}

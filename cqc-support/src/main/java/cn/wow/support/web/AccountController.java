@@ -8,8 +8,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -35,12 +37,15 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.Role;
 import cn.wow.common.service.AccountService;
+import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.OrgService;
 import cn.wow.common.service.RoleService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.cookie.MD5;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 
 /**
@@ -67,6 +72,8 @@ public class AccountController extends AbstractController {
 	private RoleService roleService;
 	@Autowired
 	private OrgService orgService;
+	@Autowired
+	private OperationLogService operationLogService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -340,8 +347,9 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/resetPwd")
 	public AjaxVO resetPwd(HttpServletRequest request, String id, String lock) {
+		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		AjaxVO vo = new AjaxVO();
-		vo.setMsg("密码重置成功");
+		vo.setMsg("密码重置成功，默认密码为：888888");
 		
 		try {
 			if (StringUtils.isNotBlank(id)) {
@@ -402,6 +410,7 @@ public class AccountController extends AbstractController {
 	 */
 	@RequestMapping(value = "/exportUser")
 	public void exportUser(HttpServletRequest request, HttpServletResponse response) {
+		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		String filename = "用户清单";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
@@ -490,6 +499,10 @@ public class AccountController extends AbstractController {
 			wb.write(os);
 			os.flush();
 			os.close();
+			
+			String logDetail =  "导出用户列表";
+			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.ACCOUNT, logDetail);
+			
 		} catch (Exception e) {
 			logger.error("用户清单导出失败");
 			
@@ -505,7 +518,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/importUser")
 	public AjaxVO importUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		AjaxVO vo = new AjaxVO();
-
+		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
 		MultipartFile file = multipartRequest.getFile("upfile");
@@ -611,7 +624,12 @@ public class AccountController extends AbstractController {
 			if (updateList.size() > 0) {
 				accountService.batchUpdate(updateList);
 			}
-			vo.setMsg("导入成功， 新增：" + createList.size() + " 用户，修改：" + updateList.size() + "用户");
+			String msg = "新增：" + createList.size() + " 用户，修改：" + updateList.size() + "用户";
+			vo.setMsg(msg);
+			
+			String logDetail =  "导入用户，" + msg;
+			operationLogService.save(currentAccount.getUserName(), OperationType.IMPORT, ServiceType.ACCOUNT, logDetail);
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("用户导入失败：", ex);
