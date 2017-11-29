@@ -29,7 +29,7 @@
 	<logger name="org.apache" level="INFO" />
 	<logger name="org.springframework.jdbc.datasource" level="INFO"/>
 	
-	<root level="DEBUG">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>

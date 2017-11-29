@@ -358,10 +358,10 @@
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
-					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 230px;">
 					
-					<span class="qlabel">任务类型：</span>
-					<select id="q_taskType" name="q_taskType" style="width:140px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+					<span class="qlabel" style="margin-left: 50px;">任务类型：</span>
+					<select id="q_taskType" name="q_taskType" style="width:230px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">全部</option>
 						<option value="1">车型OTS阶段任务</option>
 						<option value="2">车型PPAP阶段任务</option>
@@ -369,21 +369,22 @@
 						<option value="4">非车型材料任务</option>
 					</select>
 					
-					<span class="qlabel">录入单位：</span>
-					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 138px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel" style="margin-left: 50px;">录入单位：</span>
+					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 230px;">
 					
-					<span class="qlabel">录入时间：</span>
-					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>
 				</div>
 				
 				<div style="margin-top:10px;">
-					<span class="qlabel">录入用户：</span>
-					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">录入时间：</span>
+					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;"/>
+					
+					<span class="qlabel" style="margin-left: 50px;">完成时间：</span>
+					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
+					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;"/>
 				
-					<span class="qlabel">完成时间：</span>
-					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/> &nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel" style="margin-left: 50px;">录入用户：</span>
+					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 138px;">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>

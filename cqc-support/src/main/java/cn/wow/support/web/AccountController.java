@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -520,11 +521,19 @@ public class AccountController extends AbstractController {
 		AjaxVO vo = new AjaxVO();
 		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-
+		
+		List<String> titleList = new ArrayList<String>();
+		titleList.add("用户名");
+		titleList.add("姓名");
+		titleList.add("手机号码");
+		titleList.add("机构编码");
+		titleList.add("角色编码");
+		titleList.add("邮箱");
+		
 		MultipartFile file = multipartRequest.getFile("upfile");
 		if (file.isEmpty()) {
 			vo.setSuccess(false);
-			vo.setData("文件不存在");
+			vo.setMsg("文件不存在");
 			return vo;
 		}
 
@@ -535,12 +544,47 @@ public class AccountController extends AbstractController {
 			List<Account> updateList = new ArrayList<Account>();
 
 			if (execelList != null && execelList.size() > 0) {
+				// 检查模板是否正确
+				List<Object> titleObj = execelList.get(0);
+				if(titleObj == null || titleObj.size() < 6) {
+					vo.setSuccess(false);
+					vo.setData("导入模板不正确");
+					return vo;
+				}else {
+					boolean flag = true;
+
+					if (!"用户名".equals(titleObj.get(0).toString())) {
+						flag = false;
+					}
+					if (flag && !"姓名".equals(titleObj.get(1).toString())) {
+						flag = false;
+					}
+					if (flag && !"手机号码".equals(titleObj.get(2).toString())) {
+						flag = false;
+					}
+					if (flag && !"机构编码".equals(titleObj.get(3).toString())) {
+						flag = false;
+					}
+					if (flag && !"角色编码".equals(titleObj.get(4).toString())) {
+						flag = false;
+					}
+					if (flag && !"邮箱".equals(titleObj.get(5).toString())) {
+						flag = false;
+					}
+
+					if (!flag) {
+						vo.setSuccess(false);
+						vo.setMsg("导入模板不正确");
+						return vo;
+					}
+				}
+				
 				Map<String, Org> orgMap = new HashMap<String, Org>();
 				Map<String, Role> roleMap = new HashMap<String, Role>();
 				Map<String, Account> accountMap = new HashMap<String, Account>();
 				getMapData(orgMap, roleMap, accountMap);
 
-				for (int i = 0; i < execelList.size(); i++) {
+				for (int i = 1; i < execelList.size(); i++) {
 					List<Object> obj = execelList.get(i);
 					
 					if(obj.size() < 1 || obj.get(0) == null){
@@ -556,6 +600,13 @@ public class AccountController extends AbstractController {
 					String mobile = null;
 					if(obj.size() >= 3 && obj.get(2) != null){
 						mobile = obj.get(2).toString();
+						
+						if(StringUtils.isNoneBlank(mobile)) {
+							boolean isMatch = Pattern.matches("^[1][3,4,5,7,8][0-9]{9}$", mobile);
+							if(!isMatch) {
+								mobile = "";
+							}
+						}
 					}
 					
 					String orgCode = null;
@@ -571,6 +622,13 @@ public class AccountController extends AbstractController {
 					String email = null;
 					if(obj.size() >= 6  && obj.get(5) != null){
 						email = obj.get(5).toString();
+						
+						if(StringUtils.isNoneBlank(email)) {
+							boolean isMatch = Pattern.matches("^^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$", email);
+							if(!isMatch) {
+								email = "";
+							}
+						}
 					}
 					
 					if (StringUtils.isBlank(userName)) {

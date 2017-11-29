@@ -6,21 +6,21 @@
 		<div class="title">整车信息</div>
 		<div style="width: 98%;">
 			<table class="info">
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">代码：</td>
 					<td class="value-td">${facadeBean.info.vehicle.code}</td>
 					<td class="title-td">车型：</td>
 					<td class="value-td">${facadeBean.info.vehicle.type}</td>
 				</tr>
-				<tr>
+				<tr class="couple-row">
 					<td class="title-td">生产日期：</td>
 					<td class="value-td"><fmt:formatDate value='${facadeBean.info.vehicle.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
 					<td class="title-td">生产地址：</td>
 					<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
 				</tr>
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.info.vehicle.remark}</td>
+					<td class="value-td" colspan="3">${facadeBean.info.vehicle.remark}</td>
 				</tr>
 			</table>
 		</div>
@@ -31,25 +31,25 @@
 			<div class="title">零部件信息</div>
 			<div style="width: 98%;">
 				<table class="info">
-					<tr>
+					<tr class="single-row">
 						<td class="title-td">代码：</td>
 						<td class="value-td">${facadeBean.info.parts.code}</td>
 						<td class="title-td">名称：</td>
 						<td class="value-td">${facadeBean.info.parts.name}</td>
 					</tr>
-					<tr>
+					<tr class="couple-row">
 						<td class="title-td">生产商：</td>
 						<td class="value-td">${facadeBean.info.parts.org.name}</td>
 						<td class="title-td">生产批号：</td>
 						<td class="value-td">${facadeBean.info.parts.proNo}</td>
 					</tr>
-					<tr>
+					<tr class="single-row">
 						<td class="title-td">生产日期：</td>
 						<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
 						<td class="title-td">生产地址：</td>
 						<td class="value-td">${facadeBean.info.parts.place}</td>
 					</tr>
-					<tr>
+					<tr class="couple-row">
 						<td class="title-td">关键零件：</td>
 						<td class="value-td">
 							<c:choose>
@@ -67,9 +67,9 @@
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class="single-row">
 						<td class="title-td">备注：</td>
-						<td class="value-td">${facadeBean.info.parts.remark}</td>
+						<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 					</tr>
 				</table>
 			</div>
@@ -80,28 +80,28 @@
 		<div class="title">原材料信息</div>
 		<div style="width: 98%;">
 			<table class="info">
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">材料名称：</td>
 					<td class="value-td">${facadeBean.info.material.matName}</td>
 					<td class="title-td">生产批号：</td>
 					<td class="value-td">${facadeBean.info.material.proNo}</td>
 				</tr>
 				
-				<tr>
+				<tr class="couple-row">
 					<td class="title-td">生产商：</td>
 					<td class="value-td">${facadeBean.info.material.org.name}</td>
 					<td class="title-td">生产商地址：</td>
 					<td class="value-td">${facadeBean.info.material.org.addr}</td>
 				</tr>
 				
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">材料牌号：</td>
 					<td class="value-td">${facadeBean.info.material.matNo}</td>
 					<td class="title-td">材料颜色：</td>
 					<td class="value-td">${facadeBean.info.material.matColor}</td>
 				</tr>
 				
-				<tr>
+				<tr class="couple-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -129,15 +129,15 @@
 						</div>
 						<div>
 							<table class="info" id="p_pfTable">
-								<tr>
-									<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+								<tr class="single-row">
+									<td style="font-weight:bold;">序号</td>
 									<td class="title-td"><span class="req-span">*</span>试验项目</td>
 									<td class="title-td"><span class="req-span">*</span>参考标准</td>
 									<td class="title-td"><span class="req-span">*</span>试验要求</td>
 									<td class="title-td"><span class="req-span">*</span>试验结果</td>
 									<td class="title-td"><span class="req-span">*</span>结果评价</td>
 									<td class="title-td">备注</td>
-									<td style="background: #F0F0F0;font-weight:bold;">操作</td>
+									<td style="font-weight:bold;">操作</td>
 								</tr>
 								
 								<c:forEach var="i" begin="1" end="1" varStatus="status">
@@ -186,15 +186,15 @@
 					</div>
 					<div>
 						<table class="info" id="m_pfTable">
-							<tr>
-								<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+							<tr class="single-row">
+								<td style="font-weight:bold;">序号</td>
 								<td class="title-td"><span class="req-span">*</span>试验项目</td>
 								<td class="title-td"><span class="req-span">*</span>参考标准</td>
 								<td class="title-td"><span class="req-span">*</span>试验要求</td>
 								<td class="title-td"><span class="req-span">*</span>试验结果</td>
 								<td class="title-td"><span class="req-span">*</span>结果评价</td>
 								<td class="title-td">备注</td>
-								<td style="background: #F0F0F0;font-weight:bold;">操作</td>
+								<td style="font-weight:bold;">操作</td>
 							</tr>
 							
 							<c:forEach var="i" begin="1" end="1" varStatus="status">
@@ -251,7 +251,7 @@
 							<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
 							<div>
 								<table class="info" id="p_arTable">
-									<tr>
+									<tr class="single-row">
 										<td class="title-td">图谱类型</td>
 										<td class="title-td">图谱描述</td>
 										<td class="title-td">选择图谱</td>
@@ -298,7 +298,7 @@
 						<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
 						<div>
 							<table class="info" id="m_arTable">
-								<tr>
+								<tr class="single-row">
 									<td class="title-td">图谱类型</td>
 									<td class="title-td">图谱描述</td>
 									<td class="title-td">选择图谱</td>
@@ -739,14 +739,12 @@
 		
 		.title-td {
 			width:13%;
-			background: #F0F0F0;
 			padding-left: 5px;
 			font-weight: bold;
 		}
 		
 		.value-td{
 			width:32%;
-			background: #f5f5f5;
 			padding-left: 5px;
 		}
 		
@@ -764,6 +762,14 @@
 			width:16px;
 			height: 16px;
 			display: inline-block;
+		}
+		
+		.single-row{
+			background: #F0F0F0;
+		}
+		
+		.couple-row{
+			background: #f5f5f5;
 		}
 		
 	</style>

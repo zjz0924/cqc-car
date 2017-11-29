@@ -6,21 +6,21 @@
 		<div class="title">整车信息</div>
 		<div style="width: 98%;">
 			<table class="info">
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">代码：</td>
 					<td class="value-td">${facadeBean.task.info.vehicle.code}</td>
 					<td class="title-td">车型：</td>
 					<td class="value-td">${facadeBean.task.info.vehicle.type}</td>
 				</tr>
-				<tr>
+				<tr class="couple-row">
 					<td class="title-td">生产日期：</td>
 					<td class="value-td"><fmt:formatDate value='${facadeBean.task.info.vehicle.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
 					<td class="title-td">生产地址：</td>
 					<td class="value-td">${facadeBean.task.info.vehicle.proAddr}</td>
 				</tr>
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.task.info.vehicle.remark}</td>
+					<td class="value-td" colspan="3">${facadeBean.task.info.vehicle.remark}</td>
 				</tr>
 			</table>
 		</div>
@@ -31,25 +31,25 @@
 			<div class="title">零部件信息</div>
 			<div style="width: 98%;">
 				<table class="info">
-					<tr>
+					<tr class="single-row">
 						<td class="title-td">代码：</td>
 						<td class="value-td">${facadeBean.task.info.parts.code}</td>
 						<td class="title-td">名称：</td>
 						<td class="value-td">${facadeBean.task.info.parts.name}</td>
 					</tr>
-					<tr>
+					<tr class="couple-row">
 						<td class="title-td">生产商：</td>
 						<td class="value-td">${facadeBean.task.info.parts.org.name}</td>
 						<td class="title-td">生产批号：</td>
 						<td class="value-td">${facadeBean.task.info.parts.proNo}</td>
 					</tr>
-					<tr>
+					<tr class="single-row">
 						<td class="title-td">生产日期：</td>
 						<td class="value-td"><fmt:formatDate value='${facadeBean.task.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
 						<td class="title-td">生产地址：</td>
 						<td class="value-td">${facadeBean.task.info.parts.place}</td>
 					</tr>
-					<tr>
+					<tr class="couple-row">
 						<td class="title-td">关键零件：</td>
 						<td class="value-td">
 							<c:choose>
@@ -67,9 +67,9 @@
 						</td>
 					</tr>
 					
-					<tr>
+					<tr class="single-row">
 						<td class="title-td">备注：</td>
-						<td class="value-td">${facadeBean.task.info.parts.remark}</td>
+						<td class="value-td" colspan="3">${facadeBean.task.info.parts.remark}</td>
 					</tr>
 				</table>
 			</div>
@@ -80,28 +80,28 @@
 		<div class="title">原材料信息</div>
 		<div style="width: 98%;">
 			<table class="info">
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">材料名称：</td>
 					<td class="value-td">${facadeBean.task.info.material.matName}</td>
 					<td class="title-td">生产批号：</td>
 					<td class="value-td">${facadeBean.task.info.material.proNo}</td>
 				</tr>
 				
-				<tr>
+				<tr class="couple-row">
 					<td class="title-td">生产商：</td>
 					<td class="value-td">${facadeBean.task.info.material.org.name}</td>
 					<td class="title-td">生产商地址：</td>
 					<td class="value-td">${facadeBean.task.info.material.org.addr}</td>
 				</tr>
 				
-				<tr>
+				<tr class="single-row">
 					<td class="title-td">材料牌号：</td>
 					<td class="value-td">${facadeBean.task.info.material.matNo}</td>
 					<td class="title-td">材料颜色：</td>
 					<td class="value-td">${facadeBean.task.info.material.matColor}</td>
 				</tr>
 				
-				<tr>
+				<tr class="couple-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.task.info.material.pic}">
@@ -129,18 +129,18 @@
 						</div>
 						<c:forEach items="${m.value}" var="vo" varStatus="vst">
 							<table class="info">
-								<tr>
+								<tr class="single-row">
 									<td class="title-td">试验项目：</td>
 									<td class="value-td" colspan="3">${vo.project}</td>
 									
 								</tr>
-								<tr>
+								<tr class="couple-row">
 									<td class="title-td">参考标准：</td>
 									<td class="value-td">${vo.standard}</td>
 									<td class="title-td">试验要求：</td>
 									<td class="value-td">${vo.require}</td>
 								</tr>
-								<tr>
+								<tr class="single-row">
 									<td class="title-td">试验结果：</td>
 									<td class="value-td">${vo.result}</td>
 									<td class="title-td">结果评价：</td>
@@ -163,7 +163,7 @@
 							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
 						</div>
 						<table class="info">
-							<tr>
+							<tr class="single-row">
 								<td class="title-td">图谱类型</td>
 								<td class="title-td">图谱描述</td>
 								<td class="title-td">选择图谱</td>
@@ -194,18 +194,18 @@
 					</div>
 					<c:forEach items="${m.value}" var="vo" varStatus="vst">
 						<table class="info">
-							<tr>
+							<tr class="single-row">
 								<td class="title-td">试验项目：</td>
 								<td class="value-td" colspan="3">${vo.project}</td>
 								
 							</tr>
-							<tr>
+							<tr class="couple-row">
 								<td class="title-td">参考标准：</td>
 								<td class="value-td">${vo.standard}</td>
 								<td class="title-td">试验要求：</td>
 								<td class="value-td">${vo.require}</td>
 							</tr>
-							<tr>
+							<tr class="single-row">
 								<td class="title-td">试验结果：</td>
 								<td class="value-td">${vo.result}</td>
 								<td class="title-td">结果评价：</td>
@@ -228,7 +228,7 @@
 						<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
 					</div>
 					<table class="info">
-						<tr>
+						<tr class="single-row">
 							<td class="title-td">图谱类型</td>
 							<td class="title-td">图谱描述</td>
 							<td class="title-td">选择图谱</td>
@@ -253,7 +253,7 @@
 		<!-- PPAP 对比结果确认 -->
 		<c:if test="${facadeBean.task.type == 2 || facadeBean.task.type == 3}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-			<div class="title">对比结果</div> ${facadeBean.labType}
+			<div class="title">对比结果</div>
 			
 			<div style="margin-left: 15px;">
 				<c:if test="${facadeBean.labType == 1 }">
@@ -476,14 +476,12 @@
 		
 		.title-td {
 			width:13%;
-			background: #F0F0F0;
 			padding-left: 5px;
 			font-weight: bold;
 		}
 		
 		.value-td{
 			width:32%;
-			background: #f5f5f5;
 			padding-left: 5px;
 		}
 		
@@ -512,6 +510,13 @@
 			line-height:250px;
 		}
 		
+		.single-row{
+			background: #F0F0F0;
+		}
+		
+		.couple-row{
+			background: #f5f5f5;
+		}
 	</style>
 	
 </body>

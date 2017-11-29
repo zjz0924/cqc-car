@@ -29,7 +29,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "380px",
+			        height: "375px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -128,7 +128,7 @@
 			        url : getRecordUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "380px",
+			        height: "370px",
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
@@ -249,18 +249,19 @@
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
-					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 115px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 230px;">
 					
-					<span class="qlabel">录入单位：</span>
-					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 115px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel" style="margin-left: 50px;">录入单位：</span>
+					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 230px;">
 					
-					<span class="qlabel">录入用户：</span>
-					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 115px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					
-					
+					<span class="qlabel" style="margin-left: 50px;">录入用户：</span>
+					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 230px;">
+				</div>	
+				
+				<div style="margin-top: 10px;">	
 					<span class="qlabel">录入时间：</span>
-					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:105px;display:inline-block"/> - 
-					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:105px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;margin-right: 40px;"/>
 				
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>

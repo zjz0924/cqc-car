@@ -268,7 +268,6 @@ public class OtsTaskController extends AbstractController {
 			Vehicle vehicle = null;
 			if (v_id == null) {
 				vehicle = new Vehicle();
-				vehicle = new Vehicle();
 				vehicle.setType(v_type);
 				vehicle.setCode(v_code);
 				vehicle.setProTime(sdf.parse(v_proTime));
@@ -287,7 +286,6 @@ public class OtsTaskController extends AbstractController {
 				vehicle = vehicleService.selectOne(v_id);
 				if (vehicle.getState().intValue() == 0) {
 					vehicle.setType(v_type);
-					vehicle.setCode(v_code);
 					vehicle.setProTime(sdf.parse(v_proTime));
 					vehicle.setProAddr(v_proAddr);
 					vehicle.setRemark(v_remark);
@@ -300,6 +298,7 @@ public class OtsTaskController extends AbstractController {
 							return vo;
 						}
 					}
+					vehicle.setCode(v_code);
 				}
 			}
 
@@ -335,7 +334,6 @@ public class OtsTaskController extends AbstractController {
 						parts.setPlace(p_place);
 						parts.setProNo(p_proNo);
 						parts.setName(p_name);
-						parts.setCode(p_code);
 						parts.setIsKey(p_isKey);
 						parts.setKeyCode(p_keyCode);
 						parts.setOrgId(p_orgId);
@@ -348,6 +346,7 @@ public class OtsTaskController extends AbstractController {
 								return vo;
 							}
 						}
+						parts.setCode(p_code);
 					}
 				}
 			}
