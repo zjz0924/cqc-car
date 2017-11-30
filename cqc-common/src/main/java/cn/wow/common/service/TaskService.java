@@ -93,4 +93,11 @@ public interface TaskService {
      * @param taskId
      */
     public int getSubTaskNum(Long taskId);
+    
+    
+    /**
+     * 获取最上级的父任务
+     * @param taskId
+     */
+    public Task getRootTask(Long taskId);
 }

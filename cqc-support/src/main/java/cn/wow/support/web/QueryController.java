@@ -208,7 +208,7 @@ public class QueryController extends AbstractController {
 					
 					// 如果是修改生成的记录，基准图谱要取父任务的iID的基准
 					if(task.gettId() != null) {
-						Task pTask = taskService.selectOne(task.gettId());
+						Task pTask = taskService.getRootTask(task.gettId());
 						iId = pTask.getiId();
 					}
 					

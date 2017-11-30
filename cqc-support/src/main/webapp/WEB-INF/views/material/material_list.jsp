@@ -7,19 +7,19 @@
 			<div>
 				<div>
 					<span class="qlabel">材料名称：</span>
-					<input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 200px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">生产批次：</span>
-					<input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 200px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">材料牌号：</span>
-					<input id="q_matNo" name="q_matNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					
-					<span class="qlabel">材料生产商：</span>
-					<input id="q_orgId" name="q_orgId" style="width: 140px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_matNo" name="q_matNo" class="easyui-textbox" style="width: 200px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				</div>
 				
 				<div style="margin-top:10px;margin-right: 40px;">
+					<span class="qlabel">材料生产商：</span>
+					<input id="q_orgId" name="q_orgId">&nbsp;&nbsp;&nbsp;&nbsp;
+					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
@@ -40,7 +40,7 @@
 					url: '${ctx}/org/getTreeByType?type=2',
 					multiple: false,
 					animate: true,
-					width: '140px'
+					width: '200px'
 				});
 				
 				// 只有最底层才能选择

@@ -436,7 +436,7 @@
 
 			// 格式化基准下拉框
 			function formatItem(row) {
-				var s = '<span style="font-weight:bold">' + row.text + '</span><br/>' + '<span style="color:#888">任务号：'
+				var s = '<span style="font-weight:bold;color:black;">' + row.text + '</span><br/>' + '<span style="color:black;">任务号：'
 						+ row.taskCode + '&nbsp;&nbsp;&nbsp;创建时间：' + row.date + '</span>';
 				return s;
 			}

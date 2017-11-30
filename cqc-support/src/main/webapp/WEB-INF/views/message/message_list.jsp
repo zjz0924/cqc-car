@@ -55,7 +55,7 @@
 						field : 'content',
 						title : '内容',
 						width : '320',
-						align : 'center',
+						align : 'left',
 						formatter : function(value,row,index){
 							if(row.type != 2){
 								return "<span title='" + row.content + "'>" +  row.content  + "</span>";
@@ -174,7 +174,7 @@
 					href : "${ctx}/message/detail?id=" + id,
 					modal : true,
 					onClose: function(){
-						$('#' + datagrid).datagrid('reload');
+						doSearch();
 					}
 				});
 				$('#detailDialog').window('center');

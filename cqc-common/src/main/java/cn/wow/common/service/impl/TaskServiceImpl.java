@@ -208,7 +208,6 @@ public class TaskServiceImpl implements TaskService{
 		TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.SEND.getState(), remark, date, task.getType());
 		taskRecordDao.insert(taskRecord);
 		
-		
 		// 发送结果（最后发送，防止事务提交失败）
 		if(StringUtils.isNotBlank(pAtlOrgVal)){
     		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content, 1);
@@ -563,6 +562,9 @@ public class TaskServiceImpl implements TaskService{
 		
 		List<Account> accountList = getAccountList(orgs);
 		
+		// 邮件内容
+		content = MessageFormat.format(content, new Object[] { task.getCode(), tips });	
+		
 		if (accountList != null && accountList.size() > 0) {
 			List<EmailRecord> emailRecordList = new ArrayList<EmailRecord>();
 			StringBuffer addrs = new StringBuffer("");
@@ -576,9 +578,6 @@ public class TaskServiceImpl implements TaskService{
 					emailRecordList.add(emailRecord);
 				}
 			}
-			
-			// 邮件内容
-			content = MessageFormat.format(content, new Object[] { task.getCode(), tips });	
 			
 			// 邮件记录
 			if(emailRecordList.size() > 0) {
@@ -620,7 +619,7 @@ public class TaskServiceImpl implements TaskService{
 			if (itemList != null && itemList.size() > 0) {
 				for (int i = 0; i < itemList.size(); i++) {
 					ExpItem item = itemList.get(i);
-					tempContent.append("<tr style='height: 30px'><td style='background: #f5f5f5;padding-left: 5px;'>" + (i + 1) + "</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getProject() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getStandard() +"</td><td>"+ item.getPrice() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getNum() +"</td><td>"+ item.getTotal() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getRemark() +"</td></tr>");
+					tempContent.append("<tr style='height: 30px'><td style='background: #f5f5f5;padding-left: 5px;'>" + (i + 1) + "</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getProject() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getStandard() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getPrice() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getNum() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getTotal() +"</td><td style='background: #f5f5f5;padding-left: 5px;'>"+ item.getRemark() +"</td></tr>");
 				}
 			}
 			tempContent.append("</table></div>");
@@ -733,7 +732,7 @@ public class TaskServiceImpl implements TaskService{
 		} else {
 			task.setState(SamplingTaskEnum.END.getState());
 			task.setConfirmTime(date);
-			
+			task.setRemark(remark);
 			remark = "中止任务，原因：" + remark;
 			taskDao.update(task);
 		}
@@ -798,6 +797,23 @@ public class TaskServiceImpl implements TaskService{
 
 		return accountList;
 	}
+	
+	/**
+     * 获取最上级的父任务
+     * @param taskId
+     */
+    public Task getRootTask(Long taskId) {
+    	Task task = taskDao.selectOne(taskId);
+    	if(task != null) {
+    		if(task.gettId() != null) {
+    			return getRootTask(task.gettId());
+    		}else {
+    			return task;
+    		}
+    	}else {
+    		return null;
+    	}
+    }
 	
 	
 	/**

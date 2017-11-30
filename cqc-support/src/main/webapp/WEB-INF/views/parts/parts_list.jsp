@@ -18,18 +18,18 @@
 			</div>
 			
 			<div style="margin-top:10px;">
-				<span class="qlabel">生产商：</span>
-				<input id="p_q_orgId" name="p_q_orgId" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				 <span class="qlabel">关键零件：</span>
+				<select id="p_q_isKey" name="p_q_isKey" style="width:140px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+					<option value="">全部</option>
+					<option value="0">否</option>
+					<option value="1">是</option>
+				</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<span class="qlabel">生产批次：</span>
 				<input id="p_q_proNo" name="p_q_proNo" class="easyui-textbox" style="width: 140px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<span class="qlabel">关键零件：</span>
-				<select id="p_q_isKey" name="p_q_isKey" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
-					<option value="">全部</option>
-					<option value="0">否</option>
-					<option value="1">是</option>
-				</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="qlabel">生产商：</span>
+				<input id="p_q_orgId" name="p_q_orgId">
 			</div>
 			
 			<div style="margin-top:10px;">
@@ -56,7 +56,7 @@
 				url: '${ctx}/org/getTreeByType?type=2',
 				multiple: false,
 				animate: true,
-				width: '140px'
+				width: '290px'
 			});
 			
 			// 只有最底层才能选择
@@ -98,7 +98,7 @@
 		        }, {
 		            field : 'isKey',
 		            title : '关键零件',
-		            width : '120',
+		            width : '80',
 		            align : 'center',
 		            formatter: function(val){
 	            		var tip = "否";

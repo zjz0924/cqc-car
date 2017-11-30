@@ -643,7 +643,7 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "create_time ASC");
+		map.put("custom_order_sql", "create_time desc");
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);

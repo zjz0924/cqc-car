@@ -296,7 +296,7 @@
 									<c:if test="${vo.type == 2}">差热扫描</c:if>
 									<c:if test="${vo.type == 3}">热重分析</c:if>
 								</td>
-								<td class="value-td">${vo.remark }</td>
+								<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 								<td class="value-td">
 									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
 								</td>
@@ -319,7 +319,7 @@
 									<c:if test="${vo.type == 2}">差热扫描</c:if>
 									<c:if test="${vo.type == 3}">热重分析</c:if>
 								</td>
-								<td class="value-td">${vo.remark }</td>
+								<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 								<td class="value-td">
 									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
 								</td>
@@ -418,7 +418,7 @@
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
 							</td>
-							<td class="value-td">${vo.remark }</td>
+							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 							<td class="value-td">
 								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
 							</td>
@@ -441,7 +441,7 @@
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
 							</td>
-							<td class="value-td">${vo.remark }</td>
+							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 							<td class="value-td">
 								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
 							</td>
