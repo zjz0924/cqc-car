@@ -333,7 +333,7 @@
 			var m_result_remark = $("#m_result_remark").val();
 			
 			$.ajax({
-				url: "${ctx}/result/compareResult?time=" + new Date(),
+				url: "${ctx}/result/compareResult",
 				data: {
 					"taskId": "${facadeBean.id}",
 					"p_inf": p_inf,

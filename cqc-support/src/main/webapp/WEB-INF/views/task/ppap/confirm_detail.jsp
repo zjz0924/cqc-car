@@ -272,7 +272,7 @@
 			}
 			
 			$.ajax({
-				url: "${ctx}/ppap/confirmResult?time=" + new Date(),
+				url: "${ctx}/ppap/confirmResult",
 				data: {
 					"taskId": "${facadeBean.id}",
 					"result": result,

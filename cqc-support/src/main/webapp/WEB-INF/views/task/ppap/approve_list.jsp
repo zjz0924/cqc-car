@@ -19,7 +19,7 @@
 			var datagrid = "approveTable";
 			
 			var recordDatagrid = "taskRecordTable";
-			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
+			var getRecordUrl = "${ctx}/ots/taskRecordListData";
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
 			

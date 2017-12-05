@@ -578,7 +578,7 @@
 			dataArray = p_result.concat(m_result);
 			
 			$('#uploadForm').ajaxSubmit({
-				url: "${ctx}/apply/labInfoSave?time=" + new Date(),
+				url: "${ctx}/apply/labInfoSave",
 				dataType : 'text',
 				type: 'post',
 				data: {

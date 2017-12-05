@@ -9,7 +9,7 @@
 		<%@include file="../../common/source.jsp"%>
 		
 		<script type="text/javascript">
-			var url = "${ctx}/dictionary/getList?time=" + new Date();
+			var url = "${ctx}/dictionary/getList";
 			var detailUrl = "${ctx}/dictionary/detail";
 			var datagrid = "dictionaryTable";
 			

@@ -77,7 +77,7 @@
 			}
 			
 			$.ajax({
-				url: "${ctx}/vehicle/save?time=" + new Date(),
+				url: "${ctx}/vehicle/save",
 				data: {
 					code: code,
 					type: type,

@@ -31,7 +31,7 @@
 		</div>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/material/getList?time=" + new Date();
+			var getDataUrl = "${ctx}/material/getList";
 			var detailUrl = "${ctx}/material/detail";
 			var datagrid = "materialTable";
 			

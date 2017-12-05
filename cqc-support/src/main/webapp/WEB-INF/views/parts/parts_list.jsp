@@ -47,7 +47,7 @@
 	</div>
 	
 	<script type="text/javascript">
-		var getDataUrl = "${ctx}/parts/getList?time=" + new Date();
+		var getDataUrl = "${ctx}/parts/getList";
 		var detailUrl = "${ctx}/parts/detail";
 		var datagrid = "partsTable";
 		

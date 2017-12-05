@@ -330,7 +330,7 @@
 				} */
 				
 				$('#uploadForm').ajaxSubmit({
-					url: "${ctx}/ots/save?time=" + new Date(),
+					url: "${ctx}/ots/save",
 					dataType : 'text',
 					success:function(msg){
 						var data = eval('(' + msg + ')');

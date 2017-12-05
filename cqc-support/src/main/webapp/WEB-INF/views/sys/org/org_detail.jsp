@@ -111,7 +111,7 @@
 			}
 			
 			$.ajax({
-				url: "${ctx}/org/save?time=" + new Date(),
+				url: "${ctx}/org/save",
 				data: {
 					"text": name,
 					"code": code,

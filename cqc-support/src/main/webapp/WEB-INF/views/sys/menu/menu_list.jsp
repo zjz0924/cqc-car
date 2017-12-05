@@ -71,7 +71,7 @@
 				} ];
 	
 				$('#menuTree').treegrid({
-					url : '${ctx}/menu/tree?time=' + new Date(),
+					url : '${ctx}/menu/tree',
 					idField : 'id',
 					treeField : 'name',
 					rownumbers : true,

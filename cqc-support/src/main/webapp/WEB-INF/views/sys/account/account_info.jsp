@@ -181,7 +181,7 @@
 			var email = $("#email").textbox("getValue");
 			
 			$.ajax({
-				url: "${ctx}/account/save?time=" + new Date(),
+				url: "${ctx}/account/save",
 				data: {
 					userName: userName,
 					nickName: nickName,
@@ -258,7 +258,7 @@
 			}
 			
 			$.ajax({
-				url: "${ctx}/account/updatePwd?time=" + new Date(),
+				url: "${ctx}/account/updatePwd",
 				data:{
 					oldPwd: oldpwd,
 					newPwd: newpwd

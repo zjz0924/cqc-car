@@ -478,7 +478,7 @@
 			}
 			
 			$('#uploadForm').ajaxSubmit({
-				url: "${ctx}/result/atlasUpload?time=" + new Date(),
+				url: "${ctx}/result/atlasUpload",
 				dataType : 'text',
 				success:function(msg){
 					saving = false;
@@ -546,7 +546,7 @@
 			dataArray = p_result.concat(m_result);
 			
 			$.ajax({
-				url: "${ctx}/result/patternUpload?time=" + new Date(),
+				url: "${ctx}/result/patternUpload",
 				type:'post',
                 dataType:"json",
 				data: {

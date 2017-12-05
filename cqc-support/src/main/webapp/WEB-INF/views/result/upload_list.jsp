@@ -10,7 +10,7 @@
 		
 		<script type="text/javascript">
 			var getDataUrl = "${ctx}/result/uploadListData?type=${type}";
-			var getRecordUrl = "${ctx}/ots/taskRecordListData?time=" + new Date();
+			var getRecordUrl = "${ctx}/ots/taskRecordListData";
 			var datagrid = "uploadTable";
 			var recordDatagrid = "taskRecordTable";
 			// 当前选中的任务的任务号

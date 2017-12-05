@@ -9,7 +9,7 @@
 		<%@include file="../../common/source.jsp"%>
 		
 		<script type="text/javascript">
-			var url = "${ctx}/operationlog/getLogList?time=" + new Date();
+			var url = "${ctx}/operationlog/getLogList";
 			var datagrid = "operationTable";
 			
 			$(function(){

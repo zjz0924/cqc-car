@@ -535,7 +535,7 @@
 			}
 			
 			$.ajax({
-				url: "${ctx}/result/confirmResult?time=" + new Date(),
+				url: "${ctx}/result/confirmResult",
 				data: {
 					"taskId": "${facadeBean.id}",
 					"result": result,
@@ -627,7 +627,7 @@
 			}
 			
 			$.ajax({
-				url: "${ctx}/result/confirmResult?time=" + new Date(),
+				url: "${ctx}/result/confirmResult",
 				data: {
 					"taskId": "${facadeBean.id}",
 					"result": result,

@@ -152,7 +152,7 @@ textarea
 .header_in div.ri p img{ width:29px; height:22px; padding-right:8px;}
 
 /*µ¼º½¿ªÊ¼*/
-.nav{ width:1280px; height:73px;  position:absolute; top:91px; z-index:99; font-size:15px; background:url(../../images/bg_05.png) repeat-x bottom;}
+.nav{ width:1280px; height:73px;  position:absolute; top:91px; z-index:99; font-size:15px; background:url(../../resources/img/bg_05.png) repeat-x bottom;}
 /*.nav ul li{ width:115px; text-align:center; vertical-align:middle; border-right:1px solid #cdcdcd;}
 .nav ul li a{ width:115px; height:48px; display:block; background:url(../images/bg_02.png) repeat-x;padding-top:25px;}
 .nav ul li.sp a{ height:59px; padding-top:14px; }

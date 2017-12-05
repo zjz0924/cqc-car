@@ -265,7 +265,7 @@
 			}
 
 			$('#accountForm').ajaxSubmit({
-				url : "${ctx}/account/save?time=" + new Date(),
+				url : "${ctx}/account/save",
 				dataType : 'text',
 				success : function(msg) {
 					var data = eval('(' + msg + ')');

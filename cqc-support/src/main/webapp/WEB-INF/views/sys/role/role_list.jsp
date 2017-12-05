@@ -21,7 +21,7 @@
 					animate:true,
 					dnd:true,
 					lines: true,
-				    url: getRoleDataUrl + "?time=" + new Date(),
+				    url: getRoleDataUrl,
 				    onBeforeDrop: function(target,source,point){  // 拖放前
 						var targetNode = $("#roleTree").tree('getNode', target);
 						if(!isNull(targetNode.children)){
@@ -49,7 +49,7 @@
 						var targetId = $("#roleTree").tree('getNode', target).id;
 						
 						$.ajax({
-							url : "${ctx}/role/move?time=" + new Date(),
+							url : "${ctx}/role/move",
 							data : {
 								id : source.id,
 								parentid : targetId
@@ -68,7 +68,7 @@
 						var type = getRoleType(node.id);
 						
 						if(type == 1){
-							url = "${ctx}/role/roleInfo?time=" + new Date();
+							url = "${ctx}/role/roleInfo";
 							$("#r_title").html("角色信息");
 							$("#r_pname").html("角&nbsp;&nbsp;色&nbsp;&nbsp;组：");
 							$("#code_div").show();
@@ -76,7 +76,7 @@
 							// 显示操作权限
 							$("#operationPermission").show();
 						}else{
-							url = "${ctx}/role/roleGroupInfo?time=" + new Date();
+							url = "${ctx}/role/roleGroupInfo";
 							$("#r_title").html("角色组信息");
 							$("#code_div").hide();
 							$("#r_pname").html("上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;级：");
@@ -182,7 +182,7 @@
 					method : 'get',
 					lines : true,
 					checkbox: true,
-					url : "${ctx}/menu/getTreeData?time=" + new Date(),
+					url : "${ctx}/menu/getTreeData",
 					checkbox : function(node) {
 						if (node.id == 0) {
 							return false;
@@ -273,7 +273,7 @@
 						}
 
 						$.ajax({
-							url : "${ctx}/role/delete?time=" + new Date(),
+							url : "${ctx}/role/delete",
 							data : {
 								id : node.id
 							},
@@ -323,7 +323,7 @@
 				}
 				
 				$.ajax({
-					url: "${ctx}/role/saveOperationPermission?time=" + new Date(),
+					url: "${ctx}/role/saveOperationPermission",
 					data: {
 						roleId: roleId,
 						menuIds: menuIds

@@ -101,7 +101,7 @@
 			}
 			
 			$('#uploadForm').ajaxSubmit({
-				url: "${ctx}/material/save?time=" + new Date(),
+				url: "${ctx}/material/save",
 				dataType : 'text',
 				success:function(msg){
 					var data = eval('(' + msg + ')');

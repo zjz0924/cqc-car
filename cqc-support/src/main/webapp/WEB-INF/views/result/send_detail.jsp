@@ -451,7 +451,7 @@
 			}			
 			
 			$.ajax({
-				url: "${ctx}/result/sendResult?time=" + new Date(),
+				url: "${ctx}/result/sendResult",
 				data: {
 					"taskId": '${facadeBean.id}',
 					"pAtlOrgVal": pAtlOrgVal.toString(),

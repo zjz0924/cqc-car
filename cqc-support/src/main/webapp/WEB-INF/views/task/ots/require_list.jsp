@@ -16,7 +16,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/requireListData?taskType=${taskType}&time=" + new Date();
+			var getDataUrl = "${ctx}/ots/requireListData?taskType=${taskType}";
 			var datagrid = "requireTable";
 		
 			var toolbar = [{

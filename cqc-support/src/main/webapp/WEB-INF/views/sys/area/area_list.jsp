@@ -21,7 +21,7 @@
 					animate:true,
 					dnd:true,
 					lines: true,
-				    url: getAreaDataUrl + "?time=" + new Date(),
+				    url: getAreaDataUrl,
 				    onBeforeDrop: function(target,source,point){
 						var targetNode = $("#areaTree").tree('getNode', target);
 						if(!isNull(targetNode.children)){
@@ -38,7 +38,7 @@
 						var targetId = $("#areaTree").tree('getNode', target).id;
 						
 						$.ajax({
-							url : "${ctx}/area/move?time=" + new Date(),
+							url : "${ctx}/area/move",
 							data : {
 								id : source.id,
 								parentid : targetId
@@ -54,7 +54,7 @@
 					},
 					onSelect : function(node) {
 						$.ajax({
-							url : "${ctx}/area/info?time=" + new Date(),
+							url : "${ctx}/area/info",
 							data : {
 								id : node.id
 							},
@@ -180,7 +180,7 @@
 						}
 	
 						$.ajax({
-							url : "${ctx}/area/delete?time=" + new Date(),
+							url : "${ctx}/area/delete",
 							data : {
 								id : node.id
 							},

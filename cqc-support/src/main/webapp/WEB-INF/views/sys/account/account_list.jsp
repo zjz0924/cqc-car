@@ -9,7 +9,7 @@
 		<%@include file="../../common/source.jsp"%>
 		<script src="${ctx}/resources/js/jquery.form.js"></script>
 		<script type="text/javascript">
-			var accountGetDataUrl = "${ctx}/account/getList?time=" + new Date();
+			var accountGetDataUrl = "${ctx}/account/getList";
 			var accountDetailUrl = "${ctx}/account/detail";
 			var accountDatagrid = "accountTable";
 			

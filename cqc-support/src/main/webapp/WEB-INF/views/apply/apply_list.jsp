@@ -15,7 +15,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/apply/applyListData?time=" + new Date();
+			var getDataUrl = "${ctx}/apply/applyListData";
 			var datagrid = "applyTable";
 			
 			$(function(){

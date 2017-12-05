@@ -21,7 +21,7 @@
 	</div>
 	
 	<script type="text/javascript">
-		var getDataUrl = "${ctx}/vehicle/getList?time=" + new Date();
+		var getDataUrl = "${ctx}/vehicle/getList";
 		var detailUrl = "${ctx}/vehicle/detail";
 		var datagrid = "vehicleTable";
 		

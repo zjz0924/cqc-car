@@ -21,7 +21,7 @@
 					animate:true,
 					dnd:true,
 					lines: true,
-				    url: getOrgDataUrl + "?time=" + new Date(),
+				    url: getOrgDataUrl,
 				    onBeforeDrop: function(target,source,point){
 						var targetNode = $("#orgTree").tree('getNode', target);
 						if(!isNull(targetNode.children)){
@@ -39,7 +39,7 @@
 						var targetId = $("#orgTree").tree('getNode', target).id;
 						
 						$.ajax({
-							url : "${ctx}/org/move?time=" + new Date(),
+							url : "${ctx}/org/move",
 							data : {
 								id : source.id,
 								parentid : targetId
@@ -55,7 +55,7 @@
 					},
 					onSelect : function(node) {
 						$.ajax({
-							url : "${ctx}/org/info?time=" + new Date(),
+							url : "${ctx}/org/info",
 							data : {
 								id : node.id
 							},
@@ -199,7 +199,7 @@
 						}
 	
 						$.ajax({
-							url : "${ctx}/org/delete?time=" + new Date(),
+							url : "${ctx}/org/delete",
 							data : {
 								id : node.id
 							},

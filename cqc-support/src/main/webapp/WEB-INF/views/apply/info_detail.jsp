@@ -363,7 +363,7 @@
 				$("#exception_error").html("");
 				
 				$('#uploadForm').ajaxSubmit({
-					url: "${ctx}/apply/applyInfoSave?time=" + new Date(),
+					url: "${ctx}/apply/applyInfoSave",
 					dataType : 'text',
 					success:function(msg){
 						saving = false;

@@ -155,7 +155,7 @@
 			}
 			
 			$('#uploadForm').ajaxSubmit({
-				url: "${ctx}/parts/save?time=" + new Date(),
+				url: "${ctx}/parts/save",
 				dataType : 'text',
 				success:function(msg){
 					var data = eval('(' + msg + ')');
@@ -199,7 +199,7 @@
 		
 			if(type == 2 && !isNull(code)){
 				$.ajax({
-					url: "${ctx}/parts/getByCode?time=" + new Date(),
+					url: "${ctx}/parts/getByCode",
 					data: {
 						code: code
 					},

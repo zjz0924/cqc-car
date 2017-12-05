@@ -51,7 +51,7 @@
 		}
 		
 		$.ajax({
-			url: "${ctx}/area/save?time=" + new Date(),
+			url: "${ctx}/area/save",
 			data: {
 				"text": name,
 				"code": code,

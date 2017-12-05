@@ -51,7 +51,7 @@
 			var desc = $("#desc").textbox("getValue");
 			
 			$.ajax({
-				url: "${ctx}/dictionary/save?time=" + new Date(),
+				url: "${ctx}/dictionary/save",
 				data: {
 					name: name,
 					val: val,
