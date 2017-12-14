@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -969,6 +970,123 @@ public class InfoServiceImpl implements InfoService {
 		return infoDao.selectIdList(map);
 	}
     
+	
+	/**
+     * 获取信息ID列表
+     * @param vehicle_type 车型
+     * @param parts_code  零件号
+     * @param parts_name  零件名称
+     * @param parts_org   零件生产商
+     * @param matName     材料名称
+     * @param mat_org     材料生产商
+     */
+	public List<Long> selectIds(String vehicle_type, String parts_code, String parts_name, String parts_org,
+			String matName, String mat_org) {
+		
+		List<Long> vIdList = new ArrayList<Long>();
+		List<Long> pIdList = new ArrayList<Long>();
+		List<Long> mIdList = new ArrayList<Long>();
+		List<Long> iIdList = new ArrayList<Long>();
+		
+		// 整车
+		Map<String, Object> vMap = new PageMap(false);
+		vMap.put("notstate", 2);
+		
+		if (StringUtils.isNotBlank(vehicle_type)) {
+			vMap.put("type", vehicle_type);
+			
+			List<Vehicle> vehicleList = vehicleDao.selectAllList(vMap);
+			if (vehicleList != null && vehicleList.size() > 0) {
+				for (Vehicle v : vehicleList) {
+					if(v != null) {
+						vIdList.add(v.getId());
+					}
+				}
+			}else {
+				vIdList.add(-1l);
+			}
+		}
+		
+		// 零部件
+		Map<String, Object> pMap = new PageMap(false);
+		pMap.put("notstate", 2);
+		
+		if (StringUtils.isNotBlank(parts_code)) {
+			pMap.put("qcode", parts_code);
+		}
+		
+		if (StringUtils.isNotBlank(parts_name)) {
+			pMap.put("name", parts_name);
+		}
+		
+		if (StringUtils.isNotBlank(parts_org)) {
+			pMap.put("orgId", parts_org);
+		}
+		
+		if (pMap.size() > 4) {
+			List<Parts> partsList = partsDao.selectAllList(pMap);
+			if (partsList != null && partsList.size() > 0) {
+				for (Parts p : partsList) {
+					if (p != null) {
+						pIdList.add(p.getId());
+					}
+				}
+			} else {
+				pIdList.add(-1l);
+			}
+		}
+		
+		// 原材料
+		Map<String, Object> mMap = new PageMap(false);
+		mMap.put("notstate", 2);
+		
+		if (StringUtils.isNotBlank(matName)) {
+			mMap.put("qmatName", matName);
+		}
+
+		if (StringUtils.isNotBlank(mat_org)) {
+			mMap.put("orgId", mat_org);
+		}
+		
+		if (mMap.size() > 4) {
+			List<Material> materialList = materialDao.selectAllList(mMap);
+			if (materialList != null && materialList.size() > 0) {
+				for (Material m : materialList) {
+					if (m != null) {
+						mIdList.add(m.getId());
+					}
+				}
+			} else {
+				mIdList.add(-1l);
+			}
+		}
+		
+		// 信息
+		Map<String, Object> iMap = new PageMap(false);
+		if (vIdList.size() > 0 || mIdList.size() > 0 || pIdList.size() > 0) {
+			if (vIdList.size() > 0) {
+				iMap.put("vIdList", vIdList);
+			}
+			if (mIdList.size() > 0) {
+				iMap.put("mIdList", mIdList);
+			}
+			if (pIdList.size() > 0) {
+				iMap.put("pIdList", pIdList);
+			}
+
+			List<Info> infoList = infoDao.selectAllList(iMap);
+			if (infoList != null && infoList.size() > 0) {
+				for (Info info : infoList) {
+					if (info != null) {
+						iIdList.add(info.getId());
+					}
+				}
+			}else {
+				iIdList.add(-1l);
+			}
+		}
+		return iIdList;
+	}
 	
 	
 	/**

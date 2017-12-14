@@ -174,7 +174,8 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/requireListData")
 	public Map<String, Object> requireListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, Integer state, int taskType) {
+			String endCreateTime, Integer state, int taskType, String task_code, String parts_code, String parts_name,
+			String parts_org, String req_name, String matName, String mat_org, String vehicle_type) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -199,7 +200,18 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-
+		if(StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
+		}
+		if(StringUtils.isNotBlank(req_name)) {
+			map.put("userName", req_name);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
+		}
+		
 		// 除了超级管理员，其它用户只能查看自己录入的申请记录
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
 			map.put("aId", account.getId());
@@ -418,7 +430,8 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/examineListData")
 	public Map<String, Object> examineListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
+			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -445,6 +458,11 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -520,7 +538,8 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
+			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -554,6 +573,11 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -685,7 +709,8 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
+			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -719,6 +744,11 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);

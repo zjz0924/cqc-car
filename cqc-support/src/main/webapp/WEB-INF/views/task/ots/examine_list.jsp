@@ -10,7 +10,7 @@
 		<style type="text/css">			
 			.qlabel{
 				display: inline-block;
-				width: 63px;
+				width: 75px;
 			}
 		</style>
 		
@@ -41,13 +41,82 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '250',
+						width : '150',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
+						field : 'info.vehicle.type',
+						title : '车型',
+						width : '80',
+						align : 'center',
+						formatter : function(value, row, index){
+							var vehicle = row.info.vehicle;
+							if(!isNull(vehicle)){
+								return "<span title='"+ vehicle.type +"'>"+ vehicle.type +"</span>";
+							}							
+						}
+					}, {
+						field : 'info.parts.code',
+						title : '零件号',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.info.parts;
+							if(!isNull(parts)){
+								return "<span title='"+ parts.code +"'>"+ parts.code +"</span>";
+							}							
+						}
+					}, {
+						field : 'info.parts.name',
+						title : '零件名称',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.info.parts;
+							if(!isNull(parts)){
+								return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
+							}							
+						}
+					}, {
+						field : 'info.parts.org',
+						title : '生产商',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.info.parts;
+							if(!isNull(parts)){
+								var org = row.info.parts.org;
+								if(!isNull(org)){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+								}
+							}							
+						}
+					}, {
+						field : 'info.material.name',
+						title : '材料名称',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var material = row.info.material;
+							if(!isNull(material)){
+								return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
+							}							
+						}
+					}, {
+						field : 'info.material.org',
+						title : '生产商',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var org = row.info.material.org;
+							if(!isNull(org)){
+								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+							}							
+						}
+					}, {
 						field : 'org',
 						title : '录入单位',
-						width : '250',
+						width : '100',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -57,7 +126,7 @@
 					}, {
 						field : 'account',
 						title : '录入用户',
-						width : '200',
+						width : '80',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -67,13 +136,13 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '250',
+						width : '140',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '120',
+						width : '50',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
@@ -100,6 +169,12 @@
 							'nickName' : $("#q_nickName").textbox("getValue"), 
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
+							'parts_code': $("#parts_code").textbox("getValue"),
+							'parts_name': $("#parts_name").textbox("getValue"),
+							'matName': $("#matName").textbox("getValue"),
+							'vehicle_type': $("#vehicle_type").textbox("getValue"),
+							'parts_org': $("#parts_org").combotree("getValue"),
+							'mat_org': $("#mat_org").combotree("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -149,7 +224,7 @@
 					}, {
 						field : 'remark',
 						title : '备注',
-						width : '350',
+						width : '300',
 						align : 'center',
 						formatter : formatCellTooltip
 					},{
@@ -174,6 +249,61 @@
 						getData(recordDatagrid, getRecordUrl, data);
 					}
 				});
+				
+				$('#parts_org').combotree({
+					url: '${ctx}/org/getTreeByType?type=2',
+					multiple: false,
+					animate: true,
+					width: '163px'
+				});
+				
+				// 只有最底层才能选择
+				var pOrgTree = $('#parts_org').combotree('tree');	
+				pOrgTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+				
+				$('#mat_org').combotree({
+					url: '${ctx}/org/getTreeByType?type=2',
+					multiple: false,
+					animate: true,
+					width: '163px'
+				});
+				
+				// 只有最底层才能选择
+				var mOrgTree = $('#mat_org').combotree('tree');	
+				mOrgTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+				
+				if("${taskType}" == 4){
+					// 隐藏列
+					var dg = $("#" + datagrid);
+					dg.datagrid('hideColumn', 'info.parts.name'); 
+					dg.datagrid('hideColumn', 'info.parts.org'); 
+					dg.datagrid('hideColumn', 'info.parts.code'); 
+					
+					// 修改列宽度 
+					dg.datagrid('getColumnOption', 'code').width = 180;
+					dg.datagrid('getColumnOption', 'org').width = 140;
+					dg.datagrid('getColumnOption', 'info.vehicle.type').width = 140;
+					dg.datagrid('getColumnOption', 'info.material.name').width = 140;
+					dg.datagrid('getColumnOption', 'info.material.org').width = 140;
+					dg.datagrid('getColumnOption', 'account').width = 100;
+					dg.datagrid();
+				}
 			});
 		
 			function doSearch() {
@@ -183,6 +313,12 @@
 					'nickName' : $("#q_nickName").textbox("getValue"), 
 					'startCreateTime' : $("#q_startCreateTime").val(),
 					'endCreateTime' : $("#q_endCreateTime").val(),
+					'parts_code': $("#parts_code").textbox("getValue"),
+					'parts_name': $("#parts_name").textbox("getValue"),
+					'matName': $("#matName").textbox("getValue"),
+					'vehicle_type': $("#vehicle_type").textbox("getValue"),
+					'parts_org': $("#parts_org").combotree("getValue"),
+					'mat_org': $("#mat_org").combotree("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -200,6 +336,12 @@
 				$("#q_nickName").textbox('clear');
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
+				$("#parts_code").textbox("clear");
+				$("#parts_name").textbox("clear");
+				$("#matName").textbox("clear");
+				$("#vehicle_type").textbox("clear");
+				$("#parts_org").combotree("setValue","");
+				$("#mat_org").combotree("setValue","");
 				getData(datagrid, getDataUrl, {});
 			}
 			
@@ -233,23 +375,49 @@
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
-					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 230px;">
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel" style="margin-left: 50px;">录入单位：</span>
-					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 230px;">
+					<span class="qlabel">录入单位：</span>
+					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel" style="margin-left: 50px;">录入用户：</span>
-					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 230px;">
+					<span class="qlabel">录入用户：</span>
+					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">车型：</span>
+					<input id="vehicle_type" name="vehicle_type" class="easyui-textbox" style="width: 168px;">
 				</div>
 				
-				<div style="margin-top: 10px;">
+				<div style="margin-top: 5px;">
+					<span class="qlabel">材料生产商：</span>
+					<input id="mat_org" name="mat_org"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">材料名称：</span>
+					<input id="matName" name="matName" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
 					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;margin-right: 40px;"/>
 					
+					<c:if test="${taskType == 4}">
+						<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
+						<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
+					</c:if>
+				</div>
+				
+				<div style="margin-top: 5px;<c:if test="${taskType == 4}">display:none;</c:if>">
+					<span class="qlabel">零件号：</span>
+					<input id="parts_code" name="parts_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">零件名称：</span>
+					<input id="parts_name" name="parts_name" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">零件生产商：</span>
+					<input id="parts_org" name="parts_org"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
+				
 			</div>
 		</div>
 	

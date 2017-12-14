@@ -94,6 +94,18 @@
 			<if test="endCreateTime != null and endCreateTime != ''">
 				and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 			</if>
+			
+			<if test="vIdList != null">
+				and v_id in <foreach collection="vIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
+			
+			<if test="pIdList != null">
+				and p_id in <foreach collection="pIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
+			
+			<if test="mIdList != null">
+				and m_id in <foreach collection="mIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
 	      </where>
 	      
 		  <choose>

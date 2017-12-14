@@ -114,7 +114,8 @@ public class ApplyController extends AbstractController {
 	@RequestMapping(value = "/taskListData")
 	public Map<String, Object> taskListData(HttpServletRequest request, Model model, String code,
 			String startCreateTime, String endCreateTime, String orgId, String nickName, String startConfirmTime,
-			String endConfirmTime) {
+			String endConfirmTime, String parts_code, String parts_name, String parts_org, String req_name,
+			String matName, String mat_org, String vehicle_type) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -148,6 +149,11 @@ public class ApplyController extends AbstractController {
 		// 非超级管理员，只能看到分配到自己实验室的任务
 		if (!Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
 			map.put("accomplishTask_lab", account.getOrgId());
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 
 		map.put("accomplishTask", true);

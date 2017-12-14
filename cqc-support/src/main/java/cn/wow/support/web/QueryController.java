@@ -36,6 +36,7 @@ import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
+import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskService;
@@ -54,6 +55,8 @@ public class QueryController extends AbstractController {
 
 	private final static String DEFAULT_PAGE_SIZE = "10";
 	
+	@Autowired
+	private InfoService infoService;
 	@Autowired
 	private TaskService taskService;
 	@Autowired
@@ -85,7 +88,10 @@ public class QueryController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
-	public Map<String, Object> getListData(HttpServletRequest request, Model model, String code, String startCreateTime, String endCreateTime, String taskType, String orgId, String nickName, String startConfirmTime, String endConfirmTime) {
+	public Map<String, Object> getListData(HttpServletRequest request, Model model, String code, String startCreateTime,
+			String endCreateTime, String taskType, String orgId, String nickName, String startConfirmTime,
+			String endConfirmTime, String parts_code, String parts_name, String parts_org, String matName,
+			String mat_org, String vehicle_type) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		
 		// 设置默认记录数
@@ -147,6 +153,11 @@ public class QueryController extends AbstractController {
 			}
 			map.put("queryMap", tMap);
 			queryMap.put("queryMap", tMap);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 		
 		List<Task> dataList = taskService.selectAllList(map);
@@ -263,15 +274,20 @@ public class QueryController extends AbstractController {
 			sh.setColumnWidth(0, (short) 6000);
 			sh.setColumnWidth(1, (short) 6000);
 			sh.setColumnWidth(2, (short) 4000);
-			sh.setColumnWidth(3, (short) 9000);
+			sh.setColumnWidth(3, (short) 4000);
 			sh.setColumnWidth(4, (short) 5000);
 			sh.setColumnWidth(5, (short) 6000);
 			sh.setColumnWidth(6, (short) 6000);
 			sh.setColumnWidth(7, (short) 6000);
+			sh.setColumnWidth(8, (short) 6000);
+			sh.setColumnWidth(9, (short) 6000);
+			sh.setColumnWidth(10, (short) 6000);
+			sh.setColumnWidth(11, (short) 6000);
+			sh.setColumnWidth(12, (short) 6000);
 			
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "任务号", "任务类型", "状态", "录入单位", "录入用户", "录入时间", "完成时间", "结果"};
+			String[] titles = { "任务号", "任务类型", "状态", "结果",  "车型", "零件号", "零件名称", "生产商", "材料名称", "生产商", "录入用户", "录入时间", "完成时间", };
 			int r = 0;
 			
 			Row titleRow = sh.createRow(0);
@@ -351,28 +367,10 @@ public class QueryController extends AbstractController {
 					}
 				}
 				cell3.setCellValue(state);
-
-				Cell cell4 = contentRow.createCell(3);
-				cell4.setCellStyle(styles.get("cell"));
-				cell4.setCellValue(task.getOrg().getName());
-
-				Cell cell5 = contentRow.createCell(4);
-				cell5.setCellStyle(styles.get("cell"));
-				cell5.setCellValue(task.getAccount().getUserName());
-
-				Cell cell6 = contentRow.createCell(5);
-				cell6.setCellStyle(styles.get("cell"));
-				cell6.setCellValue(sdf.format(task.getCreateTime()));
-
-				Cell cell7 = contentRow.createCell(6);
-				cell7.setCellStyle(styles.get("cell"));
-				if(task.getConfirmTime() != null) {
-					cell7.setCellValue(sdf.format(task.getConfirmTime()));
-				}
 				
 				String result = "";
-				Cell cell8 = contentRow.createCell(7);
-				cell8.setCellStyle(styles.get("cell"));
+				Cell cell4 = contentRow.createCell(3);
+				cell4.setCellStyle(styles.get("cell"));
 				if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 					if(task.getState() == StandardTaskEnum.ACCOMPLISH.getState()) {
 						if(task.getFailNum() == 0) {
@@ -394,7 +392,51 @@ public class QueryController extends AbstractController {
 						}
 					}
 				}
-				cell8.setCellValue(result);
+				cell4.setCellValue(result);
+				
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				cell5.setCellValue(task.getInfo().getVehicle().getType());
+				
+				Cell cell6 = contentRow.createCell(5);
+				cell6.setCellStyle(styles.get("cell"));
+				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					cell6.setCellValue(task.getInfo().getParts().getCode());
+				} 
+				
+				Cell cell7 = contentRow.createCell(6);
+				cell7.setCellStyle(styles.get("cell"));
+				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					cell7.setCellValue(task.getInfo().getParts().getName());
+				} 
+				
+				Cell cell8 = contentRow.createCell(7);
+				cell8.setCellStyle(styles.get("cell"));
+				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					cell8.setCellValue(task.getInfo().getParts().getOrg().getName());
+				} 
+				
+				Cell cell9 = contentRow.createCell(8);
+				cell9.setCellStyle(styles.get("cell"));
+				cell9.setCellValue(task.getInfo().getMaterial().getMatName());
+				
+				Cell cell10 = contentRow.createCell(9);
+				cell10.setCellStyle(styles.get("cell"));
+				cell10.setCellValue(task.getInfo().getMaterial().getOrg().getName());
+
+				Cell cell11 = contentRow.createCell(10);
+				cell11.setCellStyle(styles.get("cell"));
+				cell11.setCellValue(task.getAccount().getUserName());
+
+				Cell cell12 = contentRow.createCell(11);
+				cell12.setCellStyle(styles.get("cell"));
+				cell12.setCellValue(sdf.format(task.getCreateTime()));
+
+				Cell cell13 = contentRow.createCell(12);
+				cell13.setCellStyle(styles.get("cell"));
+				if(task.getConfirmTime() != null) {
+					cell13.setCellValue(sdf.format(task.getConfirmTime()));
+				}
 				
 				r++;
 			}

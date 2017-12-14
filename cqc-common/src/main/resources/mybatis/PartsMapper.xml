@@ -105,6 +105,10 @@
 			<if test="state != null">
 				and state = #{state,jdbcType=INTEGER}
 			</if>
+			
+			 <if test="notstate != null">
+				and state != #{notstate,jdbcType=INTEGER}
+			 </if>
 	
 			<if test="startProTime != null and startProTime != ''">
 				and pro_time &gt;= #{startProTime, jdbcType=DATE}

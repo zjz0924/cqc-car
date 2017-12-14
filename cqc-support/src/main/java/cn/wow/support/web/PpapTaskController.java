@@ -155,7 +155,8 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
+			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -186,6 +187,11 @@ public class PpapTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -288,7 +294,8 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
+			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -319,6 +326,11 @@ public class PpapTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
+		}
+		
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -453,7 +465,8 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/confirmListData")
 	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType) {
+			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
+			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -482,6 +495,11 @@ public class PpapTaskController extends AbstractController {
 			map.put("orgId", orgId);
 		}
 
+		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		if(iIdList.size() > 0 ) {
+			map.put("iIdList", iIdList);
+		}
+		
 		List<Task> dataList = taskService.selectAllList(map);
 
 		// 分页

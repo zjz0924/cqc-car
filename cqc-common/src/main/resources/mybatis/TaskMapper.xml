@@ -164,6 +164,10 @@
 			<if test="nickName != null and nickName != ''">
 				and a.nickname like concat('%', #{nickName,jdbcType=VARCHAR}, '%')
 			</if>
+			
+			<if test="userName != null and userName != ''">
+				and a.username like concat('%', #{userName,jdbcType=VARCHAR}, '%')
+			</if>
 
 			<if test="orgId != null">
 				and t.org_id = #{orgId,jdbcType=BIGINT}
@@ -285,12 +289,12 @@
 
 			<!-- OTS 审批列表 -->
 			<if test="approveTask_ots != null">
-				and ((t.state = 3 and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+				and ((t.state = 3 and (t.parts_atl_result = 0 or t.mat_atl_result = 0 or t.parts_pat_result = 0 or t.mat_pat_result = 0) and (t.parts_atl_id is not null or t.mat_atl_id is not null or t.parts_atl_id is not null or t.mat_pat_id is not null)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
 			</if>
 			
 			<!-- gs 审批列表-->
 			<if test="approveTask_gs != null">
-				and ((t.state = 3 and (t.mat_atl_result = 0 or t.mat_pat_result = 0)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+				and ((t.state = 3 and (t.mat_atl_result = 0 or t.mat_pat_result = 0) and (t.mat_atl_id is not null or t.mat_pat_id is not null)) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
 			</if>
 			
 			<!-- PPAP 审批列表 -->
