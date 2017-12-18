@@ -115,7 +115,11 @@
 		</div>
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-		<div class="title">试验结果</div>
+		<div class="title">试验结果 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="javascript:void(0);"  onclick="importResult()" class="easyui-linkbutton" data-options="iconCls:'icon-import'">导入</a>
+			<a href="javascript:void(0);"  onclick="exportResult()" class="easyui-linkbutton" data-options="iconCls:'icon-export'">导出</a>
+			<a href="javascript:void(0);"  onclick="exportTemplate()" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'">导入模板</a>
+		</div>
 		
 		<c:choose>
 			<c:when test="${type == 1}">
@@ -233,6 +237,26 @@
 					</div>
 				</c:if>
 				<!-- 原材料型式试验结果-end  -->
+				
+				<!-- Excel 导入 -->
+				<div id="excelDialog" class="easyui-dialog" title="结果导入" style="width: 300px; height: 200px; padding: 10px;top:700px;" data-options="modal: true" closed="true">
+					<form method="POST" enctype="multipart/form-data" id="resultUploadForm">
+						<div>
+							请选择要导入的文件（<span style="color: red;">只支持 Excel</span>）：
+						</div>
+						
+						<div style="margin-top: 10px;">
+							<input class="easyui-filebox" id="upfile" name="upfile" style="width: 90%" data-options="buttonText: '选择文件'">
+							<p id="fileInfo" style="color:red;margin-top:5px;"></p>
+						</div>
+						
+						<div style="margin-top: 15px;">
+							<a href="javascript:void(0);" class="easyui-linkbutton" style="width: 90%" onclick="importExcel()">上传</a>
+						</div>
+						
+						<div id="result" style="margin-top:5px;"></div>
+					</form>
+				</div>
 				
 				<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="patternError"></div>
 				<div align="center" style="margin-top:10px;margin-bottom:15px;">
@@ -622,6 +646,8 @@
 			$.parser.parse($("#"+ type + "_result_"+ num).parent());
 			$.parser.parse($("#"+ type + "_evaluate_"+ num).parent());
 			$.parser.parse($("#"+ type + "_remark_"+ num).parent());
+			
+			return num;
 		}
 		
 		function deleteResult(type, num){
@@ -709,6 +735,135 @@
 				return false;
 			}else{
 				return dataArray;
+			}
+		}
+		
+		
+		// 组装数据
+		function assemble(type){
+			var dataArray = [];
+			var flag = true;
+			
+			$("tr[" + type + "_num]").each(function(){
+				var num = $(this).attr(type + "_num");
+				var array = num.split("_");
+				num = array[1];
+				
+				// 实验项目
+				var project = $("#"+ type +"_project_" + num).textbox("getValue");
+				
+				//参考标准
+				var standard = $("#"+ type +"_standard_" + num).textbox("getValue");
+				
+				// 试验要求
+				var require = $("#"+ type +"_require_" + num).textbox("getValue");
+				
+				// 试验结果
+				var result = $("#"+ type +"_result_" + num).textbox("getValue");
+				
+				// 结果评价
+				var evaluate = $("#"+ type +"_evaluate_" + num).textbox("getValue");
+				
+				var remark = $("#"+ type +"_remark_" + num).textbox("getValue");
+				
+				var obj = new Object();
+				obj.project = project;
+				obj.standard = standard;
+				obj.require = require;
+				obj.result = result;
+				obj.evaluate = evaluate;
+				obj.remark = remark;
+				obj.tId = '${facadeBean.id}';
+				obj.catagory = type == "p"? 1: 2;
+				dataArray.push(obj);
+			});
+			return dataArray;
+		}
+		
+		function importResult(){
+			$("#result").html("");
+			$('#excelDialog').dialog('open');
+		}
+		
+		function importExcel(){
+			$("#result").html("");
+			
+			var fileDir = $("#upfile").filebox("getValue");
+			var suffix = fileDir.substr(fileDir.lastIndexOf("."));
+			if ("" == fileDir) {
+				$("#fileInfo").html("请选择要导入的Excel文件");
+				return false;
+			}
+			if (".xls" != suffix && ".xlsx" != suffix) {
+				$("#fileInfo").html("请选择Excel格式的文件导入！");
+				return false;
+			}
+			$("#fileInfo").html("");
+			
+			$('#resultUploadForm').ajaxSubmit({
+				url : "${ctx}/result/importResult",
+				dataType : 'text',
+				success : function(msg) {
+					var data = eval('(' + msg + ')');
+					$("#upfile").filebox("clear");
+					$("#result").html(data.msg);
+					
+					if(data.success){
+						var results = eval('(' + data.data + ')');
+						if(!isNull(results)){
+							for(var i = 0; i < results.length; i++){
+								var obj = results[i];
+								if(obj.catagory == 1){
+									var num = addResult("p");
+									setInputVal("p_project_" + num, obj.project);
+									setInputVal("p_standard_" + num, obj.standard);
+									setInputVal("p_require_" + num, obj.require);
+									setInputVal("p_result_" + num, obj.result);
+									setInputVal("p_evaluate_" + num, obj.evaluate);
+									setInputVal("p_remark_" + num, obj.remark);
+								}else{
+									var num = addResult("m");
+									setInputVal("m_project_" + num, obj.project);
+									setInputVal("m_standard_" + num, obj.standard);
+									setInputVal("m_require_" + num, obj.require);
+									setInputVal("m_result_" + num, obj.result);
+									setInputVal("m_evaluate_" + num, obj.evaluate);
+									setInputVal("m_remark_" + num, obj.remark);
+								}
+								
+							}	
+						}
+						
+					}
+					
+				}
+			});
+		}
+		
+		function exportResult(){
+			var date = new Date();
+			var excelForm = $("<form></form>");
+			excelForm.attr('method','post') 
+			excelForm.attr('action',"${ctx}/result/exportResult");  
+			
+			var mResult = $("<input type='hidden' name='mResult' />")  
+		    mResult.attr('value',JSON.stringify(assemble("m"))); 
+			
+			var pResult = $("<input type='hidden' name='pResult' />")  
+		    pResult.attr('value', JSON.stringify(assemble("p"))); 
+			
+			excelForm.append(mResult);  
+			excelForm.append(pResult); 
+			excelForm.appendTo('body').submit();
+		}
+		
+		function exportTemplate(){
+			window.location.href = "${ctx}/resources/template/型式试验结果.xlsx";
+		}
+		
+		function setInputVal(id, val){
+			if(!isNull(val)){
+				$("#" + id).textbox("setValue", val);
 			}
 		}
 	</script>	

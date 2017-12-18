@@ -1,16 +1,26 @@
 package cn.wow.support.web;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +42,9 @@ import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Menu;
+import cn.wow.common.domain.Org;
 import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.Role;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
@@ -41,6 +54,10 @@ import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.ImportExcelUtil;
+import cn.wow.common.utils.cookie.MD5;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
@@ -856,6 +873,242 @@ public class ResultController extends AbstractController {
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;
+	}
+	
+	
+	//-----------------------------------    结果导入\导出      ---------------------------------------------------------------
+	@ResponseBody
+	@RequestMapping(value = "/importResult")
+	public AjaxVO importResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		AjaxVO vo = new AjaxVO();
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		
+		List<String> titleList = new ArrayList<String>();
+		titleList.add("类型(零部件/原材料)");
+		titleList.add("试验项目");
+		titleList.add("参考标准");
+		titleList.add("试验要求");
+		titleList.add("试验结果");
+		titleList.add("结果评价");
+		titleList.add("备注");
+		
+		MultipartFile file = multipartRequest.getFile("upfile");
+		if (file.isEmpty()) {
+			vo.setSuccess(false);
+			vo.setMsg("文件不存在");
+			return vo;
+		}
+		
+		try {
+			InputStream in = file.getInputStream();
+			List<List<Object>> execelList = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
+			List<PfResult> createList = new ArrayList<PfResult>();
+
+			if (execelList != null && execelList.size() > 0) {
+				// 检查模板是否正确
+				List<Object> titleObj = execelList.get(0);
+				if(titleObj == null || titleObj.size() < 7) {
+					vo.setSuccess(false);
+					vo.setData("导入模板不正确");
+					return vo;
+				}else {
+					boolean flag = true;
+
+					if (!"类型(零部件/原材料)".equals(titleObj.get(0).toString())) {
+						flag = false;
+					}
+					if (flag && !"试验项目".equals(titleObj.get(1).toString())) {
+						flag = false;
+					}
+					if (flag && !"参考标准".equals(titleObj.get(2).toString())) {
+						flag = false;
+					}
+					if (flag && !"试验要求".equals(titleObj.get(3).toString())) {
+						flag = false;
+					}
+					if (flag && !"试验结果".equals(titleObj.get(4).toString())) {
+						flag = false;
+					}
+					if (flag && !"结果评价".equals(titleObj.get(5).toString())) {
+						flag = false;
+					}
+					if (flag && !"备注".equals(titleObj.get(6).toString())) {
+						flag = false;
+					}
+
+					if (!flag) {
+						vo.setSuccess(false);
+						vo.setMsg("导入模板不正确");
+						return vo;
+					}
+				}
+
+				for (int i = 1; i < execelList.size(); i++) {
+					PfResult pf = new PfResult();
+					
+					List<Object> obj = execelList.get(i);
+					
+					if(obj.size() < 1 || obj.get(0) == null){
+						continue;
+					}
+					
+					String type = obj.get(0).toString();
+					if (StringUtils.isBlank(type) || (!"零部件".equals(type) && !"原材料".equals(type))) {
+						continue;
+					}
+					pf.setCatagory("零部件".equals(type) ? 1 : 2);
+					
+					if(obj.size() >= 2 && obj.get(1) != null){
+						pf.setProject(obj.get(1).toString());
+					}
+					
+					if(obj.size() >= 3 && obj.get(2) != null){
+						pf.setStandard(obj.get(2).toString());
+					}
+					
+					if(obj.size() >= 4 && obj.get(3) != null){
+						pf.setRequire(obj.get(3).toString());
+					}
+					
+					if(obj.size() >= 5 && obj.get(4) != null){
+						pf.setResult(obj.get(4).toString());
+					}
+					
+					if(obj.size() >= 6  && obj.get(5) != null){
+						pf.setEvaluate(obj.get(5).toString());
+					}
+					
+					if(obj.size() >= 7  && obj.get(6) != null){
+						pf.setRemark(obj.get(6).toString());
+					}
+					
+					createList.add(pf);
+				}
+			}
+
+			String msg = "导入：" + createList.size() + " 条记录";
+			vo.setMsg(msg);
+			
+			ObjectMapper mapper = new ObjectMapper(); 
+			String jsonResult = mapper.writeValueAsString(createList);  
+			vo.setData(jsonResult);
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("试验结果导入失败：", ex);
+
+			vo.setMsg("导入失败，系统异常");
+			vo.setSuccess(false);
+			return vo;
+		}
+		return vo;
+	}
+	
+	
+	@RequestMapping(value = "/exportResult")
+	public void exportResult(HttpServletRequest request, HttpServletResponse response, String mResult, String pResult) {
+		String filename = "试验结果清单";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		try {
+			List<PfResult> dataList = new ArrayList<PfResult>();
+			ObjectMapper mapper = new ObjectMapper();
+	        List<PfResult> mResultList = mapper.readValue(mResult, new TypeReference<List<PfResult>>() { });
+	        List<PfResult> pResultList = mapper.readValue(pResult, new TypeReference<List<PfResult>>() { });
+	        
+	        if(mResultList != null && mResultList.size() > 0) {
+	        	dataList.addAll(mResultList);
+	        }
+	        
+	        if(pResultList != null && pResultList.size() > 0) {
+	        	dataList.addAll(pResultList);
+	        }
+	        
+			// 设置头
+			ImportExcelUtil.setResponseHeader(response, sdf.format(new Date()) + "_" + filename + ".xlsx");
+
+			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
+			// 工作簿
+			Sheet sh = wb.createSheet("结果清单");
+			sh.setColumnWidth(0, (short) 4000);
+			sh.setColumnWidth(1, (short) 4000);
+			sh.setColumnWidth(2, (short) 4000);
+			sh.setColumnWidth(3, (short) 5000);
+			sh.setColumnWidth(4, (short) 9000);
+			sh.setColumnWidth(5, (short) 6000);
+			sh.setColumnWidth(6, (short) 3000);
+			
+			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
+
+			String[] titles = { "类型(零部件/原材料)", "试验项目", "参考标准", "试验要求", "试验结果", "结果评价", "备注"};
+			int r = 0;
+			
+			Row titleRow = sh.createRow(0);
+			titleRow.setHeight((short) 450);
+			for(int k = 0; k < titles.length; k++){
+				Cell cell = titleRow.createCell(k);
+				cell.setCellStyle(styles.get("header"));
+				cell.setCellValue(titles[k]);
+			}
+			
+			++r;
+			
+			for (int j = 0; j < dataList.size(); j++) {// 添加数据
+				Row contentRow = sh.createRow(r);
+				contentRow.setHeight((short) 400);
+				PfResult pfResult = dataList.get(j);
+
+				Cell cell1 = contentRow.createCell(0);
+				cell1.setCellStyle(styles.get("cell"));
+				cell1.setCellValue(pfResult.getCatagory().intValue() == 1 ? "零部件": "原材料");
+
+				Cell cell2 = contentRow.createCell(1);
+				cell2.setCellStyle(styles.get("cell"));
+				if(StringUtils.isNotBlank(pfResult.getProject())) {
+					cell2.setCellValue(pfResult.getProject());
+				}
+
+				Cell cell3 = contentRow.createCell(2);
+				cell3.setCellStyle(styles.get("cell"));
+				if(StringUtils.isNotBlank(pfResult.getStandard())) {
+					cell3.setCellValue(pfResult.getStandard());
+				}
+				
+				Cell cell4 = contentRow.createCell(3);
+				cell4.setCellStyle(styles.get("cell"));
+				if(StringUtils.isNotBlank(pfResult.getRequire())) {
+					cell4.setCellValue(pfResult.getRequire());
+				}
+				
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				if(StringUtils.isNotBlank(pfResult.getResult())) {
+					cell5.setCellValue(pfResult.getResult());
+				}
+
+				Cell cell6 = contentRow.createCell(5);
+				cell6.setCellStyle(styles.get("cell"));
+				if(StringUtils.isNotBlank(pfResult.getEvaluate())) {
+					cell6.setCellValue(pfResult.getEvaluate());
+				}
+				
+				Cell cell7 = contentRow.createCell(6);
+				cell7.setCellStyle(styles.get("cell"));
+				if(StringUtils.isNotBlank(pfResult.getRemark())) {
+					cell7.setCellValue(pfResult.getRemark());
+				}
+				r++;
+			}
+
+			OutputStream os = response.getOutputStream();
+			wb.write(os);
+			os.flush();
+			os.close();
+		} catch (Exception e) {
+			logger.error("试验结果清单导出失败");
+			
+			e.printStackTrace();
+		}
 	}
 	
 	
