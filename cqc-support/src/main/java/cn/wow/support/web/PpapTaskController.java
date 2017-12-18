@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -430,6 +431,10 @@ public class PpapTaskController extends AbstractController {
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			
+			
+			
+			
 			infoService.approve(account, id, result, catagory, remark);
 		} catch (Exception ex) {
 			logger.error("PPAP任务审批失败", ex);
@@ -444,6 +449,47 @@ public class PpapTaskController extends AbstractController {
 		return vo;
 	}
 	
+	
+	/**
+     * 批量审批结果
+     * @param account  操作用户
+     * @param id       任务ID 
+     * @param result   结果：1-通过，2-不通过
+     * @param remark   备注
+     */
+	@ResponseBody
+	@RequestMapping(value = "/batchApprove")
+	public AjaxVO batchApprove(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids, int result, String remark) {
+		AjaxVO vo = new AjaxVO();
+
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			
+			if (ids != null && ids.length > 0) {
+				for (Long id : ids) {
+					Task task = taskService.selectOne(id);
+					int catagory = 3;
+					
+					if(task.getInfoApply() == 1) {
+						catagory = 1;
+					}else if(task.getResultApply() == 1) {
+						catagory = 2;
+					}
+					infoService.approve(account, id, result, catagory, remark);
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("PPAP任务批量审批失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
 	
 	
 	/** --------------------------------   结果确认      ---------------------------------*/

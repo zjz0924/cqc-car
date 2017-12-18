@@ -22,20 +22,50 @@
 			var getRecordUrl = "${ctx}/ots/taskRecordListData";
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
+			// 是否提交中
+			var saving = false;
 			
+			var toolbar = [{
+				text : '通过',
+				iconCls : 'icon-ok',
+				handler : function() {
+					var result = getSelectedIds();
+					if(!result){
+						return false;
+					}
+					batchExamine(result, 1, "");
+				}
+			},{
+				text : '不通过',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					var result = getSelectedIds();
+					if(!result){
+						return false;
+					}
+					$("#batchRemark").textbox("setValue", "");
+					$("#seasonDialog").dialog("open");
+					$('#seasonDialog').window('center');
+				}
+			}];
 			
 			$(function(){
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
-			        singleSelect : true, /*是否选中一行*/
+			        singleSelect : false, /*是否选中一行*/
+			        checkOnSelect: false, // 只有点击checkbox才会选中
 			        width:'auto', 	
 			        height: "375px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
+			        toolbar : toolbar,
 			        idField: 'id',
 			        columns : [ [ {
+			        	field:'ck',
+			        	checkbox:true 
+			        }, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -136,13 +166,13 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '140',
+						width : '125',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '50',
+						width : '40',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
@@ -367,6 +397,59 @@
 				$('#examineDetailDialog').window('center');
 			}
 			
+			function getSelectedIds(){
+				var rows =  $("#" + datagrid).datagrid('getChecked');
+				if(!isNull(rows)){
+					var ids = [];
+					for(var i = 0; i < rows.length; i++){
+						ids.push(rows[i].id);
+					}
+					return ids;
+				}else{
+					errorMsg("请选择要审核的任务");
+					return false;
+				}
+			}
+			
+			function batchExamine(ids, type, remark){
+				if(saving){
+					return false;
+				}
+				saving = true;
+				
+				$.ajax({
+					url: "${ctx}/ots/examine",
+					data:{
+						"ids": ids,
+						"type": type,
+						"remark": remark
+					},
+					success: function(data){
+						if(data.success){
+							tipMsg(data.msg, function(){
+								$('#' + datagrid).datagrid('reload');
+								$('#' + recordDatagrid).datagrid('reload');
+							});
+						}else{
+							errorMsg(data.msg);
+						}
+						saving = false;
+					}
+				});
+			}
+			
+			function doBatchSubmit(){
+				var remark = $("#batchRemark").textbox("getValue");
+				if(isNull(remark)){
+					errorMsg("请输入原因");
+					$("#batchRemark").next('span').find('input').focus();
+					return false;
+				}
+				
+				batchExamine(getSelectedIds(), 2, remark);
+				$("#seasonDialog").dialog("close");
+			}
+			
 		</script>
 	</head>
 	
@@ -430,5 +513,15 @@
 		</div>
 		
 		<div id="examineDetailDialog"></div>
+		
+		<div id="seasonDialog" class="easyui-dialog" title="审核不通过" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
+			<input id="batchRemark" class="easyui-textbox" label="不通过原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
+			
+			<div align=center style="margin-top: 15px;">
+				<a href="javascript:void(0);"  onclick="doBatchSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
+				<a href="javascript:void(0);"  onclick="$('#seasonDialog').dialog('close')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+			</div>
+		</div>
+		
 	</body>	
 </html>

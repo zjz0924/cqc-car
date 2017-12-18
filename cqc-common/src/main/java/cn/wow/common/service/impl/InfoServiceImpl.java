@@ -222,44 +222,48 @@ public class InfoServiceImpl implements InfoService {
      * @param type     结果：1-通过，2-不通过
      * @param remark   备注
      */
-	public void examine(Account account, Long id, int type, String remark) {
-		Task task = taskDao.selectOne(id);
-		Date date = new Date();
-		
-		// 审核记录
-		ExamineRecord examineRecord = new ExamineRecord();
-		examineRecord.setaId(account.getId());
-		examineRecord.setCreateTime(date);
-		examineRecord.setRemark(remark);
-		examineRecord.setState(type);
-		examineRecord.settId(id);
-		examineRecord.setType(1);
-		examineRecord.setTaskType(task.getType());
-		examineRecordDao.insert(examineRecord);
-		
-		// 操作记录
-		TaskRecord record = new TaskRecord();
-		record.setCreateTime(date);
-		record.setCode(task.getCode());
-		record.setaId(account.getId());
-		record.setTaskType(task.getType());
-		
-		if (type == 1) {
-			// 更新任务状态
-			this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
-			record.setState(StandardTaskRecordEnum.EXAMINE_PASS.getState());
-			record.setRemark("信息审核通过");
-		} else {
-			// 审核不通过
-			this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
-			record.setState(StandardTaskRecordEnum.EXAMINE_NOTPASS.getState());
-			record.setRemark(remark);
+	public void examine(Account account, Long[] ids, int type, String remark) {
+		if (ids != null && ids.length > 0) {
+			for (Long id : ids) {
+				Task task = taskDao.selectOne(id);
+				Date date = new Date();
+				
+				// 审核记录
+				ExamineRecord examineRecord = new ExamineRecord();
+				examineRecord.setaId(account.getId());
+				examineRecord.setCreateTime(date);
+				examineRecord.setRemark(remark);
+				examineRecord.setState(type);
+				examineRecord.settId(id);
+				examineRecord.setType(1);
+				examineRecord.setTaskType(task.getType());
+				examineRecordDao.insert(examineRecord);
+				
+				// 操作记录
+				TaskRecord record = new TaskRecord();
+				record.setCreateTime(date);
+				record.setCode(task.getCode());
+				record.setaId(account.getId());
+				record.setTaskType(task.getType());
+				
+				if (type == 1) {
+					// 更新任务状态
+					this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
+					record.setState(StandardTaskRecordEnum.EXAMINE_PASS.getState());
+					record.setRemark("信息审核通过");
+				} else {
+					// 审核不通过
+					this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
+					record.setState(StandardTaskRecordEnum.EXAMINE_NOTPASS.getState());
+					record.setRemark(remark);
+				}
+				taskRecordDao.insert(record);
+				
+				String str = type == 1 ? "通过" : "不通过";
+				String logDetail = "任务：" + task.getCode() + "，审核" + str;
+				addLog(account.getUserName(), OperationType.EXAMINE, ServiceType.TASK, logDetail);
+			}
 		}
-		taskRecordDao.insert(record);
-		
-		String str = type == 1 ? "通过" : "不通过";
-		String logDetail = "任务：" + task.getCode() + "，审核" + str;
-		addLog(account.getUserName(), OperationType.EXAMINE, ServiceType.TASK, logDetail);
 	}
 
 	/**

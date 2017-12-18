@@ -179,10 +179,13 @@
 			}
 			saving = true;
 			
+			var ids = [];
+			ids.push(id);
+			
 			$.ajax({
 				url: "${ctx}/ots/examine",
 				data: {
-					"id": id,
+					"ids": ids,
 					"type": type,
 					"remark": remark
 				},

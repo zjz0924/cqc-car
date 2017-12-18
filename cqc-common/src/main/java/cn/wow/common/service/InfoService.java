@@ -28,11 +28,11 @@ public interface InfoService {
     /**
      * 审核
      * @param account  操作用户
-     * @param id       任务ID
+     * @param ids       任务ID
      * @param type     结果：1-通过，2-不通过
      * @param remark   备注
      */
-    public void examine(Account account, Long id, int type, String remark);
+    public void examine(Account account, Long[] ids, int type, String remark);
     
     /**
      * 更新任务状态

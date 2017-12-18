@@ -135,16 +135,16 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '140',
+						width : '125',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '50',
+						width : '60',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
+							return '<a href="javascript:void(0)" onclick="transmitDetail('+ row.id +')">下达任务</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {

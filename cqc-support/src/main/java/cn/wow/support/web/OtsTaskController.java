@@ -495,18 +495,18 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审核结果
 	 * 
-	 * @param id      任务ID
+	 * @param ids      任务ID
 	 * @param type    结果： 1-通过， 2-不通过
 	 * @param remark  备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
-	public AjaxVO examine(HttpServletRequest request, Model model, Long id, int type, String remark) {
+	public AjaxVO examine(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids, int type, String remark) {
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		
 		try {
-			infoService.examine(account, id, type, remark);
+			infoService.examine(account, ids, type, remark);
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
 
@@ -876,6 +876,48 @@ public class OtsTaskController extends AbstractController {
 			infoService.approve(account, id, result, remark, catagory);
 		} catch (Exception ex) {
 			logger.error("OTS任务审批失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
+	}
+	
+	
+	/**
+	 * 批量审批结果
+	 * 
+	 * @param account  操作用户
+	 * @param ids       任务ID
+	 * @param result   结果：1-通过，2-不通过
+	 * @param remark   备注
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/batchApprove")
+	public AjaxVO batchApprove(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids, int result, String remark) {
+		AjaxVO vo = new AjaxVO();
+
+		try {
+			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			if (ids != null && ids.length > 0) {
+				for (Long id : ids) {
+					Task task = taskService.selectOne(id);
+					int catagory = 5;
+					
+					if(task.getInfoApply() == 1) {
+						catagory = 6;
+					}else if(task.getResultApply() == 1) {
+						catagory = 7;
+					}
+					infoService.approve(account, id, result, remark, catagory);
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("OTS任务批量审批失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");

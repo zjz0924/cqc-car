@@ -56,7 +56,7 @@
 			
 			// 创建tab
 		 	function createTab(title, url, selected) {  
-				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="850px">'; 
+				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="900px">'; 
 			    $('#systemTabs').tabs('add', {   
 			        title : title,   
 			        selected : selected,   
