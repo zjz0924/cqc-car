@@ -154,28 +154,32 @@
 			<c:if test="${taskType == 1 and empty facadeBean.partsAtlId}">
 				<div>
 					<span class="title-span">零部件图谱试验：</span>
-					<input id="partsAtlId" name="partsAtlId">
+					<input id="partsAtlId" name="partsAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="checkbox" id="partsAtlCheck" onclick="doCheck('partsAtlCheck')"><span class="red-font">不选</span>
 				</div>
 			</c:if>
 			
 			<c:if test="${empty facadeBean.matAtlId}">
 				<div style="margin-top:5px;">
 					<span class="title-span">原材料图谱试验： </span>
-					<input id="matAtlId" name="matAtlId">
+					<input id="matAtlId" name="matAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="checkbox" id="matAtlCheck" onclick="doCheck('matAtlCheck')"><span class="red-font">不选</span>
 				</div>
 			</c:if>
 			
 			<c:if test="${taskType == 1 and empty facadeBean.partsPatId}">
 				<div style="margin-top:5px;">
 					<span class="title-span">零部件型式试验： </span>
-					<input id="partsPatId" name="partsPatId">
+					<input id="partsPatId" name="partsPatId">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="checkbox" id="partsPatCheck" onclick="doCheck('partsPatCheck')"><span class="red-font">不选</span>
 				</div>
 			</c:if>
 			
 			<c:if test="${empty facadeBean.matPatId}">
 				<div style="margin-top:5px;">
 					<span class="title-span">原材料型式试验： </span>
-					<input id="matPatId" name="matPatId">
+					<input id="matPatId" name="matPatId">&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="checkbox" id="matPatCheck" onclick="doCheck('matPatCheck')"><span class="red-font">不选</span>
 				</div>
 			</c:if>
 			
@@ -187,6 +191,11 @@
 	</div>
 			
 	<style type="text/css">
+		.red-font{
+		   color:red;
+		   font-weight: bold;
+		}
+	
 		.title {
 			margin-left: 10px;
 			margin-bottom: 8px;
@@ -252,18 +261,7 @@
 						animate: true,
 						width: '250px'				
 					});
-					
-					// 只有最底层才能选择
-					var partsAtlIdTree = $('#partsAtlId').combotree('tree');	
-					partsAtlIdTree.tree({
-					   onBeforeSelect: function(node){
-						   if(isNull(node.children)){
-								return true;
-						   }else{
-							   return false;
-						   }
-					   }
-					});
+					setupTree("partsAtlId");
 				}
 				
 				partsPatId = "${facadeBean.partsPatId}";
@@ -275,18 +273,7 @@
 						animate: true,
 						width: '250px'				
 					});
-					
-					// 只有最底层才能选择
-					var partsPatIdTree = $('#partsPatId').combotree('tree');	
-					partsPatIdTree.tree({
-					   onBeforeSelect: function(node){
-						   if(isNull(node.children)){
-								return true;
-						   }else{
-							   return false;
-						   }
-					   }
-					});
+					setupTree("partsPatId");
 				}
 			}
 			
@@ -299,18 +286,7 @@
 					animate: true,
 					width: '250px'					
 				});
-				
-				// 只有最底层才能选择
-				var matAtlIdTree = $('#matAtlId').combotree('tree');	
-				matAtlIdTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
+				setupTree("matAtlId");
 			}
 			
 			matPatId = "${facadeBean.matPatId}";
@@ -322,18 +298,7 @@
 					animate: true,
 					width: '250px'				
 				});
-				
-				// 只有最底层才能选择
-				var matPatIdTree = $('#matPatId').combotree('tree');	
-				matPatIdTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
+				setupTree("matPatId");
 			}
 		});
 		
@@ -342,12 +307,20 @@
 			var taskType = "${taskType}";
 			// 默认选中CQC实验室
 			
+			$("#matAtlId").combotree({ disabled: false });
+			$("#matPatId").combotree({ disabled: false });
 			$("#matAtlId").combotree("setValue", "20");
 			$("#matPatId").combotree("setValue", "20");
+			$("#matAtlCheck").prop("checked",false);
+			$("#matPatCheck").prop("checked",false);
 			
 			if(taskType == 1){
+				$("#partsAtlId").combotree({ disabled: false });
+				$("#partsPatId").combotree({ disabled: false });
 				$("#partsAtlId").combotree("setValue", "20");
 				$("#partsPatId").combotree("setValue", "20");
+				$("#partsAtlCheck").prop("checked",false);
+				$("#partsPatCheck").prop("checked",false);
 			}
 			
 			$("#dlg").dialog("open");
@@ -366,40 +339,48 @@
 			saving = true;
 			
 			if(taskType == 1){
-				if(isNull(partsAtlId)){
-					partsAtlId_val = $("#partsAtlId").combotree("getValue");
-					if(isNull(partsAtlId_val)){
-						errorMsg("请为零部件图谱试验选择实验室");
-						saving = false;
-						return false;
+				if(!$("#partsAtlCheck").is(':checked')){
+					if(isNull(partsAtlId)){
+						partsAtlId_val = $("#partsAtlId").combotree("getValue");
+						if(isNull(partsAtlId_val)){
+							errorMsg("请为零部件图谱试验选择实验室");
+							saving = false;
+							return false;
+						}
 					}
 				}
 				
-				if(isNull(partsPatId)){
-					partsPatId_val = $("#partsPatId").combotree("getValue");
-					if(isNull(partsPatId_val)){
-						errorMsg("请为零部件型式试验选择实验室");
+				if(!$("#partsPatCheck").is(':checked')){
+					if(isNull(partsPatId)){
+						partsPatId_val = $("#partsPatId").combotree("getValue");
+						if(isNull(partsPatId_val)){
+							errorMsg("请为零部件型式试验选择实验室");
+							saving = false;
+							return false;
+						}
+					}	
+				}
+			}
+			
+			if(!$("#matAtlCheck").is(':checked')){
+				if(isNull(matAtlId)){
+					matAtlId_val = $("#matAtlId").combotree("getValue");
+					if(isNull(matAtlId_val)){
+						errorMsg("请为原材料图谱试验选择实验室");
 						saving = false;
 						return false;
 					}
 				}
 			}
 			
-			if(isNull(matAtlId)){
-				matAtlId_val = $("#matAtlId").combotree("getValue");
-				if(isNull(matAtlId_val)){
-					errorMsg("请为原材料图谱试验选择实验室");
-					saving = false;
-					return false;
-				}
-			}
-			
-			if(isNull(matPatId)){
-				matPatId_val = $("#matPatId").combotree("getValue");
-				if(isNull(matPatId_val)){
-					errorMsg("请为原材料型式试验选择实验室");
-					saving = false;
-					return false;
+			if(!$("#matPatCheck").is(':checked')){
+				if(isNull(matPatId)){
+					matPatId_val = $("#matPatId").combotree("getValue");
+					if(isNull(matPatId_val)){
+						errorMsg("请为原材料型式试验选择实验室");
+						saving = false;
+						return false;
+					}
 				}
 			}
 			
@@ -426,6 +407,31 @@
 		
 		function doCancel(){
 			$("#dlg").dialog("close");
+		}
+		
+		// 只有最底层才能选择
+		function setupTree(id){
+			var treeObj = $('#' + id).combotree('tree');	
+			treeObj.tree({
+			   onBeforeSelect: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
+		}
+		
+		function doCheck(id){
+			var treeId = id.replace("Check", "Id");
+			if($("#" + id).is(':checked')){
+				$("#" + treeId).combotree("setValue","");
+				$("#" + treeId).combotree({ disabled: true });  
+			}else{
+				$("#" + treeId).combotree({ disabled: false });
+				setupTree(treeId);
+			}
 		}
 	</script>	
 	

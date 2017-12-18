@@ -5,7 +5,7 @@
 <body>
 	<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 		<div>
-			编码：<input id="q_code" name="q_code" class="easyui-textbox" style="width: 120px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			代码：<input id="q_code" name="q_code" class="easyui-textbox" style="width: 120px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			车型：<input id="q_type" name="q_type" class="easyui-textbox" style="width: 120px;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		
 	      	生产时间：<input type="text" id="q_startProTime" name="q_startProTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endProTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 

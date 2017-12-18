@@ -556,22 +556,31 @@ public class InfoServiceImpl implements InfoService {
 				if(catagory == 1){
 					task.setPartsAtlResult(1);
 					remark = "零部件图谱试验审批通过";
-				}else if(catagory == 2){
+				}else if(catagory == 2 && task.getMatAtlId() != null){
 					task.setMatAtlResult(1);
 					remark = "原材料图谱试验审批通过";
-				}else if(catagory == 3){
+				}else if(catagory == 3 && task.getPartsPatId() != null){
 					task.setPartsPatResult(1);
 					remark = "零部件型式试验审批通过";
 				}else if(catagory == 4){
 					task.setMatPatResult(1);
 					remark = "原材料型式试验审批通过";
 				}else{
-					task.setMatAtlResult(1);
-					task.setMatPatResult(1);
+					if(task.getMatAtlId() != null) {
+						task.setMatAtlResult(1);
+					}
+					
+					if(task.getMatPatId() != null) {
+						task.setMatPatResult(1);
+					}
 					
 					if(task.getType() == TaskTypeEnum.OTS.getState()) {
-						task.setPartsAtlResult(1);
-						task.setPartsPatResult(1);
+						if(task.getPartsAtlId() != null) {
+							task.setPartsAtlResult(1);
+						}
+						if(task.getPartsPatId() != null) {
+							task.setPartsPatResult(1);
+						}
 					}
 					remark = "图谱和型式试验全部审批通过";
 				}
@@ -595,16 +604,24 @@ public class InfoServiceImpl implements InfoService {
 					task.setMatPatId(null);
 					remark = "原材料型式试验审批不通过：" + remark;
 				}else{
-					task.setMatAtlResult(6);
-					task.setMatPatResult(6);
-					task.setMatAtlId(null);
-					task.setMatPatId(null);
+					if(task.getMatAtlId() != null) {
+						task.setMatAtlResult(6);
+						task.setMatAtlId(null);
+					}
+					if(task.getMatPatId() != null) {
+						task.setMatPatResult(6);
+						task.setMatPatId(null);
+					}
 					
 					if(task.getType() == TaskTypeEnum.OTS.getState()) {
-						task.setPartsAtlResult(6);
-						task.setPartsPatResult(6);
-						task.setPartsPatId(null);
-						task.setPartsAtlId(null);
+						if(task.getPartsAtlId() != null) {
+							task.setPartsAtlResult(6);
+							task.setPartsAtlId(null);
+						}
+						if(task.getPartsPatId() != null) {
+							task.setPartsPatResult(6);
+							task.setPartsPatId(null);
+						}
 					}
 					remark = "图谱和型式试验全部审批不通过：" + remark;
 				}

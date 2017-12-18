@@ -351,8 +351,7 @@
 			function closeDialog(msg) {
 				tipMsg(msg, function(){
 					$('#transmitDetailDialog').dialog('close');
-					$('#' + datagrid).datagrid('reload');
-					$('#' + recordDatagrid).datagrid('reload');
+					window.location.reload();
 				});
 			}
 			
