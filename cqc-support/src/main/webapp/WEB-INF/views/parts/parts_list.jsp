@@ -80,19 +80,19 @@
 		        border:false,
 		        rownumbers: true,
 		        idField: 'id',
-		        columns : [ [{
+		        frozenColumns:[[{
 		            field : 'id', 
 		            hidden: 'true'
 		        }, {
 		            field : 'code',
 		            title : '零件号',
-		            width : '120',
+		            width : '80',
 		            align : 'center',
 		            formatter: formatCellTooltip
 		        }, {
 		            field : 'name',
 		            title : '名称',
-		            width : '120',
+		            width : '80',
 		            align : 'center',
 		            formatter: formatCellTooltip
 		        }, {
@@ -110,23 +110,24 @@
 		        }, {
 		            field : 'keyCode',
 		            title : '零件型号',
-		            width : '120',
+		            width : '80',
 		            align : 'center',
 		            formatter: formatCellTooltip
 		        }, {
 		            field : 'org',
 		            title : '生产商',
-		            width : '150',
+		            width : '120',
 		            align : 'center',
 		            formatter: function(val){
 						if(val){
 							return "<span title="+ val.name+">"+ val.name + "</span>";
 						}
 					}
-		        }, {
+		        }]],
+		        columns : [ [{
 		            field : 'proTime',
 		            title : '生产时间',
-		            width : '100',
+		            width : '90',
 		            align : 'center',
 		            formatter: DateFormatter
 		        }, {
@@ -138,19 +139,31 @@
 				}, {
 					field : 'proNo',
 					title : '生产批次',
-					width : '120',
+					width : '80',
+					align : 'center',
+					formatter : formatCellTooltip
+				}, {
+					field : 'contacts',
+					title : '联系人',
+					width : '70',
+					align : 'center',
+					formatter : formatCellTooltip
+				}, {
+					field : 'phone',
+					title : '联系电话',
+					width : '90',
 					align : 'center',
 					formatter : formatCellTooltip
 				}, {
 					field : 'remark',
 					title : '备注',
-					width : '200',
+					width : '100',
 					align : 'center',
 					formatter : formatCellTooltip
 				},{
 					field : '_operation',
 					title : '操作',
-					width : '80',
+					width : '70',
 					align : 'center',
 					formatter : function(value,row,index){
 						return '<a href="javascript:void(0)" onclick="closeDialog('+ index +')">选择</a>';  	
@@ -222,7 +235,9 @@
 				$("#p_isKey").combobox('select', row.isKey);
 				$("#p_keyCode").textbox("setValue", row.keyCode);	
 				$("#p_orgId").combotree("setValue", row.org.id);
-				$("#p_orgName").textbox("setValue", row.org.name);	
+				$("#p_orgName").textbox("setValue", row.org.name);
+				$("#p_phone").textbox("setValue", row.phone);
+				$("#p_contacts").textbox("setValue", row.contacts);
 				$("#p_id").val(row.id);
 				
 				// 不可编辑
@@ -233,6 +248,8 @@
 				$('#p_proNo').textbox('disable'); 
 				$('#p_remark').textbox('disable'); 
 				$('#p_keyCode').textbox('disable'); 
+				$('#p_phone').textbox('disable'); 
+				$('#p_contacts').textbox('disable'); 
 				$("#p_isKey").combobox('disable');
 				$("#p_orgId").combotree('disable');
 			}

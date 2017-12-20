@@ -85,8 +85,18 @@
 			 </c:if>
 			
 			<div class="data-row">
-				<span class="title-span">备注：</span> 
-				<input id="remark" name="remark" class="easyui-textbox" multiline="true" value="${facadeBean.remark }" style="height:50px;width: 220px">		
+				<div class="data-cell-left">
+					<span class="title-span">是否收费：</span> 
+					<select id="isCharge" class="easyui-combobox" name="isCharge" data-options="panelHeight:'auto'" style="width:220px;">
+					    <option value="0" <c:if test="${facadeBean.isCharge == 0}">selected="selected"</c:if>>否</option>
+					    <option value="1" <c:if test="${facadeBean.isCharge == 1}">selected="selected"</c:if>>是</option>
+					</select>
+				</div>
+			
+				<div class="data-cell-right">
+					<span class="title-span">备注：</span> 
+					<input id="remark" name="remark" class="easyui-textbox" multiline="true" value="${facadeBean.remark }" style="height:50px;width: 220px">		
+				</div>
 			</div>
 			
 			<div class="data-row" style="margin-top:30px;">

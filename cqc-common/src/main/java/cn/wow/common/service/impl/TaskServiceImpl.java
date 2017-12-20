@@ -492,7 +492,7 @@ public class TaskServiceImpl implements TaskService{
     		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
     		
     		// 确认记录
-    		ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), state, remark, 4, 9, date, TaskTypeEnum.PPAP.getState());
+    		ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), state, remark, 4, 11, date, TaskTypeEnum.PPAP.getState());
     		examineRecordDao.insert(examineRecord);
     	}
     	taskDao.update(task);

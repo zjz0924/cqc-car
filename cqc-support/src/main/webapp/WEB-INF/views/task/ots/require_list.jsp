@@ -282,7 +282,7 @@
 				$('#requireDialog').dialog({
 					title : '详情',
 					width : 1100,
-					height : 600,
+					height : 625,
 					closed : false,
 					cache : false,
 					href : url,

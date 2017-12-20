@@ -1,5 +1,6 @@
 package cn.wow.common.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,5 +59,17 @@ public class AccountServiceImpl implements AccountService {
 	
 	public void clearPic(Long id){
 		accountDao.clearPic(id);
+	}
+	
+	/**
+	 * 获取下达任务的机构ID
+	 * @param taskId  任务ID
+	 * @param state   任务记录状态
+	 */
+	public Long getOrderOrgId(Long taskId, Integer state) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("taskId", taskId);
+		map.put("state", state);
+		return accountDao.getOrderOrgId(map);
 	}
 }

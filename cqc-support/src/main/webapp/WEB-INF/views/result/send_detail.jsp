@@ -68,6 +68,14 @@
 					</tr>
 					
 					<tr class="single-row">
+						<td class="title-td">联系人：</td>
+						<td class="value-td">${facadeBean.info.parts.contacts}</td>
+						
+						<td class="title-td">联系电话：</td>
+						<td class="value-td">${facadeBean.info.parts.phone}</td>
+					</tr>
+					
+					<tr class="couple-row">
 						<td class="title-td">备注：</td>
 						<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 					</tr>
@@ -102,6 +110,14 @@
 				</tr>
 				
 				<tr class="couple-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.material.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.material.phone}</td>
+				</tr>
+				
+				<tr class="single-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -124,31 +140,29 @@
 					第${m.key}次试验
 					<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
 				</div>
-				<c:forEach items="${m.value}" var="vo" varStatus="vst">
-					<table class="info">
-						<tr class="single-row">
-							<td class="title-td">试验项目：</td>
-							<td class="value-td" colspan="3">${vo.project}</td>
-							
-						</tr>
-						<tr class="couple-row">
-							<td class="title-td">参考标准：</td>
-							<td class="value-td">${vo.standard}</td>
-							<td class="title-td">试验要求：</td>
-							<td class="value-td">${vo.require}</td>
-						</tr>
-						<tr class="single-row">
-							<td class="title-td">试验结果：</td>
-							<td class="value-td">${vo.result}</td>
-							<td class="title-td">结果评价：</td>
-							<td class="value-td">${vo.evaluate}</td>
-						</tr>
-						
+				
+				<table class="info">
+					<tr class="single-row">
+						<td class="table-title" style="width: 5%;">序号</td>
+						<td class="table-title"><span class="req-span">*</span>试验项目</td>
+						<td class="table-title"><span class="req-span">*</span>参考标准</td>
+						<td class="table-title"><span class="req-span">*</span>试验要求</td>
+						<td class="table-title"><span class="req-span">*</span>试验结果</td>
+						<td class="table-title"><span class="req-span">*</span>结果评价</td>
+						<td class="table-title">备注</td>
+					</tr>
+					<c:forEach items="${m.value}" var="vo" varStatus="vst">
 						<tr>
-							<td></td>	
+							<td>${vst.index + 1 }</td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.project}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.standard}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.require}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.result}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.evaluate}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.remark}"></td>
 						</tr>
-					</table>
-				</c:forEach>
+					</c:forEach>
+				</table>
 			</c:forEach>
 		</c:if>
 		
@@ -169,12 +183,19 @@
 					<c:forEach items="${m.value}" var="vo" varStatus="vst">
 						<tr style="line-height: 60px;">
 							<td class="value-td">
+								<c:if test="${vo.type == 4}">样品照片</c:if>
 								<c:if test="${vo.type == 1}">红外光分析</c:if>
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
 							</td>
 							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
-							<td class="value-td"><a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a></td>
+							<td class="value-td">
+								<c:if test="${not empty vo.pic}">
+									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
+								<c:if test="${empty vo.pic}">
+									<span class="img-span1">暂无</span>
+								</c:if>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
@@ -188,31 +209,28 @@
 					第${m.key}次试验
 					<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
 				</div>
-				<c:forEach items="${m.value}" var="vo" varStatus="vst">
-					<table class="info">
-						<tr class="single-row">
-							<td class="title-td">试验项目：</td>
-							<td class="value-td" colspan="3">${vo.project}</td>
-							
-						</tr>
-						<tr class="couple-row">
-							<td class="title-td">参考标准：</td>
-							<td class="value-td">${vo.standard}</td>
-							<td class="title-td">试验要求：</td>
-							<td class="value-td">${vo.require}</td>
-						</tr>
-						<tr class="single-row">
-							<td class="title-td">试验结果：</td>
-							<td class="value-td">${vo.result}</td>
-							<td class="title-td">结果评价：</td>
-							<td class="value-td">${vo.evaluate}</td>
-						</tr>
-						
+				<table class="info">
+					<tr class="single-row">
+						<td class="table-title" style="width: 5%;">序号</td>
+						<td class="table-title"><span class="req-span">*</span>试验项目</td>
+						<td class="table-title"><span class="req-span">*</span>参考标准</td>
+						<td class="table-title"><span class="req-span">*</span>试验要求</td>
+						<td class="table-title"><span class="req-span">*</span>试验结果</td>
+						<td class="table-title"><span class="req-span">*</span>结果评价</td>
+						<td class="table-title">备注</td>
+					</tr>
+					<c:forEach items="${m.value}" var="vo" varStatus="vst">
 						<tr>
-							<td></td>	
+							<td>${vst.index + 1 }</td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.project}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.standard}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.require}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.result}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.evaluate}"></td>
+							<td><input class="easyui-textbox" style="width:125px" value="${vo.remark}"></td>
 						</tr>
-					</table>
-				</c:forEach>
+					</c:forEach>
+				</table>
 			</c:forEach>
 		</c:if>
 		
@@ -233,12 +251,19 @@
 					<c:forEach items="${m.value}" var="vo" varStatus="vst">
 						<tr style="line-height: 60px;">
 							<td class="value-td">
+								<c:if test="${vo.type == 4}">样品照片</c:if>
 								<c:if test="${vo.type == 1}">红外光分析</c:if>
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
 							</td>
 							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
-							<td class="value-td"><a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a></td>
+							<td class="value-td">
+								<c:if test="${not empty vo.pic}">
+									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
+								<c:if test="${empty vo.pic}">
+									<span class="img-span1">暂无</span>
+								</c:if>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
@@ -282,6 +307,9 @@
 		var saving = false;
 	
 		$(function(){
+			// 默认发送的机构ID
+			var sendOrgId = "${sendOrgId}";
+			
 			// 零部件图谱试验结果
 			pAtlOrg = $("#pAtlOrg").length;
 			if(pAtlOrg > 0){
@@ -304,6 +332,10 @@
 					   }
 				   }
 				});
+				
+				if(!isNull(sendOrgId)){
+					$("#pAtlOrg").combotree("setValue", sendOrgId);
+				}
 			}
 			
 			// 零部件型式试验结果
@@ -328,6 +360,10 @@
 					   }
 				   }
 				});
+				
+				if(!isNull(sendOrgId)){
+					$("#pPatOrg").combotree("setValue", sendOrgId);
+				}
 			}
 			
 			
@@ -353,6 +389,10 @@
 					   }
 				   }
 				});
+				
+				if(!isNull(sendOrgId)){
+					$("#mAtlOrg").combotree("setValue", sendOrgId);
+				}
 			}
 			
 			
@@ -378,6 +418,10 @@
 					   }
 				   }
 				});
+				
+				if(!isNull(sendOrgId)){
+					$("#mPatOrg").combotree("setValue", sendOrgId);
+				}
 			}
 			
 		});
@@ -536,6 +580,20 @@
 		
 		.couple-row{
 			background: #f5f5f5;
+		}
+		
+		.img-span1{
+			width: 100px;
+			height: 50px;
+			display:inline-block;
+			border:0.5px dashed #C9C9C9;
+			text-align:center;
+			line-height:50px;
+		}
+		
+		.table-title{
+			padding-left: 5px;
+			font-weight: bold;
 		}
 		
 	</style>

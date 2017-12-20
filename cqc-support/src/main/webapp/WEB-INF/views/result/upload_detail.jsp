@@ -68,6 +68,14 @@
 					</tr>
 					
 					<tr class="single-row">
+						<td class="title-td">联系人：</td>
+						<td class="value-td">${facadeBean.info.parts.contacts}</td>
+						
+						<td class="title-td">联系电话：</td>
+						<td class="value-td">${facadeBean.info.parts.phone}</td>
+					</tr>
+					
+					<tr class="couple-row">
 						<td class="title-td">备注：</td>
 						<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 					</tr>
@@ -102,6 +110,14 @@
 				</tr>
 				
 				<tr class="couple-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.material.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.material.phone}</td>
+				</tr>
+				
+				<tr class="single-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -115,10 +131,13 @@
 		</div>
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-		<div class="title">试验结果 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a href="javascript:void(0);"  onclick="importResult()" class="easyui-linkbutton" data-options="iconCls:'icon-import'">导入</a>
-			<a href="javascript:void(0);"  onclick="exportResult()" class="easyui-linkbutton" data-options="iconCls:'icon-export'">导出</a>
-			<a href="javascript:void(0);"  onclick="exportTemplate()" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'">导入模板</a>
+		<div class="title">试验结果 
+			<c:if test="${type == 1}">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:void(0);"  onclick="importResult()" class="easyui-linkbutton" data-options="iconCls:'icon-import'">导入</a>
+				<a href="javascript:void(0);"  onclick="exportResult()" class="easyui-linkbutton" data-options="iconCls:'icon-export'">导出</a>
+				<a href="javascript:void(0);"  onclick="exportTemplate()" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'">导入模板</a>
+			</c:if>
 		</div>
 		
 		<c:choose>
@@ -282,12 +301,12 @@
 									</tr>
 									
 									<tr>
-										<td class="value-td">热重分析</td>
-										<td class="value-td"><input id="p_tgLab" name="p_tgLab" class="easyui-textbox" style="width:230px"></td>
+										<td class="value-td">样品照片</td>
+										<td class="value-td"><input id="p_tempLab" name="p_tempLab" class="easyui-textbox" style="width:230px"></td>
 										<td class="value-td">
 											<span class="req-span">*</span>
-											<input id="p_tgLab_pic" name="p_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
-											<span id="p_tg_error" class="req-span"></span>
+											<input id="p_tempLab_pic" name="p_tempLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+											<span id="p_temp_error" class="req-span"></span>
 										</td>
 									</tr>
 									
@@ -311,6 +330,15 @@
 										</td>
 									</tr>
 									
+									<tr>
+										<td class="value-td">热重分析</td>
+										<td class="value-td"><input id="p_tgLab" name="p_tgLab" class="easyui-textbox" style="width:230px"></td>
+										<td class="value-td">
+											<span class="req-span">*</span>
+											<input id="p_tgLab_pic" name="p_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+											<span id="p_tg_error" class="req-span"></span>
+										</td>
+									</tr>
 								</table>
 							</div>
 						</c:if>
@@ -329,12 +357,12 @@
 								</tr>
 								
 								<tr>
-									<td class="value-td">热重分析</td>
-									<td class="value-td"><input id="m_tgLab" name="m_tgLab" class="easyui-textbox" style="width:230px"></td>
+									<td class="value-td">样品照片</td>
+									<td class="value-td"><input id="m_tempLab" name="m_tempLab" class="easyui-textbox" style="width:230px"></td>
 									<td class="value-td">
 										<span class="req-span">*</span>
-										<input id="m_tgLab_pic" name="m_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
-										<span id="m_tg_error" class="req-span"></span>
+										<input id="m_tempLab_pic" name="m_tempLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+										<span id="m_temp_error" class="req-span"></span>
 									</td>
 								</tr>
 								
@@ -355,6 +383,16 @@
 										<span class="req-span">*</span>
 										<input id="m_dtLab_pic" name="m_dtLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
 										<span id="m_dt_error" class="req-span"></span>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="value-td">热重分析</td>
+									<td class="value-td"><input id="m_tgLab" name="m_tgLab" class="easyui-textbox" style="width:230px"></td>
+									<td class="value-td">
+										<span class="req-span">*</span>
+										<input id="m_tgLab_pic" name="m_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+										<span id="m_tg_error" class="req-span"></span>
 									</td>
 								</tr>
 								
@@ -394,22 +432,22 @@
 				
 				// 零部件结果
 				if(p_arTable > 0){
-					// 热重分析图谱
-					var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
-					if (!isNull(p_tgLabDir)) {
-						var suffix = p_tgLabDir.substr(p_tgLabDir.lastIndexOf("."));
+					// 样品图谱
+					var p_tempLabDir = $("#p_tempLab_pic").filebox("getValue");
+					if (!isNull(p_tempLabDir)) {
+						var suffix = p_tempLabDir.substr(p_tempLabDir.lastIndexOf("."));
 						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
-							$("#p_tg_error").html("图片格式");
-							$("#p_tgLab_pic").focus();
+							$("#p_temp_error").html("图片格式");
+							$("#p_tempLab_pic").focus();
 							saving = false;
 							return false;
 						}
 					}else{
-						$("#p_tg_error").html("必选");
+						$("#p_temp_error").html("必选");
 						saving = false;
 						return false;
 					}
-					$("#p_tg_error").html("");
+					$("#p_temp_error").html("");
 					
 					// 红外光分析图谱
 					var p_infLabDir = $("#p_infLab_pic").filebox("getValue");
@@ -444,28 +482,45 @@
 						return false;
 					}
 					$("#p_dt_error").html("");
+					
+					// 热重分析图谱
+					var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
+					if (!isNull(p_tgLabDir)) {
+						var suffix = p_tgLabDir.substr(p_tgLabDir.lastIndexOf("."));
+						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+							$("#p_tg_error").html("图片格式");
+							$("#p_tgLab_pic").focus();
+							saving = false;
+							return false;
+						}
+					}else{
+						$("#p_tg_error").html("必选");
+						saving = false;
+						return false;
+					}
+					$("#p_tg_error").html("");
 				}
 			}
 			
 			// 原材料结果
 			if(m_arTable > 0){
-				// 热重分析图谱
-				var m_tgLabDir = $("#m_tgLab_pic").filebox("getValue");
-				if (!isNull(m_tgLabDir)) {
-					var suffix = m_tgLabDir.substr(m_tgLabDir.lastIndexOf("."));
+				// 样品图谱
+				var m_tempLabDir = $("#m_tempLab_pic").filebox("getValue");
+				if (!isNull(m_tempLabDir)) {
+					var suffix = m_tempLabDir.substr(m_tempLabDir.lastIndexOf("."));
 					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
-						$("#m_tg_error").html("图片格式");
-						$("#m_tgLab_pic").focus();
+						$("#m_temp_error").html("图片格式");
+						$("#m_tempLab_pic").focus();
 						saving = false;
 						return false;
 					}
 				}else{
-					$("#m_tg_error").html("必选");
+					$("#m_temp_error").html("必选");
 					saving = false;
 					return false;
 				}
-				$("#m_tg_error").html("");
-
+				$("#m_temp_error").html("");
+				
 				// 红外光分析图谱
 				var m_infLabDir = $("#m_infLab_pic").filebox("getValue");
 				if (!isNull(m_infLabDir)) {
@@ -482,7 +537,7 @@
 					return false;
 				}
 				$("#m_inf_error").html("");
-
+				
 				// 差热扫描图谱
 				var m_dtLabDir = $("#m_dtLab_pic").filebox("getValue");
 				if (!isNull(m_dtLabDir)) {
@@ -499,6 +554,23 @@
 					return false;
 				}
 				$("#m_dt_error").html("");
+				
+				// 热重分析图谱
+				var m_tgLabDir = $("#m_tgLab_pic").filebox("getValue");
+				if (!isNull(m_tgLabDir)) {
+					var suffix = m_tgLabDir.substr(m_tgLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+						$("#m_tg_error").html("图片格式");
+						$("#m_tgLab_pic").focus();
+						saving = false;
+						return false;
+					}
+				}else{
+					$("#m_tg_error").html("必选");
+					saving = false;
+					return false;
+				}
+				$("#m_tg_error").html("");
 			}
 			
 			$('#uploadForm').ajaxSubmit({
@@ -740,7 +812,7 @@
 		
 		
 		// 组装数据
-		function assemble(type){
+		function assembleForExport(type){
 			var dataArray = [];
 			var flag = true;
 			
@@ -847,10 +919,10 @@
 			excelForm.attr('action',"${ctx}/result/exportResult");  
 			
 			var mResult = $("<input type='hidden' name='mResult' />")  
-		    mResult.attr('value',JSON.stringify(assemble("m"))); 
+		    mResult.attr('value',JSON.stringify(assembleForExport("m"))); 
 			
 			var pResult = $("<input type='hidden' name='pResult' />")  
-		    pResult.attr('value', JSON.stringify(assemble("p"))); 
+		    pResult.attr('value', JSON.stringify(assembleForExport("p"))); 
 			
 			excelForm.append(mResult);  
 			excelForm.append(pResult); 

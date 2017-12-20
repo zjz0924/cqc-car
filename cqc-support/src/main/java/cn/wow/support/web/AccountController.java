@@ -92,7 +92,7 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String userName, String nickName,
-			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId) {
+			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId, Integer isCharge) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -103,7 +103,7 @@ public class AccountController extends AbstractController {
 		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "username asc");
-		queryMap.put("custom_order_sql", "username asc");
+		queryMap.put("custom_order_sql", "is_charge asc, username asc");
 		
 		if (StringUtils.isNotBlank(userName)) {
 			map.put("qUserName", userName);
@@ -112,6 +112,10 @@ public class AccountController extends AbstractController {
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
 			queryMap.put("nickName", nickName);
+		}
+		if (isCharge != null) {
+			map.put("isCharge", isCharge);
+			queryMap.put("isCharge", isCharge);
 		}
 		if (StringUtils.isNotBlank(lock)) {
 			map.put("lock", lock);
@@ -206,7 +210,8 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String userName, String nickName,
-			String mobile, String password, Long roleId, Long orgId, String email, String remark, Integer signType, @RequestParam(value = "pic", required = false) MultipartFile file) {
+			String mobile, String password, Long roleId, Long orgId, String email, String remark, Integer signType,
+			@RequestParam(value = "pic", required = false) MultipartFile file, Integer isCharge) {
 		AjaxVO vo = new AjaxVO();
 		Account account = null;
 
@@ -223,6 +228,7 @@ public class AccountController extends AbstractController {
 					account.setOrgId(orgId);
 					account.setRemark(remark);
 					account.setSignType(signType);
+					account.setIsCharge(isCharge);
 					
 					if(signType == 2){
 						if (file != null && !file.isEmpty()) {
@@ -260,6 +266,7 @@ public class AccountController extends AbstractController {
 					account.setOrgId(orgId);
 					account.setRemark(remark);
 					account.setSignType(signType);
+					account.setIsCharge(isCharge);
 					
 					if(signType == 2){
 						if (file != null && !file.isEmpty()) {
@@ -646,6 +653,7 @@ public class AccountController extends AbstractController {
 					account.setMobile(mobile);
 					account.setEmail(email);
 					account.setSignType(1);
+					account.setIsCharge(0);
 
 					if (dbAccount == null) { // 修改
 						account.setUserName(userName);

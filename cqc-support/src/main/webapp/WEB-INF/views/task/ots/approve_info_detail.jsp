@@ -126,6 +126,14 @@
 						</tr>
 						
 						<tr class="single-row">
+							<td class="title-td">联系人：</td>
+							<td class="value-td">${facadeBean.info.parts.contacts}</td>
+							
+							<td class="title-td">联系电话：</td>
+							<td class="value-td">${facadeBean.info.parts.phone}</td>
+						</tr>
+						
+						<tr class="couple-row">
 							<td class="title-td">备注：</td>
 							<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 						</tr>
@@ -207,6 +215,27 @@
 							<span class="val red-color" title="${newParts.keyCode }">${newParts.keyCode }</span>
 						</td>
 					</tr>
+					
+					<tr>
+						<td>
+							<span class="title-span">联系人：</span> 
+							<span class="val" title="${facadeBean.info.parts.contacts }">${facadeBean.info.parts.contacts }</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newParts.contacts }">${newParts.contacts }</span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<span class="title-span">联系电话：</span> 
+							<span class="val" title="${facadeBean.info.parts.phone }">${facadeBean.info.parts.phone }</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newParts.phone }">${newParts.phone }</span>
+						</td>
+					</tr>
+					
 					<tr>
 						<td>
 							<span class="title-span">&nbsp;备注：</span> 
@@ -248,6 +277,14 @@
 						</tr>
 						
 						<tr class="couple-row">
+							<td class="title-td">联系人：</td>
+							<td class="value-td">${facadeBean.info.material.contacts}</td>
+							
+							<td class="title-td">联系电话：</td>
+							<td class="value-td">${facadeBean.info.material.phone}</td>
+						</tr>
+						
+						<tr class="single-row">
 							<td class="title-td">材料成分表：</td>
 							<td class="value-td">
 								<c:if test="${not empty facadeBean.info.material.pic}">
@@ -322,6 +359,27 @@
 							</c:if>
 						</td>
 					</tr>
+					
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>联系人：</span> 
+							<span class="val" title="${facadeBean.info.material.contacts }">${facadeBean.info.material.contacts }</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newMaterial.contacts }">${newMaterial.contacts }</span>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>联系电话：</span> 
+							<span class="val" title="${facadeBean.info.material.phone }">${facadeBean.info.material.phone }</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newMaterial.phone }">${newMaterial.phone }</span>
+						</td>
+					</tr>
+					
 					<tr>	
 						<td>
 							<span class="title-span">备注：</span> 

@@ -96,7 +96,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		// 批量添加
 		batchAdd(atlasResult);
 		
-		if(atlasResult != null && atlasResult.size() == 6){
+		if(atlasResult != null && atlasResult.size() == 8){
 			// 实验结果
 			task.setMatAtlResult(2);
 			task.setPartsAtlResult(2);
@@ -218,6 +218,26 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 					mAtlasResult.put(at.getExpNo(), list);
 				}
 			}
+			
+			// 补样品照片
+			for (Map.Entry<Integer, List<AtlasResult>> entry : pAtlasResult.entrySet()) {
+				List<AtlasResult> list = entry.getValue();
+				if(list != null && list.size() > 0 && list.size() == 3) {
+					AtlasResult temp = list.get(0);
+					AtlasResult ar = new AtlasResult(temp.gettId(), 4, null, null, temp.getCatagory(), temp.getExpNo(), temp.getCreateTime());
+					list.add(ar);
+				}
+			}
+			
+			for (Map.Entry<Integer, List<AtlasResult>> entry : mAtlasResult.entrySet()) {
+				List<AtlasResult> list = entry.getValue();
+				if(list != null && list.size() > 0 && list.size() == 3) {
+					AtlasResult temp = list.get(0);
+					AtlasResult ar = new AtlasResult(temp.gettId(), 4, null, null, temp.getCatagory(), temp.getExpNo(), temp.getCreateTime());
+					list.add(ar);
+				}
+			}
+			
 		}
 	}
 	
@@ -231,25 +251,48 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		Map<String, Object> erMap = new PageMap(false);
 		erMap.put("taskId", taskId);
 		erMap.put("type", 4);
-		erMap.put("catagorys", 8);
-		erMap.put("custom_order_sql", "create_time desc, catagory asc limit 8");
+		erMap.put("catagorys", 10);
+		erMap.put("custom_order_sql", "create_time desc, catagory asc limit 10");
 		List<ExamineRecord> erList = examineRecordDao.selectAllList(erMap);
 
 		// 零部件结果
 		List<ExamineRecord> pList = new ArrayList<ExamineRecord>();
 		// 原材料结果
 		List<ExamineRecord> mList = new ArrayList<ExamineRecord>();
-
+		
 		for (ExamineRecord er : erList) {
 			if (er.getCatagory() <= 4) {
 				pList.add(er);
-			} else {
-				mList.add(er);
+			} else if(er.getCatagory() > 4 && er.getCatagory() <= 8){
+				mList.add(er);	
 			}
 		}
-
 		Collections.sort(pList);
 		Collections.sort(mList);
+		
+		// 把样本照片放到前面
+		for (ExamineRecord er : erList) {
+			if(er.getCatagory() == 9) {
+				pList.add(0, er);
+			}else if(er.getCatagory() == 10) {
+				mList.add(0, er);
+			}
+		}
+		
+		// 补样本照片
+		if (pList != null && pList.size() == 4) {
+			ExamineRecord temp = pList.get(0);
+			ExamineRecord er = new ExamineRecord(temp.gettId(), temp.getaId(), 1, "", temp.getType(), 9, temp.getCreateTime(), temp.getTaskType());
+			pList.add(0, er);
+		}
+		
+		// 补样本照片
+		if (mList != null && mList.size() == 4) {
+			ExamineRecord temp = mList.get(0);
+			ExamineRecord er = new ExamineRecord(temp.gettId(), temp.getaId(), 1, "", temp.getType(), 10, temp.getCreateTime(), temp.getTaskType());
+			mList.add(0, er);
+		}
+		
 		result.put("零部件", pList);
 		result.put("原材料", mList);
 

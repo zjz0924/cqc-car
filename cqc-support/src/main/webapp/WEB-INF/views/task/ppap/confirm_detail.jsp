@@ -67,6 +67,14 @@
 				</tr>
 				
 				<tr class="single-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.parts.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.parts.phone}</td>
+				</tr>
+				
+				<tr class="couple-row">
 					<td class="title-td">备注：</td>
 					<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 				</tr>
@@ -100,6 +108,14 @@
 				</tr>
 				
 				<tr class="couple-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.material.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.material.phone}</td>
+				</tr>
+				
+				<tr class="single-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -130,6 +146,9 @@
 								<c:when test="${m.key == 2}">
 									<div class="title1">差热分析图谱</div>
 								</c:when>
+								<c:when test="${m.key == 4}">
+									<div class="title1">样品照片图谱</div>
+								</c:when>
 								<c:otherwise>
 									<div class="title1">热重分析图谱</div>
 								</c:otherwise>
@@ -138,10 +157,20 @@
 							<table>
 								<tr>
 									<td style="padding-left: 15px;">
-										<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+										<c:if test="${not empty m.value.standard_pic }">
+											<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+										</c:if>
+										<c:if test="${empty m.value.standard_pic }">
+											<span class="img-span">基准图谱为空</span>
+										</c:if>
 									</td>
 									<td style="padding-left: 35px;">
-										<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+										<c:if test="${not empty m.value.sampling_pic }">
+											<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+										</c:if>
+										<c:if test="${empty m.value.sampling_pic }">
+											<span class="img-span">抽样图谱为空</span>
+										</c:if>
 									</td>
 								</tr>
 							</table>
@@ -160,6 +189,9 @@
 								<c:when test="${m.key == 2}">
 									<div class="title1">差热分析图谱</div>
 								</c:when>
+								<c:when test="${m.key == 4}">
+									<div class="title1">样品照片图谱</div>
+								</c:when>
 								<c:otherwise>
 									<div class="title1">热重分析图谱</div>
 								</c:otherwise>
@@ -168,10 +200,20 @@
 							<table>
 								<tr>
 									<td style="padding-left: 15px;">
-										<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
+										<c:if test="${not empty m.value.standard_pic }">
+											<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+										</c:if>
+										<c:if test="${empty m.value.standard_pic }">
+											<span class="img-span">基准图谱为空</span>
+										</c:if>
 									</td>
 									<td style="padding-left: 35px;">
-										<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
+										<c:if test="${not empty m.value.sampling_pic }">
+											<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+										</c:if>
+										<c:if test="${empty m.value.sampling_pic }">
+											<span class="img-span">抽样图谱为空</span>
+										</c:if>
 									</td>
 								</tr>
 							</table>
@@ -185,6 +227,7 @@
 				<table style="width: 98%; font-size: 14px;">
 					<tr style="background: #F0F0F0; height: 30px; font-weight: bold; text-align: center;">
 						<td>类型</td>
+						<td>样品照片</td>
 						<td>红外光分析</td>
 						<td>差热分析</td>
 						<td>热重分析</td>
@@ -360,6 +403,15 @@
 		.req-span{
 			font-weight: bold;
 			color: red;
+		}
+		
+		.img-span{
+			width: 400px;
+			height: 250px;
+			display:inline-block;
+			border:0.5px dashed #C9C9C9;
+			text-align:center;
+			line-height:250px;
 		}
 		
 		.icon{

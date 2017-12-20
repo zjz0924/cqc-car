@@ -28,7 +28,7 @@
 			        border:false,
 			        rownumbers: true,
 			        idField: 'id',
-			        columns : [ [ {
+			        frozenColumns:[[{
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -53,7 +53,8 @@
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
-					}, {
+					}]],
+			        columns : [ [ {
 						field : 'info.vehicle.type',
 						title : '车型',
 						width : '80',
@@ -147,7 +148,7 @@
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '60',
+						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
 							if(row.infoApply == 1){

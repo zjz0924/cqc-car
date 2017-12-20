@@ -139,6 +139,27 @@
 							<input id="p_keyCode" name="p_keyCode" class="easyui-textbox">
 						</td>
 					</tr>
+					
+					<tr>
+						<td>
+							<span class="title-span">联系人：</span> 
+							<span class="val" title="${facadeBean.info.parts.contacts }">${facadeBean.info.parts.contacts }</span>
+						</td>
+						<td class="input-td">
+							<input id="p_contacts" name="p_contacts" class="easyui-textbox">
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<span class="title-span">联系电话：</span> 
+							<span class="val" title="${facadeBean.info.parts.phone }">${facadeBean.info.parts.phone }</span>
+						</td>
+						<td class="input-td">
+							<input id="p_phone" name="p_phone" class="easyui-textbox">
+						</td>
+					</tr>
+					
 					<tr>
 						<td>
 							<span class="title-span">&nbsp;备注：</span> 
@@ -211,6 +232,24 @@
 					
 					<td class="input-td">
 						<input id="m_pic" name="m_pic" class="easyui-filebox" style="width:171px" data-options="buttonText: '选择'">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span">联系人：</span> 
+						<span class="val" title="${facadeBean.info.material.contacts }">${facadeBean.info.material.contacts }</span>
+					</td>
+					<td class="input-td">
+						<input id="m_contacts" name="m_contacts" class="easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span">联系电话：</span> 
+						<span class="val" title="${facadeBean.info.material.phone }">${facadeBean.info.material.phone }</span>
+					</td>
+					<td class="input-td">
+						<input id="m_phone" name="m_phone" class="easyui-textbox">
 					</td>
 				</tr>
 				<tr>	
@@ -359,7 +398,28 @@
 					return false;
 				}
 				saving = true;
+				$("#exception_error").html("");
 				
+				var p_phone = $("#p_phone").val();
+				if (!isNull(p_phone)) {
+					if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(p_phone))) {
+						$("#exception_error").html("零部件联系电话格式不正确");
+						$("#p_phone").next('span').find('input').focus();
+						saving = false; 
+						return false;
+					}
+				}
+				$("#exception_error").html("");
+				
+				var m_phone = $("#m_phone").val();
+				if (!isNull(m_phone)) {
+					if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(m_phone))) {
+						$("#exception_error").html("原材料联系电话格式不正确");
+						$("#m_phone").next('span').find('input').focus();
+						saving = false; 
+						return false;
+					}
+				}
 				$("#exception_error").html("");
 				
 				$('#uploadForm').ajaxSubmit({

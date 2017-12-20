@@ -10,7 +10,7 @@ public class AtlasResult {
 	private Long id;
     // 任务ID
     private Long tId;
-    // 类型 ：1-红外光分析、2-差热分析、3-热重分析
+    // 类型 ：1-红外光分析、2-差热分析、3-热重分析、4-样品照片
     private Integer type;
     // 图片
     private String pic;

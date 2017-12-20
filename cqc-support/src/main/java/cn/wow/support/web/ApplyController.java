@@ -199,9 +199,21 @@ public class ApplyController extends AbstractController {
 
 			// 零部件-图谱结果（只取最后一次实验）
 			List<AtlasResult> pAtlasResult = atlasResultService.getLastResult(1, id);
-
+			// 后面加上的样品照片
+			if(pAtlasResult != null && pAtlasResult.size() == 3) {
+				AtlasResult tmp = pAtlasResult.get(0);
+				AtlasResult ar = new AtlasResult(tmp.gettId(), 4, null, null, 1, tmp.getExpNo(), tmp.getCreateTime());
+				pAtlasResult.add(ar);
+			}
+			
 			// 原材料-图谱结果（只取最后一次实验）
 			List<AtlasResult> mAtlasResult = atlasResultService.getLastResult(2, id);
+			// 后面加上的样品照片
+			if(mAtlasResult != null && mAtlasResult.size() == 3) {
+				AtlasResult tmp = mAtlasResult.get(0);
+				AtlasResult ar = new AtlasResult(tmp.gettId(), 4, null, null, 2, tmp.getExpNo(), tmp.getCreateTime());
+				mAtlasResult.add(ar);
+			}
 
 			// 零部件-性能结果
 			model.addAttribute("pPfResult", pPfResult);
@@ -301,7 +313,7 @@ public class ApplyController extends AbstractController {
 				}
 
 				if (applyRecord.getmId() != null) {
-					Material newMaterial = materialService.selectOne(applyRecord.getvId());
+					Material newMaterial = materialService.selectOne(applyRecord.getmId());
 					model.addAttribute("newMaterial", newMaterial);
 				}
 			} else {
@@ -387,7 +399,8 @@ public class ApplyController extends AbstractController {
 	public AjaxVO applyInfoSave(HttpServletRequest request, Model model, String v_code, String v_type, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String m_matName,
-			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark,
+			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark, String p_phone,
+			String p_contacts, String m_phone, String m_contacts,
 			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id) {
 
 		AjaxVO vo = new AjaxVO();
@@ -400,17 +413,14 @@ public class ApplyController extends AbstractController {
 			Vehicle vehicle = null;
 			if (isUpdateVehicleInfo(v_code, v_type, v_proTime, v_proAddr, v_remark)) {
 				vehicle = vehicleService.selectOne(task.getInfo().getvId());
-				if (StringUtils.isNotBlank(v_code)) {
-					Vehicle dbVehicle = vehicleService.selectByCode(v_code);
-					if (dbVehicle != null && dbVehicle.getId().longValue() != vehicle.getId().longValue()) {
-						vo.setSuccess(false);
-						vo.setMsg("整车代码已存在");
-						return vo;
-					}
-
-					vehicle.setCode(v_code);
+				assembleVehicleInfo(vehicle, v_code, v_type, v_proTime, v_proAddr, v_remark, date);
+				
+				boolean isExist = vehicleService.isExist(task.getInfo().getvId(), vehicle.getCode(), vehicle.getType(), vehicle.getProTime(), vehicle.getProAddr(), vehicle.getRemark());
+				if (isExist) {
+					vo.setSuccess(false);
+					vo.setMsg("整车信息已存在");
+					return vo;
 				}
-				assembleVehicleInfo(vehicle, v_type, v_proTime, v_proAddr, v_remark, date);
 			}
 
 			Parts parts = null;
@@ -418,7 +428,7 @@ public class ApplyController extends AbstractController {
 				// 零部件信息
 				parts = partsService.selectOne(task.getInfo().getpId());
 				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId,
-						p_remark)) {
+						p_remark, p_phone, p_contacts)) {
 					if (StringUtils.isNotBlank(p_code)) {
 						Parts dbParts = partsService.selectByCode(p_code);
 						if (dbParts != null && dbParts.getId().longValue() != parts.getId().longValue()) {
@@ -427,8 +437,7 @@ public class ApplyController extends AbstractController {
 							return vo;
 						}
 					}
-					assemblePartsInfo(parts, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark,
-							date);
+					assemblePartsInfo(parts, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
 				} else {
 					parts = null;
 				}
@@ -436,9 +445,9 @@ public class ApplyController extends AbstractController {
 
 			// 原材料信息
 			Material material = null;
-			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile)) {
+			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile, m_phone, m_contacts)) {
 				material = materialService.selectOne(task.getInfo().getmId());
-				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile, date);
+				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile, date, m_phone, m_contacts);
 			}
 
 			if (task.getType() == TaskTypeEnum.GS.getState()) {
@@ -492,10 +501,12 @@ public class ApplyController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/labInfoSave")
 	public AjaxVO labInfoSave(HttpServletRequest request, Model model, Long taskId, String p_tgLab, String p_infLab,
-			String p_dtLab, String m_tgLab, String m_infLab, String m_dtLab,
+			String p_dtLab, String m_tgLab, String m_infLab, String m_dtLab, String m_tempLab, String p_tempLab,
 			@RequestParam(value = "p_tgLab_pic", required = false) MultipartFile p_tgfile,
 			@RequestParam(value = "p_infLab_pic", required = false) MultipartFile p_infile,
 			@RequestParam(value = "p_dtLab_pic", required = false) MultipartFile p_dtfile,
+			@RequestParam(value = "p_tempLab_pic", required = false) MultipartFile p_tempfile,
+			@RequestParam(value = "m_tempLab_pic", required = false) MultipartFile m_tempfile,
 			@RequestParam(value = "m_tgLab_pic", required = false) MultipartFile m_tgfile,
 			@RequestParam(value = "m_infLab_pic", required = false) MultipartFile m_infile,
 			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile, String result) {
@@ -510,7 +521,7 @@ public class ApplyController extends AbstractController {
 
 			// 组装图谱信息
 			List<AtlasResult> atlResultList = assembleAtlasInfo(taskId, p_tgLab, p_infLab, p_dtLab, m_tgLab, m_infLab,
-					m_dtLab, p_tgfile, p_infile, p_dtfile, m_tgfile, m_infile, m_dtfile);
+					m_dtLab, p_tgfile, p_infile, p_dtfile, m_tgfile, m_infile, m_dtfile, p_tempfile, m_tempfile, m_tempLab, p_tempLab);
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			infoService.applyResult(account, taskId, pfResultList, atlResultList);
@@ -544,12 +555,13 @@ public class ApplyController extends AbstractController {
 	 * 是否更新零部件信息
 	 */
 	boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark) {
+			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String p_phone,
+			String p_contacts) {
 
 		if (StringUtils.isBlank(p_code) && StringUtils.isBlank(p_name) && StringUtils.isBlank(p_proTime)
 				&& StringUtils.isBlank(p_place) && StringUtils.isBlank(p_proNo) && StringUtils.isBlank(p_keyCode)
-				&& p_orgId == null && StringUtils.isBlank(p_remark)
-				&& p_isKey.intValue() == parts.getIsKey().intValue()) {
+				&& p_orgId == null && StringUtils.isBlank(p_remark) && p_isKey.intValue() == parts.getIsKey().intValue()
+				&& StringUtils.isBlank(p_phone) && StringUtils.isBlank(p_contacts)) {
 			return false;
 		} else {
 			return true;
@@ -562,10 +574,10 @@ public class ApplyController extends AbstractController {
 	 * @return
 	 */
 	boolean isUpdateMetailInfo(String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
-			String m_remark, MultipartFile mfile) {
+			String m_remark, MultipartFile mfile, String m_phone, String m_contacts) {
 		if (StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_matColor) && StringUtils.isBlank(m_proNo)
 				&& StringUtils.isBlank(m_matNo) && StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_remark)
-				&& m_orgId == null && mfile == null) {
+				&& m_orgId == null && mfile == null && StringUtils.isBlank(m_phone) && StringUtils.isBlank(m_contacts)) {
 			return false;
 		} else {
 			return true;
@@ -575,8 +587,12 @@ public class ApplyController extends AbstractController {
 	/**
 	 * 组装整车信息
 	 */
-	void assembleVehicleInfo(Vehicle vehicle, String v_type, String v_proTime, String v_proAddr, String v_remark,
+	void assembleVehicleInfo(Vehicle vehicle, String v_code, String v_type, String v_proTime, String v_proAddr, String v_remark,
 			Date date) {
+		if (StringUtils.isNotBlank(v_code)) {
+			vehicle.setCode(v_code);
+		}
+		
 		if (StringUtils.isNotBlank(v_type)) {
 			vehicle.setType(v_type);
 		}
@@ -606,7 +622,7 @@ public class ApplyController extends AbstractController {
 	 * 组装零部件信息
 	 */
 	void assemblePartsInfo(Parts parts, String p_name, String p_proTime, String p_place, String p_proNo,
-			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, Date date) {
+			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, Date date, String p_phone, String p_contacts) {
 
 		if (StringUtils.isNotBlank(p_name)) {
 			parts.setName(p_name);
@@ -641,6 +657,14 @@ public class ApplyController extends AbstractController {
 		if (StringUtils.isNotBlank(p_remark)) {
 			parts.setRemark(p_remark);
 		}
+		
+		if (StringUtils.isNotBlank(p_phone)) {
+			parts.setPhone(p_phone);
+		}
+		
+		if (StringUtils.isNotBlank(p_contacts)) {
+			parts.setContacts(p_contacts);
+		}
 
 		parts.setCreateTime(date);
 		parts.setId(null);
@@ -651,7 +675,7 @@ public class ApplyController extends AbstractController {
 	 * 组装原材料信息
 	 */
 	void assembleMaterialInfo(Material material, String m_matName, String m_matColor, String m_proNo, Long m_orgId,
-			String m_matNo, String m_remark, MultipartFile mfile, Date date) throws Exception {
+			String m_matNo, String m_remark, MultipartFile mfile, Date date, String m_phone, String m_contacts) throws Exception {
 
 		if (StringUtils.isNotBlank(m_matName)) {
 			material.setMatName(m_matName);
@@ -676,6 +700,14 @@ public class ApplyController extends AbstractController {
 		if (StringUtils.isNotBlank(m_remark)) {
 			material.setRemark(m_remark);
 		}
+		
+		if (StringUtils.isNotBlank(m_phone)) {
+			material.setPhone(m_phone);
+		}
+		
+		if (StringUtils.isNotBlank(m_contacts)) {
+			material.setContacts(m_contacts);
+		}
 
 		if (mfile != null && !mfile.isEmpty()) {
 			String pic = uploadImg(mfile, materialUrl, false);
@@ -697,7 +729,10 @@ public class ApplyController extends AbstractController {
 			@RequestParam(value = "p_dtLab_pic", required = false) MultipartFile p_dtfile,
 			@RequestParam(value = "m_tgLab_pic", required = false) MultipartFile m_tgfile,
 			@RequestParam(value = "m_infLab_pic", required = false) MultipartFile m_infile,
-			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile) throws Exception {
+			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile, 
+			@RequestParam(value = "p_tempLab_pic", required = false) MultipartFile p_tempfile,
+			@RequestParam(value = "m_tempLab_pic", required = false) MultipartFile m_tempfile, 
+			String m_tempLab, String p_tempLab) throws Exception {
 
 		List<AtlasResult> dataList = new ArrayList<AtlasResult>();
 		Date date = new Date();
@@ -710,6 +745,12 @@ public class ApplyController extends AbstractController {
 		pAtMap.put("expNo", atlasResultService.getExpNoByCatagory(taskId, 1));
 		pAtMap.put("catagory", 1);
 		List<AtlasResult> pAtlasResult = atlasResultService.selectAllList(pAtMap);
+		// 后面加上的样品照片
+		if(pAtlasResult != null && pAtlasResult.size() == 3) {
+			AtlasResult tmp = pAtlasResult.get(0);
+			AtlasResult ar = new AtlasResult(tmp.gettId(), 4, null, null, 1, tmp.getExpNo(), tmp.getCreateTime());
+			pAtlasResult.add(ar);
+		}
 
 		if(pAtlasResult != null && pAtlasResult.size() > 0) {
 			for (AtlasResult at : pAtlasResult) {
@@ -730,13 +771,22 @@ public class ApplyController extends AbstractController {
 						String pic = uploadImg(p_dtfile, atlasUrl + taskId + "/apply/parts/dt/" + dateStr + "/", false);
 						at.setPic(pic);
 					}
-				} else { // 热重分析
+				} else if (at.getType() == 3) { // 热重分析
 					if (StringUtils.isNotBlank(p_tgLab)) {
 						at.setRemark(p_tgLab);
 					}
 
 					if (p_tgfile != null && !p_tgfile.isEmpty()) {
 						String pic = uploadImg(p_tgfile, atlasUrl + taskId + "/apply/parts/tg/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
+				}else {
+					if (StringUtils.isNotBlank(p_tempLab)) {
+						at.setRemark(p_tempLab);
+					}
+
+					if (p_tempfile != null && !p_tempfile.isEmpty()) {
+						String pic = uploadImg(p_tempfile, atlasUrl + taskId + "/apply/parts/temp/" + dateStr + "/", false);
 						at.setPic(pic);
 					}
 				}
@@ -765,6 +815,14 @@ public class ApplyController extends AbstractController {
 				
 				dataList.add(at);
 			}
+			
+			// 样品照片
+			if (p_tempfile != null && !p_tempfile.isEmpty()) {
+				String pic = uploadImg(p_tempfile, atlasUrl + taskId + "/apply/parts/temp/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 4, pic, p_tempLab, 1, 1, date);
+				
+				dataList.add(at);
+			}
 		}
 		
 
@@ -774,7 +832,13 @@ public class ApplyController extends AbstractController {
 		mAtMap.put("catagory", 2);
 		mAtMap.put("expNo", atlasResultService.getExpNoByCatagory(taskId, 2));
 		List<AtlasResult> mAtlasResult = atlasResultService.selectAllList(mAtMap);
-
+		// 后面加上的样品照片
+		if(mAtlasResult != null && mAtlasResult.size() == 3) {
+			AtlasResult tmp = mAtlasResult.get(0);
+			AtlasResult ar = new AtlasResult(tmp.gettId(), 4, null, null, 2, tmp.getExpNo(), tmp.getCreateTime());
+			mAtlasResult.add(ar);
+		}
+		
 		if (mAtlasResult != null && mAtlasResult.size() > 0) {
 			for (AtlasResult at : mAtlasResult) {
 				if (at.getType() == 1) { // 红外光分析
@@ -795,13 +859,22 @@ public class ApplyController extends AbstractController {
 						String pic = uploadImg(m_dtfile, atlasUrl + taskId + "/apply/material/dt/" + dateStr + "/", false);
 						at.setPic(pic);
 					}
-				} else { // 热重分析
+				} else if (at.getType() == 3) { // 热重分析
 					if (StringUtils.isNotBlank(m_tgLab)) {
 						at.setRemark(m_tgLab);
 					}
 
 					if (m_tgfile != null && !m_tgfile.isEmpty()) {
 						String pic = uploadImg(m_tgfile, atlasUrl + taskId + "/apply/material/tg/" + dateStr + "/", false);
+						at.setPic(pic);
+					}
+				} else {
+					if (StringUtils.isNotBlank(m_tempLab)) {
+						at.setRemark(m_tempLab);
+					}
+
+					if (m_tempfile != null && !m_tempfile.isEmpty()) {
+						String pic = uploadImg(m_tempfile, atlasUrl + taskId + "/apply/material/temp/" + dateStr + "/", false);
 						at.setPic(pic);
 					}
 				}
@@ -830,8 +903,15 @@ public class ApplyController extends AbstractController {
 				
 				dataList.add(at);
 			}
+			
+			//样品照片
+			if (m_tempfile != null && !m_tempfile.isEmpty()) {
+				String pic = uploadImg(m_tempfile, atlasUrl + taskId + "/apply/material/temp/" + dateStr + "/", false);
+				AtlasResult at = new AtlasResult(taskId, 4, pic, m_tempLab, 2, 1, date);
+				
+				dataList.add(at);
+			}
 		}
-		
 
 		if (pAtlasResult != null && pAtlasResult.size() > 0) {
 			dataList.addAll(pAtlasResult);

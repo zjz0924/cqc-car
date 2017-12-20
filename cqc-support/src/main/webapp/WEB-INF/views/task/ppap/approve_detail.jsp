@@ -67,6 +67,14 @@
 				</tr>
 				
 				<tr class="single-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.parts.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.parts.phone}</td>
+				</tr>
+				
+				<tr class="couple-row">
 					<td class="title-td">备注：</td>
 					<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 				</tr>
@@ -101,6 +109,14 @@
 				</tr>
 				
 				<tr class="couple-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.material.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.material.phone}</td>
+				</tr>
+				
+				<tr class="single-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -160,10 +176,15 @@
 								<c:if test="${vo.type == 1}">红外光分析</c:if>
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
+								<c:if test="${vo.type == 4}">样品照片</c:if>
 							</td>
 							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 							<td class="value-td">
-								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+								<c:if test="${not empty vo.pic}">
+									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
+								<c:if test="${empty vo.pic}">
+									<span class="img-span1">暂无</span>
+								</c:if>
 							</td>
 						</tr>
 					</c:forEach>
@@ -183,10 +204,15 @@
 								<c:if test="${vo.type == 1}">红外光分析</c:if>
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
+								<c:if test="${vo.type == 4}">样品照片</c:if>
 							</td>
 							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 							<td class="value-td">
-								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+								<c:if test="${not empty vo.pic}">
+									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
+								<c:if test="${empty vo.pic}">
+									<span class="img-span1">暂无</span>
+								</c:if>
 							</td>
 						</tr>
 					</c:forEach>
@@ -208,10 +234,15 @@
 								<c:if test="${vo.type == 1}">红外光分析</c:if>
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
+								<c:if test="${vo.type == 4}">样品照片</c:if>
 							</td>
 							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 							<td class="value-td">
-								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+								<c:if test="${not empty vo.pic}">
+									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
+								<c:if test="${empty vo.pic}">
+									<span class="img-span1">暂无</span>
+								</c:if>
 							</td>
 						</tr>
 					</c:forEach>
@@ -231,10 +262,15 @@
 								<c:if test="${vo.type == 1}">红外光分析</c:if>
 								<c:if test="${vo.type == 2}">差热扫描</c:if>
 								<c:if test="${vo.type == 3}">热重分析</c:if>
+								<c:if test="${vo.type == 4}">样品照片</c:if>
 							</td>
 							<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
 							<td class="value-td">
-								<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+								<c:if test="${not empty vo.pic}">
+									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
+								<c:if test="${empty vo.pic}">
+									<span class="img-span1">暂无</span>
+								</c:if>
 							</td>
 						</tr>
 					</c:forEach>
@@ -295,6 +331,15 @@
 		
 		.couple-row{
 			background: #f5f5f5;
+		}
+		
+		.img-span1{
+			width: 100px;
+			height: 50px;
+			display:inline-block;
+			border:0.5px dashed #C9C9C9;
+			text-align:center;
+			line-height:50px;
 		}
 	</style>
 	

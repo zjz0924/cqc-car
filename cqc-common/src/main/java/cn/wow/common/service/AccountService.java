@@ -24,4 +24,11 @@ public interface AccountService {
 	public void batchUpdate(List<Account> list);
 	
 	public void clearPic(Long id);
+	
+	/**
+	 * 获取下达任务的机构ID
+	 * @param taskId  任务ID
+	 * @param state   任务记录状态
+	 */
+	public Long getOrderOrgId(Long taskId, Integer state);
 }

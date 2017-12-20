@@ -4,12 +4,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,12 +40,10 @@ import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Menu;
-import cn.wow.common.domain.Org;
 import cn.wow.common.domain.PfResult;
-import cn.wow.common.domain.Role;
 import cn.wow.common.domain.Task;
+import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AtlasResultService;
-import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
@@ -55,9 +51,6 @@ import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
-import cn.wow.common.utils.cookie.MD5;
-import cn.wow.common.utils.operationlog.OperationType;
-import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
@@ -99,6 +92,8 @@ public class ResultController extends AbstractController {
 	private PfResultService pfResultService;
 	@Autowired
 	private InfoService infoService;
+	@Autowired
+	private AccountService accountService;
 	
 	
 	//-----------------------------------    结果上传        ---------------------------------------------------------------
@@ -234,13 +229,15 @@ public class ResultController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/atlasUpload")
 	public AjaxVO atlasUpload(HttpServletRequest request, Model model, Long taskId, 
-			String p_tgLab, String p_infLab, String p_dtLab, String m_tgLab, String m_infLab, String m_dtLab, 
+			String p_tgLab, String p_infLab, String p_dtLab, String m_tgLab, String m_infLab, String m_dtLab,  String m_tempLab, String p_tempLab,
 			@RequestParam(value = "p_tgLab_pic", required = false) MultipartFile p_tgfile,
 			@RequestParam(value = "p_infLab_pic", required = false) MultipartFile p_infile,
 			@RequestParam(value = "p_dtLab_pic", required = false) MultipartFile p_dtfile,
 			@RequestParam(value = "m_tgLab_pic", required = false) MultipartFile m_tgfile,
 			@RequestParam(value = "m_infLab_pic", required = false) MultipartFile m_infile,
-			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile) {
+			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile,
+			@RequestParam(value = "m_tempLab_pic", required = false) MultipartFile m_tempfile,
+			@RequestParam(value = "p_tempLab_pic", required = false) MultipartFile p_tempfile) {
 		AjaxVO vo = new AjaxVO();
 		String pic = null;
 		
@@ -252,6 +249,12 @@ public class ResultController extends AbstractController {
 			if(p_tgfile != null){
 				// 零部件试验次数
 				int pNum = atlasResultService.getExpNoByCatagory(taskId, 1);
+				
+				// 样品照片
+				if (p_tempfile != null && !p_tempfile.isEmpty()) {
+					pic = uploadImg(p_tempfile, atlasUrl + taskId + "/parts/temp/", false);
+				}
+				AtlasResult p_temp = new AtlasResult(taskId, 4, pic, p_tempLab, 1, pNum + 1, date);
 				
 				// 热重分析
 				if (p_tgfile != null && !p_tgfile.isEmpty()) {
@@ -274,12 +277,19 @@ public class ResultController extends AbstractController {
 				dataList.add(p_tg);
 				dataList.add(p_inf);
 				dataList.add(p_dt);
+				dataList.add(p_temp);
 			}
 			
 			/** 原材料结果  **/
 			if(m_tgfile != null){
 				// 原材料试验次数
 				int mNum = atlasResultService.getExpNoByCatagory(taskId, 2);
+				
+				// 样品照片
+				if (m_tempfile != null && !m_tempfile.isEmpty()) {
+					pic = uploadImg(m_tempfile, atlasUrl + taskId + "/material/temp/", false);
+				}
+				AtlasResult m_temp = new AtlasResult(taskId, 4, pic, m_tempLab, 2, mNum + 1, date);
 				
 				// 热重分析
 				if (m_tgfile != null && !m_tgfile.isEmpty()) {
@@ -302,6 +312,7 @@ public class ResultController extends AbstractController {
 				dataList.add(m_tg);
 				dataList.add(m_inf);
 				dataList.add(m_dt);
+				dataList.add(m_temp);
 			}
 			
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -472,6 +483,18 @@ public class ResultController extends AbstractController {
 				model.addAttribute("pAtlasResult", pAtlasResult);
 			}
 
+			// 获取下达任务的机构ID
+			Integer state = null;
+			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
+				state = 4;
+			}else {
+				state = 1;
+			}
+			Long orgId = accountService.getOrderOrgId(task.getId(), state);
+			if(orgId != null) {
+				model.addAttribute("sendOrgId", orgId);
+			}
+			
 			model.addAttribute("facadeBean", task);
 		}
 
@@ -638,7 +661,7 @@ public class ResultController extends AbstractController {
 				// 抽样图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();
 				atMap.put("tId", id);
-				atMap.put("custom_order_sql", "exp_no desc limit 6");
+				atMap.put("custom_order_sql", "exp_no desc limit 8");
 				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
 
 				List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();
@@ -779,7 +802,7 @@ public class ResultController extends AbstractController {
 			// 抽样图谱结果
 			Map<String, Object> atMap = new HashMap<String, Object>();
 			atMap.put("tId", id);
-			atMap.put("custom_order_sql", "exp_no desc limit 6");
+			atMap.put("custom_order_sql", "exp_no desc limit 8");
 			List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
 
 			List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();
@@ -807,6 +830,8 @@ public class ResultController extends AbstractController {
 	/**
 	 * 结果对比
 	 * @param taskId  任务ID
+	 * @param p_temp            零部件样品照片一致性
+	 * @param p_temp_remark     零部件样品照片结论
 	 * @param p_inf             零部件红外光一致性
 	 * @param p_inf_remark      零部件红外光结论
 	 * @param p_dt 				零部件差热一致性
@@ -815,6 +840,8 @@ public class ResultController extends AbstractController {
 	 * @param p_tg_remark       零部件热重光结论
 	 * @param p_result          零部件结论一致性
 	 * @param p_result_remark   零部件结论
+	 * @param m_temp            原材料样品照片一致性
+	 * @param m_temp_remark     原材料样品照片结论
 	 * @param m_inf             原材料红外光一致性
 	 * @param m_inf_remark      原材料红外光结论
 	 * @param m_dt              原材料差热一致性
@@ -830,7 +857,7 @@ public class ResultController extends AbstractController {
 	public AjaxVO compareResult(HttpServletRequest request, Model model, Long taskId, int p_inf, String p_inf_remark,
 			int p_dt, String p_dt_remark, int p_tg, String p_tg_remark, int p_result, String p_result_remark, int m_inf,
 			String m_inf_remark, int m_dt, String m_dt_remark, int m_tg, String m_tg_remark, int m_result,
-			String m_result_remark, int state) {
+			String m_result_remark, int state, int p_temp, String p_temp_remark, int m_temp, String m_temp_remark) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -850,7 +877,10 @@ public class ResultController extends AbstractController {
 				ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date, TaskTypeEnum.PPAP.getState());
 				ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date, TaskTypeEnum.PPAP.getState());
 				ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date, TaskTypeEnum.PPAP.getState());
-
+				ExamineRecord record9 = new ExamineRecord(taskId, account.getId(), p_temp, p_temp_remark, 4, 9, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record10 = new ExamineRecord(taskId, account.getId(), m_temp, m_temp_remark, 4, 10, date, TaskTypeEnum.PPAP.getState());
+				
+				
 				resultList.add(record1);
 				resultList.add(record2);
 				resultList.add(record3);
@@ -859,6 +889,8 @@ public class ResultController extends AbstractController {
 				resultList.add(record6);
 				resultList.add(record7);
 				resultList.add(record8);
+				resultList.add(record9);
+				resultList.add(record10);
 			}
 
 			taskService.compareResult(account, taskId, resultList, state);

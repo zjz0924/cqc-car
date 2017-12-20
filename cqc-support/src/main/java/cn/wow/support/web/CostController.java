@@ -201,7 +201,7 @@ public class CostController extends AbstractController {
 				// 抽样图谱结果
 				Map<String, Object> atMap = new HashMap<String, Object>();
 				atMap.put("tId", costRecord.gettId());
-				atMap.put("custom_order_sql", "exp_no desc limit 6");
+				atMap.put("custom_order_sql", "exp_no desc limit 8");
 				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
 
 				List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();

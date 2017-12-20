@@ -68,6 +68,14 @@
 					</tr>
 					
 					<tr class="single-row">
+						<td class="title-td">联系人：</td>
+						<td class="value-td">${facadeBean.info.parts.contacts}</td>
+						
+						<td class="title-td">联系电话：</td>
+						<td class="value-td">${facadeBean.info.parts.phone}</td>
+					</tr>
+					
+					<tr class="couple-row">
 						<td class="title-td">备注：</td>
 						<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 					</tr>
@@ -103,6 +111,14 @@
 				</tr>
 				
 				<tr class="couple-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.material.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.material.phone}</td>
+				</tr>
+				
+				<tr class="single-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -188,6 +204,7 @@
 										<c:if test="${vo.type == 1}">红外光分析</c:if>
 										<c:if test="${vo.type == 2}">差热扫描</c:if>
 										<c:if test="${vo.type == 3}">热重分析</c:if>
+										<c:if test="${vo.type == 4}">样品照片</c:if>
 									</td>
 									<td class="value-td">
 										<c:choose>
@@ -197,13 +214,22 @@
 											<c:when test="${vo.type == 2}">
 												<input id="p_dtLab" name="p_dtLab" value="${vo.remark }" class="easyui-textbox" style="width:230px">
 											</c:when>
+											<c:when test="${vo.type == 4}">
+												<input id="p_tempLab" name="p_tempLab" value="${vo.remark }" class="easyui-textbox" style="width:230px">
+											</c:when>
 											<c:otherwise>
 												<input id="p_tgLab" name="p_tgLab" value="${vo.remark }" class="easyui-textbox" style="width:230px">
 											</c:otherwise>
 										</c:choose>
 									</td>
 									<td class="value-td">
-										<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+										<c:if test="${not empty vo.pic}">
+											<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+										</c:if>
+										<c:if test="${empty vo.pic}">
+											<span class="img-span">暂无</span>
+										</c:if>
+										
 										<c:choose>
 											<c:when test="${vo.type == 1}">
 												<input id="p_infLab_pic" name="p_infLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
@@ -212,6 +238,10 @@
 											<c:when test="${vo.type == 2}">
 												<input id="p_dtLab_pic" name="p_dtLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
 												<span id="p_dt_error" class="req-span"></span>
+											</c:when>
+											<c:when test="${vo.type == 4}">
+												<input id="p_tempLab_pic" name="p_tempLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+												<span id="p_temp_error" class="req-span"></span>
 											</c:when>
 											<c:otherwise>
 												<input id="p_tgLab_pic" name="p_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
@@ -223,6 +253,14 @@
 							</c:forEach>
 						</c:if>
 						<c:if test="${empty pAtlasResult}">
+							<tr>
+								<td class="value-td">样品照片</td>
+								<td class="value-td"><input id="p_tempLab" name="p_tempLab" class="easyui-textbox" style="width:230px"></td>
+								<td class="value-td">
+									<input id="p_tempLab_pic" name="p_tempLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+									<span id="p_temp_error" class="req-span"></span>
+								</td>
+							</tr>
 							<tr>
 								<td class="value-td">红外光分析</td>
 								<td class="value-td"><input id="p_infLab" name="p_infLab" class="easyui-textbox" style="width:230px"></td>
@@ -323,6 +361,7 @@
 									<c:if test="${vo.type == 1}">红外光分析</c:if>
 									<c:if test="${vo.type == 2}">差热扫描</c:if>
 									<c:if test="${vo.type == 3}">热重分析</c:if>
+									<c:if test="${vo.type == 4}">样品照片</c:if>
 								</td>
 								<td class="value-td">
 									<c:choose>
@@ -331,14 +370,23 @@
 										</c:when>
 										<c:when test="${vo.type == 2}">
 											<input id="m_dtLab" name="m_dtLab" value="${vo.remark}" class="easyui-textbox" style="width:230px">
-										</c:when>	
+										</c:when>
+										<c:when test="${vo.type == 4}">
+											<input id="m_tempLab" name="m_tempLab" value="${vo.remark}" class="easyui-textbox" style="width:230px">
+										</c:when>		
 										<c:otherwise>
 											<input id="m_tgLab" name="m_tgLab" value="${vo.remark}" class="easyui-textbox" style="width:230px">
 										</c:otherwise>								
 									</c:choose>
 								</td>
 								<td class="value-td">
-									<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+									<c:if test="${not empty vo.pic}">
+										<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>
+									</c:if>
+									<c:if test="${empty vo.pic}">
+										<span class="img-span">暂无</span>
+									</c:if>
+									
 									<c:choose>
 										<c:when test="${vo.type == 1 }">
 											<input id="m_infLab_pic" name="m_infLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
@@ -347,6 +395,10 @@
 										<c:when test="${vo.type == 2}">
 											<input id="m_dtLab_pic" name="m_dtLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
 											<span id="m_dt_error" class="req-span"></span>
+										</c:when>
+										<c:when test="${vo.type == 4}">
+											<input id="m_tempLab_pic" name="m_tempLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+											<span id="m_temp_error" class="req-span"></span>
 										</c:when>
 										<c:otherwise>
 											<input id="m_tgLab_pic" name="m_tgLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
@@ -358,6 +410,15 @@
 						</c:forEach>
 					</c:if>
 					<c:if test="${empty mAtlasResult }">
+						<tr>
+							<td class="value-td">样品照片</td>
+							<td class="value-td"><input id="m_tempLab" name="m_tempLab" class="easyui-textbox" style="width:230px"></td>
+							<td class="value-td">
+								<input id="m_tempLab_pic" name="m_tempLab_pic" class="easyui-filebox" style="width:200px" data-options="buttonText: '选择'">
+								<span id="m_temp_error" class="req-span"></span>
+							</td>
+						</tr>
+						
 						<tr>
 							<td class="value-td">红外光分析</td>
 							<td class="value-td"><input id="m_infLab" name="m_infLab" class="easyui-textbox" style="width:230px"></td>
@@ -416,6 +477,26 @@
 			
 			// 零部件结果
 			if(p_arTable > 0){
+				// 样品照片
+				var p_tempLabDir = $("#p_tempLab_pic").filebox("getValue");
+				if (!isNull(p_tempLabDir)) {
+					var suffix = p_tempLabDir.substr(p_tempLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+						$("#p_temp_error").html("图片格式");
+						$("#p_tempLab_pic").focus();
+						saving = false;
+						return false;
+					}
+				}else{
+					if(isNull(pAtlasResult)){
+						$("#p_temp_error").html("请选择图片");
+						saving = false;
+						return false;
+					}
+				}
+				$("#p_temp_error").html("");
+				
+				
 				// 热重分析图谱
 				var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
 				if (!isNull(p_tgLabDir)) {
@@ -476,6 +557,25 @@
 			
 			// 原材料结果
 			if(m_arTable > 0){
+				// 样品照片
+				var m_tempLabDir = $("#m_tempLab_pic").filebox("getValue");
+				if (!isNull(m_tempLabDir)) {
+					var suffix = m_tempLabDir.substr(m_tempLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix) {
+						$("#m_temp_error").html("图片格式");
+						$("#m_tempLab_pic").focus();
+						saving = false;
+						return false;
+					}
+				}else{
+					if(isNull(mAtlasResult)){
+						$("#m_temp_error").html("请选择图片");
+						saving = false;
+						return false;
+					}
+				}
+				$("#m_temp_error").html("");
+				
 				// 热重分析图谱
 				var m_tgLabDir = $("#m_tgLab_pic").filebox("getValue");
 				if (!isNull(m_tgLabDir)) {
@@ -806,6 +906,15 @@
 		
 		.couple-row{
 			background: #f5f5f5;
+		}
+		
+		.img-span{
+			width: 100px;
+			height: 50px;
+			display:inline-block;
+			border:0.5px dashed #C9C9C9;
+			text-align:center;
+			line-height:50px;
 		}
 		
 	</style>

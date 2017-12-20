@@ -103,15 +103,27 @@
 							}
 						}
 					}, {
+						field : 'contacts',
+						title : '联系人',
+						width : '90',
+						align : 'center',
+						formatter : formatCellTooltip
+					}, {
+						field : 'phone',
+						title : '联系电话',
+						width : '100',
+						align : 'center',
+						formatter : formatCellTooltip
+					}, {
 						field : 'remark',
 						title : '备注',
-						width : '170',
+						width : '150',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
 						field : '_operation',
 						title : '操作',
-						width : '80',
+						width : '70',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="closeDialog('+ index +')">选择</a>';  	
@@ -169,6 +181,8 @@
 					$("#m_matColor").textbox("setValue", row.matColor);
 					$("#m_remark").textbox("setValue", row.remark);
 					$("#m_orgName").textbox("setValue", row.org.name);
+					$("#m_contacts").textbox("setValue", row.contacts);
+					$("#m_phone").textbox("setValue", row.phone);
 					$("#m_pic_span").show();
 					$("#m_pic_a").attr("href", "${resUrl}/" + row.pic);
 					$("#m_pic").attr("src", "${resUrl}/" + row.pic);
@@ -177,6 +191,8 @@
 					// 不可编辑
 					$('#m_matName').textbox('disable'); 
 					$('#m_proNo').textbox('disable'); 
+					$('#m_phone').textbox('disable'); 
+					$('#m_contacts').textbox('disable'); 
 					$('#m_matNo').datebox('disable');
 					$('#m_matColor').textbox('disable');
 					$('#m_remark').textbox('disable'); 					

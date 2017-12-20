@@ -12,12 +12,14 @@
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="org_id" property="orgId" jdbcType="BIGINT" />
+		<result column="contacts" property="contacts" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id
+		id, type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -33,10 +35,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into material (type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id)
+		insert into material (type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone)
 		values (#{type,jdbcType=INTEGER}, #{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR},
 		#{proNo,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-		#{state,jdbcType=INTEGER}, #{orgId,jdbcType=BIGINT})
+		#{state,jdbcType=INTEGER}, #{orgId,jdbcType=BIGINT}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Material">
@@ -68,7 +70,13 @@
 				create_time = #{createTime,jdbcType=TIMESTAMP},
 			</if>
 			<if test="orgId != null" >
-		        org_id = #{orgId,jdbcType=BIGINT}
+		        org_id = #{orgId,jdbcType=BIGINT},
+		    </if>
+		     <if test="contacts != null" >
+		    	contacts = #{contacts,jdbcType=VARCHAR}, 
+		    </if>
+		    <if test="phone != null" >
+		    	phone = #{phone,jdbcType=VARCHAR},
 		    </if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -118,7 +126,13 @@
 		      <if test="orgId != null">
 				and org_id = #{orgId,jdbcType=BIGINT}
 			  </if>
-		      
+			  
+			 <if test="contacts != null" >
+		    	and contacts like concat('%', #{contacts,jdbcType=VARCHAR}, '%')
+		    </if>
+		    <if test="phone != null" >
+		    	and phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
+		    </if>
 	      </where>
 	      
 		  <choose>

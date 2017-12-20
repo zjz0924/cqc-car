@@ -145,6 +145,7 @@ public class QueryController extends AbstractController {
 		if (!Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("accountId", account.getId());
+			tMap.put("orgId", account.getOrgId());
 
 			// 审批过的任务ID
 			List<Long> taskIdList = examineRecordService.selectTaskIdList(account.getId(), 2);
@@ -230,7 +231,7 @@ public class QueryController extends AbstractController {
 					// 抽样图谱结果
 					Map<String, Object> atMap = new HashMap<String, Object>();
 					atMap.put("tId", id);
-					atMap.put("custom_order_sql", "exp_no desc limit 6");
+					atMap.put("custom_order_sql", "exp_no desc limit 8");
 					List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
 
 					List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();

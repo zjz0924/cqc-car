@@ -36,6 +36,10 @@ public class Material extends JpaEntity{
     private Integer state;
 
     private Date createTime;
+    // 联系人
+    private String contacts;
+    // 联系电话 
+    private String phone;
 
     public Long getId() {
         return id;
@@ -131,6 +135,22 @@ public class Material extends JpaEntity{
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public String getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	@JsonIgnore

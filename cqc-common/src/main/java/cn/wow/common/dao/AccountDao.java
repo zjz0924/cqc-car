@@ -1,6 +1,7 @@
 package cn.wow.common.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.wow.common.domain.Account;
 
@@ -16,4 +17,9 @@ public interface AccountDao extends SqlDao{
 	public void clearPic(Long id);
 	
 	public void clearOrg(Long id);
+	
+	/**
+	 * 获取下达任务的机构ID
+	 */
+	public Long getOrderOrgId(Map<String, Object> map);
 }

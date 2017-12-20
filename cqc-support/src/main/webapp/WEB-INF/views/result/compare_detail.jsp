@@ -67,6 +67,14 @@
 				</tr>
 				
 				<tr class="single-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.parts.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.parts.phone}</td>
+				</tr>
+				
+				<tr class="couple-row">
 					<td class="title-td">备注：</td>
 					<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
 				</tr>
@@ -100,6 +108,14 @@
 				</tr>
 				
 				<tr class="couple-row">
+					<td class="title-td">联系人：</td>
+					<td class="value-td">${facadeBean.info.material.contacts}</td>
+					
+					<td class="title-td">联系电话：</td>
+					<td class="value-td">${facadeBean.info.material.phone}</td>
+				</tr>
+				
+				<tr class="single-row">
 					<td class="title-td">材料成分表：</td>
 					<td class="value-td">
 						<c:if test="${not empty facadeBean.info.material.pic}">
@@ -124,6 +140,9 @@
 					</c:when>
 					<c:when test="${m.key == 2}">
 						<div class="title1">差热分析图谱</div>
+					</c:when>
+					<c:when test="${m.key == 4}">
+						<div class="title1">样品照片</div>
 					</c:when>
 					<c:otherwise>
 						<div class="title1">热重分析图谱</div>
@@ -165,6 +184,9 @@
 					<c:when test="${m.key == 2}">
 						<div class="title1">差热分析图谱</div>
 					</c:when>
+					<c:when test="${m.key == 4}">
+						<div class="title1">样品照片</div>
+					</c:when>
 					<c:otherwise>
 						<div class="title1">热重分析图谱</div>
 					</c:otherwise>
@@ -200,6 +222,7 @@
 			<table style="width: 98%;font-size: 14px;">
 				<tr style="background: #F0F0F0;height: 30px;font-weight:bold;text-align:center;">
 					<td>类型</td>
+					<td>样品照片</td>
 					<td>红外光分析</td>
 					<td>差热分析</td>
 					<td>热重分析</td>
@@ -210,11 +233,20 @@
 					<td style="font-weight:bold;">零部件</td>
 					<td align="center">
 						<div style="margin-top:5px;">
+							<label><input name="p_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label><input name="p_temp" type="radio" value="2" />不一致 </label> 
+						</div>
+						<div style="margin-top:5px;">
+							<textarea id="p_temp_remark" name="p_temp_remark" rows="1" cols="25"></textarea>
+						</div>
+					</td>
+					<td align="center">
+						<div style="margin-top:5px;">
 							<label><input name="p_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label><input name="p_inf" type="radio" value="2" />不一致 </label> 
 						</div>
 						<div style="margin-top:5px;">
-							<textarea id="p_inf_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
+							<textarea id="p_inf_remark" name="p_inf_remark" rows="1" cols="25"></textarea>
 						</div>
 					</td>
 					<td align="center">
@@ -248,6 +280,15 @@
 				
 				<tr>
 					<td style="font-weight:bold;">原材料</td>
+					<td align="center">
+						<div style="margin-top:5px;">
+							<label><input name="m_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<label><input name="m_temp" type="radio" value="2" />不一致 </label> 
+						</div>
+						<div style="margin-top:5px;">
+							<textarea id="m_temp_remark" name="m_temp_remark" rows="1" cols="25"></textarea>
+						</div>
+					</td>
 					<td align="center">
 						<div style="margin-top:10px;">
 							<label><input name="m_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -307,6 +348,9 @@
 			saving = true;
 			
 			// 零部件
+			var p_temp = $("input[name='p_temp']:checked").val();
+			var p_temp_remark = $("#p_temp_remark").val();
+			
 			var p_inf = $("input[name='p_inf']:checked").val();
 			var p_inf_remark = $("#p_inf_remark").val();
 			
@@ -320,6 +364,9 @@
 			var p_result_remark = $("#p_result_remark").val();
 			
 			// 原材料
+			var m_temp = $("input[name='m_temp']:checked").val();
+			var m_temp_remark = $("#m_temp_remark").val();
+			
 			var m_inf = $("input[name='m_inf']:checked").val();
 			var m_inf_remark = $("#m_inf_remark").val();
 			
@@ -352,7 +399,11 @@
 					"m_tg_remark": m_tg_remark,
 					"m_result": m_result,
 					"m_result_remark": m_result_remark,
-					"state": state
+					"state": state,
+					"m_temp": m_temp,
+					"m_temp_remark" :m_temp_remark,
+					"p_temp": p_temp,
+					"p_temp_remark" :p_temp_remark
 				},
 				success: function(data){
 					saving = false;

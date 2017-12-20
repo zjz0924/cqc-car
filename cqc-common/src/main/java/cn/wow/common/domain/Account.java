@@ -47,6 +47,8 @@ public class Account extends JpaEntity{
 	private Integer signType;
 	// 签名图片
 	private String pic;
+	// 是否收费
+	private Integer isCharge;
 	
 	public String getLock() {
 		return lock;
@@ -166,6 +168,14 @@ public class Account extends JpaEntity{
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public Integer getIsCharge() {
+		return isCharge;
+	}
+
+	public void setIsCharge(Integer isCharge) {
+		this.isCharge = isCharge;
 	}
 
 	@JsonIgnore

@@ -102,6 +102,14 @@
 				</tr>
 				<tr>
 					<td>
+						<span class="title-span"><span class="req-span">*</span>联系人：</span> 
+						<input id="p_contacts" name="p_contacts" class="easyui-textbox" value="${facadeBean.info.parts.contacts }" disabled style="width:150px;">
+					</td>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>联系电话：</span> 
+						<input id="p_phone" name="p_phone" class="easyui-textbox" value="${facadeBean.info.parts.phone }" disabled style="width:150px;">
+					</td>
+					<td>
 						<span class="title-span">&nbsp;备注：</span> 
 						<input id="p_remark" name="p_remark" class="easyui-textbox" value="${facadeBean.info.parts.remark }" disabled style="width:150px;">	
 					</td>
@@ -138,17 +146,29 @@
 						<span class="title-span"><span class="req-span">*</span>材料颜色：</span> 
 						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" disabled style="width:150px;">
 					</td>
+					
 					<td>
-						<span class="title-span"><span class="req-span">*</span>成分表：</span> 
-						<span id="m_pic_span" <c:if test="${empty facadeBean.info.material.pic}">style="display:none;"</c:if>>	
-							<a id="m_pic_a" target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
-						</span>
-						
+						<span class="title-span"><span class="req-span">*</span>联系人：</span> 
+						<input id="m_contacts" name="m_contacts" class="easyui-textbox" value="${facadeBean.info.material.contacts }" disabled style="width:150px;">	
+					</td>
+					
+					<td>
+						<span class="title-span"><span class="req-span">*</span>联系电话：</span> 
+						<input id="m_phone" name="m_phone" class="easyui-textbox" value="${facadeBean.info.material.phone }" disabled style="width:150px;">	
 					</td>
 					
 					<td>
 						<span class="title-span">备注：</span> 
 						<input id="m_remark" name="m_remark" class="easyui-textbox" value="${facadeBean.info.material.remark }" disabled style="width:150px;">	
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>成分表：</span> 
+						<span id="m_pic_span" <c:if test="${empty facadeBean.info.material.pic}">style="display:none;"</c:if>>	
+							<a id="m_pic_a" target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
+						</span>
 					</td>
 				</tr>
 			</table>

@@ -100,6 +100,31 @@
 		      <if test="endCreateTime != null and endCreateTime != ''">  
 		    	and create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
 		      </if>
+		      
+		       <if test="ecode != null and code != ''" >
+		        and code = #{ecode,jdbcType=VARCHAR}
+		      </if>
+		      
+		      <if test="etype != null and etype != ''" >
+		        and type = #{etype,jdbcType=VARCHAR}
+		      </if>
+		      
+		       <if test="eProTime != null and eProTime != ''">  
+		    	and pro_time = #{eProTime, jdbcType=DATE}
+		      </if>
+		      
+		      <if test="remark != null">
+				and remark = #{remark,jdbcType=VARCHAR}
+			 </if>
+			 
+			 <if test="proAddr != null">
+				and pro_addr = #{proAddr,jdbcType=VARCHAR}
+			 </if>
+			 
+			 <if test="eid != null">
+				and id != #{eid,jdbcType=BIGINT}
+			 </if>
+		      
 	      </where>
 	      
 		  <choose>

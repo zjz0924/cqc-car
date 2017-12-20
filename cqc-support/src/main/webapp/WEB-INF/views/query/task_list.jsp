@@ -30,14 +30,14 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "380px",
+			        height: "390px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true, 
 			        toolbar : toolbar,
 			        idField: 'id',
-			        columns : [ [ {
+			        frozenColumns:[[{
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -143,7 +143,8 @@
 							}
 							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
 						}
-					}, {
+					}]],
+			        columns : [ [ {
 						field : 'info.vehicle.type',
 						title : '车型',
 						width : '80',

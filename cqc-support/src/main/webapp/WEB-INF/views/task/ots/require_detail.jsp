@@ -114,6 +114,14 @@
 					</tr>
 					<tr>
 						<td>
+							<span class="title-span"><span class="req-span">*</span>联系人：</span> 
+							<input id="p_contacts" name="p_contacts" class="easyui-textbox" value="${facadeBean.info.parts.contacts }" <c:if test="${facadeBean.info.parts.state == 1}">disabled</c:if> style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>联系电话：</span> 
+							<input id="p_phone" name="p_phone" class="easyui-textbox" value="${facadeBean.info.parts.phone }" <c:if test="${facadeBean.info.parts.state == 1}">disabled</c:if> style="width:150px;">
+						</td>
+						<td>
 							<span class="title-span">&nbsp;备注：</span> 
 							<input id="p_remark" name="p_remark" class="easyui-textbox" value="${facadeBean.info.parts.remark }" <c:if test="${facadeBean.info.parts.state == 1}">disabled</c:if> style="width:150px;">	
 						</td>
@@ -149,6 +157,24 @@
 						<span class="title-span"><span class="req-span">*</span>材料颜色：</span> 
 						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" style="width:150px;">
 					</td>
+					
+					<td>
+						<span class="title-span"><span class="req-span">*</span>联系人：</span> 
+						<input id="m_contacts" name="m_contacts" class="easyui-textbox" value="${facadeBean.info.material.contacts }" style="width:150px;">	
+					</td>
+					
+					<td>
+						<span class="title-span"><span class="req-span">*</span>联系电话：</span> 
+						<input id="m_phone" name="m_phone" class="easyui-textbox" value="${facadeBean.info.material.phone }" style="width:150px;">	
+					</td>
+					
+					<td>
+						<span class="title-span">备注：</span> 
+						<input id="m_remark" name="m_remark" class="easyui-textbox" value="${facadeBean.info.material.remark }" style="width:150px;">	
+					</td>
+				</tr>
+				
+				<tr>
 					<td>
 						<span class="title-span">成分表：</span> 
 						<input id="m_pic" name="m_pic" class="easyui-filebox" style="width:150px" data-options="buttonText: '选择'">
@@ -162,11 +188,6 @@
 							</span> 
 						</td>
 					</c:if>
-					
-					<td>
-						<span class="title-span">备注：</span> 
-						<input id="m_remark" name="m_remark" class="easyui-textbox" value="${facadeBean.info.material.remark }">	
-					</td>
 				</tr>
 			</table>
 		</div>
@@ -275,7 +296,6 @@
 				
 				// 设置机构的值
 				$('#m_orgId').combotree('setValue', "${facadeBean.info.material.orgId}");
-				
 			});
 		
 			function save(){
@@ -303,6 +323,18 @@
 					if(isKey == 1){
 						if(!isRequire("p_keyCode", "零件型号必填")){ saving = false; return false; }
 					}
+					if(!isRequire("p_contacts", "零部件联系人必填")){ saving = false; return false; }
+					if(!isRequire("p_phone", "零部件联系电话必填")){ saving = false; return false; }
+					
+					var p_phone = $("#p_phone").val();
+					if (!isNull(p_phone)) {
+						if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(p_phone))) {
+							errorMsg("零部件联系电话格式不正确");
+							$("#p_phone").next('span').find('input').focus();
+							saving = false; 
+							return false;
+						}
+					}
 				}
 				
 				// 原材料信息
@@ -311,6 +343,19 @@
 				if(!isRequire("m_orgId", "材料生产商必填")){ saving = false; return false; }
 				if(!isRequire("m_matNo", "原材料材料牌号必填")){ saving = false; return false; }
 				if(!isRequire("m_matColor", "原材料材料颜色必填")){ saving = false; return false; }
+				
+				if(!isRequire("m_contacts", "原材料联系人必填")){ saving = false; return false; }
+				if(!isRequire("m_phone", "原材料联系电话必填")){ saving = false; return false; }
+				
+				var m_phone = $("#m_phone").val();
+				if (!isNull(m_phone)) {
+					if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(m_phone))) {
+						errorMsg("原材料联系电话格式不正确");
+						$("#m_phone").next('span').find('input').focus();
+						saving = false; 
+						return false;
+					}
+				}
 				
 				/* var matId = "${facadeBean.info.material.id}";
 				if(isNull(matId)){
@@ -416,7 +461,7 @@
 				$("#v_id").val("");
 			}
 			
-			// 新增整车信息
+			// 新增零部件信息
 			function addParts(){
 				$('#p_code').textbox('enable'); 
 				$('#p_name').textbox('enable'); 
@@ -427,6 +472,8 @@
 				$('#p_keyCode').textbox('enable'); 
 				$("#p_isKey").combobox('enable');
 				$("#p_orgId").combotree('enable'); 
+				$("#p_contacts").textbox('enable');
+				$("#p_phone").textbox('enable');
 				
 				$("#p_code").textbox("setValue", "");
 				$("#p_name").textbox("setValue", "");
@@ -435,6 +482,8 @@
 				$("#p_proNo").textbox("setValue", "");
 				$("#p_remark").textbox("setValue", "");
 				$("#p_keyCode").textbox("setValue", "");
+				$("#p_phone").textbox("setValue", "");
+				$("#p_contacts").textbox("setValue", "");
 				$("#p_isKey").combobox('select', 0);
 				$("#p_orgId").combotree("setValue","");
 				$("#p_id").val("");

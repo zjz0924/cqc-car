@@ -268,7 +268,7 @@ public class OtsTaskController extends AbstractController {
 			String v_proTime, String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime,
 			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
 			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
-			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType) {
+			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -288,10 +288,10 @@ public class OtsTaskController extends AbstractController {
 				vehicle.setState(Contants.ONDOING_TYPE);
 				vehicle.setCreateTime(date);
 
-				Vehicle dbVehicle = vehicleService.selectByCode(vehicle.getCode());
-				if (dbVehicle != null) {
+				boolean isExist = vehicleService.isExist(null, v_code, v_type, sdf.parse(v_proTime), v_proAddr, v_remark);
+				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("整车代码已存在");
+					vo.setMsg("整车信息已存在");
 					return vo;
 				}
 			} else {
@@ -301,16 +301,14 @@ public class OtsTaskController extends AbstractController {
 					vehicle.setProTime(sdf.parse(v_proTime));
 					vehicle.setProAddr(v_proAddr);
 					vehicle.setRemark(v_remark);
-
-					if (!v_code.equals(vehicle.getCode())) {
-						Vehicle dbVehicle = vehicleService.selectByCode(vehicle.getCode());
-						if (dbVehicle != null) {
-							vo.setSuccess(false);
-							vo.setMsg("整车代码已存在");
-							return vo;
-						}
-					}
 					vehicle.setCode(v_code);
+					
+					boolean isExist = vehicleService.isExist(v_id, v_code, v_type, sdf.parse(v_proTime), v_proAddr, v_remark);
+					if (isExist) {
+						vo.setSuccess(false);
+						vo.setMsg("整车信息已存在");
+						return vo;
+					}
 				}
 			}
 
@@ -330,6 +328,8 @@ public class OtsTaskController extends AbstractController {
 					parts.setKeyCode(p_keyCode);
 					parts.setOrgId(p_orgId);
 					parts.setCreateTime(date);
+					parts.setContacts(p_contacts);
+					parts.setPhone(p_phone);
 					parts.setState(Contants.ONDOING_TYPE);
 
 					Parts dbParts = partsService.selectByCode(parts.getCode());
@@ -349,6 +349,8 @@ public class OtsTaskController extends AbstractController {
 						parts.setIsKey(p_isKey);
 						parts.setKeyCode(p_keyCode);
 						parts.setOrgId(p_orgId);
+						parts.setContacts(p_contacts);
+						parts.setPhone(p_phone);
 
 						if (!p_code.equals(parts.getCode())) {
 							Parts dbParts = partsService.selectByCode(parts.getCode());
@@ -375,6 +377,8 @@ public class OtsTaskController extends AbstractController {
 				material.setMatColor(m_matColor);
 				material.setOrgId(m_orgId);
 				material.setCreateTime(date);
+				material.setContacts(m_contacts);
+				material.setPhone(m_phone);
 				material.setState(Contants.ONDOING_TYPE);
 
 				if (mfile != null && !mfile.isEmpty()) {
@@ -389,6 +393,8 @@ public class OtsTaskController extends AbstractController {
 				material.setMatNo(m_matNo);
 				material.setMatColor(m_matColor);
 				material.setOrgId(m_orgId);
+				material.setContacts(m_contacts);
+				material.setPhone(m_phone);
 
 				if (mfile != null && !mfile.isEmpty()) {
 					String pic = uploadImg(mfile, materialUrl, false);
