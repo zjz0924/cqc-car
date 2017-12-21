@@ -100,4 +100,9 @@ public interface TaskService {
      * @param taskId
      */
     public Task getRootTask(Long taskId);
+    
+    /**
+	 * 获取任务数
+	 */
+	public Integer getTaskNum(Map<String, Object> map);
 }

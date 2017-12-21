@@ -120,22 +120,22 @@
 	
 	  <!-- 获取ID集合 -->
 	  <select id="selectIdList" resultType="java.lang.Long" parameterType="java.util.Map" >
-	  	select id from info
+	  	SELECT i.id from info i LEFT JOIN vehicle v ON v.id = i.v_id LEFT JOIN parts p ON p.id = i.p_id LEFT JOIN material m ON m.id = i.m_id
 	     <where>
-			<if test="vId != null">
-				and v_id = #{vId,jdbcType=BIGINT}
+			<if test="v_code != null">
+				and v.code like concat('%', #{v_code,jdbcType=VARCHAR}, '%')
 			</if>
-			<if test="pId != null">
-				and p_id = #{pId,jdbcType=BIGINT}
+			<if test="v_type != null">
+				and v.type like concat('%', #{v_type,jdbcType=VARCHAR}, '%')
 			</if>
-			<if test="mId != null">
-				and m_id = #{mId,jdbcType=BIGINT}
+			<if test="p_code != null">
+				and p.code like concat('%', #{p_code,jdbcType=VARCHAR}, '%')
 			</if>
-			<if test="type != null">
-				and type = #{type,jdbcType=INTEGER}
+			<if test="parts_org != null">
+				and p.org_id = #{parts_org,jdbcType=BIGINT}
 			</if>
 			<if test="state != null">
-				and state = #{state,jdbcType=INTEGER}
+				and i.state = #{state,jdbcType=INTEGER}
 			</if>
 	      </where>
 	  </select>

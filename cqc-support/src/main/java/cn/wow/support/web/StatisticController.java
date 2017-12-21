@@ -41,7 +41,7 @@ public class StatisticController {
 	
 	@RequestMapping(value = "/result")
 	public String result(HttpServletRequest request, HttpServletResponse response, Model model) {
-		Menu menu = menuService.selectByAlias("resultStatistic");
+		Menu menu = menuService.selectByAlias("statistic");
 		
 		model.addAttribute("menuName", menu.getName());
 		return "statistic/result";
@@ -50,8 +50,8 @@ public class StatisticController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/getResult")
-	public AjaxVO getResult(HttpServletRequest request, Model model, String startConfirmTime, String endConfirmTime, Long v_id,
-			Long p_id, Long m_id, String taskType) {
+	public AjaxVO getResult(HttpServletRequest request, Model model, String startConfirmTime, String endConfirmTime, String v_code,
+			String v_type, String p_code, String taskType, Long parts_org, Long lab_org) {
 		AjaxVO vo = new AjaxVO();
 
 		Map<String, Object> qMap = new PageMap(false);
@@ -65,31 +65,40 @@ public class StatisticController {
 		if (StringUtils.isNotBlank(taskType)) {
 			qMap.put("type", taskType);
 		}
+		if(lab_org != null) {
+			qMap.put("labOrgId", lab_org);
+		}
 		
 		List<Long> iIdList = new ArrayList<Long>();
-		if (v_id != null || p_id != null || m_id != null) {
+		if (StringUtils.isNotBlank(v_code) || StringUtils.isNotBlank(v_type) || StringUtils.isNotBlank(p_code)
+				|| parts_org != null) {
+			
 			Map<String, Object> iMap = new PageMap(false);
 			iMap.put("state", 1);
 
-			if (v_id != null) {
-				iMap.put("vId", v_id);
+			if (StringUtils.isNotBlank(v_code)) {
+				iMap.put("v_code", v_code);
 			}
-			if (p_id != null) {
-				iMap.put("pId", p_id);
+			if (StringUtils.isNotBlank(v_type)) {
+				iMap.put("v_type", v_type);
 			}
-			if (m_id != null) {
-				iMap.put("mId", m_id);
+			if (StringUtils.isNotBlank(p_code)) {
+				iMap.put("p_code", p_code);
+			}
+			if (parts_org != null) {
+				iMap.put("parts_org", parts_org);
 			}
 			iIdList = infoService.selectIdList(iMap);
-			
-			if(iIdList.size() <1) {
+
+			if (iIdList.size() < 1) {
 				iIdList.add(-1l);
 			}
 		}
-		
-		if(iIdList.size() > 0) {
+
+		if (iIdList.size() > 0) {
 			qMap.put("iIdList", iIdList);
 		}
+		
 		List<Task> taskList = taskService.selectAllList(qMap);
 		
 		ResultVO resultVO = new ResultVO();

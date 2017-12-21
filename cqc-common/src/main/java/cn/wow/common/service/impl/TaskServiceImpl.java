@@ -814,6 +814,13 @@ public class TaskServiceImpl implements TaskService{
     		return null;
     	}
     }
+    
+    /**
+	 * 获取任务数
+	 */
+	public Integer getTaskNum(Map<String, Object> map) {
+		return taskDao.getTaskNum(map);
+	}
 	
 	
 	/**

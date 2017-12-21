@@ -183,7 +183,7 @@ public class QueryController extends AbstractController {
 
 			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()){   // OTS/GS 结果确认
 				
-				if(task.getState() >= 4) {
+				if(task.getMatAtlResult() >= 2 || task.getMatPatResult() >= 2 || task.getPartsAtlResult() >= 2 || task.getPartsPatResult() >= 2) {
 					// 性能结果
 					Map<String, Object> pfMap = new HashMap<String, Object>();
 					pfMap.put("tId", id);

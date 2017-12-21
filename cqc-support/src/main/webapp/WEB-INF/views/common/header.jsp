@@ -11,11 +11,6 @@
 	<link href="${ctx}/resources/css/menu.css" rel="stylesheet">
 	<link href="${ctx}/resources/css/cssreset.css" rel="stylesheet">
 	<script src="${ctx}/resources/js/responsive-menu.js"></script>
-	<link rel="stylesheet" type="text/css" href="${ctx}/resources/js/jquery-easyui-1.5.3/themes/gray/easyui.css">
-	<link rel="stylesheet" type="text/css" href="${ctx}/resources/js/jquery-easyui-1.5.3/themes/icon.css">
-	<script type="text/javascript" src="${ctx}/resources/js/tools.js"></script>
-	<script type="text/javascript" src="${ctx}/resources/js/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
-	<script type="text/javascript" src="${ctx}/resources/js/jquery-easyui-1.5.3/locale/easyui-lang-zh_CN.js"></script>
 	
 	<script type="text/javascript">
 	    $(function(){

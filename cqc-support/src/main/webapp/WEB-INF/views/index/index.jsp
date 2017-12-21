@@ -20,11 +20,49 @@
 				padding-right: 10px;
 			}
 			
+			.title-style1{
+				font-weight:bold;
+				color: #1874CD;
+				font-size:16px;
+			}
+			
 			.row-style{
 				height: 35px;
 			}
-		
+			
+			.row-style1{
+				height: 25px;
+			}
+			
+			.row-style2{
+				display:inline-block;
+				width: 150px;
+				font-size:14px;
+			}
+			
+			.row-content{
+				font-size:14px;
+				font-weight:bold;
+				color:red;
+			}
 		</style>
+		
+		<script type="text/javascript">
+			$(function() {
+				$.ajax({
+					url : "${ctx}/getTaskNum",
+					success : function(data) {
+						$("#examineNum").html(data.data[0]);
+						$("#approveNum").html(data.data[1]);
+						$("#patternUploadNum").html(data.data[2]);
+						$("#atlasUploadNum").html(data.data[3]);
+						$("#compareNum").html(data.data[4]);
+						$("#waitConfirmNum").html(data.data[5]);
+						$("#finishConfirmNum").html(data.data[6]);
+					}
+				});
+			});
+		</script>
 	</head>
 
 	<body style="margin:0px;">
@@ -62,7 +100,21 @@
 				</div>
 				
 				<div style="margin-left:35px;margin-top: 25px;">
-					<div style="font-weight:bold;color: #1874CD;font-size:16px;">温馨提示：</div>
+					<div class="title-style1" style="margin-bottom: 10px;">任务情况：</div>
+					<div class="row-style1"><span class="row-style2">待审核</span><span class="row-content" id="examineNum"></span>  个</div>
+					<div class="row-style1"><span class="row-style2">待审批</span><span class="row-content" id="approveNum"></span>  个</div>
+					
+					<div class="row-style1"><span class="row-style2">待上传结果</span></div>
+					<div class="row-style1"><span class="row-style2">&nbsp;- 型式结果</span><span class="row-content" id="patternUploadNum"></span>  个</div>
+					<div class="row-style1"><span class="row-style2">&nbsp;- 图谱结果</span><span class="row-content" id="atlasUploadNum"></span>  个</div>
+					
+					<div class="row-style1"><span class="row-style2">待比对</span><span class="row-content" id="compareNum"></span>  个</div>
+					
+					<div class="row-style1"><span class="row-style2">待结果确认</span></div>
+					<div class="row-style1"><span class="row-style2">&nbsp;- 待上传</span><span class="row-content" id="waitConfirmNum"></span>  个</div>
+					<div class="row-style1"><span class="row-style2">&nbsp;- 已上传</span><span class="row-content" id="finishConfirmNum"></span>  个</div>
+					
+					<div class="title-style1" style="margin-top: 15px;">消息提醒：</div>
 					<div style="margin-top:10px;font-size:14px;">您还有 <span style="font-weight:bold;color:red;">${unread}</span> 条消息未读，请及时阅读。</div>
 				</div>
 			</div>
