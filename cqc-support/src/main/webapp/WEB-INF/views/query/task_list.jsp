@@ -261,15 +261,22 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'code' : $("#q_code").textbox("getValue"), 
-							'taskType': $("#q_taskType").combobox("getValue"),
+							'taskType': $("#q_taskType").textbox("getValue"),
 							'nickName' : $("#q_nickName").textbox("getValue"), 
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
 							'startConfirmTime' : $("#q_startConfirmTime").val(),
 							'endConfirmTime' : $("#q_endConfirmTime").val(),
+							'parts_code': $("#parts_code").textbox("getValue"),
+							'parts_name': $("#parts_name").textbox("getValue"),
+							'matName': $("#matName").textbox("getValue"),
+							'vehicle_type': $("#vehicle_type").textbox("getValue"),
+							'parts_org': $("#parts_org").combotree("getValue"),
+							'mat_org': $("#mat_org").combotree("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
+						console.log(data);
 						getData(datagrid, getDataUrl, data);
 					}
 				});

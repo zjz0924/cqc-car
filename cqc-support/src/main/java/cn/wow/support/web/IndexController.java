@@ -140,7 +140,7 @@ public class IndexController {
 			// 审核数
 			if (examinePermission) {
 				qMap.clear();
-				qMap.put("examineState", true);
+				qMap.put("state", StandardTaskEnum.EXAMINE.getState());
 				qMap.put("type", 1);
 				// 除了超级管理员，其它用户只能查看自己录入的申请记录
 				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {

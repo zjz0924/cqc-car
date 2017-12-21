@@ -102,7 +102,7 @@ public class AccountController extends AbstractController {
 
 		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "username asc");
+		map.put("custom_order_sql", "is_charge asc, username asc");
 		queryMap.put("custom_order_sql", "is_charge asc, username asc");
 		
 		if (StringUtils.isNotBlank(userName)) {

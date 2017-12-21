@@ -244,7 +244,7 @@
 										<label><input name="${m.key}_radio_${vst.index}" type="radio" value="2" <c:if test="${vo.state == 2}">checked</c:if> disabled/>不一致 </label> 
 									</div>
 									<div style="margin-top:5px;">
-										<textarea rows="1" cols="25" disabled>${vo.remark}</textarea>
+										<textarea rows="3" cols="25" disabled>${vo.remark}</textarea>
 									</div>
 								</td>
 							</c:forEach>

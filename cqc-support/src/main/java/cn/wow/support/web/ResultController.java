@@ -490,7 +490,14 @@ public class ResultController extends AbstractController {
 			}else {
 				state = 1;
 			}
-			Long orgId = accountService.getOrderOrgId(task.getId(), state);
+			
+			Long orgId = null;
+			if(task.gettId() == null) {
+				orgId = accountService.getOrderOrgId(task.getId(), state);
+			}else {
+				orgId = accountService.getOrderOrgId(task.gettId(), state);
+			}
+			
 			if(orgId != null) {
 				model.addAttribute("sendOrgId", orgId);
 			}

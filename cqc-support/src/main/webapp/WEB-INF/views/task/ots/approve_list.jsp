@@ -395,8 +395,6 @@
 			function closeDialog(msg) {
 				tipMsg(msg, function(){
 					$('#approveDetailDialog').dialog('close');
-					$('#' + datagrid).datagrid('reload');
-					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
@@ -408,7 +406,10 @@
 					closed : false,
 					cache : false,
 					href : "${ctx}/ots/approveDetail?taskType=${taskType}&id=" + id,
-					modal : true
+					modal : true,
+					onClose: function(){
+						window.location.reload();
+					}
 				});
 				$('#approveDetailDialog').window('center');
 			}

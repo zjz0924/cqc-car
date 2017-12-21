@@ -351,7 +351,6 @@
 			function closeDialog(msg) {
 				tipMsg(msg, function(){
 					$('#transmitDetailDialog').dialog('close');
-					window.location.reload();
 				});
 			}
 			
@@ -363,7 +362,10 @@
 					closed : false,
 					cache : false,
 					href : "${ctx}/ots/transmitDetail?taskType=${taskType}&id=" + id,
-					modal : true
+					modal : true,
+					onClose: function(){
+						window.location.reload();
+					}
 				});
 				$('#transmitDetailDialog').window('center');
 			}

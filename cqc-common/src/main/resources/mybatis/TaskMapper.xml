@@ -191,7 +191,7 @@
 			
 			<!-- 抽样是否存在 -->
 			<if test="unstate != null">
-				and t.state != 7 and t.state != 9
+				and t.state != 7 and t.state != 9 and t.state != 11
 			</if>
 			
 			<if test="type != null">
