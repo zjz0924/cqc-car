@@ -127,6 +127,9 @@ public class ApplyController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 
+		if (StringUtils.isNotBlank(code)) {
+			map.put("code", code);
+		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}

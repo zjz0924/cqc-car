@@ -99,7 +99,8 @@ public class QueryController extends AbstractController {
 		if (!StringUtils.isNotBlank(pageSize)) {
 			request.setAttribute("pageSize", DEFAULT_PAGE_SIZE);
 		}
-
+		queryMap.clear();
+		
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		queryMap.put("custom_order_sql", "t.create_time desc");
@@ -401,20 +402,22 @@ public class QueryController extends AbstractController {
 				
 				Cell cell6 = contentRow.createCell(5);
 				cell6.setCellStyle(styles.get("cell"));
-				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+				if (task.getType() != TaskTypeEnum.GS.getState()) {
 					cell6.setCellValue(task.getInfo().getParts().getCode());
 				} 
 				
 				Cell cell7 = contentRow.createCell(6);
 				cell7.setCellStyle(styles.get("cell"));
-				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+				if (task.getType() != TaskTypeEnum.GS.getState()) {
 					cell7.setCellValue(task.getInfo().getParts().getName());
 				} 
 				
 				Cell cell8 = contentRow.createCell(7);
 				cell8.setCellStyle(styles.get("cell"));
-				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
-					cell8.setCellValue(task.getInfo().getParts().getOrg().getName());
+				if (task.getType() != TaskTypeEnum.GS.getState()) {
+					if(task.getInfo().getParts().getOrg() != null) {
+						cell8.setCellValue(task.getInfo().getParts().getOrg().getName());
+					}
 				} 
 				
 				Cell cell9 = contentRow.createCell(8);
@@ -423,7 +426,9 @@ public class QueryController extends AbstractController {
 				
 				Cell cell10 = contentRow.createCell(9);
 				cell10.setCellStyle(styles.get("cell"));
-				cell10.setCellValue(task.getInfo().getMaterial().getOrg().getName());
+				if(task.getInfo().getMaterial().getOrg() != null) {
+					cell10.setCellValue(task.getInfo().getMaterial().getOrg().getName());
+				}
 
 				Cell cell11 = contentRow.createCell(10);
 				cell11.setCellStyle(styles.get("cell"));
