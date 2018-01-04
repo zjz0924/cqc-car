@@ -156,6 +156,41 @@
 			<if test="keyCode != null">
 				and key_code like concat('%', #{keyCode,jdbcType=VARCHAR}, '%')
 			</if>
+			
+			<if test="ekeyCode != null">
+				and key_code = #{ekeyCode,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="remark != null">
+				and remark = #{remark,jdbcType=VARCHAR}
+			 </if>
+			 
+			 <if test="eid != null">
+				and id != #{eid,jdbcType=BIGINT}
+			 </if>
+			 
+			 <if test="ename != null and ename != ''">
+				and name = #{ename,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="eproNo != null and eproNo != ''">
+				and pro_no = #{eproNo,jdbcType=VARCHAR}
+			</if>
+			
+			<if test="eProTime != null and eProTime != ''">
+				and pro_time = #{eProTime, jdbcType=DATE}
+			</if>
+			
+			<if test="place != null">
+				and place = #{place,jdbcType=VARCHAR}
+			</if>
+			
+			 <if test="econtacts != null" >
+		    	and contacts = #{econtacts,jdbcType=VARCHAR}
+		    </if>
+		    <if test="ephone != null" >
+		    	and phone = #{ephone,jdbcType=VARCHAR}
+		    </if>
 		</where>
 	
 		<choose>

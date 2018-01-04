@@ -332,10 +332,11 @@ public class OtsTaskController extends AbstractController {
 					parts.setPhone(p_phone);
 					parts.setState(Contants.ONDOING_TYPE);
 
-					Parts dbParts = partsService.selectByCode(parts.getCode());
-					if (dbParts != null) {
+					boolean isExist = partsService.isExist(null, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo, p_keyCode,
+							p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+					if (isExist) {
 						vo.setSuccess(false);
-						vo.setMsg("零部件号已存在");
+						vo.setMsg("零部件信息已存在");
 						return vo;
 					}
 				} else {
@@ -351,16 +352,15 @@ public class OtsTaskController extends AbstractController {
 						parts.setOrgId(p_orgId);
 						parts.setContacts(p_contacts);
 						parts.setPhone(p_phone);
-
-						if (!p_code.equals(parts.getCode())) {
-							Parts dbParts = partsService.selectByCode(parts.getCode());
-							if (dbParts != null) {
-								vo.setSuccess(false);
-								vo.setMsg("零部件号已存在");
-								return vo;
-							}
-						}
 						parts.setCode(p_code);
+						
+						boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo, p_keyCode,
+								p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+						if (isExist) {
+							vo.setSuccess(false);
+							vo.setMsg("零部件信息已存在");
+							return vo;
+						}
 					}
 				}
 			}

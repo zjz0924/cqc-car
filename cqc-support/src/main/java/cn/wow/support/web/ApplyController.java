@@ -429,20 +429,18 @@ public class ApplyController extends AbstractController {
 			Parts parts = null;
 			if (task.getType() != TaskTypeEnum.GS.getState()) {
 				// 零部件信息
-				parts = partsService.selectOne(task.getInfo().getpId());
 				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId,
 						p_remark, p_phone, p_contacts)) {
-					if (StringUtils.isNotBlank(p_code)) {
-						Parts dbParts = partsService.selectByCode(p_code);
-						if (dbParts != null && dbParts.getId().longValue() != parts.getId().longValue()) {
-							vo.setSuccess(false);
-							vo.setMsg("零部件号已存在");
-							return vo;
-						}
+					parts = partsService.selectOne(task.getInfo().getpId());
+					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
+				
+					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getCode(), parts.getName(), parts.getProTime(), parts.getPlace(), parts.getProNo(), parts.getKeyCode(),
+							parts.getIsKey(), parts.getOrgId(), parts.getRemark(), parts.getContacts(), parts.getPhone());
+					if (isExist) {
+						vo.setSuccess(false);
+						vo.setMsg("零部件信息已存在");
+						return vo;
 					}
-					assemblePartsInfo(parts, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
-				} else {
-					parts = null;
 				}
 			}
 
@@ -624,9 +622,13 @@ public class ApplyController extends AbstractController {
 	/**
 	 * 组装零部件信息
 	 */
-	void assemblePartsInfo(Parts parts, String p_name, String p_proTime, String p_place, String p_proNo,
+	void assemblePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place, String p_proNo,
 			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, Date date, String p_phone, String p_contacts) {
 
+		if (StringUtils.isNotBlank(p_code)) {
+			parts.setCode(p_code);
+		}
+		
 		if (StringUtils.isNotBlank(p_name)) {
 			parts.setName(p_name);
 		}

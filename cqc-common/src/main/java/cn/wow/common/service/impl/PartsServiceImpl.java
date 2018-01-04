@@ -1,5 +1,6 @@
 package cn.wow.common.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.dao.PartsDao;
 import cn.wow.common.domain.Parts;
+import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.PartsService;
 
 @Service
@@ -58,6 +60,36 @@ public class PartsServiceImpl implements PartsService{
 			return list.get(0);
 		} else {
 			return null;
+		}
+	}
+	
+	/**
+     * 检查零部件信息是否存在
+     */
+	public boolean isExist(Long id, String p_code, String p_name, Date p_proTime, String p_place, String p_proNo,
+			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String p_contacts,
+			String p_phone) {
+		Map<String, Object> map = new PageMap(false);
+		if(id != null) {
+			map.put("eid", id);
+		}
+		map.put("code", p_code);
+		map.put("ename", p_name);
+		map.put("orgId", p_orgId);
+		map.put("eproNo", p_proNo);
+		map.put("eProTime", p_proTime);
+		map.put("place", p_place);
+		map.put("isKey", p_isKey);
+		map.put("ekeyCode", p_keyCode);
+		map.put("econtacts", p_contacts);
+		map.put("ephone", p_phone);
+		map.put("remark", p_remark);
+
+		List<Parts> dataList = partsDao.selectAllList(map);
+		if (dataList != null && dataList.size() > 0) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
