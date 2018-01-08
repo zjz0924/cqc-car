@@ -160,6 +160,10 @@
 			<if test="code != null and code != ''">
 				and t.code like concat('%', #{code,jdbcType=VARCHAR}, '%')
 			</if>
+			
+			<if test="qCode != null and qCode != ''">
+				and t.code = #{qCode,jdbcType=VARCHAR}
+			</if>
 
 			<if test="nickName != null and nickName != ''">
 				and a.nickname like concat('%', #{nickName,jdbcType=VARCHAR}, '%')

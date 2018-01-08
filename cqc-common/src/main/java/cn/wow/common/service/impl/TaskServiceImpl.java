@@ -3,6 +3,7 @@ package cn.wow.common.service.impl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.CostRecordDao;
 import cn.wow.common.dao.EmailRecordDao;
 import cn.wow.common.dao.ExamineRecordDao;
-import cn.wow.common.dao.ExpItemDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
@@ -828,5 +828,24 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
 		operationLogService.save(userName, operationType, serviceType, logDetail);
+	}
+	
+	
+	/**
+	 * 查询基准任务
+	 * @code  任务号
+	 */
+	public Task getStandardTask(String code) {
+		Map<String, Object> qMap = new HashMap<String, Object>();
+		qMap.put("qCode", code);
+		qMap.put("type", TaskTypeEnum.OTS.getState());
+		qMap.put("state", StandardTaskEnum.ACCOMPLISH.getState());
+
+		List<Task> taskList = taskDao.selectAllList(qMap);
+		if (taskList != null && taskList.size() > 0) {
+			return taskList.get(0);
+		} else {
+			return null;
+		}
 	}
 }

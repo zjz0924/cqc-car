@@ -135,6 +135,10 @@
 				$('#v_proTime').datebox('disable');
 				$('#v_proAddr').textbox('disable'); 
 				$('#v_remark').textbox('disable'); 
+				
+				if($('#qCode').length > 0){
+					$('#qCode').textbox("setValue", "");
+				}
 			}
 			$('#vehicleDialog').dialog('close');
 		}

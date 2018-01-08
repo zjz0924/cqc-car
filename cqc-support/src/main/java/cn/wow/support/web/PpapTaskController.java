@@ -693,4 +693,38 @@ public class PpapTaskController extends AbstractController {
 		return dataList;
 	}
 	
+	
+	/**
+	 * 查询任务
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/queryTask")
+	public AjaxVO queryTask(HttpServletRequest request, Model model, String qCode) {
+		AjaxVO vo = new AjaxVO();
+
+		try {
+			Task task = taskService.getStandardTask(qCode);
+			if (task != null) {
+				vo.setSuccess(true);
+				
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, Object> data = new HashMap<String, Object>();
+				data.put("vehicle", objectMapper.writeValueAsString(task.getInfo().getVehicle()));
+				data.put("parts", objectMapper.writeValueAsString(task.getInfo().getParts()));
+				data.put("material", objectMapper.writeValueAsString(task.getInfo().getMaterial()));
+				
+				vo.setData(data);
+			} else {
+				vo.setSuccess(false);
+				vo.setMsg(qCode + "，不存在该基准任务");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			vo.setSuccess(false);
+			vo.setMsg("查询失败，系统异常");
+		}
+		return vo;
+	}
+	
 }

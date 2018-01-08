@@ -233,12 +233,21 @@
 				$("#p_proNo").textbox("setValue", row.proNo);
 				$("#p_remark").textbox("setValue", row.remark);	
 				$("#p_isKey").combobox('select', row.isKey);
-				$("#p_keyCode").textbox("setValue", row.keyCode);	
-				$("#p_orgId").combotree("setValue", row.org.id);
-				$("#p_orgName").textbox("setValue", row.org.name);
+				$("#p_keyCode").textbox("setValue", row.keyCode);
+				if(!isNull(row.org)){
+					$("#p_orgId").combotree("setValue", row.org.id);
+					$("#p_orgName").textbox("setValue", row.org.name);
+				}else{
+					$("#p_orgId").combotree("setValue", "");
+					$("#p_orgName").textbox("setValue", "");
+				}
 				$("#p_phone").textbox("setValue", row.phone);
 				$("#p_contacts").textbox("setValue", row.contacts);
 				$("#p_id").val(row.id);
+				
+				if($('#qCode').length > 0){
+					$('#qCode').textbox("setValue", "");
+				}
 				
 				// 不可编辑
 				$('#p_code').textbox('disable'); 

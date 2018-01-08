@@ -176,17 +176,26 @@
 				if (!isNull(row)) {
 					$("#m_matName").textbox("setValue", row.matName);
 					$("#m_proNo").textbox("setValue", row.proNo);
-					$("#m_orgId").combotree("setValue", row.org.id);
+					if(!isNull(row.org)){
+						$("#m_orgId").combotree("setValue", row.org.id);
+						$("#m_orgName").textbox("setValue", row.org.name);
+					}else{
+						$("#m_orgId").combotree("setValue", "");
+						$("#m_orgName").textbox("setValue", "");
+					}
 					$("#m_matNo").textbox("setValue", row.matNo);
 					$("#m_matColor").textbox("setValue", row.matColor);
 					$("#m_remark").textbox("setValue", row.remark);
-					$("#m_orgName").textbox("setValue", row.org.name);
 					$("#m_contacts").textbox("setValue", row.contacts);
 					$("#m_phone").textbox("setValue", row.phone);
 					$("#m_pic_span").show();
 					$("#m_pic_a").attr("href", "${resUrl}/" + row.pic);
 					$("#m_pic").attr("src", "${resUrl}/" + row.pic);
 					$("#m_id").val(row.id);
+					
+					if($('#qCode').length > 0){
+						$('#qCode').textbox("setValue", "");
+					}
 					
 					// 不可编辑
 					$('#m_matName').textbox('disable'); 

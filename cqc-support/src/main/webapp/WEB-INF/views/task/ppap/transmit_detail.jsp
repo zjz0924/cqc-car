@@ -22,6 +22,15 @@
 				       	    </div>
 				</div>		
 			</c:if>
+			
+			<div style="margin-top: 15px; margin-bottom: 15px;">
+				<div class="title">任务号</div>
+				<div style="margin-left: 10px;">
+					<input type="text" id="qCode" name="qCode" class="easyui-textbox"> 
+					<a href="javascript:void(0)" onclick="doQuery()" title="检索"><i class="icon icon-search"></i></a>
+				</div>
+			</div>
+			
 		
 			<div class="title">整车信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>
@@ -459,6 +468,70 @@
 				var s = '<span style="font-weight:bold;color:black;">' + row.text + '</span><br/>' + '<span style="color:black;">任务号：'
 						+ row.taskCode + '&nbsp;&nbsp;&nbsp;创建时间：' + row.date + '</span>';
 				return s;
+			}
+			
+			function doQuery(){
+				var qCode = $("#qCode").textbox("getValue");
+				if(isNull(qCode)){
+					errorMsg("请输入任务号");
+					return false;
+				}
+				
+				$.ajax({
+					url: "${ctx}/ppap/queryTask",
+					data: {
+						qCode: qCode
+					},
+					success: function(data){
+						if(data.success){
+							var vehicle = eval('(' + data.data.vehicle  + ')');;
+							var parts = eval('(' + data.data.parts + ')');;
+							var material = eval('(' + data.data.material + ')');;
+							
+							// 整车信息
+							$("#v_code").textbox("setValue", vehicle.code);
+							$("#v_type").textbox("setValue", vehicle.type);
+							$("#v_proTime").datebox('setValue',formatDate(vehicle.proTime));
+							$("#v_proAddr").textbox("setValue", vehicle.proAddr);
+							$("#v_remark").textbox("setValue", vehicle.remark);
+							$("#v_id").val(vehicle.id);
+							
+							// 零部件信息
+							$("#p_code").textbox("setValue", parts.code);
+							$("#p_name").textbox("setValue", parts.name);
+							$("#p_proTime").datebox("setValue", formatDate(parts.proTime));
+							$("#p_place").textbox("setValue", parts.place);
+							$("#p_proNo").textbox("setValue", parts.proNo);
+							$("#p_remark").textbox("setValue", parts.remark);	
+							$("#p_isKey").combobox('select', parts.isKey);
+							$("#p_keyCode").textbox("setValue", parts.keyCode);	
+							$("#p_orgId").combotree("setValue", parts.org.id);
+							$("#p_orgName").textbox("setValue", parts.org.name);
+							$("#p_phone").textbox("setValue", parts.phone);
+							$("#p_contacts").textbox("setValue", parts.contacts);
+							$("#p_id").val(parts.id);
+							
+							// 原材料信息
+							$("#m_matName").textbox("setValue", material.matName);
+							$("#m_proNo").textbox("setValue", material.proNo);
+							$("#m_orgId").combotree("setValue", material.org.id);
+							$("#m_matNo").textbox("setValue", material.matNo);
+							$("#m_matColor").textbox("setValue", material.matColor);
+							$("#m_remark").textbox("setValue", material.remark);
+							$("#m_orgName").textbox("setValue", material.org.name);
+							$("#m_contacts").textbox("setValue", material.contacts);
+							$("#m_phone").textbox("setValue", material.phone);
+							$("#m_pic_span").show();
+							$("#m_pic_a").attr("href", "${resUrl}/" + material.pic);
+							$("#m_pic").attr("src", "${resUrl}/" + material.pic);
+							$("#m_id").val(material.id);
+							
+							standardChange();
+						}else{
+							errorMsg(data.msg);
+						}
+					}
+				});
 			}
 		</script>
 	

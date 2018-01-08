@@ -105,4 +105,11 @@ public interface TaskService {
 	 * 获取任务数
 	 */
 	public Integer getTaskNum(Map<String, Object> map);
+	
+	
+	/**
+	 * 查询基准任务
+	 * @code  任务号
+	 */
+	public Task getStandardTask(String code);
 }
