@@ -861,10 +861,10 @@ public class ResultController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/compareResult")
-	public AjaxVO compareResult(HttpServletRequest request, Model model, Long taskId, int p_inf, String p_inf_remark,
-			int p_dt, String p_dt_remark, int p_tg, String p_tg_remark, int p_result, String p_result_remark, int m_inf,
-			String m_inf_remark, int m_dt, String m_dt_remark, int m_tg, String m_tg_remark, int m_result,
-			String m_result_remark, int state, int p_temp, String p_temp_remark, int m_temp, String m_temp_remark) {
+	public AjaxVO compareResult(HttpServletRequest request, Model model, Long taskId, Integer p_inf, String p_inf_remark,
+			Integer p_dt, String p_dt_remark, Integer p_tg, String p_tg_remark, Integer p_result, String p_result_remark, Integer m_inf,
+			String m_inf_remark, Integer m_dt, String m_dt_remark, Integer m_tg, String m_tg_remark, Integer m_result,
+			String m_result_remark, Integer state, Integer p_temp, String p_temp_remark, Integer m_temp, String m_temp_remark) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -876,28 +876,33 @@ public class ResultController extends AbstractController {
 			List<ExamineRecord> resultList = new ArrayList<ExamineRecord>();
 
 			if (state == 1) {
-				ExamineRecord record1 = new ExamineRecord(taskId, account.getId(), p_inf, p_inf_remark, 4, 1, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record2 = new ExamineRecord(taskId, account.getId(), p_dt, p_dt_remark, 4, 2, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record3 = new ExamineRecord(taskId, account.getId(), p_tg, p_tg_remark, 4, 3, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record4 = new ExamineRecord(taskId, account.getId(), p_result, p_result_remark, 4, 4, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record5 = new ExamineRecord(taskId, account.getId(), m_inf, m_inf_remark, 4, 5, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record9 = new ExamineRecord(taskId, account.getId(), p_temp, p_temp_remark, 4, 9, date, TaskTypeEnum.PPAP.getState());
-				ExamineRecord record10 = new ExamineRecord(taskId, account.getId(), m_temp, m_temp_remark, 4, 10, date, TaskTypeEnum.PPAP.getState());
+				if(p_inf != null) {
+					ExamineRecord record1 = new ExamineRecord(taskId, account.getId(), p_inf, p_inf_remark, 4, 1, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record2 = new ExamineRecord(taskId, account.getId(), p_dt, p_dt_remark, 4, 2, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record3 = new ExamineRecord(taskId, account.getId(), p_tg, p_tg_remark, 4, 3, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record4 = new ExamineRecord(taskId, account.getId(), p_result, p_result_remark, 4, 4, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record9 = new ExamineRecord(taskId, account.getId(), p_temp, p_temp_remark, 4, 9, date, TaskTypeEnum.PPAP.getState());
+					
+					resultList.add(record1);
+					resultList.add(record2);
+					resultList.add(record3);
+					resultList.add(record4);
+					resultList.add(record9);
+				}
 				
-				
-				resultList.add(record1);
-				resultList.add(record2);
-				resultList.add(record3);
-				resultList.add(record4);
-				resultList.add(record5);
-				resultList.add(record6);
-				resultList.add(record7);
-				resultList.add(record8);
-				resultList.add(record9);
-				resultList.add(record10);
+				if(m_inf != null) {
+					ExamineRecord record5 = new ExamineRecord(taskId, account.getId(), m_inf, m_inf_remark, 4, 5, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date, TaskTypeEnum.PPAP.getState());
+					ExamineRecord record10 = new ExamineRecord(taskId, account.getId(), m_temp, m_temp_remark, 4, 10, date, TaskTypeEnum.PPAP.getState());
+					
+					resultList.add(record5);
+					resultList.add(record6);
+					resultList.add(record7);
+					resultList.add(record8);
+					resultList.add(record10);
+				}
 			}
 
 			taskService.compareResult(account, taskId, resultList, state);

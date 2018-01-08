@@ -788,9 +788,12 @@ public class InfoServiceImpl implements InfoService {
 
 			if (result == 1) {
 				task.setState(SamplingTaskEnum.UPLOAD.getState());
-				task.setMatAtlResult(1);
-				task.setPartsAtlResult(1);
-
+				if (task.getMatAtlId() != null) {
+					task.setMatAtlResult(1);
+				}
+				if (task.getPartsAtlId() != null) {
+					task.setPartsAtlResult(1);
+				}
 				record.setRemark("审批通过");
 				record.setState(SamplingTaskRecordEnum.APPROVE_AGREE.getState());
 			} else {

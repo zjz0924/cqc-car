@@ -432,9 +432,6 @@ public class PpapTaskController extends AbstractController {
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			
-			
-			
-			
 			infoService.approve(account, id, result, catagory, remark);
 		} catch (Exception ex) {
 			logger.error("PPAP任务审批失败", ex);

@@ -456,8 +456,12 @@ public class TaskServiceImpl implements TaskService{
 		
 		// 费用记录
 		List<CostRecord> costRecordList = new ArrayList<CostRecord>();
-		costRecordList.add(getCostRecord(account, date, task, 1, result));
-		costRecordList.add(getCostRecord(account, date, task, 3, result));
+		if (task.getPartsAtlId() != null) {
+			costRecordList.add(getCostRecord(account, date, task, 1, result));
+		}
+		if (task.getMatAtlId() != null) {
+			costRecordList.add(getCostRecord(account, date, task, 3, result));
+		}
 		costRecordDao.batchAdd(costRecordList);
 		
 		// 操作日志

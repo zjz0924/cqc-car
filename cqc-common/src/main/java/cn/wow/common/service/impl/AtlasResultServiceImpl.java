@@ -120,7 +120,8 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		// PPAP任务
 		if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
 			// 已上传完
-			if (task.getMatAtlResult() == 2 && task.getPartsAtlResult() == 2) {
+			if ((task.getMatAtlId() == null || task.getMatAtlResult() == 2)
+					&& (task.getPartsAtlId() == null || task.getPartsAtlResult() == 2)) {
 				task.setState(SamplingTaskEnum.COMPARE.getState());
 			}
 		}
@@ -166,6 +167,10 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 	 */
 	public Map<Integer, CompareVO> assembleCompareAtlas(List<AtlasResult> sd_atlasResult, List<AtlasResult> sl_atlasResult){
 		Map<Integer, CompareVO> map = new HashMap<Integer, CompareVO>();
+		
+		if(sl_atlasResult == null || sl_atlasResult.size() < 1) {
+			return null;
+		}
 
 		for (AtlasResult ar : sd_atlasResult) {
 			CompareVO vo = new CompareVO();
@@ -293,9 +298,13 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 			mList.add(0, er);
 		}
 		
-		result.put("零部件", pList);
-		result.put("原材料", mList);
-
+		if (pList != null && pList.size() > 0) {
+			result.put("零部件", pList);
+		}
+		if (mList != null && mList.size() > 0) {
+			result.put("原材料", mList);
+		}
+		
 		return result;
 	}
 	

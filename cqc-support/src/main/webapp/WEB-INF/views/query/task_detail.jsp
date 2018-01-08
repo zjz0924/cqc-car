@@ -377,7 +377,8 @@
 				<div class="title">对比结果</div>
 				
 				<div style="margin-left: 15px;">
-					<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
+					<c:if test="${not empty pAtlasResult}">
+						<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
 						<c:forEach items="${pAtlasResult}" var="m">
 							<div style="margin-bottom: 10px;">
 								<c:choose>
@@ -419,7 +420,9 @@
 						</c:forEach>
 						
 						<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-						
+					</c:if>
+					
+					<c:if test="${not empty mAtlasResult}">	
 						<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
 						<c:forEach items="${mAtlasResult}" var="m">
 							<div style="margin-bottom: 10px;">
@@ -460,9 +463,11 @@
 								</table>
 							</div>
 					   </c:forEach>
+					   
+					   <div style="border: 0.5px dashed #C9C9C9; width: 98%; margin-top: 15px; margin-bottom: 15px;"></div>
+					 </c:if>
 				  </div>
-	
-				<div style="border: 0.5px dashed #C9C9C9; width: 98%; margin-top: 15px; margin-bottom: 15px;"></div>
+				
 				<div class="title">结论</div>
 				<div style="margin-bottom:20px;">
 					<table style="width: 98%; font-size: 14px;">

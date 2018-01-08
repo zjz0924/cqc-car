@@ -193,26 +193,15 @@
 			<div>
 				<span class="title-span" style="width: 120px">零部件图谱试验：</span>
 				<input id="partsAtlId" name="partsAtlId">
+				<input type="checkbox" id="partsAtlCheck" onclick="doCheck('partsAtlCheck')"><span class="red-font">不选</span>
 			</div>
 		
 			<div style="margin-top:5px;">
 				<span class="title-span" style="width: 120px">原材料图谱试验： </span>
 				<input id="matAtlId" name="matAtlId">
+				<input type="checkbox" id="matAtlCheck" onclick="doCheck('matAtlCheck')"><span class="red-font">不选</span>
 			</div>
 			
-			<%-- <c:if test="${empty facadeBean.partsPatId}">
-				<div style="margin-top:5px;">
-					<span class="title-span" style="width: 120px">零部件型式试验： </span>
-					<input id="partsPatId" name="partsPatId">
-				</div>
-			</c:if>
-			
-			<c:if test="${empty facadeBean.matPatId}">
-				<div style="margin-top:5px;">
-					<span class="title-span" style="width: 120px">原材料型式试验： </span>
-					<input id="matPatId" name="matPatId">
-				</div>
-			</c:if> --%>
 		</div>
 	
 		 <div style="text-align:center;margin-top:35px;" class="data-row">
@@ -264,6 +253,11 @@
 	        	height: 16px;
 	        	display: inline-block;
 	        }
+	        
+	        .red-font{
+			   color:red;
+			   font-weight: bold;
+			}
 		</style>
 		
 		<script type="text/javascript">
@@ -299,7 +293,6 @@
 					$('#standard').combobox('reload', standardUrl + "?v_id=" + $("#v_id").val() + "&p_id=" +  $("#p_id").val() + "&m_id=" + $("#m_id").val());
 				}
 				
-				
 				// 零部件图谱
 				$('#partsAtlId').combotree({
 					url : '${ctx}/org/getTreeByType?type=3',
@@ -307,18 +300,7 @@
 					animate : true,
 					width : '250px'
 				});
-
-				// 只有最底层才能选择
-				var partsAtlIdTree = $('#partsAtlId').combotree('tree');
-				partsAtlIdTree.tree({
-					onBeforeSelect : function(node) {
-						if (isNull(node.children)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-				});
+				setupTree('partsAtlId');
 
 				// 原材料图谱
 				$('#matAtlId').combotree({
@@ -327,22 +309,26 @@
 					animate : true,
 					width : '250px'
 				});
-
-				// 只有最底层才能选择
-				var matAtlIdTree = $('#matAtlId').combotree('tree');
-				matAtlIdTree.tree({
-					onBeforeSelect : function(node) {
-						if (isNull(node.children)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-				});
+				setupTree('matAtlId');
 
 				// 默认选中CQC实验室
 				$("#partsAtlId").combotree("setValue", "20");
 				$("#matAtlId").combotree("setValue", "20");
+				
+				// 编辑时
+				if(!isNull(iId)){
+					var partsAtlId = "${facadeBean.partsAtlId}";
+					if(isNull(partsAtlId)){
+						$("#partsAtlCheck").attr("checked", true);
+						doCheck("partsAtlCheck");
+					}
+					
+					var matAtlId = "${facadeBean.matAtlId}";
+					if(isNull(matAtlId)){
+					   $("#matAtlCheck").attr("checked", true);
+					   doCheck("matAtlCheck");
+					}
+				}
 			});
 
 			function save() {
@@ -380,9 +366,32 @@
 					saving = false;
 					return false;
 				}
-
-				var partsAtlId_val = $("#partsAtlId").combotree("getValue");
-				var matAtlId_val = $("#matAtlId").combotree("getValue");
+				
+				var partsAtlId_val;
+				if(!$("#partsAtlCheck").is(':checked')){
+					partsAtlId_val = $("#partsAtlId").combotree("getValue");
+					if(isNull(partsAtlId_val)){
+						errorMsg("请为零部件图谱试验选择实验室");
+						saving = false;
+						return false;
+					}
+				}
+				
+				var matAtlId_val;
+				if(!$("#matAtlCheck").is(':checked')){
+					matAtlId_val = $("#matAtlId").combotree("getValue");
+					if(isNull(matAtlId_val)){
+						errorMsg("请为原材料图谱试验选择实验室");
+						saving = false;
+						return false;
+					}
+				}
+				
+				if($("#partsAtlCheck").is(':checked') && $("#matAtlCheck").is(':checked')){
+					errorMsg("请选择要做的实验");
+					saving = false;
+					return false;
+				}
 
 				$.ajax({
 					url : "${ctx}/ppap/transmit",
@@ -532,6 +541,31 @@
 						}
 					}
 				});
+			}
+			
+			// 只有最底层才能选择
+			function setupTree(id){
+				var treeObj = $('#' + id).combotree('tree');	
+				treeObj.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+			}
+			
+			function doCheck(id){
+				var treeId = id.replace("Check", "Id");
+				if($("#" + id).is(':checked')){
+					$("#" + treeId).combotree("setValue","");
+					$("#" + treeId).combotree({ disabled: true });  
+				}else{
+					$("#" + treeId).combotree({ disabled: false });
+					setupTree(treeId);
+				}
 			}
 		</script>
 	

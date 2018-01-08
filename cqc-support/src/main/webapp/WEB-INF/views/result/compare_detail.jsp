@@ -131,89 +131,93 @@
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		<div class="title">结果对比</div>
 		
-		<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
-		<c:forEach items="${pAtlasResult}" var="m">
-			<div style="margin-bottom: 10px;">
-				<c:choose>
-					<c:when test="${m.key == 1}">
-						<div class="title1">红外光分析图谱</div>
-					</c:when>
-					<c:when test="${m.key == 2}">
-						<div class="title1">差热分析图谱</div>
-					</c:when>
-					<c:when test="${m.key == 4}">
-						<div class="title1">样品照片</div>
-					</c:when>
-					<c:otherwise>
-						<div class="title1">热重分析图谱</div>
-					</c:otherwise>
-				</c:choose>
-				
-				<table>
-					<tr>
-						<td style="padding-left: 15px;">
-							<c:if test="${not empty m.value.standard_pic }">
-								<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
-							</c:if>
-							<c:if test="${empty m.value.standard_pic }">
-								<span class="img-span">基准图谱为空</span>
-							</c:if>
-						</td>
-						<td style="padding-left: 35px;">
-							<c:if test="${not empty m.value.sampling_pic }">
-								<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
-							</c:if>
-							<c:if test="${empty m.value.sampling_pic }">
-								<span class="img-span">抽样图谱为空</span>
-							</c:if>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</c:forEach>
+		<c:if test="${not empty facadeBean.partsAtlId }">
+			<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
+			<c:forEach items="${pAtlasResult}" var="m">
+				<div style="margin-bottom: 10px;">
+					<c:choose>
+						<c:when test="${m.key == 1}">
+							<div class="title1">红外光分析图谱</div>
+						</c:when>
+						<c:when test="${m.key == 2}">
+							<div class="title1">差热分析图谱</div>
+						</c:when>
+						<c:when test="${m.key == 4}">
+							<div class="title1">样品照片</div>
+						</c:when>
+						<c:otherwise>
+							<div class="title1">热重分析图谱</div>
+						</c:otherwise>
+					</c:choose>
+					
+					<table>
+						<tr>
+							<td style="padding-left: 15px;">
+								<c:if test="${not empty m.value.standard_pic }">
+									<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
+								</c:if>
+								<c:if test="${empty m.value.standard_pic }">
+									<span class="img-span">基准图谱为空</span>
+								</c:if>
+							</td>
+							<td style="padding-left: 35px;">
+								<c:if test="${not empty m.value.sampling_pic }">
+									<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
+								</c:if>
+								<c:if test="${empty m.value.sampling_pic }">
+									<span class="img-span">抽样图谱为空</span>
+								</c:if>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</c:forEach>
+			
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		</c:if>
 		
-		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-		
-		<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
-		<c:forEach items="${mAtlasResult}" var="m">
-			<div style="margin-bottom: 10px;">
-				<c:choose>
-					<c:when test="${m.key == 1}">
-						<div class="title1">红外光分析图谱</div>
-					</c:when>
-					<c:when test="${m.key == 2}">
-						<div class="title1">差热分析图谱</div>
-					</c:when>
-					<c:when test="${m.key == 4}">
-						<div class="title1">样品照片</div>
-					</c:when>
-					<c:otherwise>
-						<div class="title1">热重分析图谱</div>
-					</c:otherwise>
-				</c:choose>
-				
-				<table>
-					<tr>
-						<td style="padding-left: 15px;">
-							<c:if test="${not empty m.value.standard_pic }">
-								<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
-							</c:if>
-							<c:if test="${empty m.value.standard_pic }">
-								<span class="img-span">基准图谱为空</span>
-							</c:if>
-						</td>
-						<td style="padding-left: 35px;">
-							<c:if test="${not empty m.value.sampling_pic }">
-								<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
-							</c:if>
-							<c:if test="${empty m.value.sampling_pic }">
-								<span class="img-span">抽样图谱为空</span>
-							</c:if>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</c:forEach>
+		<c:if test="${not empty facadeBean.matAtlId }">
+			<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
+			<c:forEach items="${mAtlasResult}" var="m">
+				<div style="margin-bottom: 10px;">
+					<c:choose>
+						<c:when test="${m.key == 1}">
+							<div class="title1">红外光分析图谱</div>
+						</c:when>
+						<c:when test="${m.key == 2}">
+							<div class="title1">差热分析图谱</div>
+						</c:when>
+						<c:when test="${m.key == 4}">
+							<div class="title1">样品照片</div>
+						</c:when>
+						<c:otherwise>
+							<div class="title1">热重分析图谱</div>
+						</c:otherwise>
+					</c:choose>
+					
+					<table>
+						<tr>
+							<td style="padding-left: 15px;">
+								<c:if test="${not empty m.value.standard_pic }">
+									<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
+								</c:if>
+								<c:if test="${empty m.value.standard_pic }">
+									<span class="img-span">基准图谱为空</span>
+								</c:if>
+							</td>
+							<td style="padding-left: 35px;">
+								<c:if test="${not empty m.value.sampling_pic }">
+									<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
+								</c:if>
+								<c:if test="${empty m.value.sampling_pic }">
+									<span class="img-span">抽样图谱为空</span>
+								</c:if>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</c:forEach>
+		</c:if>
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
@@ -229,103 +233,107 @@
 					<td>结论</td>
 				</tr>			
 				
-				<tr>
-					<td style="font-weight:bold;">零部件</td>
-					<td align="center">
-						<div style="margin-top:5px;">
-							<label><input name="p_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label><input name="p_temp" type="radio" value="2" />不一致 </label> 
-						</div>
-						<div style="margin-top:5px;">
-							<textarea id="p_temp_remark" name="p_temp_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:5px;">
-							<label><input name="p_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label><input name="p_inf" type="radio" value="2" />不一致 </label> 
-						</div>
-						<div style="margin-top:5px;">
-							<textarea id="p_inf_remark" name="p_inf_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:5px;">
-							<label><input name="p_dt" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label><input name="p_dt" type="radio" value="2" />不一致 </label> 
-						</div>
-						<div style="margin-top:5px;">
-							<textarea id="p_dt_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:5px;">
-							<label><input name="p_tg" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							<label><input name="p_tg" type="radio" value="2" />不一致 </label> 
-						</div>
-						<div style="margin-top:5px;">
-							<textarea  id="p_tg_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:5px;">
-							<label><input name="p_result" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							<label><input name="p_result" type="radio" value="2" />不一致 </label> 
-						</div> 
-						<div style="margin-top:5px;">
-							<textarea id="p_result_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-				</tr>
+				<c:if test="${not empty facadeBean.partsAtlId }">
+					<tr>
+						<td style="font-weight:bold;">零部件</td>
+						<td align="center">
+							<div style="margin-top:5px;">
+								<label><input name="p_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="p_temp" type="radio" value="2" />不一致 </label> 
+							</div>
+							<div style="margin-top:5px;">
+								<textarea id="p_temp_remark" name="p_temp_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:5px;">
+								<label><input name="p_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="p_inf" type="radio" value="2" />不一致 </label> 
+							</div>
+							<div style="margin-top:5px;">
+								<textarea id="p_inf_remark" name="p_inf_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:5px;">
+								<label><input name="p_dt" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="p_dt" type="radio" value="2" />不一致 </label> 
+							</div>
+							<div style="margin-top:5px;">
+								<textarea id="p_dt_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:5px;">
+								<label><input name="p_tg" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="p_tg" type="radio" value="2" />不一致 </label> 
+							</div>
+							<div style="margin-top:5px;">
+								<textarea  id="p_tg_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:5px;">
+								<label><input name="p_result" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="p_result" type="radio" value="2" />不一致 </label> 
+							</div> 
+							<div style="margin-top:5px;">
+								<textarea id="p_result_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+					</tr>
+				</c:if>
 				
-				<tr>
-					<td style="font-weight:bold;">原材料</td>
-					<td align="center">
-						<div style="margin-top:5px;">
-							<label><input name="m_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<label><input name="m_temp" type="radio" value="2" />不一致 </label> 
-						</div>
-						<div style="margin-top:5px;">
-							<textarea id="m_temp_remark" name="m_temp_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:10px;">
-							<label><input name="m_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							<label><input name="m_inf" type="radio" value="2" />不一致 </label> 
-						</div> 
-						<div style="margin-top:5px;">
-							<textarea id="m_inf_remark" name="m_inf_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:10px;">
-							<label><input name="m_dt" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							<label><input name="m_dt" type="radio" value="2" />不一致 </label> 
-						</div> 
-						<div style="margin-top:5px;">
-							<textarea id="m_dt_remark" name="m_dt_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:10px;">
-							<label><input name="m_tg" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							<label><input name="m_tg" type="radio" value="2" />不一致 </label> 
-						</div> 
-						<div style="margin-top:5px;">
-							<textarea id="m_tg_remark" name="m_tg_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-					<td align="center">
-						<div style="margin-top:10px;">
-							<label><input name="m_result" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							<label><input name="m_result" type="radio" value="2" />不一致 </label> 
-						</div> 
-						<div style="margin-top:5px;">
-							<textarea id="m_result_remark" name="m_result_remark" rows="1" cols="25"></textarea>
-						</div>
-					</td>
-				</tr>
+				<c:if test="${not empty facadeBean.matAtlId }">
+					<tr>
+						<td style="font-weight:bold;">原材料</td>
+						<td align="center">
+							<div style="margin-top:5px;">
+								<label><input name="m_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="m_temp" type="radio" value="2" />不一致 </label> 
+							</div>
+							<div style="margin-top:5px;">
+								<textarea id="m_temp_remark" name="m_temp_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:10px;">
+								<label><input name="m_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_inf" type="radio" value="2" />不一致 </label> 
+							</div> 
+							<div style="margin-top:5px;">
+								<textarea id="m_inf_remark" name="m_inf_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:10px;">
+								<label><input name="m_dt" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_dt" type="radio" value="2" />不一致 </label> 
+							</div> 
+							<div style="margin-top:5px;">
+								<textarea id="m_dt_remark" name="m_dt_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:10px;">
+								<label><input name="m_tg" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_tg" type="radio" value="2" />不一致 </label> 
+							</div> 
+							<div style="margin-top:5px;">
+								<textarea id="m_tg_remark" name="m_tg_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+						<td align="center">
+							<div style="margin-top:10px;">
+								<label><input name="m_result" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_result" type="radio" value="2" />不一致 </label> 
+							</div> 
+							<div style="margin-top:5px;">
+								<textarea id="m_result_remark" name="m_result_remark" rows="1" cols="25"></textarea>
+							</div>
+						</td>
+					</tr>
+				</c:if>
 			</table>
 		</div>
 		

@@ -143,12 +143,26 @@
 						
 						<tr>
 							<td class="value-td">零部件图谱试验</td>
-							<td class="value-td">${facadeBean.partsAtl.name}</td>
+							<td class="value-td">
+								<c:if test="${not empty facadeBean.partsAtl}">
+									${facadeBean.partsAtl.name}
+								</c:if>
+								<c:if test="${empty facadeBean.partsAtl}">
+									不分配
+								</c:if>
+							</td>
 						</tr>
 						
 						<tr>
 							<td class="value-td">原材料图谱试验</td>
-							<td class="value-td">${facadeBean.matAtl.name}</td>
+							<td class="value-td">
+								<c:if test="${not empty facadeBean.matAtl}">
+									${facadeBean.matAtl.name}
+								</c:if>
+								<c:if test="${empty facadeBean.matAtl}">
+									不分配
+								</c:if>
+							</td>
 						</tr>
 					</table>
 				</div>
