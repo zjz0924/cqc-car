@@ -53,19 +53,6 @@ public class MenuController extends AbstractController {
 				menu = menuService.selectOne(Long.parseLong(id));
 
 				if (menu != null) {
-					if (!menu.getName().equals(name)) {
-						Map<String, Object> rMap = new HashMap<String, Object>();
-						rMap.put("name", name);
-						List<Menu> menuList = menuService.selectAllList(rMap);
-
-						if (menuList != null && menuList.size() > 0) {
-							vo.setMsg("菜单名称已存在");
-							vo.setSuccess(false);
-							vo.setData("name");
-							return vo;
-						}
-					}
-
 					menu.setName(name);
 					menu.setSortNum(sortNum);
 					menuService.update(getCurrentUserName(), menu);
