@@ -6,6 +6,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.security.SecureRandom;
 import java.util.Random;
 
@@ -13,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -21,6 +25,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +36,7 @@ import cn.wow.common.service.OperationLogService;
 import cn.wow.common.utils.VerifyCodeUtils;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
+import sun.misc.BASE64Decoder;
 
 /**
  * 登录控制器
@@ -42,6 +48,10 @@ public class LoginController {
 	
 	@Autowired
 	private OperationLogService operationLogService;
+	
+	// mac地址
+ 	@Value("${legal.switch}")
+ 	protected String macAddress;
 	
 	Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
@@ -58,7 +68,26 @@ public class LoginController {
 	
 	
 	@RequestMapping(value = "/login")
-	public String login(HttpServletRequest httpServletRequest, Model model) {		
+	public String login(HttpServletRequest httpServletRequest, Model model) {
+		// 如果不是指定的mac的服务器，没有权限访问
+		if (StringUtils.isNotBlank(macAddress)) {
+			try {
+				InetAddress ia = InetAddress.getLocalHost();
+				String localMacAddress = getLocalMac(ia);
+
+				// 解码
+				BASE64Decoder decoder = new BASE64Decoder();
+				byte[] bytes = decoder.decodeBuffer(macAddress);
+				String legalMacAddress = new String(bytes);
+				
+				if (!legalMacAddress.equals(localMacAddress)) {
+					return "common/illegal";
+				}
+			} catch (Exception ex) {
+				return "common/illegal";
+			}
+		}
+		
 		String username = (String)SecurityUtils.getSubject().getPrincipal();
 		if(username!=null) {//如果已经登陆，则跳转到首页
 			return "redirect:/index";
@@ -188,4 +217,25 @@ public class LoginController {
 		operationLogService.save(username, OperationType.LOGOUT, ServiceType.ACCOUNT, "");
 		return "redirect:/login";
 	}
+	
+	private String getLocalMac(InetAddress ia) throws SocketException {
+		// 获取网卡，获取地址
+		byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
+		StringBuffer sb = new StringBuffer("");
+		for (int i = 0; i < mac.length; i++) {
+			if (i != 0) {
+				sb.append("-");
+			}
+			// 字节转换为整数
+			int temp = mac[i] & 0xff;
+			String str = Integer.toHexString(temp);
+			if (str.length() == 1) {
+				sb.append("0" + str);
+			} else {
+				sb.append(str);
+			}
+		}
+		return sb.toString().toUpperCase();
+	}
+	
 }
