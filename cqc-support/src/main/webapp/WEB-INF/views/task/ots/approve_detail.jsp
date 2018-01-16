@@ -134,10 +134,40 @@
 		
 		<c:choose>
 			<c:when test="${approveType == 3}">
-				<div class="title">试验信息</div>
+				<c:if test="${not empty labReqList}">
+					<div class="title">试验说明</div>
+					<div style="margin-bottom: 20px;">
+						<table class="info">
+							<tr class="single-row">
+								<td class="title-td">试验名称</td>
+								<td class="title-td">任务号</td>
+								<td class="title-td">实验要求</td>
+								<td class="title-td">商定完成时间</td>
+							</tr>
+							
+							<c:forEach items="${labReqList}" var="vo">
+								<tr>
+									<td>
+										<c:choose>
+											<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
+											<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
+											<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
+											<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+										</c:choose>
+									</td>
+									<td>${vo.code}</td>
+									<td style="word-break : break-all;line-height: 20px;">${vo.remark }</td>
+									<td><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/></td>
+								</tr>
+							</c:forEach>
+						</table>
+					</div>	
+				</c:if>
+				
+				<div class="title">试验分配</div>
 				<div>
 					<table class="info">
-						<tr>
+						<tr class="single-row">
 							<td class="title-td">试验名称</td>
 							<td class="title-td">分配实验室</td>
 							<td class="title-td">操作</td>
@@ -233,13 +263,16 @@
 					<div class="title">零部件试验结果</div>
 					<table class="info">
 						<tr class="single-row">
-							<td style="font-weight:bold;">序号</td>
-							<td class="title-td">试验项目</td>
-							<td class="title-td">参考标准</td>
-							<td class="title-td">试验要求</td>
-							<td class="title-td">试验结果</td>
-							<td class="title-td">结果评价</td>
-							<td class="title-td">备注</td>
+							<td class="remark-span">序号</td>
+							<td class="remark-span">试验项目</td>
+							<td class="remark-span">参考标准</td>
+							<td class="remark-span">试验要求</td>
+							<td class="remark-span">试验结果</td>
+							<td class="remark-span">结果评价</td>
+							<td class="remark-span">备注</td>
+							<td class="remark-span">试验结论</td>
+							<td class="remark-span">报告编号</td>
+							<td class="remark-span">其它</td>
 						</tr>
 					
 						<c:forEach items="${pPfResult_old}" var="vo" varStatus="status">
@@ -263,6 +296,15 @@
 								<td class="value-td1">
 									<span class="val" title="${vo.remark}">${vo.remark}</span>
 								</td>
+								<td class="value-td1">
+									<span class="val" title="${vo.conclusion}">${vo.conclusion}</span>
+								</td>
+								<td class="value-td1">
+									<span class="val" title="${vo.repNum}">${vo.repNum}</span>
+								</td>
+								<td class="value-td1">
+									<span class="val" title="${vo.other}">${vo.other}</span>
+								</td>
 							</tr>
 						</c:forEach>
 					</table>
@@ -270,13 +312,16 @@
 					<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
 					<table class="info">
 						<tr class="single-row">
-							<td style="font-weight:bold;">序号</td>
-							<td class="title-td">试验项目</td>
-							<td class="title-td">参考标准</td>
-							<td class="title-td">试验要求</td>
-							<td class="title-td">试验结果</td>
-							<td class="title-td">结果评价</td>
-							<td class="title-td">备注</td>
+							<td class="remark-span">序号</td>
+							<td class="remark-span">试验项目</td>
+							<td class="remark-span">参考标准</td>
+							<td class="remark-span">试验要求</td>
+							<td class="remark-span">试验结果</td>
+							<td class="remark-span">结果评价</td>
+							<td class="remark-span">备注</td>
+							<td class="remark-span">试验结论</td>
+							<td class="remark-span">报告编号</td>
+							<td class="remark-span">其它</td>
 						</tr>
 					
 						<c:forEach items="${pPfResult_new}" var="vo" varStatus="status">
@@ -299,6 +344,15 @@
 								</td>
 								<td class="value-td1">
 									<span class="val red-color" title="${vo.remark}">${vo.remark}</span>
+								</td>
+								<td class="value-td1">
+									<span class="val red-color" title="${vo.conclusion}">${vo.conclusion}</span>
+								</td>
+								<td class="value-td1">
+									<span class="val red-color" title="${vo.repNum}">${vo.repNum}</span>
+								</td>
+								<td class="value-td1">
+									<span class="val red-color" title="${vo.other}">${vo.other}</span>
 								</td>
 							</tr>
 						</c:forEach>
@@ -365,13 +419,16 @@
 				<div class="title" style="margin-top: 10px;">原材料试验结果</div>
 				<table class="info">
 					<tr class="single-row">
-						<td style="font-weight:bold;">序号</td>
-						<td class="title-td">试验项目</td>
-						<td class="title-td">参考标准</td>
-						<td class="title-td">试验要求</td>
-						<td class="title-td">试验结果</td>
-						<td class="title-td">结果评价</td>
-						<td class="title-td">备注</td>
+						<td class="remark-span">序号</td>
+						<td class="remark-span">试验项目</td>
+						<td class="remark-span">参考标准</td>
+						<td class="remark-span">试验要求</td>
+						<td class="remark-span">试验结果</td>
+						<td class="remark-span">结果评价</td>
+						<td class="remark-span">备注</td>
+						<td class="remark-span">试验结论</td>
+						<td class="remark-span">报告编号</td>
+						<td class="remark-span">其它</td>
 					</tr>
 				
 					<c:forEach items="${mPfResult_old}" var="vo" varStatus="status">
@@ -395,6 +452,15 @@
 							<td class="value-td1">
 								<span class="val" title="${vo.remark}">${vo.remark}</span>
 							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.conclusion}">${vo.conclusion}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.repNum}">${vo.repNum}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val" title="${vo.other}">${vo.other}</span>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
@@ -402,13 +468,16 @@
 				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
 				<table class="info">
 					<tr class="single-row">
-						<td style="font-weight:bold;">序号</td>
-						<td class="title-td">试验项目</td>
-						<td class="title-td">参考标准</td>
-						<td class="title-td">试验要求</td>
-						<td class="title-td">试验结果</td>
-						<td class="title-td">结果评价</td>
-						<td class="title-td">备注</td>
+						<td class="remark-span">序号</td>
+						<td class="remark-span">试验项目</td>
+						<td class="remark-span">参考标准</td>
+						<td class="remark-span">试验要求</td>
+						<td class="remark-span">试验结果</td>
+						<td class="remark-span">结果评价</td>
+						<td class="remark-span">备注</td>
+						<td class="remark-span">试验结论</td>
+						<td class="remark-span">报告编号</td>
+						<td class="remark-span">其它</td>
 					</tr>
 				
 					<c:forEach items="${mPfResult_new}" var="vo" varStatus="status">
@@ -431,6 +500,15 @@
 							</td>
 							<td class="value-td1">
 								<span class="val red-color" title="${vo.remark}">${vo.remark}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.conclusion}">${vo.conclusion}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.repNum}">${vo.repNum}</span>
+							</td>
+							<td class="value-td1">
+								<span class="val red-color" title="${vo.other}">${vo.other}</span>
 							</td>
 						</tr>
 					</c:forEach>
@@ -564,6 +642,10 @@
 			border:0.5px dashed #C9C9C9;
 			text-align:center;
 			line-height:50px;
+		}
+		
+		.remark-span{
+			font-weight: bold;
 		}
 	</style>
 	

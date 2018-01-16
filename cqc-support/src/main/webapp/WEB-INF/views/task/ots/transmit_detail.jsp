@@ -165,13 +165,22 @@
 			<a href="javascript:void(0);"  onclick="$('#transmitDetailDialog').dialog('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 		</div>
 
-		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 500px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
+		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 500px; height: 550px; padding: 10px" closed="true" data-options="modal:true">
 			
 			<c:if test="${taskType == 1 and empty facadeBean.partsAtlId}">
 				<div>
 					<span class="title-span">零部件图谱试验：</span>
 					<input id="partsAtlId" name="partsAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="checkbox" id="partsAtlCheck" onclick="doCheck('partsAtlCheck')"><span class="red-font">不选</span>
+				
+					<div style="margin-top:5px;">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsAtlCode" name="partsAtlCode" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="partsAtlTime" name="partsAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						<div style="margin-top:5px;">
+							测试要求：<input id="partsAtlReq" name="partsAtlReq" class="easyui-textbox"  style="width:86%;">
+						</div>
+					</div>
+					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				</div>
 			</c:if>
 			
@@ -180,6 +189,15 @@
 					<span class="title-span">原材料图谱试验： </span>
 					<input id="matAtlId" name="matAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="checkbox" id="matAtlCheck" onclick="doCheck('matAtlCheck')"><span class="red-font">不选</span>
+				
+					<div style="margin-top:5px;">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matAtlCode" name="matAtlCode" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="matAtlTime" name="matAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						<div style="margin-top:5px;">
+							测试要求：<input id="matAtlReq" name="matAtlReq" class="easyui-textbox"  style="width:86%;">
+						</div>
+					</div>
+					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				</div>
 			</c:if>
 			
@@ -187,7 +205,16 @@
 				<div style="margin-top:5px;">
 					<span class="title-span">零部件型式试验： </span>
 					<input id="partsPatId" name="partsPatId">&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" id="partsPatCheck" onclick="doCheck('partsPatCheck')"><span class="red-font">不选</span>
+					<input type="checkbox" id="partsPatCheck" onclick="doCheck('partsPatCheck')"><span class="red-font">不选</span></br>
+					
+					<div style="margin-top:5px;">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsPatCode" name="partsPatCode" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="partsPatTime" name="partsPatTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						<div style="margin-top:5px;">
+							测试要求：<input id="partsPatReq" name="partsPatReq" class="easyui-textbox"  style="width:86%;">
+						</div>
+					</div>
+					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 20px;"></div>
 				</div>
 			</c:if>
 			
@@ -195,7 +222,16 @@
 				<div style="margin-top:5px;">
 					<span class="title-span">原材料型式试验： </span>
 					<input id="matPatId" name="matPatId">&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" id="matPatCheck" onclick="doCheck('matPatCheck')"><span class="red-font">不选</span>
+					<input type="checkbox" id="matPatCheck" onclick="doCheck('matPatCheck')"><span class="red-font">不选</span></br>
+					
+					<div style="margin-top:5px;">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matPatCode" name="matPatCode" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="matPatTime" name="matPatTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						<div style="margin-top:5px;">
+							测试要求：<input id="matPatReq" name="matPatReq" class="easyui-textbox"  style="width:86%;">
+						</div>
+					</div>
+					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				</div>
 			</c:if>
 			
@@ -223,6 +259,7 @@
 		.title-span{
 			display: inline-block;
 			width: 100px;
+			font-weight:bold;
 		}
 		
 		.info{
@@ -337,7 +374,28 @@
 				$("#partsPatId").combotree("setValue", "20");
 				$("#partsAtlCheck").prop("checked",false);
 				$("#partsPatCheck").prop("checked",false);
+				
+				// 清空原来输入的值
+				$("#partsAtlCode").textbox("setValue", "");
+				$("#partsAtlTime").datebox("setValue", "");
+				$("#partsAtlReq").textbox("setValue", "");
 			}
+			
+			
+			// 清空原来输入的值
+			$("#matAtlCode").textbox("setValue", "");
+			$("#matAtlTime").datebox("setValue", "");
+			$("#matAtlReq").textbox("setValue", "");
+			
+			// 清空原来输入的值
+			$("#partsPatCode").textbox("setValue", "");
+			$("#partsPatTime").datebox("setValue", "");
+			$("#partsPatReq").textbox("setValue", "");
+			
+			// 清空原来输入的值
+			$("#matPatCode").textbox("setValue", "");
+			$("#matPatTime").datebox("setValue", "");
+			$("#matPatReq").textbox("setValue", "");
 			
 			$("#dlg").dialog("open");
 		}
@@ -348,6 +406,22 @@
 			var matAtlId_val;
 			var partsPatId_val;
 			var matPatId_val;
+			// 零部件图谱试验说明
+			var partsAtlCode;
+			var partsAtlTime;
+			var partsAtlReq;
+			// 原材料图谱试验说明
+			var matAtlCode;
+			var matAtlTime;
+			var matAtlReq;
+			// 零部件型式试验说明
+			var partsPatCode;
+			var partsPatTime;
+			var partsPatReq;
+			// 原材型式试验说明
+			var matPatCode;
+			var matPatTime;
+			var matPatReq;
 			
 			if(saving){
 				return false;
@@ -400,6 +474,30 @@
 				}
 			}
 			
+			if(!isNull(partsAtlId_val)){
+				partsAtlCode = $("#partsAtlCode").textbox("getValue");
+				partsAtlTime = $("#partsAtlTime").datebox("getValue");
+				partsAtlReq = $("#partsAtlReq").textbox("getValue");
+			}
+			
+			if(!isNull(matAtlId_val)){
+				matAtlCode = $("#matAtlCode").textbox("getValue");
+				matAtlTime = $("#matAtlTime").datebox("getValue");
+				matAtlReq = $("#matAtlReq").textbox("getValue");
+			}
+
+			if(!isNull(partsPatId_val)){
+				partsPatCode = $("#partsPatCode").textbox("getValue");
+				partsPatTime = $("#partsPatTime").datebox("getValue");
+				partsPatReq = $("#partsPatReq").textbox("getValue");
+			}
+			
+			if(!isNull(matPatId_val)){
+				matPatCode = $("#matPatCode").textbox("getValue");
+				matPatTime = $("#matPatTime").datebox("getValue");
+				matPatReq = $("#matPatReq").textbox("getValue");
+			}
+			
 			$.ajax({
 				url: "${ctx}/ots/transmit",
 				data: {
@@ -407,7 +505,19 @@
 					"partsAtlId": partsAtlId_val,
 					"matAtlId": matAtlId_val,
 					"partsPatId": partsPatId_val,
-					"matPatId": matPatId_val
+					"matPatId": matPatId_val,
+					"partsAtlCode": partsAtlCode,
+					"partsAtlTime": partsAtlTime,
+					"partsAtlReq": partsAtlReq,
+					"matAtlCode": matAtlCode,
+					"matAtlTime": matAtlTime,
+					"matAtlReq": matAtlReq,
+					"partsPatCode": partsPatCode,
+					"partsPatTime": partsPatTime,
+					"partsPatReq": partsPatReq,
+					"matPatCode": matPatCode,
+					"matPatTime": matPatTime,
+					"matPatReq": matPatReq
 				},
 				success: function(data){
 					if(data.success){
@@ -441,12 +551,27 @@
 		
 		function doCheck(id){
 			var treeId = id.replace("Check", "Id");
+			var codeId = id.replace("Check", "Code");
+			var timeId = id.replace("Check", "Time");
+			var reqId = id.replace("Check", "Req");
+			
 			if($("#" + id).is(':checked')){
 				$("#" + treeId).combotree("setValue","");
-				$("#" + treeId).combotree({ disabled: true });  
+				$("#" + treeId).combotree({ disabled: true }); 
+				
+				$("#" + codeId).textbox("setValue","");
+				$("#" + reqId).textbox("setValue","");
+				$("#" + timeId).datebox("setValue","");
+				$("#" + codeId).textbox({ disabled: true });
+				$("#" + reqId).textbox({ disabled: true });
+				$("#" + timeId).datebox({ disabled: true });
 			}else{
 				$("#" + treeId).combotree({ disabled: false });
 				setupTree(treeId);
+				
+				$("#" + codeId).textbox({ disabled: false });
+				$("#" + reqId).textbox({ disabled: false });
+				$("#" + timeId).datebox({ disabled: false });
 			}
 		}
 	</script>	

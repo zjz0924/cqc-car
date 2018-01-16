@@ -401,7 +401,7 @@
 			function approveDetail(id) {
 				$('#approveDetailDialog').dialog({
 					title : '审批信息',
-					width : 900,
+					width : 1100,
 					height : 700,
 					closed : false,
 					cache : false,

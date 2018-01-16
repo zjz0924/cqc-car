@@ -276,7 +276,6 @@
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
-						console.log(data);
 						getData(datagrid, getDataUrl, data);
 					}
 				});
@@ -446,7 +445,7 @@
 			function detail(id) {
 				$('#detailDialog').dialog({
 					title : '任务详情',
-					width : 1000,
+					width : 1200,
 					height : 660,
 					closed : false,
 					cache : false,

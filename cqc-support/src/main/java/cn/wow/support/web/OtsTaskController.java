@@ -1,6 +1,8 @@
 package cn.wow.support.web;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
@@ -43,9 +46,9 @@ import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
-import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.PartsService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskRecordService;
@@ -53,8 +56,6 @@ import cn.wow.common.service.TaskService;
 import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
-import cn.wow.common.utils.operationlog.OperationType;
-import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
@@ -111,6 +112,8 @@ public class OtsTaskController extends AbstractController {
 	private AtlasResultService atlasResultService;
 	@Autowired
 	private PfResultService pfResultService;
+	@Autowired
+	private LabReqService labReqService;
 
 	/**
 	 * 首页
@@ -640,12 +643,30 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
 	public AjaxVO transmit(HttpServletRequest request, Model model, Long id, Long partsAtlId, Long matAtlId,
-			Long partsPatId, Long matPatId) {
+			Long partsPatId, Long matPatId, String partsAtlCode, String partsAtlTime, String partsAtlReq,
+			String matAtlCode, String matAtlTime, String matAtlReq, String partsPatCode, String partsPatTime,
+			String partsPatReq, String matPatCode, String matPatTime, String matPatReq) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId);
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
+			List<LabReq> labReqList = new ArrayList<LabReq>();
+			if (partsAtlId != null) {
+				labReqList.add(new LabReq(partsAtlCode, StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, id, 1));
+			}
+			if (matAtlId != null) {
+				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null, matAtlReq, id, 2));
+			}
+			if (partsPatId != null) {
+				labReqList.add(new LabReq(partsPatCode, StringUtils.isNotBlank(partsPatTime) ? sdf.parse(partsPatTime) : null, partsPatReq, id, 3));
+			}
+			if (matPatId != null) {
+				labReqList.add(new LabReq(matPatCode, StringUtils.isNotBlank(matPatTime) ? sdf.parse(matPatTime) : null, matPatReq, id, 4));
+			}
+			
+			infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId, labReqList);
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
 
@@ -855,6 +876,11 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		model.addAttribute("resUrl", resUrl);
+		
+		if(approveType == 3) {
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
+		}
 
 		if (approveType == 1) {
 			return "task/ots/approve_info_detail";

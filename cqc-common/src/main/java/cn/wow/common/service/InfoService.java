@@ -6,6 +6,7 @@ import java.util.Map;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
@@ -49,8 +50,9 @@ public interface InfoService {
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
+	 * @param labReqList   试验说明
      */
-    public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId);
+    public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, List<LabReq> labReqList);
     
     
     /**
@@ -64,7 +66,7 @@ public interface InfoService {
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
 	 */
-    public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType);
+    public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType, List<LabReq> labReqList);
     
     
     /**

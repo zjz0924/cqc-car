@@ -338,7 +338,7 @@
 			function uploadDetail(id) {
 				$('#uploadDetailDialog').dialog({
 					title : '结果上传信息',
-					width : 1000,
+					width : 1200,
 					height : 700,
 					closed : false,
 					cache : false,

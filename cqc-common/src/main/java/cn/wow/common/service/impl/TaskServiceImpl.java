@@ -163,30 +163,31 @@ public class TaskServiceImpl implements TaskService{
 	 * @param pAtlOrgVal    零部件图谱
 	 * @param pPatOrgVal    零部件型式
 	 * @param mAtlOrgVal    原材料图谱
-	 * @param mPatOrgVal    原材料型式   
+	 * @param mPatOrgVal    原材料型式  
+	 * @param type          类型：1-发送结果， 2-不发送，直接跳过  
 	 */
-    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal) throws Exception{
+    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal, Integer type) throws Exception{
 
     	Task task = this.selectOne(taskId);
     	Date date = new Date();
     	String remark = "";
     	
-    	if(StringUtils.isNotBlank(pAtlOrgVal)){
+    	if(StringUtils.isNotBlank(pAtlOrgVal) || type.intValue() == 2){
     		task.setPartsAtlResult(3);
     		remark += "零部件图谱试验、";
     	}
     	
-    	if(StringUtils.isNotBlank(pPatOrgVal)){
+    	if(StringUtils.isNotBlank(pPatOrgVal) || type.intValue() == 2){
     		task.setPartsPatResult(3);
     		remark += "零部件型式试验、";
     	}
     	
-    	if(StringUtils.isNotBlank(mAtlOrgVal)){
+    	if(StringUtils.isNotBlank(mAtlOrgVal) || type.intValue() == 2){
     		task.setMatAtlResult(3);
     		remark += "原材料图谱试验、";
     	}
     	
-    	if(StringUtils.isNotBlank(mPatOrgVal)){
+    	if(StringUtils.isNotBlank(mPatOrgVal) || type.intValue() == 2){
     		task.setMatPatResult(3);
     		remark += "原材料型式试验、";
     	}
@@ -223,6 +224,10 @@ public class TaskServiceImpl implements TaskService{
     	
     	if(StringUtils.isNotBlank(mPatOrgVal)){
     		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content, 1);
+    	}
+    	
+    	if(type.intValue() == 2) {
+    		remark = "不发送结果";
     	}
     	
     	// 操作日志
@@ -394,6 +399,10 @@ public class TaskServiceImpl implements TaskService{
 			costRecordList.add(getCostRecord(account, date, task, 4, result));
 		}
 		costRecordDao.batchAdd(costRecordList);
+		
+		if(StringUtils.isBlank(remark)) {
+			remark = "结果确认，结果合格";
+		}
 		
 		// 操作日志
     	String logDetail =  remark + "，任务号：" + task.getCode();

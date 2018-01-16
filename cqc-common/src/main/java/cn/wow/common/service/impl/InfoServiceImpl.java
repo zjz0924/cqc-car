@@ -18,6 +18,7 @@ import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
+import cn.wow.common.dao.LabReqDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
 import cn.wow.common.dao.PfResultDao;
@@ -29,6 +30,7 @@ import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
@@ -37,6 +39,7 @@ import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
@@ -82,6 +85,10 @@ public class InfoServiceImpl implements InfoService {
 	private TaskService taskService;
 	@Autowired
 	private OperationLogService operationLogService;
+	@Autowired
+	private LabReqDao labReqDao;
+	@Autowired
+	private LabReqService labReqService;
 	
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -274,8 +281,9 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matAtlId     原材料图谱实验室ID
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
+	 * @param labReqList   试验说明
      */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, List<LabReq> labReqList) {
 		Task task = taskDao.selectOne(id);
 		
 		if(partsAtlId != null){
@@ -295,6 +303,11 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatPatResult(0);
 		}
 		taskDao.update(task);
+		
+		labReqDao.deleteByTaskId(id);
+		if (labReqList != null && labReqList.size() > 0) {
+			labReqDao.batchAdd(labReqList);
+		}
 
 		// 操作记录
 		TaskRecord record = new TaskRecord();
@@ -322,7 +335,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param partsPatId   零部件型式实验室ID
 	 * @param matPatId     原材料型式实验室ID
 	 */
-	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType) {
+	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType, List<LabReq> labReqList) {
 		String taskCode = "";
 		
 		if (t_id == null) {
@@ -375,6 +388,12 @@ public class InfoServiceImpl implements InfoService {
 			taskRecordDao.insert(record);
 
 			taskCode = task.getCode();
+			
+			if (labReqList != null && labReqList.size() > 0) {
+				for(LabReq labReq: labReqList) {
+					labReq.setTaskId(task.getId());
+				}
+			}
 		} else {
 			Task task = taskDao.selectOne(t_id);
 			task.setiId(i_id);
@@ -395,13 +414,17 @@ public class InfoServiceImpl implements InfoService {
 			
 			taskCode = task.getCode();
 		}
+		
+		labReqDao.deleteByTaskId(t_id);
+		if (labReqList != null && labReqList.size() > 0) {
+			labReqDao.batchAdd(labReqList);
+		}
 
 		String logDetail = "下达任务，任务号：" + taskCode ;
 		addLog(account.getUserName(), OperationType.TRANSMIT, ServiceType.TASK, logDetail);
 		
 		return true;
 	}
-	    
 	
 
 	/**
@@ -948,6 +971,15 @@ public class InfoServiceImpl implements InfoService {
 				at.setCreateTime(date);
 			}
 			atlasResultDao.batchAdd(atlResultList);
+		}
+		
+		// 试验说明
+		List<LabReq> labReqList = labReqService.getLabReqListByTaskId(taskId);
+		if (labReqList != null && labReqList.size() > 0) {
+			for(LabReq labReq: labReqList) {
+				labReq.setTaskId(task.getId());
+			}
+			labReqService.batchAdd(labReqList);
 		}
 		
 		// 对比结论

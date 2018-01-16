@@ -2,9 +2,14 @@
 <%@include file="/page/taglibs.jsp"%>
 
 <body>
+	<div style="margin-left: 20px; margin-top: 10px;">
+		<a id="showBtn" href="javascript:void(0);" onclick="expand()" style="color:red;">展开</a>
+		<a id="hideBtn" href="javascript:void(0);" onclick="expand()" style="display: none; color: red;">收起</a>
+	</div>
+
 	<div style="margin-left: 10px;margin-top:20px;">
 		<div class="title">整车信息</div>
-		<div style="width: 98%;">
+		<div style="width: 98%;display: none;" id="vehicleDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">代码：</td>
@@ -28,7 +33,7 @@
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
 		<div class="title">零部件信息</div>
-		<div style="width: 98%;">
+		<div style="width: 98%; display: none;" id="partsDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">代码：</td>
@@ -84,7 +89,7 @@
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
 		<div class="title">原材料信息</div>
-		<div style="width: 98%;">
+		<div style="width: 98%;display: none;" id="materialDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">材料名称：</td>
@@ -127,6 +132,37 @@
 				</tr>
 			</table>
 		</div>
+		
+		<c:if test="${not empty labReqList}">
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+			<div class="title">试验说明</div>
+			<div style="margin-bottom: 20px;">
+				<table class="info">
+					<tr class="single-row">
+						<td class="title-td">试验名称</td>
+						<td class="title-td">任务号</td>
+						<td class="title-td">实验要求</td>
+						<td class="title-td">商定完成时间</td>
+					</tr>
+					
+					<c:forEach items="${labReqList}" var="vo">
+						<tr>
+							<td>
+								<c:choose>
+									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
+									<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
+									<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
+									<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+								</c:choose>
+							</td>
+							<td>${vo.code}</td>
+							<td style="word-break : break-all;line-height: 20px;">${vo.remark }</td>
+							<td><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/></td>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>	
+		</c:if>
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		<div class="title">结果对比</div>
@@ -423,6 +459,14 @@
 				}
 			});
 		}
+		
+		function expand(){
+			$("#vehicleDiv").toggle();
+			$("#partsDiv").toggle();
+			$("#materialDiv").toggle();
+			$("#showBtn").toggle();
+			$("#hideBtn").toggle();
+		}
 	</script>	
 	
 	<style type="text/css">
@@ -501,6 +545,10 @@
 		
 		.couple-row{
 			background: #f5f5f5;
+		}
+		
+		.remark-span{
+			font-weight: bold;
 		}
 	</style>
 	

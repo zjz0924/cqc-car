@@ -130,6 +130,37 @@
 			</table>
 		</div>
 		
+		<c:if test="${not empty labReqList}">
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+			<div class="title">试验说明</div>
+			<div style="margin-bottom: 20px;">
+				<table class="info">
+					<tr class="single-row">
+						<td class="title-td">试验名称</td>
+						<td class="title-td">任务号</td>
+						<td class="title-td">实验要求</td>
+						<td class="title-td">商定完成时间</td>
+					</tr>
+					
+					<c:forEach items="${labReqList}" var="vo">
+						<tr>
+							<td>
+								<c:choose>
+									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
+									<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
+									<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
+									<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+								</c:choose>
+							</td>
+							<td>${vo.code}</td>
+							<td style="word-break : break-all;line-height: 20px;">${vo.remark }</td>
+							<td><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/></td>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>	
+		</c:if>
+		
 		<!-- PPAP/SOP 对比结果确认 -->
 		<c:if test="${facadeBean.type == 2 or facadeBean.type == 3}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>

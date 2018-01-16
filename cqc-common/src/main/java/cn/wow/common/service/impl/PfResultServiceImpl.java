@@ -17,9 +17,11 @@ import cn.wow.common.dao.PfResultDao;
 import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
+import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.utils.operationlog.OperationType;
@@ -43,6 +45,8 @@ public class PfResultServiceImpl implements PfResultService{
     private TaskRecordDao taskRecordDao;
     @Autowired
 	private OperationLogService operationLogService;
+    @Autowired
+    private LabConclusionService labConclusionService;
 
     public PfResult selectOne(Long id){
     	return pfResultDao.selectOne(id);
@@ -77,13 +81,23 @@ public class PfResultServiceImpl implements PfResultService{
     	pfResultDao.batchAdd(list);
     }
     
-    //性能结果上传
-    public void upload(Account account, List<PfResult> dataList, Long taskId){
+    
+    /**
+     * 性能结果上传
+     * @param account
+     * @param dataList   试验结果
+     * @param conclusionDataList  结论结果
+     */
+    public void upload(Account account, List<PfResult> dataList, Long taskId, List<LabConclusion> conclusionDataList){
     	Task task = taskDao.selectOne(taskId);
     	String remark = "上传零部件型式试验和原材料型式试验结果";
     	
 		// 批量添加
     	batchAdd(dataList);
+    	
+    	if(conclusionDataList != null && conclusionDataList.size() > 0) {
+    		labConclusionService.batchAdd(conclusionDataList);
+    	}
     	
     	List<Integer> catagory = getCatagory(dataList);
     	if(catagory.size() == 2){

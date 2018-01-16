@@ -191,15 +191,31 @@
 		<div style="margin-left: 10px;margin-top:20px;">
 			<div class="title">下达实验室</div>
 			<div>
-				<span class="title-span" style="width: 120px">零部件图谱试验：</span>
+				<span class="title-span" style="width: 120px;font-weight: bold;">零部件图谱试验：</span>
 				<input id="partsAtlId" name="partsAtlId">
 				<input type="checkbox" id="partsAtlCheck" onclick="doCheck('partsAtlCheck')"><span class="red-font">不选</span>
+				
+				<div style="margin-top:5px;margin-left: 25px;">
+					任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsAtlCode" name="partsAtlCode" value="${partsAtlCode }" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					商定完成时间：<input id="partsAtlTime" name="partsAtlTime" value="<fmt:formatDate value='${partsAtlTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+					<div style="margin-top:5px;">
+						测试要求：<input id="partsAtlReq" name="partsAtlReq" value="${partsAtlReq }" class="easyui-textbox"  style="width:390px">
+					</div>
+				</div>
 			</div>
 		
-			<div style="margin-top:5px;">
-				<span class="title-span" style="width: 120px">原材料图谱试验： </span>
+			<div style="margin-top:5px;margin-top: 20px;">
+				<span class="title-span" style="width: 120px;font-weight: bold;">原材料图谱试验： </span>
 				<input id="matAtlId" name="matAtlId">
 				<input type="checkbox" id="matAtlCheck" onclick="doCheck('matAtlCheck')"><span class="red-font">不选</span>
+				
+				<div style="margin-top:5px;margin-left: 25px;">
+					任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matAtlCode" name="matAtlCode" value="${matAtlCode }" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+					商定完成时间：<input id="matAtlTime" name="matAtlTime" value="<fmt:formatDate value='${matAtlTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+					<div style="margin-top:5px;">
+						测试要求：<input id="matAtlReq" name="matAtlReq" value="${matAtlReq }" class="easyui-textbox"  style="width:390px">
+					</div>
+				</div>
 			</div>
 			
 		</div>
@@ -337,6 +353,15 @@
 				}
 				saving = true;
 				
+				// 零部件图谱试验说明
+				var partsAtlCode;
+				var partsAtlTime;
+				var partsAtlReq;
+				// 原材料图谱试验说明
+				var matAtlCode;
+				var matAtlTime;
+				var matAtlReq;
+				
 				var t_id = $("#t_id").val();
 				var v_id = $("#v_id").val();
 				var p_id = $("#p_id").val();
@@ -392,6 +417,18 @@
 					saving = false;
 					return false;
 				}
+				
+				if(!isNull(partsAtlId_val)){
+					partsAtlCode = $("#partsAtlCode").textbox("getValue");
+					partsAtlTime = $("#partsAtlTime").datebox("getValue");
+					partsAtlReq = $("#partsAtlReq").textbox("getValue");
+				}
+				
+				if(!isNull(matAtlId_val)){
+					matAtlCode = $("#matAtlCode").textbox("getValue");
+					matAtlTime = $("#matAtlTime").datebox("getValue");
+					matAtlReq = $("#matAtlReq").textbox("getValue");
+				}
 
 				$.ajax({
 					url : "${ctx}/ppap/transmit",
@@ -400,7 +437,13 @@
 						"i_id" : iId,
 						"partsAtlId" : partsAtlId_val,
 						"matAtlId" : matAtlId_val,
-						"taskType": "${taskType}"
+						"taskType": "${taskType}",
+						"partsAtlCode": partsAtlCode,
+						"partsAtlTime": partsAtlTime,
+						"partsAtlReq": partsAtlReq,
+						"matAtlCode": matAtlCode,
+						"matAtlTime": matAtlTime,
+						"matAtlReq": matAtlReq
 					},
 					success : function(data) {
 						saving = false;
@@ -559,12 +602,27 @@
 			
 			function doCheck(id){
 				var treeId = id.replace("Check", "Id");
+				var codeId = id.replace("Check", "Code");
+				var timeId = id.replace("Check", "Time");
+				var reqId = id.replace("Check", "Req");
+				
 				if($("#" + id).is(':checked')){
 					$("#" + treeId).combotree("setValue","");
-					$("#" + treeId).combotree({ disabled: true });  
+					$("#" + treeId).combotree({ disabled: true });
+
+					$("#" + codeId).textbox({ disabled: true });
+					$("#" + reqId).textbox({ disabled: true });
+					$("#" + timeId).datebox({ disabled: true });
+					$("#" + codeId).textbox("setValue","");
+					$("#" + reqId).textbox("setValue","");
+					$("#" + timeId).datebox("setValue","");
 				}else{
 					$("#" + treeId).combotree({ disabled: false });
 					setupTree(treeId);
+					
+					$("#" + codeId).textbox({ disabled: false });
+					$("#" + reqId).textbox({ disabled: false });
+					$("#" + timeId).datebox({ disabled: false });
 				}
 			}
 		</script>

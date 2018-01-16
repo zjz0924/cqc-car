@@ -144,7 +144,7 @@
 			function applyDetail(id) {
 				$('#applyDetailDialog').dialog({
 					title : '申请信息',
-					width : 900,
+					width : 1100,
 					height : 700,
 					closed : false,
 					cache : false,

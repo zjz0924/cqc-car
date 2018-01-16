@@ -81,13 +81,8 @@
 					columns : [ [ {
 						field : 'name',
 						title : '菜单名',
-						width : 250,
+						width : 200,
 						editor : 'text'
-					}, {
-						field : 'url',
-						title : 'Url',
-						width : 400,
-						align : 'left'
 					}, {
 						field : 'sortNum',
 						title : '排序号',

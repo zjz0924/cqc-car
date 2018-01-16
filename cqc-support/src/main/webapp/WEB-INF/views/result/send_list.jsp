@@ -338,7 +338,7 @@
 			function sendDetail(id) {
 				$('#sendDetailDialog').dialog({
 					title : '结果信息',
-					width : 1000,
+					width : 1200,
 					height : 660,
 					closed : false,
 					cache : false,

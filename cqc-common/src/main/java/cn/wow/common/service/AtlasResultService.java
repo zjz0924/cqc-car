@@ -8,6 +8,7 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabConclusion;
 
 public interface AtlasResultService {
     public AtlasResult selectOne(Long id);
@@ -25,9 +26,10 @@ public interface AtlasResultService {
     /**
      * 图谱结果上传
      * @param account
-     * @param atlasResult
+     * @param atlasResult  实验结果
+     * @param conclusionDataList 结论结果
      */
-    public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time);
+    public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time, List<LabConclusion> conclusionDataList);
     
     /**
      * 获取试验次数

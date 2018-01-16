@@ -31,6 +31,7 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
@@ -40,6 +41,7 @@ import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PartsService;
@@ -82,6 +84,8 @@ public class ApplyController extends AbstractController {
 	private PfResultService pfResultService;
 	@Autowired
 	private ApplyRecordService applyRecordService;
+	@Autowired
+	private LabReqService labReqService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -228,6 +232,9 @@ public class ApplyController extends AbstractController {
 			model.addAttribute("mAtlasResult", mAtlasResult);
 
 			model.addAttribute("facadeBean", task);
+			
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
 		}
 
 		model.addAttribute("superRoleCole", Contants.SUPER_ROLE_CODE);
@@ -354,6 +361,9 @@ public class ApplyController extends AbstractController {
 				model.addAttribute("mPfResult_new", mPfResult_new);
 				model.addAttribute("pAtlasResult_new", pAtlasResult_new);
 				model.addAttribute("mAtlasResult_new", mAtlasResult_new);
+				
+				List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(task.getId());
+				model.addAttribute("labReqList", labReqList);
 			}
 
 			model.addAttribute("applyRecord", applyRecord);
@@ -429,9 +439,9 @@ public class ApplyController extends AbstractController {
 			Parts parts = null;
 			if (task.getType() != TaskTypeEnum.GS.getState()) {
 				// 零部件信息
+				parts = partsService.selectOne(task.getInfo().getpId());
 				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId,
 						p_remark, p_phone, p_contacts)) {
-					parts = partsService.selectOne(task.getInfo().getpId());
 					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
 				
 					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getCode(), parts.getName(), parts.getProTime(), parts.getPlace(), parts.getProNo(), parts.getKeyCode(),
@@ -441,6 +451,8 @@ public class ApplyController extends AbstractController {
 						vo.setMsg("零部件信息已存在");
 						return vo;
 					}
+				}else {
+					parts = null;
 				}
 			}
 

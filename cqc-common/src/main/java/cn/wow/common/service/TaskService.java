@@ -27,8 +27,9 @@ public interface TaskService {
 	 * @param pPatOrgVal    零部件型式
 	 * @param mAtlOrgVal    原材料图谱
 	 * @param mPatOrgVal    原材料型式   
+	 * @param type          类型：1-发送结果， 2-不发送，直接跳过 
 	 */
-    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal) throws Exception;
+    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal, Integer type) throws Exception;
     
     
     /**

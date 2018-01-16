@@ -338,7 +338,7 @@
 			function confirmDetail(id) {
 				$('#confirmDetailDialog').dialog({
 					title : '结果信息',
-					width : 1000,
+					width : 1200,
 					height : 650,
 					closed : false,
 					cache : false,

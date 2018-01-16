@@ -31,12 +31,16 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabConclusion;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabConclusionService;
+import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskService;
@@ -67,6 +71,10 @@ public class QueryController extends AbstractController {
 	private AtlasResultService atlasResultService;
 	@Autowired
 	private PfResultService pfResultService;
+	@Autowired
+	private LabReqService labReqService;
+	@Autowired
+	private LabConclusionService labConclusionService;
 	
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -181,7 +189,8 @@ public class QueryController extends AbstractController {
 	public String detail(HttpServletRequest request, Model model, String id) {
 		if (StringUtils.isNotBlank(id)) {
 			Task task = taskService.selectOne(Long.parseLong(id));
-
+			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(Long.parseLong(id));
+			
 			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()){   // OTS/GS 结果确认
 				
 				if(task.getMatAtlResult() >= 2 || task.getMatPatResult() >= 2 || task.getPartsAtlResult() >= 2 || task.getPartsPatResult() >= 2) {
@@ -213,6 +222,21 @@ public class QueryController extends AbstractController {
 					model.addAttribute("mPfResult", mPfResult);
 					// 零部件型式结果
 					model.addAttribute("pPfResult", pPfResult);
+					
+					// 试验结论
+					if (conclusionList != null && conclusionList.size() > 0) {
+						for (LabConclusion conclusion : conclusionList) {
+							if (conclusion.getType().intValue() == 1) {
+								model.addAttribute("partsAtlConclusion", conclusion);
+							} else if (conclusion.getType().intValue() == 2) {
+								model.addAttribute("matAtlConclusion", conclusion);
+							} else if (conclusion.getType().intValue() == 3) {
+								model.addAttribute("partsPatConclusion", conclusion);
+							} else {
+								model.addAttribute("matPatConclusion", conclusion);
+							}
+						}
+					}
 				}
 			}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ){
 				if(task.getState() >= 6) {
@@ -249,8 +273,18 @@ public class QueryController extends AbstractController {
 					model.addAttribute("mAtlasResult", mAtlasResult);
 					model.addAttribute("pAtlasResult", pAtlasResult);
 					model.addAttribute("compareResult", compareResult);
+					
+					// 试验结论
+					if (conclusionList != null && conclusionList.size() > 0) {
+						model.addAttribute("conclusionList", conclusionList);
+					}
 				}
 			}
+			
+			// 实验说明
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(Long.parseLong(id));
+			model.addAttribute("labReqList", labReqList);
+			
 			model.addAttribute("facadeBean", task);
 		}
 		model.addAttribute("resUrl", resUrl);

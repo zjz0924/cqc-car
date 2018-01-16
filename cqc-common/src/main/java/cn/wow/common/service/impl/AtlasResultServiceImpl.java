@@ -28,9 +28,11 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.OperationLogService;
 
 @Service
@@ -49,7 +51,8 @@ public class AtlasResultServiceImpl implements AtlasResultService{
     private ExamineRecordDao examineRecordDao;
     @Autowired
 	private OperationLogService operationLogService;
-    
+    @Autowired
+    private LabConclusionService labConclusionService;
 
     public AtlasResult selectOne(Long id){
     	return atlasResultDao.selectOne(id);
@@ -89,12 +92,16 @@ public class AtlasResultServiceImpl implements AtlasResultService{
      * @param account
      * @param atlasResult
      */
-	public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time) {
+	public void upload(Account account, List<AtlasResult> atlasResult, Long taskId, Date time, List<LabConclusion> conclusionDataList) {
 		Task task = taskDao.selectOne(taskId);
 		String remark = "";
 		
 		// 批量添加
 		batchAdd(atlasResult);
+		
+		if(conclusionDataList != null && conclusionDataList.size() > 0) {
+    		labConclusionService.batchAdd(conclusionDataList);
+    	}
 		
 		if(atlasResult != null && atlasResult.size() == 8){
 			// 实验结果

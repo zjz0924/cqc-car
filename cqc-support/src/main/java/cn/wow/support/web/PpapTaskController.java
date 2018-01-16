@@ -1,5 +1,6 @@
 package cn.wow.support.web;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
@@ -42,6 +44,7 @@ import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PartsService;
@@ -91,6 +94,8 @@ public class PpapTaskController extends AbstractController {
 	private ApplyRecordService applyRecordService;
 	@Autowired
 	private AtlasResultService atlasResultService;
+	@Autowired
+	private LabReqService labReqService;
 	
 	/**
 	 * 首页
@@ -230,6 +235,22 @@ public class PpapTaskController extends AbstractController {
 			rMap.put("custom_order_sql", "create_time asc");
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
+			// 试验说明
+			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
+			if (labReqList != null && labReqList.size() > 0) {
+				for(LabReq labReq: labReqList) {
+					if(task.getPartsAtlId() != null && labReq.getType() == 1) {
+						model.addAttribute("partsAtlCode", labReq.getCode());
+						model.addAttribute("partsAtlTime", labReq.getTime());
+						model.addAttribute("partsAtlReq", labReq.getRemark());
+					}else if(task.getMatAtlId() != null && labReq.getType() == 2) {
+						model.addAttribute("matAtlCode", labReq.getCode());
+						model.addAttribute("matAtlTime", labReq.getTime());
+						model.addAttribute("matAtlReq", labReq.getRemark());
+					}
+				}
+			}
+			
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
 		}
@@ -252,13 +273,24 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, int taskType) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, Long partsAtlId,
+			Long matAtlId, Long partsPatId, Long matPatId, int taskType, String partsAtlCode, String partsAtlTime,
+			String partsAtlReq, String matAtlCode, String matAtlTime, String matAtlReq) {
 		AjaxVO vo = new AjaxVO();
-
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			
-			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId, taskType);
+			List<LabReq> labReqList = new ArrayList<LabReq>();
+			if (partsAtlId != null) {
+				labReqList.add(new LabReq(partsAtlCode, StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, t_id, 1));
+			}
+			if (matAtlId != null) {
+				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null, matAtlReq, t_id, 2));
+			}
+			
+			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId, taskType, labReqList);
 			if (!flag) {
 				vo.setSuccess(false);
 				vo.setMsg("已有进行中抽样，不能再申请");
@@ -407,6 +439,11 @@ public class PpapTaskController extends AbstractController {
 
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("approveType", approveType);
+		
+		if(approveType == 3) {
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
+		}
 		
 		if (approveType == 1) {
 			return "task/ppap/approve_info_detail";
@@ -590,6 +627,9 @@ public class PpapTaskController extends AbstractController {
 			model.addAttribute("compareResult", compareResult);
 			
 			model.addAttribute("facadeBean", task);
+			
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
 		}
 
 		model.addAttribute("resUrl", resUrl);

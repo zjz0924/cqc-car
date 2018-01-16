@@ -39,12 +39,16 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabConclusion;
+import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabConclusionService;
+import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.TaskService;
@@ -94,6 +98,10 @@ public class ResultController extends AbstractController {
 	private InfoService infoService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private LabReqService labReqService;
+	@Autowired
+	private LabConclusionService labConclusionService;
 	
 	
 	//-----------------------------------    结果上传        ---------------------------------------------------------------
@@ -208,6 +216,9 @@ public class ResultController extends AbstractController {
 			model.addAttribute("pNum", pNum + 1);
 			model.addAttribute("mNum", mNum + 1);
 		}
+		
+		List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+		model.addAttribute("labReqList", labReqList);
 
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("type", type);
@@ -237,7 +248,7 @@ public class ResultController extends AbstractController {
 			@RequestParam(value = "m_infLab_pic", required = false) MultipartFile m_infile,
 			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile,
 			@RequestParam(value = "m_tempLab_pic", required = false) MultipartFile m_tempfile,
-			@RequestParam(value = "p_tempLab_pic", required = false) MultipartFile p_tempfile) {
+			@RequestParam(value = "p_tempLab_pic", required = false) MultipartFile p_tempfile, String conclusionResult) {
 		AjaxVO vo = new AjaxVO();
 		String pic = null;
 		
@@ -315,8 +326,11 @@ public class ResultController extends AbstractController {
 				dataList.add(m_temp);
 			}
 			
+			ObjectMapper mapper = new ObjectMapper();
+			List<LabConclusion> conclusionDataList = mapper.readValue(conclusionResult, new TypeReference<List<LabConclusion>>() { });
+			
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			atlasResultService.upload(account, dataList, taskId, date);
+			atlasResultService.upload(account, dataList, taskId, date, conclusionDataList);
 		} catch (Exception ex) {
 			logger.error("图谱上传失败", ex);
 
@@ -335,21 +349,21 @@ public class ResultController extends AbstractController {
 	 * 型式结果上传
 	 * 
 	 * @param taskId  任务ID
-	 * @param tgLab   热重分析描述
-	 * @param infLab  红外光分析描述
-	 * @param dtLab   差热扫描描述
+	 * @param result  试验结果
+	 * @param conclusionResult 结论结果
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/patternUpload")
-	public AjaxVO patternUpload(HttpServletRequest request, Model model, Long taskId, String result){
+	public AjaxVO patternUpload(HttpServletRequest request, Model model, Long taskId, String result, String conclusionResult){
 		AjaxVO vo = new AjaxVO();
 		
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-	        List<PfResult> dataList = mapper.readValue(result,new TypeReference<List<PfResult>>() { });
+			List<PfResult> dataList = mapper.readValue(result, new TypeReference<List<PfResult>>() {});
+			List<LabConclusion> conclusionDataList = mapper.readValue(conclusionResult, new TypeReference<List<LabConclusion>>() { });
 	        
 	        Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-	        pfResultService.upload(account, dataList, taskId);
+	        pfResultService.upload(account, dataList, taskId, conclusionDataList);
 	        
 		}catch(Exception ex){
 			logger.error("型式结果上传失败", ex);
@@ -503,6 +517,28 @@ public class ResultController extends AbstractController {
 			}
 			
 			model.addAttribute("facadeBean", task);
+			
+			// 试验要求
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
+			
+			
+			// 试验结论
+			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(id);
+			if (conclusionList != null && conclusionList.size() > 0) {
+				for (LabConclusion conclusion : conclusionList) {
+					if (conclusion.getType().intValue() == 1) {
+						model.addAttribute("partsAtlConclusion", conclusion);
+					} else if (conclusion.getType().intValue() == 2) {
+						model.addAttribute("matAtlConclusion", conclusion);
+					} else if (conclusion.getType().intValue() == 3) {
+						model.addAttribute("partsPatConclusion", conclusion);
+					} else {
+						model.addAttribute("matPatConclusion", conclusion);
+					}
+				}
+			}
+			
 		}
 
 		model.addAttribute("resUrl", resUrl);
@@ -518,15 +554,16 @@ public class ResultController extends AbstractController {
 	 * @param pPatOrgVal    零部件型式
 	 * @param mAtlOrgVal    原材料图谱
 	 * @param mPatOrgVal    原材料型式   
+	 * @param type          类型：1-发送结果， 2-不发送，直接跳过 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/sendResult")
-	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal){
+	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal, Integer type){
 		AjaxVO vo = new AjaxVO();
 		
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			taskService.sendResult(account, taskId, pAtlOrgVal, pPatOrgVal, mAtlOrgVal, mPatOrgVal);
+			taskService.sendResult(account, taskId, pAtlOrgVal, pPatOrgVal, mAtlOrgVal, mPatOrgVal, type);
 		}catch(Exception ex){
 			logger.error("结果发送失败", ex);
 
@@ -630,6 +667,9 @@ public class ResultController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
+			// 试验结论
+			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(id);
+			
 			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()){   // OTS/GS 结果确认
 				// 性能结果
 				Map<String, Object> pfMap = new HashMap<String, Object>();
@@ -659,6 +699,21 @@ public class ResultController extends AbstractController {
 				model.addAttribute("mPfResult", mPfResult);
 				// 零部件型式结果
 				model.addAttribute("pPfResult", pPfResult);
+				
+				if (conclusionList != null && conclusionList.size() > 0) {
+					for (LabConclusion conclusion : conclusionList) {
+						if (conclusion.getType().intValue() == 1) {
+							model.addAttribute("partsAtlConclusion", conclusion);
+						} else if (conclusion.getType().intValue() == 2) {
+							model.addAttribute("matAtlConclusion", conclusion);
+						} else if (conclusion.getType().intValue() == 3) {
+							model.addAttribute("partsPatConclusion", conclusion);
+						} else {
+							model.addAttribute("matPatConclusion", conclusion);
+						}
+					}
+				}
+				
 			}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ){
 				
 				// 基准图谱结果
@@ -685,9 +740,16 @@ public class ResultController extends AbstractController {
 				model.addAttribute("mAtlasResult", mAtlasResult);
 				model.addAttribute("pAtlasResult", pAtlasResult);
 				model.addAttribute("compareResult", compareResult);
+				
+				if (conclusionList != null && conclusionList.size() > 0) {
+					model.addAttribute("conclusionList", conclusionList);
+				}
 			}
 						
 			model.addAttribute("facadeBean", task);
+			
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
 		}
 		
 		model.addAttribute("resUrl", resUrl);
@@ -827,6 +889,9 @@ public class ResultController extends AbstractController {
 			model.addAttribute("pAtlasResult", pAtlasResult);
 						
 			model.addAttribute("facadeBean", task);
+			
+			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			model.addAttribute("labReqList", labReqList);
 		}
 		
 		model.addAttribute("resUrl", resUrl);
@@ -979,7 +1044,6 @@ public class ResultController extends AbstractController {
 					if (flag && !"备注".equals(titleObj.get(6).toString())) {
 						flag = false;
 					}
-
 					if (!flag) {
 						vo.setSuccess(false);
 						vo.setMsg("导入模板不正确");
@@ -1025,7 +1089,6 @@ public class ResultController extends AbstractController {
 					if(obj.size() >= 7  && obj.get(6) != null){
 						pf.setRemark(obj.get(6).toString());
 					}
-					
 					createList.add(pf);
 				}
 			}
@@ -1049,6 +1112,9 @@ public class ResultController extends AbstractController {
 	}
 	
 	
+	/**
+	 * 导出结果
+	 */
 	@RequestMapping(value = "/exportResult")
 	public void exportResult(HttpServletRequest request, HttpServletResponse response, String mResult, String pResult) {
 		String filename = "试验结果清单";
@@ -1081,6 +1147,9 @@ public class ResultController extends AbstractController {
 			sh.setColumnWidth(4, (short) 9000);
 			sh.setColumnWidth(5, (short) 6000);
 			sh.setColumnWidth(6, (short) 3000);
+			sh.setColumnWidth(7, (short) 6000);
+			sh.setColumnWidth(8, (short) 6000);
+			sh.setColumnWidth(9, (short) 6000);
 			
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
