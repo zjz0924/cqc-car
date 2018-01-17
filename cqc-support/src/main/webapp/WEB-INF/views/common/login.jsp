@@ -1,76 +1,56 @@
 <%@ page contentType="text/html;charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@include file="/page/taglibs.jsp" %>
+<%@include file="/page/taglibs.jsp"%>
 
 <!DOCTYPE html>
-<html>
-	<head>
-    	<meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <title>后台管理系统</title>	
-		
-		<link href='${ctx}/resources/css/cssreset.css' rel="stylesheet" type="text/css" />
-		
-	    <style type="text/css">
-	    	body{ background:#152652 url(${ctx}/resources/img/login/bg_31.png) repeat-x top;}
 
-			.wrap{ width:955px; height:567px; margin:0 auto; background:url(${ctx}/resources/img/login/bg_321.jpg) no-repeat center; margin-top:79px; position:relative;}
-			.wrap table{ position:absolute; top:203px; left:408px;}
-			.wrap table td input{ border:1px solid #a5b7ca; outline:none; padding-left:5px; width: 140px; line-height: 19px;}
-			.wrap table td{ height:24px; padding:5px; line-height:24px; vertical-align:middle;}
-			.wrap table td span{ border:1px solid #126AEF; float:right; margin-left:5px; height:22px;}
-			.wrap table td.btn input{ width:57px; height:20px; text-align:center; line-height:20px; background:url(${ctx}/resources/img/login/bg_33.png) no-repeat; cursor:pointer; color:#fff; margin-right:15px;border:none;}
-	    </style>
-	</head>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>材料数据库登陆认证</title>
+	<link href="${ctx}/resources/Wopop_files/style_log.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/Wopop_files/style.css">
+	<link rel="stylesheet" type="text/css" href="${ctx}/resources/Wopop_files/userpanel.css">
+	<script src="${ctx}/resources/js/jquery-2.1.1.min.js"></script>
 </head>
 
-<body>
-
-	<div class="wrap ">
+<body class="login" mycollectionplug="bind">
+	<div class="login_m">
 		<form id="loginForm" action="${ctx}/login" method="post" class="form-horizontal login" >
-		    <table>
-		        <tr>
-		            <td>用户名</td>
-		            <td><input id="username" name="username" type="text"/></td>
-		        </tr>
-		        <tr>
-		            <td>密码</td>
-		            <td><input type="password" id="password" name="password"></input></td>
-		        </tr>
-		        <tr>
-		            <td>验证码</td>
-		            <td>
-		            	<input name="vcode" id="vcode" type="text" maxLength="4"/>
+			<div class="login_boder">
+				<div class="mainTitle">SGMW材料数据库平台登陆认证</div>
+			
+				<div class="login_padding" id="login_model">
+					<div>
+						<span class="labelSpan">用户名</span>
+						<input type="text" id="username" name="username" class="txt_input txt_input2">
+					</div>
+					
+					<div>
+						<span class="labelSpan">密码</span>
+						<input type="password" name="password" id="password" class="txt_input">
+					</div>
+	
+					<div>
+						<span class="labelSpan">验证码</span>
+						<input name="vcode" id="vcode" type="text" maxLength="4" class="txt_input" style="width: 130px;"/>
 		            	<span>
-		            		<img src="${ctx}/verifycode" id="verifyimg" title="看不清？点击刷新！" style="width:50px;height:20px;"/>
+		            		<img src="${ctx}/verifycode" id="verifyimg" title="看不清？点击刷新！" style="width:80px;height:25px;"/>
 		            	</span>
-		            </td>
-		        </tr>
-		        <tr>
-		            <td></td>
-		            <td class="btn">
-		            	<input type="button" name="" value="登录" onclick="doSubmit()"/>
-		            	<input name="" type="button"  value="重置" onclick="reset()"/>
-		            </td>
-		        </tr>
-		    </table>
-	    </form>
-	    <div style="color:#d25; font-weight:bold;margin-left: 300px;padding-top: 346px;" id="error_message">
-	    	<c:choose>
-		    	<c:when test="${not empty error }">
-		    		${error}
-		    	</c:when>
-		    	<c:otherwise>
-		    		您还没有登录，请先登录。
-		    	</c:otherwise>
-	    	</c:choose>
-	    </div>
+					</div>
+					
+					<div class="rem_sub">
+						<span id="error_message" style="color:#d25; font-weight:bold;">${error}</span>
+						<label> 
+							<input type="button" class="sub_button" name="button" value="登录" style="opacity: 0.7;"  onclick="doSubmit()">
+						</label>
+					</div>
+				</div>
+			</div>
+		</form>
 	</div>
-		
-	<script src="${ctx}/resources/js/jquery-2.1.1.min.js"></script>
-
+	
 	<script type="text/javascript">
 		$(function(){
 			$("#verifyimg").click(function(){
@@ -148,5 +128,6 @@
 			$('#loginForm').submit();
 		}
 	</script>
+
 </body>
 </html>

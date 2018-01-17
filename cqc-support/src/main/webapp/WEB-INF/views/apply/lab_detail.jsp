@@ -183,9 +183,6 @@
 								<td class="remark-span"><span class="req-span">*</span>试验结果</td>
 								<td class="remark-span"><span class="req-span">*</span>结果评价</td>
 								<td class="remark-span">备注</td>
-								<td class="remark-span">试验结论</td>
-								<td class="remark-span">报告编号</td>
-								<td class="remark-span">其它</td>
 								<td class="remark-span">操作</td>
 							</tr>
 						
@@ -193,43 +190,28 @@
 								<tr p_num="p_${status.index+ 1}">
 									<td style="background: #f5f5f5;padding-left:5px;">${status.index + 1}</td>
 									<td class="value-td1">
-										<input id="p_project_${status.index+ 1}" name="p_project_${status.index+ 1}" value="${vo.project}" class="easyui-textbox" style="width:105px">
+										<input id="p_project_${status.index+ 1}" name="p_project_${status.index+ 1}" value="${vo.project}" class="easyui-textbox" style="width:170px">
 										<span id="p_project_${status.index+ 1}_error" class="req-span"></span>
 									</td>
 									<td class="value-td1">
-										<input id="p_standard_${status.index+ 1}" name="p_standard_${status.index+ 1}" value="${vo.standard }" class="easyui-textbox" style="width:105px">
+										<input id="p_standard_${status.index+ 1}" name="p_standard_${status.index+ 1}" value="${vo.standard }" class="easyui-textbox" style="width:170px">
 										<span id="p_standard_${status.index+ 1}_error" class="req-span"></span>
 									</td>
 									<td class="value-td1">
-										<input id="p_require_${status.index+ 1}" name="p_require_${status.index+ 1}"  value="${vo.require }" class="easyui-textbox" style="width:105px">
+										<input id="p_require_${status.index+ 1}" name="p_require_${status.index+ 1}"  value="${vo.require }" class="easyui-textbox" style="width:170px">
 										<span id="p_require_${status.index+ 1}_error" class="req-span"></span>
 									</td>
 									<td class="value-td1">
-										<input id="p_result_${status.index+ 1}" name="p_result_${status.index+ 1}" value="${vo.result }" class="easyui-textbox" style="width:105px">
+										<input id="p_result_${status.index+ 1}" name="p_result_${status.index+ 1}" value="${vo.result }" class="easyui-textbox" style="width:170px">
 										<span id="p_result_${status.index+ 1}_error" class="req-span"></span>
 									</td>
 									<td class="value-td1">
-										<input id="p_evaluate_${status.index+ 1}" name="p_evaluate_${status.index+ 1}" value="${vo.evaluate }" class="easyui-textbox" style="width:105px">
+										<input id="p_evaluate_${status.index+ 1}" name="p_evaluate_${status.index+ 1}" value="${vo.evaluate }" class="easyui-textbox" style="width:170px">
 										<span id="p_evaluate_${status.index+ 1}_error" class="req-span"></span>
 									</td>
 									<td class="value-td1">
-										<input id="p_remark_${status.index+ 1}" name="p_remark_${status.index+ 1}" value="${vo.remark }" class="easyui-textbox" style="width:105px">
+										<input id="p_remark_${status.index+ 1}" name="p_remark_${status.index+ 1}" value="${vo.remark }" class="easyui-textbox" style="width:170px">
 										<span id="p_remark_${status.index+ 1}_error" class="req-span"></span>
-									</td>
-									
-									<td class="value-td1">
-										<input id="p_conclusion_${status.index+ 1}" name="p_conclusion_${status.index+ 1}" value="${vo.conclusion }"  class="easyui-textbox" style="width:105px">
-										<span id="p_conclusion_${status.index+ 1}_error" class="req-span"></span>
-									</td>
-									
-									<td class="value-td1">
-										<input id="p_repNum_${status.index+ 1}" name="p_repNum_${status.index+ 1}" value="${vo.repNum }"  class="easyui-textbox" style="width:105px">
-										<span id="p_repNum_${status.index+ 1}_error" class="req-span"></span>
-									</td>
-									
-									<td class="value-td1">
-										<input id="p_other_${status.index+ 1}" name="p_other_${status.index+ 1}" value="${vo.other }"  class="easyui-textbox" style="width:105px">
-										<span id="p_other_${status.index+ 1}_error" class="req-span"></span>
 									</td>
 									
 									<td style="background: #f5f5f5;padding-left:5px;">
@@ -240,6 +222,72 @@
 						</table>
 						
 						<div style="color:red;margin-top: 10px;margin-left: 10px;font-weight: bold;" id="p_pfTable_error"></div>
+						
+						<div style="margin-top: 20px;">	
+							<table class="info">
+								<tr class="single-row">
+									<td class="remark-span"><span class="req-span">*</span>试验结论</td>
+									<td class="remark-span"><span class="req-span">*</span>报告编号</td>
+									<td class="remark-span"><span class="req-span">*</span>主检</td>
+									<td class="remark-span"><span class="req-span">*</span>审核</td>
+									<td class="remark-span"><span class="req-span">*</span>签发</td>
+									<td class="remark-span"><span class="req-span">*</span>收样时间</td>
+									<td class="remark-span"><span class="req-span">*</span>试验时间</td>
+									<td class="remark-span"><span class="req-span">*</span>签发时间</td>
+									<td class="remark-span">备注</td>
+								</tr>
+								
+								<tr>
+									<td class="value-td1">
+										<select id="partsPat_conclusion" name="partsPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+											<option value="">请选择</option>
+											<option value="合格" <c:if test="${partsPatConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
+											<option value="不合格" <c:if test="${partsPatConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
+											<option value="其它" <c:if test="${partsPatConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+										</select>
+										<span id="partsPat_conclusion_error" class="req-span"></span>
+									</td>
+									<td class="value-td1">
+										<input id="partsPat_repNum" name="partsPat_repNum" value="${partsPatConclusion.repNum }" class="easyui-textbox" style="width:115px">
+										<span id="partsPat_repNum_error" class="req-span"></span>
+									</td>
+									<td class="value-td1">
+										<input id="partsPat_mainInspe" name="partsPat_mainInspe" value="${partsPatConclusion.mainInspe }"  class="easyui-textbox" style="width:115px">
+										<span id="partsPat_mainInspe_error" class="req-span"></span>
+									</td>
+									
+									<td class="value-td1">
+										<input id="partsPat_examine" name="partsPat_examine" value="${partsPatConclusion.examine }" class="easyui-textbox" style="width:115px">
+										<span id="partsPat_examine_error" class="req-span"></span>
+									</td>
+									
+									<td class="value-td1">
+										<input id="partsPat_issue" name="partsPat_issue" value="${partsPatConclusion.issue }" class="easyui-textbox" style="width:115px">
+										<span id="partsPat_issue_error" class="req-span"></span>
+									</td>
+									
+									<td class="value-td1">
+										<input id="partsPat_receiveDate" name="partsPat_receiveDate" value="${partsPatConclusion.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+										<span id="partsPat_receiveDate_error" class="req-span"></span>
+									</td>
+									
+									<td class="value-td1">
+										<input id="partsPat_examineDate" name="partsPat_examineDate" value="${partsPatConclusion.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+										<span id="partsPat_examineDate_error" class="req-span"></span>
+									</td>
+									
+									<td class="value-td1">
+										<input id="partsPat_issueDate" name="partsPat_issueDate" value="${partsPatConclusion.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+										<span id="partsPat_issueDate_error" class="req-span"></span>
+									</td>
+									
+									<td class="value-td1">
+										<input id="partsPat_remark" name="partsPat_remark" value="${partsPatConclusion.remark }" class="easyui-textbox" style="width:115px">
+										<span id="partsPat_remark_error" class="req-span"></span>
+									</td>
+								</tr>
+							</table>
+						</div>
 					</c:if>
 				</c:if>
 			
@@ -343,6 +391,73 @@
 							</tr>
 						</c:if>
 					</table>
+					
+					<div style="margin-top: 20px;">	
+						<table class="info">
+							<tr class="single-row">
+								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
+								<td class="remark-span"><span class="req-span">*</span>报告编号</td>
+								<td class="remark-span"><span class="req-span">*</span>主检</td>
+								<td class="remark-span"><span class="req-span">*</span>审核</td>
+								<td class="remark-span"><span class="req-span">*</span>签发</td>
+								<td class="remark-span"><span class="req-span">*</span>收样时间</td>
+								<td class="remark-span"><span class="req-span">*</span>试验时间</td>
+								<td class="remark-span"><span class="req-span">*</span>签发时间</td>
+								<td class="remark-span">备注</td>
+							</tr>
+							
+							<tr>
+								<td class="value-td1">
+									<select id="partsAtl_conclusion" name="partsAtl_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+										<option value="">请选择</option>
+										<option value="合格" <c:if test="${partsAtlConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
+										<option value="不合格" <c:if test="${partsAtlConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
+										<option value="其它" <c:if test="${partsAtlConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									</select>
+									<span id="partsAtl_conclusion_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="partsAtl_repNum" name="partsAtl_repNum"  value="${partsAtlConclusion.repNum }" class="easyui-textbox" style="width:115px">
+									<span id="partsAtl_repNum_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="partsAtl_mainInspe" name="partsAtl_mainInspe" value="${partsAtlConclusion.mainInspe }" class="easyui-textbox" style="width:115px">
+									<span id="partsAtl_mainInspe_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="partsAtl_examine" name="partsAtl_examine" value="${partsAtlConclusion.examine }" class="easyui-textbox" style="width:115px">
+									<span id="partsAtl_examine_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="partsAtl_issue" name="partsAtl_issue" value="${partsAtlConclusion.issue }" class="easyui-textbox" style="width:115px">
+									<span id="partsAtl_issue_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="partsAtl_receiveDate" name="partsAtl_receiveDate" value="${partsAtlConclusion.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+									<span id="partsAtl_receiveDate_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="partsAtl_examineDate" name="partsAtl_examineDate" value="${partsAtlConclusion.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+									<span id="partsAtl_examineDate_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="partsAtl_issueDate" name="partsAtl_issueDate" value="${partsAtlConclusion.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+									<span id="partsAtl_issueDate_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="partsAtl_remark" name="partsAtl_remark" value="${partsAtlConclusion.remark }" class="easyui-textbox" style="width:115px">
+									<span id="partsAtl_remark_error" class="req-span"></span>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
 				</c:if>
 			
 				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
@@ -360,9 +475,6 @@
 							<td class="remark-span"><span class="req-span">*</span>试验结果</td>
 							<td class="remark-span"><span class="req-span">*</span>结果评价</td>
 							<td class="remark-span">备注</td>
-							<td class="remark-span">试验结论</td>
-							<td class="remark-span">报告编号</td>
-							<td class="remark-span">其它</td>
 							<td class="remark-span">操作</td>
 						</tr>
 							
@@ -370,45 +482,29 @@
 							<tr m_num="m_${status.index+ 1}">
 								<td style="background: #f5f5f5;padding-left:5px;">${status.index + 1}</td>
 								<td class="value-td1">
-									<input id="m_project_${status.index+ 1}" name="m_project_${status.index + 1}" value="${vo.project}" class="easyui-textbox" style="width:105px">
+									<input id="m_project_${status.index+ 1}" name="m_project_${status.index + 1}" value="${vo.project}" class="easyui-textbox" style="width:170px">
 									<span id="m_project_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="m_standard_${status.index+ 1}" name="m_standard_${status.index + 1}" value="${vo.standard }" class="easyui-textbox" style="width:105px">
+									<input id="m_standard_${status.index+ 1}" name="m_standard_${status.index + 1}" value="${vo.standard }" class="easyui-textbox" style="width:170px">
 									<span id="m_standard_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="m_require_${status.index+ 1}" name="m_require_${status.index + 1}" value="${vo.require }" class="easyui-textbox" style="width:105px">
+									<input id="m_require_${status.index+ 1}" name="m_require_${status.index + 1}" value="${vo.require }" class="easyui-textbox" style="width:170px">
 									<span id="m_require_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="m_result_${status.index+ 1}" name="m_result_${status.index+ 1}"  value="${vo.result }" class="easyui-textbox" style="width:105px">
+									<input id="m_result_${status.index+ 1}" name="m_result_${status.index+ 1}"  value="${vo.result }" class="easyui-textbox" style="width:170px">
 									<span id="m_result_${status.index+ 1}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="m_evaluate_${status.index+ 1}" name="m_evaluate_${status.index+ 1}" value="${vo.evaluate }" class="easyui-textbox" style="width:105px">
+									<input id="m_evaluate_${status.index+ 1}" name="m_evaluate_${status.index+ 1}" value="${vo.evaluate }" class="easyui-textbox" style="width:170px">
 									<span id="m_evaluate_${status.index+ 1}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="m_remark_${status.index+ 1}" name="m_remark_${status.index+ 1}" value="${vo.remark }" class="easyui-textbox" style="width:105px">
+									<input id="m_remark_${status.index+ 1}" name="m_remark_${status.index+ 1}" value="${vo.remark }" class="easyui-textbox" style="width:170px">
 									<span id="m_remark_${status.index+ 1}_error" class="req-span"></span>
 								</td>
-								
-								<td class="value-td1">
-									<input id="m_conclusion_${status.index+ 1}" name="m_conclusion_${status.index+ 1}" value="${vo.conclusion }" class="easyui-textbox" style="width:105px">
-									<span id="m_conclusion_${status.index+ 1}_error" class="req-span"></span>
-								</td>
-								
-								<td class="value-td1">
-									<input id="m_repNum_${status.index+ 1}" name="m_repNum_${status.index+ 1}" value="${vo.repNum }" class="easyui-textbox" style="width:105px">
-									<span id="m_repNum_${status.index+ 1}_error" class="req-span"></span>
-								</td>
-								
-								<td class="value-td1">
-									<input id="m_other_${status.index+ 1}" name="m_other_${status.index+ 1}" value="${vo.other }" class="easyui-textbox" style="width:105px">
-									<span id="m_other_${status.index+ 1}_error" class="req-span"></span>
-								</td>
-								
 								
 								<td style="background: #f5f5f5;padding-left:5px;">
 									<a href="javascript:void(0);"  onclick="deleteResult('m','m_${status.index+ 1}')"><i class="icon icon-cancel"></i></a>
@@ -417,6 +513,73 @@
 						</c:forEach>
 					</table>
 					<div style="color:red;margin-top: 10px;margin-left: 10px;font-weight: bold;" id="m_pfTable_error"></div>
+					
+					<div style="margin-top: 20px;">	
+						<table class="info">
+							<tr class="single-row">
+								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
+								<td class="remark-span"><span class="req-span">*</span>报告编号</td>
+								<td class="remark-span"><span class="req-span">*</span>主检</td>
+								<td class="remark-span"><span class="req-span">*</span>审核</td>
+								<td class="remark-span"><span class="req-span">*</span>签发</td>
+								<td class="remark-span"><span class="req-span">*</span>收样时间</td>
+								<td class="remark-span"><span class="req-span">*</span>试验时间</td>
+								<td class="remark-span"><span class="req-span">*</span>签发时间</td>
+								<td class="remark-span">备注</td>
+							</tr>
+							
+							<tr>
+								<td class="value-td1">
+									<select id="matPat_conclusion" name="matPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+										<option value="">请选择</option>
+										<option value="合格" <c:if test="${matPatConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
+										<option value="不合格" <c:if test="${matPatConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
+										<option value="其它" <c:if test="${matPatConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									</select>
+									<span id="matPat_conclusion_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="matPat_repNum" name="matPat_repNum" value="${matPatConclusion.repNum }" class="easyui-textbox" style="width:115px">
+									<span id="matPat_repNum_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="matPat_mainInspe" name="matPat_mainInspe"  value="${matPatConclusion.mainInspe }" class="easyui-textbox" style="width:115px">
+									<span id="matPat_mainInspe_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="matPat_examine" name="matPat_examine" value="${matPatConclusion.examine }" class="easyui-textbox" style="width:115px">
+									<span id="matPat_examine_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="matPat_issue" name="matPat_issue" value="${matPatConclusion.issue }" class="easyui-textbox" style="width:115px">
+									<span id="matPat_issue_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="matPat_receiveDate" name="matPat_receiveDate" value="${matPatConclusion.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+									<span id="matPat_receiveDate_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="matPat_examineDate" name="matPat_examineDate" value="${matPatConclusion.examineDate }"  class="easyui-datebox" style="width:115px" data-options="editable:false">
+									<span id="matPat_examineDate_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="matPat_issueDate" name="matPat_issueDate" value="${matPatConclusion.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+									<span id="matPat_issueDate_error" class="req-span"></span>
+								</td>
+								
+								<td class="value-td1">
+									<input id="matPat_remark" name="matPat_remark" value="${matPatConclusion.remark }"  class="easyui-textbox" style="width:115px">
+									<span id="matPat_remark_error" class="req-span"></span>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
 				</c:if>
 			</c:if>
 			
@@ -522,6 +685,188 @@
 						</tr>
 					</c:if>
 				</table>
+				
+				<div style="margin-top: 20px;">	
+					<table class="info">
+						<tr class="single-row">
+							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
+							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
+							<td class="remark-span"><span class="req-span">*</span>主检</td>
+							<td class="remark-span"><span class="req-span">*</span>审核</td>
+							<td class="remark-span"><span class="req-span">*</span>签发</td>
+							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
+							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
+							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
+							<td class="remark-span">备注</td>
+						</tr>
+						
+						<tr>
+							<td class="value-td1">
+								<select id="matAtl_conclusion" name="matAtl_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+									<option value="">请选择</option>
+									<option value="合格" <c:if test="${matAtlConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
+									<option value="不合格" <c:if test="${matAtlConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
+									<option value="其它" <c:if test="${matAtlConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+								</select>
+								<span id="matAtl_conclusion_error" class="req-span"></span>
+							</td>
+							<td class="value-td1">
+								<input id="matAtl_repNum" name="matAtl_repNum" value="${matAtlConclusion.repNum }" class="easyui-textbox" style="width:115px">
+								<span id="matAtl_repNum_error" class="req-span"></span>
+							</td>
+							<td class="value-td1">
+								<input id="matAtl_mainInspe" name="matAtl_mainInspe" value="${matAtlConclusion.mainInspe }" class="easyui-textbox" style="width:115px">
+								<span id="matAtl_mainInspe_error" class="req-span"></span>
+							</td>
+							
+							<td class="value-td1">
+								<input id="matAtl_examine" name="matAtl_examine" value="${matAtlConclusion.examine }" class="easyui-textbox" style="width:115px">
+								<span id="matAtl_examine_error" class="req-span"></span>
+							</td>
+							
+							<td class="value-td1">
+								<input id="matAtl_issue" name="matAtl_issue" value="${matAtlConclusion.issue }" class="easyui-textbox" style="width:115px">
+								<span id="matAtl_issue_error" class="req-span"></span>
+							</td>
+							
+							<td class="value-td1">
+								<input id="matAtl_receiveDate" name="matAtl_receiveDate" value="${matAtlConclusion.receiveDate }"  class="easyui-datebox" style="width:115px" data-options="editable:false">
+								<span id="matAtl_receiveDate_error" class="req-span"></span>
+							</td>
+							
+							<td class="value-td1">
+								<input id="matAtl_examineDate" name="matAtl_examineDate" value="${matAtlConclusion.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+								<span id="matAtl_examineDate_error" class="req-span"></span>
+							</td>
+							
+							<td class="value-td1">
+								<input id="matAtl_issueDate" name="matAtl_issueDate" value="${matAtlConclusion.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false">
+								<span id="matAtl_issueDate_error" class="req-span"></span>
+							</td>
+							
+							<td class="value-td1">
+								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion.remark }" class="easyui-textbox" style="width:115px">
+								<span id="matAtl_remark_error" class="req-span"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</c:if>
+			
+			<c:if test="${facadeBean.type == 2 or facadeBean.type == 3 }">
+				<div class="title" style="margin-top: 30px;">结论</div>
+				<div>
+					<table style="width: 98%; font-size: 14px;">
+						<tr style="background: #F0F0F0; height: 30px; font-weight: bold; text-align: center;">
+							<td>类型</td>
+							<td>样品照片</td>
+							<td>红外光分析</td>
+							<td>差热分析</td>
+							<td>热重分析</td>
+							<td>结论</td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight:bold;">零部件</td>
+							<td align="center">
+								<div style="margin-top:5px;">
+									<label><input name="p_temp" type="radio" value="1" <c:if test="${p_temp.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<label><input name="p_temp" type="radio" value="2" <c:if test="${p_temp.state == 2}">checked</c:if>/>不一致 </label> 
+								</div>
+								<div style="margin-top:5px;">
+									<textarea id="p_temp_remark" name="p_temp_remark"  rows="1" cols="25">${p_temp.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:5px;">
+									<label><input name="p_inf" type="radio" value="1" <c:if test="${p_inf.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<label><input name="p_inf" type="radio" value="2" <c:if test="${p_inf.state == 2}">checked</c:if>/>不一致 </label> 
+								</div>
+								<div style="margin-top:5px;">
+									<textarea id="p_inf_remark" name="p_inf_remark" rows="1" cols="25">${p_inf.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:5px;">
+									<label><input name="p_dt" type="radio" value="1" <c:if test="${p_dt.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<label><input name="p_dt" type="radio" value="2" <c:if test="${p_dt.state == 2}">checked</c:if>/>不一致 </label> 
+								</div>
+								<div style="margin-top:5px;">
+									<textarea id="p_dt_remark" name="p_dt_remark" rows="1" cols="25">${p_dt.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:5px;">
+									<label><input name="p_tg" type="radio" value="1" <c:if test="${p_tg.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label><input name="p_tg" type="radio" value="2" <c:if test="${p_tg.state == 2}">checked</c:if>/>不一致 </label> 
+								</div>
+								<div style="margin-top:5px;">
+									<textarea  id="p_tg_remark" name="p_tg_remark"  rows="1" cols="25">${p_tg.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:5px;">
+									<label><input name="p_result" type="radio" value="1" <c:if test="${p_result.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label><input name="p_result" type="radio" value="2" <c:if test="${p_result.state == 2}">checked</c:if>/>不一致 </label> 
+								</div> 
+								<div style="margin-top:5px;">
+									<textarea id="p_result_remark" name="p_result_remark" rows="1" cols="25">${p_result.remark}</textarea>
+								</div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight:bold;">原材料</td>
+							<td align="center">
+								<div style="margin-top:5px;">
+									<label><input name="m_temp" type="radio" value="1" <c:if test="${m_temp.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<label><input name="m_temp" type="radio" value="2" <c:if test="${m_temp.state == 2}">checked</c:if>/>不一致 </label> 
+								</div>
+								<div style="margin-top:5px;">
+									<textarea id="m_temp_remark" name="m_temp_remark" rows="1" cols="25">${m_temp.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:10px;">
+									<label><input name="m_inf" type="radio" value="1" <c:if test="${m_inf.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label><input name="m_inf" type="radio" value="2" <c:if test="${m_inf.state == 2}">checked</c:if>/>不一致 </label> 
+								</div> 
+								<div style="margin-top:5px;">
+									<textarea id="m_inf_remark" name="m_inf_remark" rows="1" cols="25">${m_inf.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:10px;">
+									<label><input name="m_dt" type="radio" value="1" <c:if test="${m_dt.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label><input name="m_dt" type="radio" value="2" <c:if test="${m_dt.state == 2}">checked</c:if>/>不一致 </label> 
+								</div> 
+								<div style="margin-top:5px;">
+									<textarea id="m_dt_remark" name="m_dt_remark" rows="1" cols="25">${m_dt.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:10px;">
+									<label><input name="m_tg" type="radio" value="1" <c:if test="${m_tg.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label><input name="m_tg" type="radio" value="2" <c:if test="${m_tg.state == 2}">checked</c:if>/>不一致 </label> 
+								</div> 
+								<div style="margin-top:5px;">
+									<textarea id="m_tg_remark" name="m_tg_remark" rows="1" cols="25">${m_tg.remark}</textarea>
+								</div>
+							</td>
+							<td align="center">
+								<div style="margin-top:10px;">
+									<label><input name="m_result" type="radio" value="1" <c:if test="${m_result.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label><input name="m_result" type="radio" value="2" <c:if test="${m_result.state == 2}">checked</c:if>/>不一致 </label> 
+								</div> 
+								<div style="margin-top:5px;">
+									<textarea id="m_result_remark" name="m_result_remark" rows="1" cols="25">${m_result.remark}</textarea>
+								</div>
+							</td>
+						</tr>
+					
+					
+					</table>
+				</div>
 			</c:if>
 					
 			<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="atlasError"></div>
@@ -543,6 +888,17 @@
 				return false;
 			}
 			saving = true;
+			
+			// 零部件图谱结论
+			var partsAtl_result = [];
+			// 原材料图谱结论
+			var matAtl_result = [];
+			// 零部件型式结论
+			var partsPat_result = [];
+			// 原材料型式结论
+			var matPat_result = [];
+			// 试验结论结果
+			var conclusionDataArray = [];
 			
 			var p_arTable =  $("#p_arTable").length;
 			var m_arTable = $("#m_arTable").length;
@@ -628,6 +984,13 @@
 					}
 				}
 				$("#p_dt_error").html("");
+				
+				// 结论结果
+				partsAtl_result = assembleConclusion("partsAtl");
+				if(partsAtl_result == false){
+					saving = false;
+					return false;
+				}
 			}
 			
 			// 原材料结果
@@ -707,6 +1070,13 @@
 					}
 				}
 				$("#m_dt_error").html("");
+				
+				// 结论结果
+				matAtl_result = assembleConclusion("matAtl");
+				if(matAtl_result == false){
+					saving = false;
+					return false;
+				}
 			}
 			
 			var dataArray = [];
@@ -727,8 +1097,16 @@
 				}
 				$("#p_pfTable_error").html("");
 				
+				// 试验结果
 				p_result = assemble("p", date);
 				if(p_result == false){
+					saving = false;
+					return false;
+				}
+				
+				// 结论结果
+				partsPat_result = assembleConclusion("partsPat");
+				if(partsPat_result == false){
 					saving = false;
 					return false;
 				}
@@ -744,13 +1122,27 @@
 					$("#m_pfTable_error").html("");
 				}
 				
+				// 试验结果
 				m_result = assemble("m", date);
 				if(m_result == false){
 					saving = false;
 					return false;
 				}
+				
+				// 结论结果
+				matPat_result = assembleConclusion("matPat");
+				if(matPat_result == false){
+					saving = false;
+					return false;
+				}
 			}
 			dataArray = p_result.concat(m_result);
+			
+			// 试验结论
+			conclusionDataArray.push.apply(conclusionDataArray, partsAtl_result);
+			conclusionDataArray.push.apply(conclusionDataArray, matAtl_result);
+			conclusionDataArray.push.apply(conclusionDataArray, partsPat_result);
+			conclusionDataArray.push.apply(conclusionDataArray, matPat_result);
 			
 			$('#uploadForm').ajaxSubmit({
 				url: "${ctx}/apply/labInfoSave",
@@ -758,7 +1150,8 @@
 				type: 'post',
 				data: {
 					"taskId": '${facadeBean.id}',
-					"result": JSON.stringify(dataArray)  
+					"result": JSON.stringify(dataArray),
+					"conclusionResult":  JSON.stringify(conclusionDataArray)
 				},
 				success:function(msg){
 					saving = false;
@@ -794,40 +1187,28 @@
 			var str = "<tr "+ type +"_num='"+ type + "_" + num +"'>"
 					+	 "<td style='background: #f5f5f5;padding-left:5px;'>"+ num + "</td>"
 					+	 "<td class='value-td1'>"
-					+		"<input id='"+ type + "_project_"+ num +"' name='"+ type + "_project_"+ num +"' class='easyui-textbox' style='width:105px'>"
+					+		"<input id='"+ type + "_project_"+ num +"' name='"+ type + "_project_"+ num +"' class='easyui-textbox' style='width:170px'>"
 					+		"<span id='"+ type + "_project_"+ num + "_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_standard_"+ num +"' name='"+ type + "_standard_"+ num +"' class='easyui-textbox' style='width:105px'>"
+					+	    "<input id='"+ type + "_standard_"+ num +"' name='"+ type + "_standard_"+ num +"' class='easyui-textbox' style='width:170px'>"
 					+	    "<span id='"+ type + "_standard_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_require_"+ num +"' name='"+ type + "_require_"+ num +"' class='easyui-textbox' style='width:105px'>"
+					+	    "<input id='"+ type + "_require_"+ num +"' name='"+ type + "_require_"+ num +"' class='easyui-textbox' style='width:170px'>"
 					+	    "<span id='"+ type + "_require_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_result_"+ num +"' name='"+ type + "_result_"+ num +"' class='easyui-textbox' style='width:105px'>"
+					+	    "<input id='"+ type + "_result_"+ num +"' name='"+ type + "_result_"+ num +"' class='easyui-textbox' style='width:170px'>"
 					+	    "<span id='"+ type + "_result_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_evaluate_"+ num +"' name='"+ type + "_evaluate_"+ num +"' class='easyui-textbox' style='width:105px'>"
+					+	    "<input id='"+ type + "_evaluate_"+ num +"' name='"+ type + "_evaluate_"+ num +"' class='easyui-textbox' style='width:170px'>"
 					+	    "<span id='"+ type + "_evaluate_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_remark_"+ num +"' name='"+ type + "_remark_"+ num +"' class='easyui-textbox' style='width:105px'>"
+					+	    "<input id='"+ type + "_remark_"+ num +"' name='"+ type + "_remark_"+ num +"' class='easyui-textbox' style='width:170px'>"
 					+	    "<span id='"+ type + "_remark_"+ num +"_error' class='req-span'></span>"
-					+	 "</td>"
-					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_conclusion_"+ num +"' name='"+ type + "_conclusion_"+ num +"' class='easyui-textbox' style='width:105px'>"
-					+	    "<span id='"+ type + "_conclusion_"+ num +"_error' class='req-span'></span>"
-					+	 "</td>"
-					+	 "<td class='value-td1'>"
-					+	    "<input id='"+ type + "_repNum_"+ num +"' name='"+ type + "_repNum_"+ num +"' class='easyui-textbox' style='width:105px'>"
-					+	    "<span id='"+ type + "_repNum_"+ num +"_error' class='req-span'></span>"
-					+	 "</td>"
-					+	 "<td class='value-td1'>"
-				    +	    "<input id='"+ type + "_other_"+ num +"' name='"+ type + "_other_"+ num +"' class='easyui-textbox' style='width:105px'>"
-				    +	    "<span id='"+ type + "_other_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td style='background: #f5f5f5;padding-left:5px;'>"
 					+	    "<a href='javascript:void(0);'  onclick=\"deleteResult(\'"+ type + "\','"+ type +"_"+ num +"')\"><i class='icon icon-cancel'></i></a>"
@@ -843,9 +1224,6 @@
 			$.parser.parse($("#"+ type + "_result_"+ num).parent());
 			$.parser.parse($("#"+ type + "_evaluate_"+ num).parent());
 			$.parser.parse($("#"+ type + "_remark_"+ num).parent());
-			$.parser.parse($("#"+ type + "_conclusion_"+ num).parent());
-			$.parser.parse($("#"+ type + "_repNum_"+ num).parent());
-			$.parser.parse($("#"+ type + "_other_"+ num).parent());
 		}
 		
 		function deleteResult(type, num){
@@ -914,12 +1292,6 @@
 				}
 				
 				var remark = $("#"+ type +"_remark_" + num).textbox("getValue");
-				// 试验结论
-				var conclusion = $("#"+ type +"_conclusion_" + num).textbox("getValue");
-				// 报告编号
-				var repNum = $("#"+ type +"_repNum_" + num).textbox("getValue");
-				// 其它
-				var other = $("#"+ type +"_other_" + num).textbox("getValue");
 				
 				var obj = new Object();
 				obj.project = project;
@@ -932,9 +1304,6 @@
 				obj.createTime = date;
 				obj.catagory = type == "p"? 1: 2;
 				obj.expNo = type == "p"? "${pNum}": "${mNum}";
-				obj.conclusion = conclusion;
-				obj.repNum = repNum;
-				obj.other = other;
 				dataArray.push(obj);
 			});
 			
@@ -951,6 +1320,109 @@
 			$("#materialDiv").toggle();
 			$("#showBtn").toggle();
 			$("#hideBtn").toggle();
+		}
+		
+		// 实验结论-组装数据
+		function assembleConclusion(type){
+			var dataArray = [];
+			
+			// 试验结论
+			var conclusion = $("#"+ type +"_conclusion").combobox("getValue");
+			if(isNull(conclusion)){
+				$("#"+ type +"_conclusion_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_conclusion_error").html("");
+			}
+			
+			// 报告编号
+			var repNum = $("#"+ type +"_repNum").textbox("getValue");
+			if(isNull(repNum)){
+				$("#"+ type +"_repNum_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_repNum_error").html("");
+			}
+			
+			// 主检
+			var mainInspe = $("#"+ type +"_mainInspe").textbox("getValue");
+			if(isNull(mainInspe)){
+				$("#"+ type +"_mainInspe_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_mainInspe_error").html("");
+			}
+			
+			// 审核
+			var examine = $("#"+ type +"_examine").textbox("getValue");
+			if(isNull(examine)){
+				$("#"+ type +"_examine_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_examine_error").html("");
+			}
+			
+			// 签发
+			var issue = $("#"+ type +"_issue").textbox("getValue");
+			if(isNull(issue)){
+				$("#"+ type +"_issue_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_issue_error").html("");
+			}
+			
+			// 收样时间
+			var receiveDate = $("#"+ type +"_receiveDate").datebox("getValue");
+			if(isNull(receiveDate)){
+				$("#"+ type +"_receiveDate_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_receiveDate_error").html("");
+			}
+			
+			// 试验时间
+			var examineDate = $("#"+ type +"_examineDate").datebox("getValue");
+			if(isNull(examineDate)){
+				$("#"+ type +"_examineDate_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_examineDate_error").html("");
+			}
+			
+			// 签发时间
+			var issueDate = $("#"+ type +"_issueDate").datebox("getValue");
+			if(isNull(issueDate)){
+				$("#"+ type +"_issueDate_error").html("必填");
+				return false;
+			}else{
+				$("#"+ type +"_issueDate_error").html("");
+			}
+			
+			// 备注
+			var remark = $("#"+ type +"_remark").textbox("getValue");
+			
+			var obj = new Object();
+			obj.conclusion = conclusion;
+			obj.repNum = repNum;
+			obj.mainInspe = mainInspe;
+			obj.examine = examine;
+			obj.issue = issue;
+			obj.receiveDate = receiveDate;
+			obj.examineDate = examineDate;
+			obj.issueDate = issueDate;
+			obj.remark = remark;
+			obj.taskId = "${facadeBean.id}";
+			if(type == "partsAtl"){
+				obj.type = 1;
+			}else if(type == "matAtl"){
+				obj.type = 2;
+			}else if(type == "partsPat"){
+				obj.type = 3;
+			}else{
+				obj.type = 4;
+			}
+			dataArray.push(obj);
+			return dataArray;
 		}
 	</script>	
 	

@@ -19,7 +19,7 @@ public interface AccountDao extends SqlDao{
 	public void clearOrg(Long id);
 	
 	/**
-	 * 获取下达任务的机构ID
+	 * 获取操作的用户（任务阶段）
 	 */
-	public Long getOrderOrgId(Map<String, Object> map);
+	public List<Account> getOperationUser(Map<String, Object> map);
 }

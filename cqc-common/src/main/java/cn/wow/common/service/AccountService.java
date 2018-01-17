@@ -26,9 +26,9 @@ public interface AccountService {
 	public void clearPic(Long id);
 	
 	/**
-	 * 获取下达任务的机构ID
+	 * 获取操作的用户（任务阶段）
 	 * @param taskId  任务ID
 	 * @param state   任务记录状态
 	 */
-	public Long getOrderOrgId(Long taskId, Integer state);
+	public List<Account> getOperationUser(Long taskId, Integer state);
 }

@@ -66,10 +66,10 @@ public class AccountServiceImpl implements AccountService {
 	 * @param taskId  任务ID
 	 * @param state   任务记录状态
 	 */
-	public Long getOrderOrgId(Long taskId, Integer state) {
+	public List<Account> getOperationUser(Long taskId, Integer state) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("taskId", taskId);
 		map.put("state", state);
-		return accountDao.getOrderOrgId(map);
+		return accountDao.getOperationUser(map);
 	}
 }

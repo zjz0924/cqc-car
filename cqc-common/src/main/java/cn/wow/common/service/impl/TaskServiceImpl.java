@@ -160,34 +160,34 @@ public class TaskServiceImpl implements TaskService{
     /**
 	 * 结果发送
 	 * @param taskId  任务ID
-	 * @param pAtlOrgVal    零部件图谱
-	 * @param pPatOrgVal    零部件型式
-	 * @param mAtlOrgVal    原材料图谱
-	 * @param mPatOrgVal    原材料型式  
-	 * @param type          类型：1-发送结果， 2-不发送，直接跳过  
+	 * @param pAtlVal    零部件图谱
+	 * @param pPatVal    零部件型式
+	 * @param mAtlVal    原材料图谱
+	 * @param mPatVal    原材料型式     
+	 * @param type       类型：1-发送结果， 2-不发送，直接跳过  
 	 */
-    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal, Integer type) throws Exception{
+    public void sendResult(Account account, Long taskId, String pAtlVal, String pPatVal, String mAtlVal, String mPatVal, Integer type) throws Exception{
 
     	Task task = this.selectOne(taskId);
     	Date date = new Date();
     	String remark = "";
     	
-    	if(StringUtils.isNotBlank(pAtlOrgVal) || type.intValue() == 2){
+    	if(StringUtils.isNotBlank(pAtlVal) || type.intValue() == 2){
     		task.setPartsAtlResult(3);
     		remark += "零部件图谱试验、";
     	}
     	
-    	if(StringUtils.isNotBlank(pPatOrgVal) || type.intValue() == 2){
+    	if(StringUtils.isNotBlank(pPatVal) || type.intValue() == 2){
     		task.setPartsPatResult(3);
     		remark += "零部件型式试验、";
     	}
     	
-    	if(StringUtils.isNotBlank(mAtlOrgVal) || type.intValue() == 2){
+    	if(StringUtils.isNotBlank(mAtlVal) || type.intValue() == 2){
     		task.setMatAtlResult(3);
     		remark += "原材料图谱试验、";
     	}
     	
-    	if(StringUtils.isNotBlank(mPatOrgVal) || type.intValue() == 2){
+    	if(StringUtils.isNotBlank(mPatVal) || type.intValue() == 2){
     		task.setMatPatResult(3);
     		remark += "原材料型式试验、";
     	}
@@ -210,23 +210,23 @@ public class TaskServiceImpl implements TaskService{
 		taskRecordDao.insert(taskRecord);
 		
 		// 发送结果（最后发送，防止事务提交失败）
-		if(StringUtils.isNotBlank(pAtlOrgVal)){
-    		send(account, task, date, pAtlOrgVal, "零部件图谱试验", title, content, 1);
-    	}
-		
-		if(StringUtils.isNotBlank(pPatOrgVal)){
-    		send(account, task, date, pPatOrgVal, "零部件型式试验", title, content, 1);
-    	}
-		
-		if(StringUtils.isNotBlank(mAtlOrgVal)){
-    		send(account, task, date, mAtlOrgVal, "原材料图谱试验", title, content, 1);
-    	}
-    	
-    	if(StringUtils.isNotBlank(mPatOrgVal)){
-    		send(account, task, date, mPatOrgVal, "原材料型式试验", title, content, 1);
-    	}
-    	
-    	if(type.intValue() == 2) {
+		if(type == 1) {
+			if(StringUtils.isNotBlank(pAtlVal)){
+				sendByEmail(account, task, date, pAtlVal, "零部件图谱试验", title, content, 1);
+	    	}
+			
+			if(StringUtils.isNotBlank(pPatVal)){
+				sendByEmail(account, task, date, pPatVal, "零部件型式试验", title, content, 1);
+	    	}
+			
+			if(StringUtils.isNotBlank(mAtlVal)){
+				sendByEmail(account, task, date, mAtlVal, "原材料图谱试验", title, content, 1);
+	    	}
+	    	
+	    	if(StringUtils.isNotBlank(mPatVal)){
+	    		sendByEmail(account, task, date, mPatVal, "原材料型式试验", title, content, 1);
+	    	}
+		}else {
     		remark = "不发送结果";
     	}
     	
@@ -451,7 +451,7 @@ public class TaskServiceImpl implements TaskService{
 				taskDao.update(task);
 				
 				// 发送警告书
-				send(account, task, date, orgs, remark, alarmTitle, alarmContent, 3);
+				sendByOrg(account, task, date, orgs, remark, alarmTitle, alarmContent, 3);
 				
 				// 确认记录
 				ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "第二次抽样结果不合格，原因：" + remark, 3, null, date, TaskTypeEnum.PPAP.getState());
@@ -571,7 +571,7 @@ public class TaskServiceImpl implements TaskService{
 	 * @param content    内容
 	 * @param type       类型：1-结果发送，2-收费通知，3-警告书 
 	 */ 
-	protected void send(Account account, Task task, Date date, String orgs, String tips, String title, String content, int type) throws Exception{
+	protected void sendByOrg(Account account, Task task, Date date, String orgs, String tips, String title, String content, int type) throws Exception{
 		
 		List<Account> accountList = getAccountList(orgs);
 		
@@ -599,6 +599,44 @@ public class TaskServiceImpl implements TaskService{
 			
 			// 发送文本邮件
 			sendEmail(title, content, addrs.toString(), 1);
+		}
+	}
+	
+	/**
+	 *  发送邮件
+	 * @param account    用户
+	 * @param task       任务
+	 * @param date       日期
+	 * @param emails     用户邮箱
+	 * @param tips       提示
+	 * @param title      标题
+	 * @param content    内容
+	 * @param type       类型：1-结果发送，2-收费通知，3-警告书 
+	 */ 
+	protected void sendByEmail(Account account, Task task, Date date, String emails, String tips, String title, String content, int type) throws Exception{
+		
+		// 邮件内容
+		content = MessageFormat.format(content, new Object[] { task.getCode(), tips });	
+		String[] emailArray = emails.split(";");
+		
+		if (emailArray != null && emailArray.length > 0) {
+			List<EmailRecord> emailRecordList = new ArrayList<EmailRecord>();
+			
+			for (String email: emailArray) {
+				if (StringUtils.isNotBlank(email)) {
+					// 邮件记录
+					EmailRecord emailRecord = new EmailRecord(title, content, email, task.getId(), account.getId(), 1, type, mailUser, date);
+					emailRecordList.add(emailRecord);
+				}
+			}
+			
+			// 邮件记录
+			if(emailRecordList.size() > 0) {
+				emailRecordDao.batchAdd(emailRecordList);
+			}
+			
+			// 发送文本邮件
+			sendEmail(title, content, emails, 1);
 		}
 	}
 	

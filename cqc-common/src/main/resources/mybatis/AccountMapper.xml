@@ -211,15 +211,15 @@
   </select> 
   
   
-  <!-- 获取下达任务的机构ID -->
-  <select id="getOrderOrgId" resultType="java.lang.Long" parameterType="java.util.Map">
-  		SELECT a.org_id FROM account a LEFT JOIN task_record r ON r.a_id = a.id LEFT JOIN task t ON t.`code` = r.`code` 
+  <!-- 获取操作的用户（任务阶段） -->
+  <select id="getOperationUser" resultMap="BaseResultMap" parameterType="java.util.Map">
+  		SELECT distinct a.username, a.email FROM account a LEFT JOIN task_record r ON r.a_id = a.id LEFT JOIN task t ON t.`code` = r.`code` 
   		<where> 
   			<if test="taskId != null">
   				and t.id = #{taskId,jdbcType=BIGINT}
   			</if>
   			<if test="state != null">
-  				and r.state = #{state, jdbcType=INTEGER}
+  				and r.state &lt;= #{state, jdbcType=INTEGER}
   			</if>
   		</where>
   		order by r.create_time desc limit 1

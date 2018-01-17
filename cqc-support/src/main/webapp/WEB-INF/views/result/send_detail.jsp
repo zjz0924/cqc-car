@@ -541,161 +541,135 @@
 			
 		</c:if>
 		
+		<c:if test="${facadeBean.type == 2 or facadeBean.type == 3 }">
+			<div class="title" style="margin-top: 30px;">结论</div>
+			<div>
+				<table style="width: 98%; font-size: 14px;">
+					<tr style="background: #F0F0F0; height: 30px; font-weight: bold; text-align: center;">
+						<td>类型</td>
+						<td>样品照片</td>
+						<td>红外光分析</td>
+						<td>差热分析</td>
+						<td>热重分析</td>
+						<td>结论</td>
+					</tr>
+					
+					<c:forEach items="${compareResult}" var="m">
+						<tr>
+							<td style="font-weight:bold;">${m.key}</td>
+							<c:forEach items="${m.value}" var="vo" varStatus="vst">
+								<td align="center">
+									<div style="margin-top:5px;">
+										<label><input name="${m.key}_radio_${vst.index}" type="radio" value="1" <c:if test="${vo.state == 1}">checked</c:if> disabled/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<label><input name="${m.key}_radio_${vst.index}" type="radio" value="2" <c:if test="${vo.state == 2}">checked</c:if> disabled/>不一致 </label> 
+									</div>
+									<div style="margin-top:5px;">
+										<textarea rows="1" cols="25" disabled>${vo.remark}</textarea>
+									</div>
+								</td>
+							</c:forEach>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>
+		</c:if>
+		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		<div class="title" style="margin-top:15px;">结果发送</div>
 		<div style="margin-left: 15px;">
 			<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 2) }">
-				<div style="margin-bottom: 5px;">零部件图谱试验结果：<input id="pAtlOrg" name="pAtlOrg"/>&nbsp;&nbsp;&nbsp;&nbsp;<span id="pAtlOrgError" style="color:red;"></span></div>
+				<div style="margin-bottom: 5px;">零部件图谱试验结果：
+					<input id="pAtlText" class="inputxt" readonly="readonly">
+					<input id="pAtlValue" class="inputxt" type="hidden">
+					<a onclick="chooseUser('pAtl')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+					<a onclick="clearValue('pAtl')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span id="pAtlError" style="color:red;"></span>
+				</div>
 			</c:if>
 			
 			<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and ( facadeBean.partsPatResult == 2) }">
-				<div style="margin-bottom: 5px;">零部件型式试验结果：<input id="pPatOrg" name="pPatOrg"/>&nbsp;&nbsp;&nbsp;&nbsp;<span id="pPatOrgError" style="color:red;"></span></div>
+				<div style="margin-bottom: 5px;">零部件型式试验结果：
+					<input id="pPatText" class="inputxt" readonly="readonly">
+					<input id="pPatValue" class="inputxt" type="hidden">
+					<a onclick="chooseUser('pPat')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+					<a onclick="clearValue('pPat')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span id="pPatError" style="color:red;"></span>
+				</div>
 			</c:if>
 			
 			<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matAtlResult == 2) }">
-				<div style="margin-bottom: 5px;">原材料图谱试验结果：<input id="mAtlOrg" name="mAtlOrg"/>&nbsp;&nbsp;&nbsp;&nbsp;<span id="mAtlOrgError" style="color:red;"></span></div>
+				<div style="margin-bottom: 5px;">原材料图谱试验结果：
+					<input id="mAtlText" class="inputxt" readonly="readonly">
+					<input id="mAtlValue" class="inputxt" type="hidden">
+					<a onclick="chooseUser('mAtl')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+					<a onclick="clearValue('mAtl')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span id="mAtlError" style="color:red;"></span>
+				</div>
 			</c:if>
 			
 			<c:if test="${(facadeBean.matPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matPatResult == 2) }">
-				<div style="margin-bottom: 5px;">原材料型式试验结果：<input id="mPatOrg" name="mPatOrg"/>&nbsp;&nbsp;&nbsp;&nbsp;<span id="mPatOrgError" style="color:red;"></span></div>
+				<div style="margin-bottom: 5px;">原材料型式试验结果：
+					<input id="mPatText" class="inputxt" readonly="readonly">
+					<input id="mPatValue" class="inputxt" type="hidden">
+					<a onclick="chooseUser('mPat')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+					<a onclick="clearValue('mPat')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span id="mPatError" style="color:red;"></span>
+				</div>
 			</c:if>
 		</div>
 				
-		<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="atlasError"></div>
+		<div style="margin-top:30px;font-weight:bold;color:red;" align="center" id="atlasError"></div>
 		<div align="center" style="margin-top:10px;margin-bottom: 20px;">
 			<a id="sendBtn" href="javascript:void(0);"  onclick="doSubmit(1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送结果</a>
 			<a id="redoBtn" href="javascript:void(0);"  onclick="doSubmit(2)" class="easyui-linkbutton" data-options="iconCls:'icon-redo'">跳过</a>
 			<a id="cancelBtn" href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 		</div>
 	</div>
-			
+	
+	<div id="userDialog"></div>	
 	
 	<script type="text/javascript">
-		var pAtlOrg;
-		var pPatOrg;
-		var mAtlOrg;
-		var mPatOrg; 
+		var pAtlUser;
+		var pPatUser;
+		var mAtlUser;
+		var mPatUser;
 		// 是否提交中
 		var saving = false;
 	
 		$(function(){
-			// 默认发送的机构ID
-			var sendOrgId = "${sendOrgId}";
+			pAtlUser = $("#pAtlText").length;
+			pPatUser = $("#pPatText").length;
+			mAtlUser = $("#mAtlText").length;
+			mPatUser = $("#mPatText").length;
 			
-			// 零部件图谱试验结果
-			pAtlOrg = $("#pAtlOrg").length;
-			if(pAtlOrg > 0){
-				$('#pAtlOrg').combotree({
-					url: '${ctx}/org/tree',
-					multiple: true,
-					animate: true,
-					width: '250px',
-					panelHeight: '150px'
-				});
+			var sendEmails = "${sendEmails}";
+			var sendNames = "${sendNames}";
 			
-				// 只有最底层才能选择
-				var pAtlOrgTree = $('#pAtlOrg').combotree('tree');	
-				pAtlOrgTree.tree({
-					checkbox: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
-				
-				if(!isNull(sendOrgId)){
-					$("#pAtlOrg").combotree("setValue", sendOrgId);
+			if(!isNull(sendEmails)){
+				if(pAtlUser > 0){
+					$("#pAtlText").val(sendNames);
+					$("#pAtlValue").val(sendEmails);
 				}
-			}
-			
-			// 零部件型式试验结果
-			pPatOrg = $("#pPatOrg").length;
-			if(pPatOrg > 0){
-				$('#pPatOrg').combotree({
-					url: '${ctx}/org/tree',
-					multiple: true,
-					animate: true,
-					width: '250px',
-					panelHeight: '150px'
-				});
-			
-				// 只有最底层才能选择
-				var pPatOrgTree = $('#pPatOrg').combotree('tree');	
-				pPatOrgTree.tree({
-					checkbox: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
 				
-				if(!isNull(sendOrgId)){
-					$("#pPatOrg").combotree("setValue", sendOrgId);
+				if(pPatUser > 0){
+					$("#pPatText").val(sendNames);
+					$("#pPatValue").val(sendEmails);
 				}
-			}
-			
-			
-			// 原材料图谱试验结果
-			mAtlOrg = $("#mAtlOrg").length;
-			if(mAtlOrg > 0){
-				$('#mAtlOrg').combotree({
-					url: '${ctx}/org/tree',
-					multiple: true,
-					animate: true,
-					width: '250px',
-					panelHeight: '150px'
-				});
-			
-				// 只有最底层才能选择
-				var mAtlOrgTree = $('#mAtlOrg').combotree('tree');	
-				mAtlOrgTree.tree({
-					checkbox: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
 				
-				if(!isNull(sendOrgId)){
-					$("#mAtlOrg").combotree("setValue", sendOrgId);
+				if(mAtlUser > 0){
+					$("#mAtlText").val(sendNames);
+					$("#mAtlValue").val(sendEmails);
 				}
-			}
-			
-			
-			// 原材料型式试验结果
-			mPatOrg = $("#mPatOrg").length;
-			if(mPatOrg > 0){
-				$('#mPatOrg').combotree({
-					url: '${ctx}/org/tree',
-					multiple: true,
-					animate: true,
-					width: '250px',
-					panelHeight: '150px'
-				});
-			
-				// 只有最底层才能选择
-				var mPatOrgTree = $('#mPatOrg').combotree('tree');	
-				mPatOrgTree.tree({
-					checkbox: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
 				
-				if(!isNull(sendOrgId)){
-					$("#mPatOrg").combotree("setValue", sendOrgId);
-				}
+				if(mPatUser > 0){
+					$("#mPatText").val(sendNames);
+					$("#mPatValue").val(sendEmails);
+				}	
 			}
-			
 		});
 	
 		/** 发送结果保存
@@ -707,10 +681,10 @@
 			}
 			saving = true;
 			
-			var pAtlOrgVal = "";
-			var pPatOrgVal = "";
-			var mAtlOrgVal = "";
-			var mPatOrgVal = "";
+			var pAtlVal = "";
+			var pPatVal = "";
+			var mAtlVal = "";
+			var mPatVal = "";
 			
 			$("#sendBtn").hide();
 			$("#cancelBtn").hide();
@@ -718,10 +692,10 @@
 			$("#atlasError").html("结果发送中，请稍等");
 			
 			if(type == 1){
-				if(pAtlOrg > 0){
-					pAtlOrgVal= $("#pAtlOrg").combotree("getValues");
-					if(isNull(pAtlOrgVal)){
-						$("#pAtlOrgError").html("请选择要发送的机构");
+				if(pAtlUser > 0){
+					pAtlVal= $("#pAtlValue").val();
+					if(isNull(pAtlVal)){
+						$("#pAtlError").html("请选择要发送的用户");
 						$("#sendBtn").show();
 						$("#cancelBtn").show();
 						$("#redoBtn").show();
@@ -729,13 +703,13 @@
 						saving = false;
 						return false;
 					}
-					$("#pAtlOrgError").html("");
+					$("#pAtlError").html("");
 				}
 				
-				if(pPatOrg > 0){
-					pPatOrgVal= $("#pPatOrg").combotree("getValues");
-					if(isNull(pPatOrgVal)){
-						$("#pPatOrgError").html("请选择要发送的机构");
+				if(pPatUser > 0){
+					pPatVal= $("#pPatValue").val();
+					if(isNull(pPatVal)){
+						$("#pPatError").html("请选择要发送的用户");
 						$("#sendBtn").show();
 						$("#cancelBtn").show();
 						$("#redoBtn").show();
@@ -743,13 +717,13 @@
 						saving = false;
 						return false;
 					}
-					$("#pPatOrgError").html("");
+					$("#pPatError").html("");
 				}
 				
-				if(mAtlOrg > 0){
-					mAtlOrgVal= $("#mAtlOrg").combotree("getValues");
-					if(isNull(mAtlOrgVal)){
-						$("#mAtlOrgError").html("请选择要发送的机构");
+				if(mAtlUser > 0){
+					mAtlVal= $("#mAtlValue").val();
+					if(isNull(mAtlVal)){
+						$("#mAtlError").html("请选择要发送的用户");
 						$("#sendBtn").show();
 						$("#cancelBtn").show();
 						$("#redoBtn").show();
@@ -757,13 +731,13 @@
 						saving = false;
 						return false;
 					}
-					$("#mAtlOrgError").html("");
+					$("#mAtlError").html("");
 				}
 				
-				if(mPatOrg > 0){
-					mPatOrgVal= $("#mPatOrg").combotree("getValues");
-					if(isNull(mPatOrgVal)){
-						$("#mPatOrgError").html("请选择要发送的机构");
+				if(mPatUser > 0){
+					mPatVal= $("#mPatValue").val();
+					if(isNull(mPatVal)){
+						$("#mPatError").html("请选择要发送的用户");
 						$("#sendBtn").show();
 						$("#cancelBtn").show();
 						$("#redoBtn").show();
@@ -771,18 +745,19 @@
 						saving = false;
 						return false;
 					}
-					$("#mPatOrgError").html("");
+					$("#mPatError").html("");
 				}	
 			}
 					
 			$.ajax({
 				url: "${ctx}/result/sendResult",
+				type: "post",
 				data: {
 					"taskId": '${facadeBean.id}',
-					"pAtlOrgVal": pAtlOrgVal.toString(),
-					"pPatOrgVal": pPatOrgVal.toString(),
-					"mAtlOrgVal": mAtlOrgVal.toString(),
-					"mPatOrgVal": mPatOrgVal.toString(),
+					"pAtlVal": pAtlVal,
+					"pPatVal": pPatVal,
+					"mAtlVal": mAtlVal,
+					"mPatVal": mPatVal,
 					"type": type
 				},
 				success: function(data){
@@ -811,6 +786,24 @@
 			$("#hideBtn").toggle();
 		}
 		
+		function clearValue(id){
+			$("#" + id + "Text").val("");
+			$("#" + id + "Value").val("");
+			$("#" + id + "Error").html("");
+		}
+		
+		function chooseUser(id){
+			$('#userDialog').dialog({
+				title : '用户信息',
+				width : 1100,
+				height : 550,
+				closed : false,
+				cache : false,
+				href : "${ctx}/result/userList?type=" + id,
+				modal : true
+			});
+			$('#userDialog').window('center');
+		}
 	</script>	
 	
 	<style type="text/css">
@@ -888,6 +881,17 @@
 		
 		.remark-span{
 			font-weight: bold;
+		}
+		
+		.inputxt{
+			border: 1px solid #D7D7D7;
+		    border-radius: 3PX;
+		    height: 25px;
+		    padding: 7px 0 7px 5px!important;
+		    line-height: 14PX;
+		    font-size: 12px;
+		    display: inline-block;
+		    width: 400px;
 		}
 	</style>
 	

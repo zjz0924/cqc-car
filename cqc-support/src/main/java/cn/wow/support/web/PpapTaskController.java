@@ -33,6 +33,7 @@ import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
@@ -44,6 +45,7 @@ import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
@@ -96,6 +98,8 @@ public class PpapTaskController extends AbstractController {
 	private AtlasResultService atlasResultService;
 	@Autowired
 	private LabReqService labReqService;
+	@Autowired
+	private LabConclusionService labConclusionService;
 	
 	/**
 	 * 首页
@@ -420,6 +424,12 @@ public class PpapTaskController extends AbstractController {
 					// 原材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
 					
+					//对比结果
+					Map<String, List<ExamineRecord>> compareResult_old = atlasResultService.assembleCompareResult(task.gettId());
+					
+					// 试验结论
+					List<LabConclusion> conclusionList_old = labConclusionService.selectByTaskId(task.gettId());
+					
 					/** ---------  修改之后的结果  ----------- */
 					// 零部件-图谱结果（只取最后一次实验）
 					List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
@@ -427,10 +437,46 @@ public class PpapTaskController extends AbstractController {
 					// 原材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
 					
+					//对比结果
+					Map<String, List<ExamineRecord>> compareResult_new = atlasResultService.assembleCompareResult(task.getId());
+					
+					// 试验结论
+					List<LabConclusion> conclusionList_new = labConclusionService.selectByTaskId(task.getId());
+					
+					if (conclusionList_old != null && conclusionList_old.size() > 0) {
+						for (LabConclusion conclusion : conclusionList_old) {
+							if (conclusion.getType().intValue() == 1) {
+								model.addAttribute("partsAtlConclusion_old", conclusion);
+							} else if (conclusion.getType().intValue() == 2) {
+								model.addAttribute("matAtlConclusion_old", conclusion);
+							} else if (conclusion.getType().intValue() == 3) {
+								model.addAttribute("partsPatConclusion_old", conclusion);
+							} else {
+								model.addAttribute("matPatConclusion_old", conclusion);
+							}
+						}
+					}
+					
+					if (conclusionList_new != null && conclusionList_new.size() > 0) {
+						for (LabConclusion conclusion : conclusionList_new) {
+							if (conclusion.getType().intValue() == 1) {
+								model.addAttribute("partsAtlConclusion_new", conclusion);
+							} else if (conclusion.getType().intValue() == 2) {
+								model.addAttribute("matAtlConclusion_new", conclusion);
+							} else if (conclusion.getType().intValue() == 3) {
+								model.addAttribute("partsPatConclusion_new", conclusion);
+							} else {
+								model.addAttribute("matPatConclusion_new", conclusion);
+							}
+						}
+					}
+					
 					model.addAttribute("pAtlasResult_old", pAtlasResult_old);
 					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
 					model.addAttribute("pAtlasResult_new", pAtlasResult_new);
 					model.addAttribute("mAtlasResult_new", mAtlasResult_new);
+					model.addAttribute("compareResult_old", compareResult_old);
+					model.addAttribute("compareResult_new", compareResult_new);
 				}
 			}
 

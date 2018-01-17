@@ -497,23 +497,46 @@ public class ResultController extends AbstractController {
 				model.addAttribute("pAtlasResult", pAtlasResult);
 			}
 
-			// 获取下达任务的机构ID
+			if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ){
+				// 对比结果
+				Map<String, List<ExamineRecord>> compareResult = atlasResultService.assembleCompareResult(id);
+				model.addAttribute("compareResult", compareResult);
+			}
+			
+			// 获取操作的用户（任务阶段）
 			Integer state = null;
 			if(task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 				state = 4;
 			}else {
-				state = 1;
+				state = 2;
 			}
 			
-			Long orgId = null;
+			List<Account> accountList = null;
 			if(task.gettId() == null) {
-				orgId = accountService.getOrderOrgId(task.getId(), state);
+				accountList = accountService.getOperationUser(task.getId(), state);
 			}else {
-				orgId = accountService.getOrderOrgId(task.gettId(), state);
+				accountList = accountService.getOperationUser(task.gettId(), state);
 			}
 			
-			if(orgId != null) {
-				model.addAttribute("sendOrgId", orgId);
+			if (accountList != null && accountList.size() > 0) {
+				StringBuffer emails = new StringBuffer();
+				StringBuffer names = new StringBuffer();
+
+				for (int i = 0; i < accountList.size(); i++) {
+					Account account = accountList.get(i);
+
+					if (StringUtils.isNotBlank(account.getEmail())) {
+						if (i != accountList.size() - 1) {
+							emails.append(account.getEmail() + ";");
+							names.append(account.getUserName() + ",");
+						} else {
+							emails.append(account.getEmail());
+							names.append(account.getUserName());
+						}
+					}
+				}
+				model.addAttribute("sendEmails", emails.toString());
+				model.addAttribute("sendNames", names.toString());
 			}
 			
 			model.addAttribute("facadeBean", task);
@@ -550,20 +573,20 @@ public class ResultController extends AbstractController {
 	/**
 	 * 结果发送
 	 * @param taskId  任务ID
-	 * @param pAtlOrgVal    零部件图谱
-	 * @param pPatOrgVal    零部件型式
-	 * @param mAtlOrgVal    原材料图谱
-	 * @param mPatOrgVal    原材料型式   
-	 * @param type          类型：1-发送结果， 2-不发送，直接跳过 
+	 * @param pAtlVal    零部件图谱
+	 * @param pPatVal    零部件型式
+	 * @param mAtlVal    原材料图谱
+	 * @param mPatVal    原材料型式   
+	 * @param type       类型：1-发送结果， 2-不发送，直接跳过 
 	 */
-	@ResponseBody
+	@ResponseBody 
 	@RequestMapping(value = "/sendResult")
-	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal, Integer type){
+	public AjaxVO sendResult(HttpServletRequest request, Model model, Long taskId, String pAtlVal, String pPatVal, String mAtlVal, String mPatVal, Integer type){
 		AjaxVO vo = new AjaxVO();
 		
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			taskService.sendResult(account, taskId, pAtlOrgVal, pPatOrgVal, mAtlOrgVal, mPatOrgVal, type);
+			taskService.sendResult(account, taskId, pAtlVal, pPatVal, mAtlVal, mPatVal, type);
 		}catch(Exception ex){
 			logger.error("结果发送失败", ex);
 
@@ -576,6 +599,21 @@ public class ResultController extends AbstractController {
 		vo.setMsg("操作成功");
 		return vo;
 	}
+	
+	
+	/**
+	 * 用户选择
+	 * @param model
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "/userList")
+	public String userList(HttpServletRequest httpServletRequest, Model model, String type) {
+		model.addAttribute("defaultPageSize", SEND_DEFAULT_PAGE_SIZE);
+		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("type", type);
+		return "result/account_list";
+	} 
 	
 	
 	//-----------------------------------    结果确认        ---------------------------------------------------------------

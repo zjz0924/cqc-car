@@ -68,26 +68,7 @@
 	<body style="margin:0px;">
 		<%@include file="../common/header.jsp"%>
 		
-		<!--banner开始-->
-		<div class="banner">
-		    <div class="banner_in" id="container">
-		        <div id="example">
-		            <div id="slides">
-		                <div class="slides_container">
-		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_04.png" /></a></div>
-		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_05.png" /></a></div>
-		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_06.png" /></a></div>
-		                    <div><a href="#"><img src="${ctx}/resources/img/gundong/banner_07.png" /></a></div>
-		                </div>
-		                <a href="#" class="prev"><img src="${ctx}/resources/img/arrow-prev.png" alt="Arrow Prev"></a>
-		                <a href="#" class="next"><img src="${ctx}/resources/img/arrow-next.png" alt="Arrow Next"></a>
-		            </div>
-		        </div>
-		    </div>
-		</div>
-		<!--banner结束-->
-		
-		<div class="main">
+		<div class="main" style="margin-top:30px;">
 			<div style="background-color:white;margin-left: 20px;margin-right:20px;margin-top: 20px;height:650px;">
 				<div style="padding-top:30px;padding-left:35px;font-size: 20px;">欢迎进入上汽通用五菱材料管理平台！</div>
 				<div style="padding-left:40px;margin-top: 20px;font-size: 16px;">

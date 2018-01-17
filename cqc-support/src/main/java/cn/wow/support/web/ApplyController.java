@@ -31,6 +31,7 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
+import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
@@ -41,6 +42,7 @@ import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
@@ -86,6 +88,8 @@ public class ApplyController extends AbstractController {
 	private ApplyRecordService applyRecordService;
 	@Autowired
 	private LabReqService labReqService;
+	@Autowired
+	private LabConclusionService labConclusionService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -233,8 +237,67 @@ public class ApplyController extends AbstractController {
 
 			model.addAttribute("facadeBean", task);
 			
+			// 试验要求
 			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
 			model.addAttribute("labReqList", labReqList);
+			
+			// 试验结论
+			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(task.getId());
+			if (conclusionList != null && conclusionList.size() > 0) {
+				for (LabConclusion conclusion : conclusionList) {
+					if (conclusion.getType().intValue() == 1) {
+						model.addAttribute("partsAtlConclusion", conclusion);
+					} else if (conclusion.getType().intValue() == 2) {
+						model.addAttribute("matAtlConclusion", conclusion);
+					} else if (conclusion.getType().intValue() == 3) {
+						model.addAttribute("partsPatConclusion", conclusion);
+					} else {
+						model.addAttribute("matPatConclusion", conclusion);
+					}
+				}
+			}
+			
+			if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState() ){
+				// 对比结果
+				Map<String, List<ExamineRecord>> compareResult = atlasResultService.assembleCompareResult(id);
+			
+				if (compareResult != null && !compareResult.isEmpty()) {
+					
+					List<ExamineRecord> pRecordList = compareResult.get("零部件");
+					if (pRecordList != null && pRecordList.size() > 0) {
+						for(ExamineRecord record : pRecordList) {
+							if (record.getCatagory() == 1) {
+								model.addAttribute("p_inf", record);
+							} else if (record.getCatagory() == 2) {
+								model.addAttribute("p_dt", record);
+							} else if (record.getCatagory() == 3) {
+								model.addAttribute("p_tg", record);
+							} else if (record.getCatagory() == 4) {
+								model.addAttribute("p_result", record);
+							} else if (record.getCatagory() == 9) {
+								model.addAttribute("p_temp", record);
+							}
+						}
+					}
+					
+					List<ExamineRecord> mRecordList = compareResult.get("原材料");
+					if (mRecordList != null && mRecordList.size() > 0) {
+						for(ExamineRecord record : mRecordList) {
+							if (record.getCatagory() == 5) {
+								model.addAttribute("m_inf", record);
+							} else if (record.getCatagory() == 6) {
+								model.addAttribute("m_dt", record);
+							} else if (record.getCatagory() == 7) {
+								model.addAttribute("m_tg", record);
+							} else if (record.getCatagory() == 8) {
+								model.addAttribute("m_result", record);
+							} else if (record.getCatagory() == 10) {
+								model.addAttribute("m_temp", record);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		model.addAttribute("superRoleCole", Contants.SUPER_ROLE_CODE);
@@ -327,6 +390,9 @@ public class ApplyController extends AbstractController {
 					model.addAttribute("newMaterial", newMaterial);
 				}
 			} else {
+				// 试验要求 
+				List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(task.getId());
+				
 				/** --------- 原结果 ----------- */
 				// 零部件-性能结果（只取最后一次实验）
 				List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
@@ -339,6 +405,12 @@ public class ApplyController extends AbstractController {
 
 				// 原材料-图谱结果（只取最后一次实验）
 				List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
+				
+				//对比结果
+				Map<String, List<ExamineRecord>> compareResult_old = atlasResultService.assembleCompareResult(task.gettId());
+				
+				// 试验结论
+				List<LabConclusion> conclusionList_old = labConclusionService.selectByTaskId(task.gettId());
 
 				/** --------- 修改之后的结果 ----------- */
 				// 零部件-性能结果（只取最后一次实验）
@@ -352,7 +424,42 @@ public class ApplyController extends AbstractController {
 
 				// 原材料-图谱结果（只取最后一次实验）
 				List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
-
+				
+				//对比结果
+				Map<String, List<ExamineRecord>> compareResult_new = atlasResultService.assembleCompareResult(task.getId());
+				
+				// 试验结论
+				List<LabConclusion> conclusionList_new = labConclusionService.selectByTaskId(task.getId());
+				
+				if (conclusionList_old != null && conclusionList_old.size() > 0) {
+					for (LabConclusion conclusion : conclusionList_old) {
+						if (conclusion.getType().intValue() == 1) {
+							model.addAttribute("partsAtlConclusion_old", conclusion);
+						} else if (conclusion.getType().intValue() == 2) {
+							model.addAttribute("matAtlConclusion_old", conclusion);
+						} else if (conclusion.getType().intValue() == 3) {
+							model.addAttribute("partsPatConclusion_old", conclusion);
+						} else {
+							model.addAttribute("matPatConclusion_old", conclusion);
+						}
+					}
+				}
+				
+				if (conclusionList_new != null && conclusionList_new.size() > 0) {
+					for (LabConclusion conclusion : conclusionList_new) {
+						if (conclusion.getType().intValue() == 1) {
+							model.addAttribute("partsAtlConclusion_new", conclusion);
+						} else if (conclusion.getType().intValue() == 2) {
+							model.addAttribute("matAtlConclusion_new", conclusion);
+						} else if (conclusion.getType().intValue() == 3) {
+							model.addAttribute("partsPatConclusion_new", conclusion);
+						} else {
+							model.addAttribute("matPatConclusion_new", conclusion);
+						}
+					}
+				}
+				
+				
 				model.addAttribute("pPfResult_old", pPfResult_old);
 				model.addAttribute("mPfResult_old", mPfResult_old);
 				model.addAttribute("pAtlasResult_old", pAtlasResult_old);
@@ -361,9 +468,25 @@ public class ApplyController extends AbstractController {
 				model.addAttribute("mPfResult_new", mPfResult_new);
 				model.addAttribute("pAtlasResult_new", pAtlasResult_new);
 				model.addAttribute("mAtlasResult_new", mAtlasResult_new);
-				
-				List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(task.getId());
+				model.addAttribute("compareResult_old", compareResult_old);
+				model.addAttribute("compareResult_new", compareResult_new);
 				model.addAttribute("labReqList", labReqList);
+			}
+			
+			// 试验结论
+			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(task.getId());
+			if (conclusionList != null && conclusionList.size() > 0) {
+				for (LabConclusion conclusion : conclusionList) {
+					if (conclusion.getType().intValue() == 1) {
+						model.addAttribute("partsAtlConclusion", conclusion);
+					} else if (conclusion.getType().intValue() == 2) {
+						model.addAttribute("matAtlConclusion", conclusion);
+					} else if (conclusion.getType().intValue() == 3) {
+						model.addAttribute("partsPatConclusion", conclusion);
+					} else {
+						model.addAttribute("matPatConclusion", conclusion);
+					}
+				}
 			}
 
 			model.addAttribute("applyRecord", applyRecord);
@@ -522,22 +645,60 @@ public class ApplyController extends AbstractController {
 			@RequestParam(value = "m_tempLab_pic", required = false) MultipartFile m_tempfile,
 			@RequestParam(value = "m_tgLab_pic", required = false) MultipartFile m_tgfile,
 			@RequestParam(value = "m_infLab_pic", required = false) MultipartFile m_infile,
-			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile, String result) {
+			@RequestParam(value = "m_dtLab_pic", required = false) MultipartFile m_dtfile, String result,
+			Integer p_inf, String p_inf_remark, Integer p_dt, String p_dt_remark, Integer p_tg, String p_tg_remark, 
+			Integer p_result, String p_result_remark, Integer m_inf, String m_inf_remark, Integer m_dt, String m_dt_remark, 
+			Integer m_tg, String m_tg_remark, Integer m_result, String m_result_remark, Integer p_temp, String p_temp_remark, 
+			Integer m_temp, String m_temp_remark, String conclusionResult) {
 
 		AjaxVO vo = new AjaxVO();
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		Date date = new Date();
 
 		try {
 			// 型式结果
 			ObjectMapper mapper = new ObjectMapper();
 			List<PfResult> pfResultList = mapper.readValue(result, new TypeReference<List<PfResult>>() {
 			});
+			
+			// 试验结论
+			List<LabConclusion> conclusionDataList = mapper.readValue(conclusionResult, new TypeReference<List<LabConclusion>>() { });
 
 			// 组装图谱信息
 			List<AtlasResult> atlResultList = assembleAtlasInfo(taskId, p_tgLab, p_infLab, p_dtLab, m_tgLab, m_infLab,
 					m_dtLab, p_tgfile, p_infile, p_dtfile, m_tgfile, m_infile, m_dtfile, p_tempfile, m_tempfile, m_tempLab, p_tempLab);
 
-			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.applyResult(account, taskId, pfResultList, atlResultList);
+			// 对比结果
+			List<ExamineRecord> compareList = new ArrayList<ExamineRecord>();
+			if(p_inf != null) {
+				ExamineRecord record1 = new ExamineRecord(taskId, account.getId(), p_inf, p_inf_remark, 4, 1, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record2 = new ExamineRecord(taskId, account.getId(), p_dt, p_dt_remark, 4, 2, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record3 = new ExamineRecord(taskId, account.getId(), p_tg, p_tg_remark, 4, 3, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record4 = new ExamineRecord(taskId, account.getId(), p_result, p_result_remark, 4, 4, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record9 = new ExamineRecord(taskId, account.getId(), p_temp, p_temp_remark, 4, 9, date, TaskTypeEnum.PPAP.getState());
+				
+				compareList.add(record1);
+				compareList.add(record2);
+				compareList.add(record3);
+				compareList.add(record4);
+				compareList.add(record9);
+			}
+			
+			if(m_inf != null) {
+				ExamineRecord record5 = new ExamineRecord(taskId, account.getId(), m_inf, m_inf_remark, 4, 5, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record6 = new ExamineRecord(taskId, account.getId(), m_dt, m_dt_remark, 4, 6, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record7 = new ExamineRecord(taskId, account.getId(), m_tg, m_tg_remark, 4, 7, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record8 = new ExamineRecord(taskId, account.getId(), m_result, m_result_remark, 4, 8, date, TaskTypeEnum.PPAP.getState());
+				ExamineRecord record10 = new ExamineRecord(taskId, account.getId(), m_temp, m_temp_remark, 4, 10, date, TaskTypeEnum.PPAP.getState());
+				
+				compareList.add(record5);
+				compareList.add(record6);
+				compareList.add(record7);
+				compareList.add(record8);
+				compareList.add(record10);
+			}
+			
+			infoService.applyResult(account, taskId, pfResultList, atlResultList, compareList, conclusionDataList);
 
 		} catch (Exception ex) {
 			logger.error("试验结果修改申请保存失败", ex);

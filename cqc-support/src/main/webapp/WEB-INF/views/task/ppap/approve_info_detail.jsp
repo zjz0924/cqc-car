@@ -38,7 +38,7 @@
 							<span class="val" title="${facadeBean.info.vehicle.code }">${facadeBean.info.vehicle.code }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newVehicle.code }">${newVehicle.code }</span>
+							<span class="val <c:if test="${ facadeBean.info.vehicle.code != newVehicle.code}">red-color</c:if>" title="${newVehicle.code }">${newVehicle.code }</span>
 						</td>
 					</tr>
 					<tr>
@@ -47,7 +47,7 @@
 							<span class="val" title="${facadeBean.info.vehicle.type }">${facadeBean.info.vehicle.type }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newVehicle.type }">${newVehicle.type }</span>
+							<span class="val <c:if test="${ facadeBean.info.vehicle.type != newVehicle.type}">red-color</c:if>" title="${newVehicle.type }">${newVehicle.type }</span>
 						</td>
 					</tr>
 	
@@ -57,7 +57,7 @@
 							<span class="val" title="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="<fmt:formatDate value='${newVehicle.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${newVehicle.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
+							<span class="val <c:if test="${ facadeBean.info.vehicle.proTime != newVehicle.proTime}">red-color</c:if>" title="<fmt:formatDate value='${newVehicle.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${newVehicle.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
 						</td>
 					</tr>
 	
@@ -67,7 +67,7 @@
 							<span class="val" title="${facadeBean.info.vehicle.proAddr }">${facadeBean.info.vehicle.proAddr }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newVehicle.proAddr }">${newVehicle.proAddr }</span>
+							<span class="val <c:if test="${ facadeBean.info.vehicle.proAddr != newVehicle.proAddr}">red-color</c:if>" title="${newVehicle.proAddr }">${newVehicle.proAddr }</span>
 						</td>
 					</tr>
 					<tr>
@@ -76,7 +76,7 @@
 							<span class="val" title="${facadeBean.info.vehicle.remark }">${facadeBean.info.vehicle.remark }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newVehicle.remark }">${newVehicle.remark }</span>
+							<span class="val <c:if test="${ facadeBean.info.vehicle.remark != newVehicle.remark}">red-color</c:if>" title="${newVehicle.remark }">${newVehicle.remark }</span>
 						</td>
 					</tr>
 				</table>
@@ -149,7 +149,7 @@
 							<span class="val" title="${facadeBean.info.parts.code}">${facadeBean.info.parts.code}</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.code}">${newParts.code}</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.code != newParts.code}">red-color</c:if>" title="${newParts.code}">${newParts.code}</span>
 						</td>
 					</tr>
 					<tr>
@@ -158,7 +158,7 @@
 							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.name}">${newParts.name}</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.name != newParts.name}">red-color</c:if>" title="${newParts.name}">${newParts.name}</span>
 						</td>
 					</tr>
 					<tr>
@@ -167,7 +167,7 @@
 							<span class="val" title="${facadeBean.info.parts.org.name}">${facadeBean.info.parts.org.name}</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.org.name}">${newParts.org.name}</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.org.name != newParts.org.name}">red-color</c:if>" title="${newParts.org.name}">${newParts.org.name}</span>
 						</td>
 					</tr>
 					<tr>
@@ -176,7 +176,7 @@
 							<span class="val" title="${facadeBean.info.parts.proNo }">${facadeBean.info.parts.proNo }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.proNo }">${newParts.proNo }</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.proNo != newParts.proNo}">red-color</c:if>" title="${newParts.proNo }">${newParts.proNo }</span>
 						</td>
 					</tr>
 					<tr>
@@ -185,7 +185,7 @@
 							<span class="val" title="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="<fmt:formatDate value='${newParts.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${newParts.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
+							<span class="val <c:if test="${ facadeBean.info.parts.proTime != newParts.proTime}">red-color</c:if>" title="<fmt:formatDate value='${newParts.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${newParts.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
 						</td>
 					</tr>
 					<tr>
@@ -194,7 +194,7 @@
 							<span class="val" title="${facadeBean.info.parts.place }">${facadeBean.info.parts.place }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.place }">${newParts.place }</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.place != newParts.place}">red-color</c:if>" title="${newParts.place }">${newParts.place }</span>
 						</td>
 					</tr>
 					<tr>
@@ -203,7 +203,7 @@
 							<span class="val" title="<c:if test="${facadeBean.info.parts.isKey == 0 }">否</c:if><c:if test="${facadeBean.info.parts.isKey == 1 }">是</c:if>"><c:if test="${facadeBean.info.parts.isKey == 0 }">否</c:if><c:if test="${facadeBean.info.parts.isKey == 1 }">是</c:if></span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="<c:if test="${newParts.isKey == 0 }">否</c:if><c:if test="${newParts.isKey == 1 }">是</c:if>"><c:if test="${newParts.isKey == 0 }">否</c:if><c:if test="${newParts.isKey == 1 }">是</c:if></span>
+							<span class="val <c:if test="${ facadeBean.info.parts.isKey != newParts.isKey}">red-color</c:if>" title="<c:if test="${newParts.isKey == 0 }">否</c:if><c:if test="${newParts.isKey == 1 }">是</c:if>"><c:if test="${newParts.isKey == 0 }">否</c:if><c:if test="${newParts.isKey == 1 }">是</c:if></span>
 						</td>
 					</tr>
 					<tr>
@@ -212,7 +212,7 @@
 							<span class="val" title="${facadeBean.info.parts.keyCode }">${facadeBean.info.parts.keyCode }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.keyCode }">${newParts.keyCode }</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.keyCode != newParts.keyCode}">red-color</c:if>" title="${newParts.keyCode }">${newParts.keyCode }</span>
 						</td>
 					</tr>
 					
@@ -222,7 +222,7 @@
 							<span class="val" title="${facadeBean.info.parts.contacts }">${facadeBean.info.parts.contacts }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.contacts }">${newParts.contacts }</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.contacts != newParts.contacts}">red-color</c:if>" title="${newParts.contacts }">${newParts.contacts }</span>
 						</td>
 					</tr>
 					
@@ -232,7 +232,7 @@
 							<span class="val" title="${facadeBean.info.parts.phone }">${facadeBean.info.parts.phone }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.phone }">${newParts.phone }</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.phone != newParts.phone}">red-color</c:if>" title="${newParts.phone }">${newParts.phone }</span>
 						</td>
 					</tr>
 					
@@ -242,7 +242,7 @@
 							<span class="val" title="${facadeBean.info.parts.remark }">${facadeBean.info.parts.remark }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newParts.remark }">${newParts.remark }</span>	
+							<span class="val <c:if test="${ facadeBean.info.parts.remark != newParts.remark}">red-color</c:if>" title="${newParts.remark }">${newParts.remark }</span>	
 						</td>
 					</tr>
 				</table>
@@ -306,7 +306,7 @@
 							<span class="val" title="${facadeBean.info.material.matName }">${facadeBean.info.material.matName }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.matName }">${newMaterial.matName }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.matName != newMaterial.matName}">red-color</c:if>" title="${newMaterial.matName }">${newMaterial.matName }</span>
 						</td>
 					</tr>
 					<tr>
@@ -315,7 +315,7 @@
 							<span class="val" title="${facadeBean.info.material.proNo }">${facadeBean.info.material.proNo }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.proNo }">${newMaterial.proNo }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.proNo != newMaterial.proNo}">red-color</c:if>" title="${newMaterial.proNo }">${newMaterial.proNo }</span>
 						</td>
 					</tr>
 					<tr>
@@ -324,7 +324,7 @@
 							<span class="val" title="${facadeBean.info.material.org.name }">${facadeBean.info.material.org.name }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.org.name }">${newMaterial.org.name }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.org.name != newMaterial.org.name}">red-color</c:if>" title="${newMaterial.org.name }">${newMaterial.org.name }</span>
 						</td>
 					</tr>
 					<tr>
@@ -333,7 +333,7 @@
 							<span class="val" title="${facadeBean.info.material.matNo }">${facadeBean.info.material.matNo }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.matNo }">${newMaterial.matNo }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.matNo != newMaterial.matNo}">red-color</c:if>" title="${newMaterial.matNo }">${newMaterial.matNo }</span>
 						</td>
 					</tr>
 					<tr>
@@ -342,7 +342,7 @@
 							<span class="val" title="${facadeBean.info.material.matColor }">${facadeBean.info.material.matColor }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.matColor }">${newMaterial.matColor }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.matColor != newMaterial.matColor}">red-color</c:if>" title="${newMaterial.matColor }">${newMaterial.matColor }</span>
 						</td>
 					</tr>
 					<tr>
@@ -366,7 +366,7 @@
 							<span class="val" title="${facadeBean.info.material.contacts }">${facadeBean.info.material.contacts }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.contacts }">${newMaterial.contacts }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.contacts != newMaterial.contacts}">red-color</c:if>" title="${newMaterial.contacts }">${newMaterial.contacts }</span>
 						</td>
 					</tr>
 					
@@ -376,7 +376,7 @@
 							<span class="val" title="${facadeBean.info.material.phone }">${facadeBean.info.material.phone }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.phone }">${newMaterial.phone }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.phone != newMaterial.phone}">red-color</c:if>" title="${newMaterial.phone }">${newMaterial.phone }</span>
 						</td>
 					</tr>
 					
@@ -386,7 +386,7 @@
 							<span class="val" title="${facadeBean.info.material.remark }">${facadeBean.info.material.remark }</span>	
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.remark }">${newMaterial.remark }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.remark != newMaterial.remark}">red-color</c:if>" title="${newMaterial.remark }">${newMaterial.remark }</span>
 						</td>
 					</tr>
 				</table>

@@ -5,7 +5,9 @@ import java.util.Map;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
@@ -107,8 +109,10 @@ public interface InfoService {
      * @param taskId    任务ID
      * @param pfResultList    性能结果
      * @param atlResultList   图谱结果
+     * @param compareList     对比结果
+     * @param conclusionDataList 试验结论
      */
-    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList);
+    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList, List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList);
     
     
     /**

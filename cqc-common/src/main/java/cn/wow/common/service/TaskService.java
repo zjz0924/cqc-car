@@ -23,13 +23,13 @@ public interface TaskService {
     /**
 	 * 结果发送
 	 * @param taskId  任务ID
-	 * @param pAtlOrgVal    零部件图谱
-	 * @param pPatOrgVal    零部件型式
-	 * @param mAtlOrgVal    原材料图谱
-	 * @param mPatOrgVal    原材料型式   
+	 * @param pAtlVal    零部件图谱
+	 * @param pPatVal    零部件型式
+	 * @param mAtlVal    原材料图谱
+	 * @param mPatVal    原材料型式   
 	 * @param type          类型：1-发送结果， 2-不发送，直接跳过 
 	 */
-    public void sendResult(Account account, Long taskId, String pAtlOrgVal, String pPatOrgVal, String mAtlOrgVal, String mPatOrgVal, Integer type) throws Exception;
+    public void sendResult(Account account, Long taskId, String pAtlVal, String pPatVal, String mAtlVal, String mPatVal, Integer type) throws Exception;
     
     
     /**

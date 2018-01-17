@@ -30,6 +30,7 @@ import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
+import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
@@ -39,6 +40,7 @@ import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.TaskService;
@@ -89,6 +91,9 @@ public class InfoServiceImpl implements InfoService {
 	private LabReqDao labReqDao;
 	@Autowired
 	private LabReqService labReqService;
+	@Autowired
+	private LabConclusionService labConclusionService;
+	
 	
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -901,8 +906,10 @@ public class InfoServiceImpl implements InfoService {
      * @param taskId    任务ID
      * @param pfResultList    性能结果
      * @param atlResultList   图谱结果
+     * @param compareList     对比结果
+     * @param conclusionDataList 试验结论
      */
-    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList){
+    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList, List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList){
     	Date date = new Date();
     	
     	Task task = taskDao.selectOne(taskId);
@@ -982,26 +989,21 @@ public class InfoServiceImpl implements InfoService {
 			labReqService.batchAdd(labReqList);
 		}
 		
+		//试验结论
+		if(conclusionDataList != null && conclusionDataList.size() > 0) {
+			for (LabConclusion labConclusion : conclusionDataList) {
+				labConclusion.setTaskId(task.getId());
+			}
+			labConclusionService.batchAdd(conclusionDataList);
+		}
+		
 		// 对比结论
 		if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
-			Map<String, Object> rMap = new PageMap(false);
-			rMap.put("type", 4);
-			rMap.put("catagorys", 8);
-			rMap.put("taskId", taskId);
-			List<ExamineRecord> recordList = examineRecordDao.selectAllList(rMap);
-			
-			if (recordList != null && recordList.size() > 0) {
-				List<ExamineRecord> newList = new ArrayList<ExamineRecord>();
-				for (ExamineRecord rd : recordList) {
-					rd.settId(task.getId());
-					rd.setCreateTime(date);
-					rd.setId(null);
-					newList.add(rd);
+			if (compareList != null && compareList.size() > 0) {
+				for (ExamineRecord examineRecord : compareList) {
+					examineRecord.settId(task.getId());
 				}
-				
-				if (newList.size() > 0) {
-					examineRecordDao.batchAdd(newList);
-				}
+				examineRecordDao.batchAdd(compareList);
 			}
 		}
 		
