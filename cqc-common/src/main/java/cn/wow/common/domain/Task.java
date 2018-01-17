@@ -33,7 +33,6 @@ public class Task {
      *  PPAP、SOP： 1-审批中，2-审批不通过，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成，8-申请修改，9-申请不通过，10-确认是否二次抽样，11-中止任务
      */
     private Integer state;
-   
     
     // 零部件图谱实验室ID
     private Long partsAtlId; 
@@ -60,13 +59,13 @@ public class Task {
     // 确认时间
     private Date confirmTime;
     
-    // 零部件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-合格，5-不合格， 6-审批不通过)
+    // 零部件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
     private Integer partsAtlResult;
-    // 原材料图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-合格，5-不合格， 6-审批不通过)
+    // 原材料图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
     private Integer matAtlResult;
-    // 零部件型式结果 (0-待处理，1-未上传，2-已上传，3-已发送，4-合格，5-不合格， 6-审批不通过)
+    // 零部件型式结果 (0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
     private Integer partsPatResult;
-    // 原材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-合格，5-不合格， 6-审批不通过) 
+    // 原材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过) 
     private Integer matPatResult;
     
     // 零部件图谱实验次数
@@ -82,6 +81,12 @@ public class Task {
     private Integer infoApply;
     // 是否申请修改试验结果（0-否，1-等待审批，2-子任务等待审批）
     private Integer resultApply;
+    
+    // 结果（1-合格，2-不合格）
+    private Integer result;
+    
+    // 是否接收（1-接收，2-不接收）
+    private Integer isReceive;
     
     public Long getId() {
         return id;
@@ -346,4 +351,23 @@ public class Task {
 	public void settId(Long tId) {
 		this.tId = tId;
 	}
+
+	public Integer getResult() {
+		return result;
+	}
+
+	public void setResult(Integer result) {
+		this.result = result;
+	}
+
+	public Integer getIsReceive() {
+		return isReceive;
+	}
+
+	public void setIsReceive(Integer isReceive) {
+		this.isReceive = isReceive;
+	}
+	
+	
+	
 }

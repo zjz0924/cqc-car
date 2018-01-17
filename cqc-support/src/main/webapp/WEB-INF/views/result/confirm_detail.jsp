@@ -563,14 +563,14 @@
 						<c:choose>
 							<c:when test="${facadeBean.partsAtlResult == 3 }">
 								<span id="partsAtl1">
-									<a href="javascript:void(0);"  onclick="doSubmit(1, 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接受</a>&nbsp;&nbsp;
-									<a href="javascript:void(0);"  onclick="notpass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接受</a>
+									<a href="javascript:void(0);"  onclick="doSubmit(1, 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接收</a>&nbsp;&nbsp;
+									<a href="javascript:void(0);"  onclick="notpass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接收</a>
 								</span>
-								<span id="partsAtl2" style="color:green;display:none;">接受</span>
-								<span id="partsAtl3" style="color:red;display:none;">不接受</span>
+								<span id="partsAtl2" style="color:green;display:none;">接收</span>
+								<span id="partsAtl3" style="color:red;display:none;">不接收</span>
 							</c:when>
 							<c:when test="${facadeBean.partsAtlResult == 4 }">
-								<span style="color:green;">接受</span>
+								<span style="color:green;">接收</span>
 							</c:when>
 							<c:otherwise>
 								试验进行中
@@ -582,14 +582,14 @@
 						<c:choose>
 							<c:when test="${facadeBean.partsPatResult == 3}">
 								<span id="partsPat1">
-									<a href="javascript:void(0);"  onclick="doSubmit(1, 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接受</a>&nbsp;&nbsp;
-									<a href="javascript:void(0);"  onclick="notpass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接受</a>
+									<a href="javascript:void(0);"  onclick="doSubmit(1, 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接收</a>&nbsp;&nbsp;
+									<a href="javascript:void(0);"  onclick="notpass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接收</a>
 								</span>
-								<span id="partsPat2" style="color:green;display:none;">接受</span>
-								<span id="partsPat3" style="color:red;display:none;">不接受</span>
+								<span id="partsPat2" style="color:green;display:none;">接收</span>
+								<span id="partsPat3" style="color:red;display:none;">不接收</span>
 							</c:when>
 							<c:when test="${facadeBean.partsPatResult == 4 }">
-								<span style="color:green;">接受</span>
+								<span style="color:green;">接收</span>
 							</c:when>
 							<c:otherwise>
 								试验进行中
@@ -602,14 +602,14 @@
 					<c:choose>
 						<c:when test="${facadeBean.matAtlResult == 3}">
 							<span id="matAtl1">
-								<a href="javascript:void(0);"  onclick="doSubmit(1, 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接受</a>&nbsp;&nbsp;
-								<a href="javascript:void(0);"  onclick="notpass(3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接受</a>
+								<a href="javascript:void(0);"  onclick="doSubmit(1, 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接收</a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  onclick="notpass(3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接收</a>
 							</span>
-							<span id="matAtl2" style="color:green;display:none;">接受</span>
-							<span id="matAtl3" style="color:red;display:none;">不接受</span>
+							<span id="matAtl2" style="color:green;display:none;">接收</span>
+							<span id="matAtl3" style="color:red;display:none;">不接收</span>
 						</c:when>
 						<c:when test="${facadeBean.matAtlResult == 4 }">
-							<span style="color:green;">接受</span>
+							<span style="color:green;">接收</span>
 						</c:when>
 						<c:otherwise>
 							试验进行中
@@ -621,14 +621,14 @@
 					<c:choose>
 						<c:when test="${facadeBean.matPatResult == 3}">
 							<span id="matPat1">
-								<a href="javascript:void(0);"  onclick="doSubmit(1, 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接受</a>&nbsp;&nbsp;
-								<a href="javascript:void(0);"  onclick="notpass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接受</a>
+								<a href="javascript:void(0);"  onclick="doSubmit(1, 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接收</a>&nbsp;&nbsp;
+								<a href="javascript:void(0);"  onclick="notpass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不接收</a>
 							</span>
-							<span id="matPat2" style="color:green;display:none;">接受</span>
-							<span id="matPat3" style="color:red;display:none;">不接受</span>
+							<span id="matPat2" style="color:green;display:none;">接收</span>
+							<span id="matPat3" style="color:red;display:none;">不接收</span>
 						</c:when>
 						<c:when test="${facadeBean.matPatResult == 4 }">
-							<span style="color:green;">接受</span>
+							<span style="color:green;">接收</span>
 						</c:when>
 						<c:otherwise>
 							试验进行中
@@ -640,7 +640,7 @@
 			<div id="dlg" class="easyui-dialog" title="结果确认" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
 				<div>
 					<input type="hidden" id="testType" name="testType">
-					<input id="remark" class="easyui-textbox" label="不接受原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/><br>
+					<input id="remark" class="easyui-textbox" label="不接收原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/><br>
 					<span id="remark_error" style="color:red;"></span>
 				</div>
 				
@@ -657,8 +657,8 @@
 			
 			<div style="margin-top:15px;font-weight:bold;color:red;" align="center" id="errorMsg"></div>
 			<div align="center" style="margin-top:10px;margin-bottom: 20px;">
-				<a href="javascript:void(0);"  onclick="doSubmit(1, 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部接受</a>
-				<a href="javascript:void(0);"  onclick="notpass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">全部不接受</a>
+				<a href="javascript:void(0);"  onclick="doSubmit(1, 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部接收</a>
+				<a href="javascript:void(0);"  onclick="notpass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-no'">全部不接收</a>
 			</div>
 		</c:if>
 		
@@ -901,15 +901,15 @@
 			
 			<div style="margin-top:15px;font-weight:bold;color:red;" align="center" id="errorMsg"></div>
 			<div align="center" style="margin-top:10px;margin-bottom: 20px;">
-				<a id="saveBtn1" href="javascript:void(0);"  onclick="pass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接受</a>
-				<a href="javascript:void(0);"  onclick="notpass()" class="easyui-linkbutton" data-options="iconCls:'icon-no'">不接受</a>
+				<a id="saveBtn1" href="javascript:void(0);"  onclick="pass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">接收</a>
+				<a href="javascript:void(0);"  onclick="notpass()" class="easyui-linkbutton" data-options="iconCls:'icon-no'">不接收</a>
 			</div>	
 
 			
-			<div id="dlg" class="easyui-dialog" title="结果确认" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
+			<div id="dlg" class="easyui-dialog" title="结果接收" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
 				
 				<div>
-					<input id="remark" class="easyui-textbox" label="不接受原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/><br>
+					<input id="remark" class="easyui-textbox" label="不接收原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/><br>
 					<span id="remark_error" style="color:red;"></span>
 				</div>
 				

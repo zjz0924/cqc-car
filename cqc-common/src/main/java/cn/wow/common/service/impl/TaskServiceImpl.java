@@ -300,7 +300,7 @@ public class TaskServiceImpl implements TaskService{
 
 			if (StringUtils.isNotBlank(remark)) {
 				remark = remark.substring(0, remark.length() - 1);
-				remark = remark + "结果确认合格";
+				remark = remark + "结果接收";
 			}
 
 			// 所有实验已确认
@@ -320,6 +320,7 @@ public class TaskServiceImpl implements TaskService{
 				// 保存基准信息
 				saveStandard(account, task);
 			}
+			task.setIsReceive(result);
 			taskDao.update(task);
 
 			// 确认记录
@@ -371,9 +372,9 @@ public class TaskServiceImpl implements TaskService{
 
 			if (StringUtils.isNotBlank(temp)) {
 				temp = temp.substring(0, temp.length() - 1);
-				temp = temp + "结果确认不合格";
+				temp = temp + "结果不接收";
 			}
-			remark = temp + ",不合格原因：" + remark;
+			remark = temp + ",不接收原因：" + remark;
 			
 			// 任务记录
 			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), StandardTaskRecordEnum.CONFIRM.getState(), remark, new Date(), task.getType());
@@ -383,6 +384,7 @@ public class TaskServiceImpl implements TaskService{
 			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, remark, 3, type, date, TaskTypeEnum.OTS.getState());
 			examineRecordDao.insert(examineRecord);
 
+			task.setIsReceive(result);
 			taskDao.update(task);
 		}
 		
@@ -415,21 +417,36 @@ public class TaskServiceImpl implements TaskService{
 	void PpapResultConfirm(Task task, Account account, Long taskId, int result, String remark, String orgs) throws Exception{
 		Date date = new Date();
 		
+		task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
+		task.setConfirmTime(new Date());
+		task.setIsReceive(result);
+		
 		if(result == 1){
-			task.setState(SamplingTaskEnum.ACCOMPLISH.getState());
-			task.setConfirmTime(new Date());
+			
 			taskDao.update(task);
 			
 			// 确认记录
-			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "结果合格", 3, null, date, TaskTypeEnum.PPAP.getState());
+			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "接收结果", 3, null, date, TaskTypeEnum.PPAP.getState());
 			examineRecordDao.insert(examineRecord);
 			
 			// 任务记录
 			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.SAVE.getState(), "结果留存", date, task.getType());
 			taskRecordDao.insert(taskRecord);
 		}else{
+			task.setFailNum(1);
+			task.setRemark(remark);
+			taskDao.update(task);
+			
+			// 确认记录
+			ExamineRecord examineRecord = new ExamineRecord(taskId, account.getId(), result, "不接收结果，原因：" + remark, 3, null, date, TaskTypeEnum.PPAP.getState());
+			examineRecordDao.insert(examineRecord);
+			
+			// 任务记录
+			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.SAVE.getState(), "不接收结果，原因：" + remark, date, task.getType());
+			taskRecordDao.insert(taskRecord);
+			
 			// 第一次失败（确认后再进行第2次抽样）
-			if(task.getFailNum() == 0 && task.gettId() == null){
+			/*if(task.getFailNum() == 0 && task.gettId() == null){
 				task.setState(SamplingTaskEnum.RECONFIRM.getState());
 				task.setFailNum(task.getFailNum() + 1);
 				task.setConfirmTime(new Date());
@@ -460,18 +477,26 @@ public class TaskServiceImpl implements TaskService{
 				// 任务记录
 				TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(), SamplingTaskRecordEnum.ALARM.getState(), "结果不合格，发送警告书，不合格原因：" + remark, date, task.getType());
 				taskRecordDao.insert(taskRecord);
-			}
+			}*/
 		}
 		
 		// 费用记录
 		List<CostRecord> costRecordList = new ArrayList<CostRecord>();
 		if (task.getPartsAtlId() != null) {
-			costRecordList.add(getCostRecord(account, date, task, 1, result));
+			costRecordList.add(getCostRecord(account, date, task, 1, task.getResult()));
 		}
 		if (task.getMatAtlId() != null) {
-			costRecordList.add(getCostRecord(account, date, task, 3, result));
+			costRecordList.add(getCostRecord(account, date, task, 3, task.getResult()));
 		}
 		costRecordDao.batchAdd(costRecordList);
+		
+		if(StringUtils.isBlank(remark)) {
+			if(result == 1) {
+				remark = "接收结果";
+			}else {
+				remark = "不接收结果";
+			}
+		}
 		
 		// 操作日志
     	String logDetail =  remark + "，任务号：" + task.getCode();
@@ -482,10 +507,10 @@ public class TaskServiceImpl implements TaskService{
 	/**
 	 * 结果对比
 	 * @param taskId  任务ID
-	 * @param result  对比结果
+	 * @param examineRecordList  对比结果
 	 * @param state   状态：1-正常，2-异常
 	 */
-    public void compareResult(Account account, Long taskId, List<ExamineRecord> result, int state){
+    public void compareResult(Account account, Long taskId, List<ExamineRecord> examineRecordList, int state, int result){
     	Task task = taskDao.selectOne(taskId);
     	Date date = new Date();
     	String remark = "";
@@ -493,10 +518,12 @@ public class TaskServiceImpl implements TaskService{
     	
     	if(state == 1){
     		task.setState(SamplingTaskEnum.SENDING.getState());
+    		task.setResult(result);
+    		
     		remark = "提交对比结果";
     		recordState = SamplingTaskRecordEnum.COMPARISON_NORMAL.getState();
     		
-    		examineRecordDao.batchAdd(result);
+    		examineRecordDao.batchAdd(examineRecordList);
     	}else{
     		task.setState(SamplingTaskEnum.UPLOAD.getState());
     		task.setPartsAtlResult(1);

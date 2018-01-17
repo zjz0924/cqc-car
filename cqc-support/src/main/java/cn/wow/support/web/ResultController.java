@@ -786,7 +786,7 @@ public class ResultController extends AbstractController {
 						
 			model.addAttribute("facadeBean", task);
 			
-			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
 			model.addAttribute("labReqList", labReqList);
 		}
 		
@@ -799,9 +799,9 @@ public class ResultController extends AbstractController {
 	/**
 	 * 结果确认
 	 * @param taskId  任务ID
-	 * @param result  结果：1-合格，2-不合格
+	 * @param result  结果：1-接收，2-不接收
 	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部  （针对OTS任务类型）
-	 * @param remark  不合格的理由
+	 * @param remark  不接受的理由
 	 * @param orgs    发送警告书的机构
 	 */
 	@ResponseBody
@@ -813,7 +813,7 @@ public class ResultController extends AbstractController {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			taskService.confirmResult(account, taskId, result, type, remark, orgs);
 		}catch(Exception ex){
-			logger.error("结果确认失败", ex);
+			logger.error("结果接收失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");
@@ -975,6 +975,12 @@ public class ResultController extends AbstractController {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			Date date = new Date();
 
+			// 根据一致性结论来判断任务是否合格
+			int result = 1;
+			if(p_result == 2 || m_result == 2) {
+				result = 2;
+			}
+			
 			// 对比结果
 			List<ExamineRecord> resultList = new ArrayList<ExamineRecord>();
 
@@ -1008,7 +1014,7 @@ public class ResultController extends AbstractController {
 				}
 			}
 
-			taskService.compareResult(account, taskId, resultList, state);
+			taskService.compareResult(account, taskId, resultList, state, result);
 		} catch (Exception ex) {
 			logger.error("结果对比失败", ex);
 

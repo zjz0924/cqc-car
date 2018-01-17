@@ -93,6 +93,11 @@
 					return false;
 				}
 				
+				if(isNull(taskType)){
+					errorMsg("请选择任务类型时间");
+					return false;
+				}
+				
 				$.ajax({ 
 					url: "${ctx}/statistic/getResult",
 					data: {
@@ -110,20 +115,16 @@
 							var taskNum = data.data.taskNum;
 							var passNum = data.data.passNum;
 							var onceNum = data.data.onceNum;
-							var twiceNum = data.data.twiceNum;
 							
 							$("#taskNum").html(taskNum);
 							$("#passNum").html(passNum);
 							$("#onceNum").html(onceNum);
-							$("#twiceNum").html(twiceNum);
 							
 							var passNumPer = percentNum(passNum, taskNum);
 							var onceNumPer = percentNum(onceNum, taskNum);
-							var twiceNumPer = percentNum(twiceNum, taskNum);
 							
 							$("#passNum_per").html(passNumPer);
 							$("#onceNum_per").html(onceNumPer);
-							$("#twiceNum_per").html(twiceNumPer);
 						}
 					}
 				});
@@ -149,10 +150,8 @@
 				$("#taskNum").html("0");
 				$("#passNum").html("0");
 				$("#onceNum").html("0");
-				$("#twiceNum").html("0"); 
 				$("#passNum_per").html("0 %");
 				$("#onceNum_per").html("0 %");
-				$("#twiceNum_per").html("0 %");
 			}
 		</script>
 	</head>
@@ -231,18 +230,6 @@
 					<div class="count">
 						<span class="title1">比例</span>
 						<span id="onceNum_per">0 %</span>
-					</div>
-				</div>
-				
-				<div class="info-box" style="background-color: #d95043;margin-left: 50px;">
-					<div class="title">两次不合格 </div>
-					<div class="count">
-						<span class="title1">数量</span>
-						<span id="twiceNum">0</span>
-					</div>
-					<div class="count">
-						<span class="title1">比例</span>
-						<span id="twiceNum_per">0 %</span>
 					</div>
 				</div>
 			</div>

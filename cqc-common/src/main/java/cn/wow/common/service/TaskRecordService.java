@@ -14,5 +14,7 @@ public interface TaskRecordService {
     public int deleteByPrimaryKey(String userName, TaskRecord taskRecord);
 
     public List<TaskRecord> selectAllList(Map<String, Object> map);
+    
+    public List<Long> selectTaskIdList(Long id);
 
 }

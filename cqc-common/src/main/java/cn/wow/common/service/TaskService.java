@@ -76,10 +76,11 @@ public interface TaskService {
     /**
 	 * 结果对比
 	 * @param taskId  任务ID
-	 * @param result  对比结果
+	 * @param examineRecordList  对比结果
 	 * @param state   状态：1-正常，2-异常
+	 * @param result  任务结果：1-合格，2-不合格
 	 */
-    public void compareResult(Account account, Long taskId, List<ExamineRecord> result, int state);
+    public void compareResult(Account account, Long taskId, List<ExamineRecord> examineRecordList, int state, int result);
     
 
     /**

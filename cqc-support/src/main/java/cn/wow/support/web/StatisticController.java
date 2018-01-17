@@ -22,6 +22,7 @@ import cn.wow.common.service.MenuService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 /**
  * 统计控制器
@@ -106,12 +107,14 @@ public class StatisticController {
 			resultVO.setTaskNum(taskList.size());
 
 			for (Task task : taskList) {
-				if (task.getFailNum().intValue() == 0) {
-					resultVO.setPassNum(resultVO.getPassNum() + 1);
-				} else if (task.getFailNum().intValue() == 1) {
-					resultVO.setOnceNum(resultVO.getOnceNum() + 1);
-				} else {
-					resultVO.setTwiceNum(resultVO.getTwiceNum() + 1);
+				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					if (task.getResult() != null) {
+						if (task.getResult() == 1) {
+							resultVO.setPassNum(resultVO.getPassNum() + 1);
+						} else if (task.getResult() == 2) {
+							resultVO.setOnceNum(resultVO.getOnceNum() + 1);
+						}
+					}
 				}
 			}
 		}

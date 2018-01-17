@@ -77,14 +77,6 @@
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
-						field : 'times',
-						title : '实验次数',
-						width : '120',
-						align : 'center',
-						formatter : function(val){
-							return "<span title='" + val + "'>第" + val + "次</span>";
-						}
-					}, {
 						field : 'labResult',
 						title : '实验结果',
 						width : '120',

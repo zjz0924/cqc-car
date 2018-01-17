@@ -43,6 +43,7 @@ import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
+import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
@@ -75,6 +76,8 @@ public class QueryController extends AbstractController {
 	private LabReqService labReqService;
 	@Autowired
 	private LabConclusionService labConclusionService;
+	@Autowired
+	private TaskRecordService taskRecordService;
 	
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -146,23 +149,33 @@ public class QueryController extends AbstractController {
 			queryMap.put("type", taskType);
 		}
 		
+		
 		/**
-		 * 1) 任务发起人，只能查看自己发起的任务单
-		 * 2) 需要我审批的单
-		 * 3) 实验室，只看需要我上传结果的任务
+		 * 1) SQE审批人全范围
+		 * 2) 其它审批人只能查看本部门的任务
+		 * 3) 其它人只能看自己的任务
 		 */
 		if (!Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-			Map<String, Object> tMap = new HashMap<String, Object>();
-			tMap.put("accountId", account.getId());
-			tMap.put("orgId", account.getOrgId());
-
-			// 审批过的任务ID
-			List<Long> taskIdList = examineRecordService.selectTaskIdList(account.getId(), 2);
-			if (taskIdList != null && taskIdList.size() > 0) {
-				tMap.put("taskIdList", taskIdList);
+			// 可查看权限
+			String type = judgeAccountRole(request);
+			
+			if("self".equals(type)) {
+				List<Long> taskIdList = taskRecordService.selectTaskIdList(account.getId());
+				
+				if(taskIdList == null || taskIdList.size() < 1) {
+					taskIdList.add(-1l);
+				}
+				
+				map.put("taskIdList", taskIdList);
+				queryMap.put("taskIdList", taskIdList);
+				
+			}else if("ots".equals(type)) {
+				map.put("type", 1);
+				queryMap.put("type", 1);
+			}else if("gs".equals(type)) {
+				map.put("type", 4);
+				queryMap.put("type", 4);
 			}
-			map.put("queryMap", tMap);
-			queryMap.put("queryMap", tMap);
 		}
 		
 		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
@@ -508,6 +521,70 @@ public class QueryController extends AbstractController {
 				mAtlasResult.add(ar);
 			}
 		}
+	}
+	
+	/**
+	 * 判断用户的角色
+	 * return type  self: 自身任务，ots-ots任务，gs-gs任务，all-所有任务
+	 */
+	protected String judgeAccountRole(HttpServletRequest request) {
+		String type = "self";
+
+		// 审批人（ots任务）
+		if (hasPermission(request, "otsApprove")) {
+			type = "ots";
+		}
+		
+		// 材料研究审批人（gs任务）
+		if(hasPermission(request, "gsApprove")) {
+			type = "gs";
+		}
+		
+		// SOE审批人（全范围）
+		if (hasPermission(request, "ppapApprove") || hasPermission(request, "sopApprove")) {
+			type = "all";
+		}
+		
+		return type;
+	}
+	
+	
+	/**
+	 * 查看角色是否有指定权限
+	 */
+	protected boolean hasPermission(HttpServletRequest request, String alias) {
+		List<Menu> menuList = (List<Menu>) request.getSession().getAttribute(Contants.CURRENT_PERMISSION_MENU);
+
+		// 查看当前是否有审核、审批、上传结果、比对、结果确认权限
+		for (Menu menu : menuList) {
+			if (menu.getSubList() != null && menu.getSubList().size() > 0) {
+				for (Menu subMenu : menu.getSubList()) {
+					if (subMenu.getSubList() != null && subMenu.getSubList().size() > 0) {
+						for (Menu sMenu : subMenu.getSubList()) {
+							if (StringUtils.isNotBlank(sMenu.getAlias())) {
+								if (alias.equals(sMenu.getAlias())) {
+									return true;
+								}
+							}
+						}
+					} else {
+						if (StringUtils.isNotBlank(subMenu.getAlias())) {
+							if (alias.equals(subMenu.getAlias())) {
+								return true;
+							}
+						}
+					}
+				}
+			} else {
+				if (StringUtils.isNotBlank(menu.getAlias())) {
+					if (alias.equals(menu.getAlias())) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 }

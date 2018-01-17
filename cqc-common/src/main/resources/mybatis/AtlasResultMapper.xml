@@ -110,7 +110,7 @@
 	
 	<!-- 获取基准图谱结果 -->
 	<select id="getStandardAtlResult" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select ar.* from atlas_result ar LEFT JOIN task t on t.id = ar.t_id LEFT JOIN info i on i.id = t.i_id where t.i_id = #{iId,jdbcType=BIGINT} and t.type = 1 and catagory = #{catagory,jdbcType=INTEGER } order by exp_no desc limit 3
+		select ar.* from atlas_result ar LEFT JOIN task t on t.id = ar.t_id LEFT JOIN info i on i.id = t.i_id where t.i_id = #{iId,jdbcType=BIGINT} and t.type = 1 and catagory = #{catagory,jdbcType=INTEGER } order by exp_no desc limit 4
 	</select>
 
 </mapper>

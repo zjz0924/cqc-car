@@ -567,9 +567,6 @@
 				<td class="remark-span">试验结果</td>
 				<td class="remark-span">结果评价</td>
 				<td class="remark-span">备注</td>
-				<td class="remark-span">试验结论</td>
-				<td class="remark-span">报告编号</td>
-				<td class="remark-span">其它</td>
 			</tr>
 		
 			<c:forEach items="${pPfResult_old}" var="vo" varStatus="status">
@@ -593,15 +590,6 @@
 					<td class="value-td1">
 						<span class="val" title="${vo.remark}">${vo.remark}</span>
 					</td>
-					<td class="value-td1">
-						<span class="val" title="${vo.conclusion}">${vo.conclusion}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val" title="${vo.repNum}">${vo.repNum}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val" title="${vo.other}">${vo.other}</span>
-					</td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -616,9 +604,6 @@
 				<td class="remark-span">试验结果</td>
 				<td class="remark-span">结果评价</td>
 				<td class="remark-span">备注</td>
-				<td class="remark-span">试验结论</td>
-				<td class="remark-span">报告编号</td>
-				<td class="remark-span">其它</td>
 			</tr>
 		
 			<c:forEach items="${pPfResult_new}" var="vo" varStatus="status">
@@ -641,15 +626,6 @@
 					</td>
 					<td class="value-td1">
 						<span class="val red-color" title="${vo.remark}">${vo.remark}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val red-color" title="${vo.conclusion}">${vo.conclusion}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val red-color" title="${vo.repNum}">${vo.repNum}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val red-color" title="${vo.other}">${vo.other}</span>
 					</td>
 				</tr>
 			</c:forEach>
@@ -952,9 +928,6 @@
 				<td class="remark-span">试验结果</td>
 				<td class="remark-span">结果评价</td>
 				<td class="remark-span">备注</td>
-				<td class="remark-span">试验结论</td>
-				<td class="remark-span">报告编号</td>
-				<td class="remark-span">其它</td>
 			</tr>
 		
 			<c:forEach items="${mPfResult_old}" var="vo" varStatus="status">
@@ -978,15 +951,6 @@
 					<td class="value-td1">
 						<span class="val" title="${vo.remark}">${vo.remark}</span>
 					</td>
-					<td class="value-td1">
-						<span class="val" title="${vo.conclusion}">${vo.conclusion}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val" title="${vo.repNum}">${vo.repNum}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val" title="${vo.other}">${vo.other}</span>
-					</td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -1001,9 +965,6 @@
 				<td class="remark-span">试验结果</td>
 				<td class="remark-span">结果评价</td>
 				<td class="remark-span">备注</td>
-				<td class="remark-span">试验结论</td>
-				<td class="remark-span">报告编号</td>
-				<td class="remark-span">其它</td>
 			</tr>
 		
 			<c:forEach items="${mPfResult_new}" var="vo" varStatus="status">
@@ -1026,15 +987,6 @@
 					</td>
 					<td class="value-td1">
 						<span class="val red-color" title="${vo.remark}">${vo.remark}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val red-color" title="${vo.conclusion}">${vo.conclusion}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val red-color" title="${vo.repNum}">${vo.repNum}</span>
-					</td>
-					<td class="value-td1">
-						<span class="val red-color" title="${vo.other}">${vo.other}</span>
 					</td>
 				</tr>
 			</c:forEach>

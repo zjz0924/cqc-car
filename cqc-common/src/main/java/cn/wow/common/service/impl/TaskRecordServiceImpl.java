@@ -42,4 +42,7 @@ public class TaskRecordServiceImpl implements TaskRecordService{
     	return taskRecordDao.selectAllList(map);
     }
 
+    public List<Long> selectTaskIdList(Long id){
+    	return taskRecordDao.selectTaskIdList(id);
+    }
 }

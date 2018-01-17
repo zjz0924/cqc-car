@@ -94,4 +94,8 @@
 	 	 </choose>
 	  </select>
 	
+	  <select id="selectTaskIdList" resultType="java.lang.Long" parameterType="java.lang.Long">
+	  	 select distinct t.id from task_record tr left join task t on tr.code = t.code where tr.a_id = #{id,jdbcType=BIGINT}
+	  </select>
+	
 </mapper>

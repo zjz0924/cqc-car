@@ -165,7 +165,7 @@
 			<a href="javascript:void(0);"  onclick="$('#transmitDetailDialog').dialog('close');" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
 		</div>
 
-		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 500px; height: 550px; padding: 10px" closed="true" data-options="modal:true">
+		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 550px; height: 550px; padding: 10px" closed="true" data-options="modal:true">
 			
 			<c:if test="${taskType == 1 and empty facadeBean.partsAtlId}">
 				<div>
@@ -258,7 +258,7 @@
 		
 		.title-span{
 			display: inline-block;
-			width: 100px;
+			width: 120px;
 			font-weight:bold;
 		}
 		

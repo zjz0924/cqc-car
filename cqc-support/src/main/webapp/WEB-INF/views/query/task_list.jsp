@@ -95,7 +95,7 @@
 								}else if(row.state == 5){
 									str = "结果发送中";
 								}else if(row.state == 6){
-									str = "结果确认中";
+									str = "结果接收中";
 								}else if(row.state == 7){
 									str = "完成";
 								}else if(row.state == 8){
@@ -111,35 +111,34 @@
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
 					}, {
-						field : 'failNum',
+						field : 'isReceive',
+						title : '是否接收',
+						width : '80',
+						align : 'center',
+						formatter : function(val){
+							var str = "";
+							var color = "red";
+							if(val == 1){
+								str = "接收";
+								color = "green";
+							}else if(val == 2){
+								str = "不接收";
+							}
+							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
+						}
+					}, {
+						field : 'result',
 						title : '结果',
 						width : '80',
 						align : 'center',
-						formatter : function(value,row,index){
+						formatter : function(val){
 							var str = "";
 							var color = "red";
-							if(row.type == 1 || row.type == 4){
-								if(row.state == 4){
-									if(row.failNum == 0){
-										str = "合格";
-										color = "green";
-									}else if(row.failNum == 1){
-										str = "一次不合格";
-									}else if(row.failNum == 2){
-										str = "二次不合格";
-									}
-								}
-							}else if(row.type == 2 || row.type == 3){
-								if(row.state == 7){
-									if(row.failNum == 0){
-										str = "合格";
-										color = "green";
-									}else if(row.failNum == 1){
-										str = "一次不合格";
-									}else if(row.failNum == 2){
-										str = "二次不合格";
-									}
-								}
+							if(val == 1){
+								str = "合格";
+								color = "green";
+							}else if(val == 2){
+								str = "不合格";
 							}
 							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
 						}
