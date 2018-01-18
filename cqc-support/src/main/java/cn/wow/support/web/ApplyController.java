@@ -698,7 +698,13 @@ public class ApplyController extends AbstractController {
 				compareList.add(record10);
 			}
 			
-			infoService.applyResult(account, taskId, pfResultList, atlResultList, compareList, conclusionDataList);
+			// 是否合格
+			int is_pass = 1;
+			if((p_result != null && p_result == 2) || (m_result != null && m_result == 2)) {
+				is_pass = 2;
+			}
+			
+			infoService.applyResult(account, taskId, pfResultList, atlResultList, compareList, conclusionDataList, is_pass);
 
 		} catch (Exception ex) {
 			logger.error("试验结果修改申请保存失败", ex);

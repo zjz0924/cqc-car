@@ -977,7 +977,7 @@ public class ResultController extends AbstractController {
 
 			// 根据一致性结论来判断任务是否合格
 			int result = 1;
-			if(p_result == 2 || m_result == 2) {
+			if((p_result != null && p_result == 2) || (m_result != null && m_result == 2)) {
 				result = 2;
 			}
 			

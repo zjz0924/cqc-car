@@ -908,8 +908,9 @@ public class InfoServiceImpl implements InfoService {
      * @param atlResultList   图谱结果
      * @param compareList     对比结果
      * @param conclusionDataList 试验结论
+     * @param isPass          是否合格（1-合格，2-不合格）
      */
-    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList, List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList){
+    public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList, List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass){
     	Date date = new Date();
     	
     	Task task = taskDao.selectOne(taskId);
@@ -917,6 +918,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setState(StandardTaskEnum.APPLYING.getState());
 		}else if(task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()){
 			task.setState(SamplingTaskEnum.APPLYING.getState());
+			task.setResult(isPass);
 		}
     	task.setResultApply(2);
     	taskDao.update(task);
