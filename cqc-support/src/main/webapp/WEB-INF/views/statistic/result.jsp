@@ -108,7 +108,11 @@
 						"v_type": v_type,
 						"p_code": p_code,
 						"parts_org": parts_org, 
-						"lab_org": lab_org
+						"lab_org": lab_org,
+						'applicant': $("#applicant").textbox("getValue"),
+						'department': $("#department").textbox("getValue"),
+						'reason': $("#reason").textbox("getValue"),
+						'provenance': $("#provenance").textbox("getValue")
 					},
 					success: function(data){
 						if(data.success){
@@ -146,6 +150,10 @@
 				$("#p_code").textbox('clear');
 				$("#parts_org").combotree("setValue","");
 				$("#lab_org").combotree("setValue","");
+				$("#applicant").textbox("clear");
+				$("#department").textbox("clear");
+				$("#reason").textbox("clear");
+				$("#provenance").textbox("clear");
 				
 				$("#taskNum").html("0");
 				$("#passNum").html("0");
@@ -197,6 +205,23 @@
 					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
 					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					
+				</div>
+				
+				<div style="margin-top:10px;">
+					<span class="qlabel">申请人：</span>
+					<input id="applicant" name="applicant" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">科室：</span>
+					<input id="department" name="department" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">抽检原因：</span>
+					<input id="reason" name="reason" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">费用出处：</span>
+					<input id="provenance" name="provenance" class="easyui-textbox" style="width: 168px;">
+				</div>
+				
+				<div style="margin-top: 10px;text-align:right;">
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="getResult()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="clearAll()">清空</a>
 				</div>

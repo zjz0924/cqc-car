@@ -53,10 +53,12 @@
 						width : '80',
 						align : 'center',
 						formatter : function(value, row, index){
-							var vehicle = row.info.vehicle;
-							if(!isNull(vehicle)){
-								return "<span title='"+ vehicle.type +"'>"+ vehicle.type +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var vehicle = row.info.vehicle;
+								if(!isNull(vehicle)){
+									return "<span title='"+ vehicle.type +"'>"+ vehicle.type +"</span>";
+								}	
+							}
 						}
 					}, {
 						field : 'info.parts.code',
@@ -64,10 +66,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.code +"'>"+ parts.code +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var parts = row.info.parts;
+								if(!isNull(parts)){
+									return "<span title='"+ parts.code +"'>"+ parts.code +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'info.parts.name',
@@ -75,10 +79,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var parts = row.info.parts;
+								if(!isNull(parts)){
+									return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'info.parts.org',
@@ -86,13 +92,15 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								var org = row.info.parts.org;
-								if(!isNull(org)){
-									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+							if(!isNull(row.info)){
+								var parts = row.info.parts;
+								if(!isNull(parts)){
+									var org = row.info.parts.org;
+									if(!isNull(org)){
+										return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+									}
 								}
-							}							
+							}
 						}
 					}, {
 						field : 'info.material.name',
@@ -100,10 +108,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var material = row.info.material;
-							if(!isNull(material)){
-								return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var material = row.info.material;
+								if(!isNull(material)){
+									return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'info.material.org',
@@ -111,10 +121,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var org = row.info.material.org;
-							if(!isNull(org)){
-								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var org = row.info.material.org;
+								if(!isNull(org)){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'account',

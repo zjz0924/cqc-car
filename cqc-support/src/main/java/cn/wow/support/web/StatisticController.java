@@ -19,6 +19,7 @@ import cn.wow.common.domain.ResultVO;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.TaskInfoService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.pagination.PageMap;
@@ -39,6 +40,8 @@ public class StatisticController {
 	private TaskService taskService;
 	@Autowired
 	private InfoService infoService;
+	@Autowired
+	private TaskInfoService taskInfoService;
 	
 	@RequestMapping(value = "/result")
 	public String result(HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -52,7 +55,8 @@ public class StatisticController {
 	@ResponseBody
 	@RequestMapping(value = "/getResult")
 	public AjaxVO getResult(HttpServletRequest request, Model model, String startConfirmTime, String endConfirmTime, String v_code,
-			String v_type, String p_code, String taskType, Long parts_org, Long lab_org) {
+			String v_type, String p_code, String taskType, Long parts_org, Long lab_org, String applicant, String department, String reason,
+			String provenance) {
 		AjaxVO vo = new AjaxVO();
 
 		Map<String, Object> qMap = new PageMap(false);
@@ -98,6 +102,11 @@ public class StatisticController {
 
 		if (iIdList.size() > 0) {
 			qMap.put("iIdList", iIdList);
+		}
+		
+		List<Long> taskInfoIdList = taskInfoService.getTaskIds(applicant, department, reason, provenance);
+		if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
+			qMap.put("taskIdList", taskInfoIdList);
 		}
 		
 		List<Task> taskList = taskService.selectAllList(qMap);

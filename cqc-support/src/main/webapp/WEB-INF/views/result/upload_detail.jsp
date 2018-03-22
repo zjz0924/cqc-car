@@ -134,8 +134,43 @@
 				</tr>
 			</table>
 		</div>
-					
+		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		
+		<c:if test="${facadeBean.type == 2 || facadeBean.type == 3 }">
+			<div class="title">任务信息</div>
+			<div style="width: 98%;display: none;" id="taskInfoDiv">
+				<table class="info">
+					<tr class="single-row">
+						<td class="title-td">申请人：</td>
+						<td class="value-td">${facadeBean.taskInfo.applicant}</td>
+						<td class="title-td">科室：</td>
+						<td class="value-td">${facadeBean.taskInfo.department}</td>
+					</tr>
+					
+					<tr class="couple-row">
+						<td class="title-td">零件图号：</td>
+						<td class="value-td">${facadeBean.taskInfo.figure}</td>
+						<td class="title-td">样品数量：</td>
+						<td class="value-td">${facadeBean.taskInfo.num}</td>
+					</tr>
+					
+					<tr class="single-row">
+						<td class="title-td">样品来源：</td>
+						<td class="value-td">${facadeBean.taskInfo.origin}</td>
+						<td class="title-td">抽检原因：</td>
+						<td class="value-td">${facadeBean.taskInfo.reason}</td>
+					</tr>
+					
+					<tr class="couple-row">
+						<td class="title-td">实验费用出处：</td>
+						<td class="value-td">${facadeBean.taskInfo.provenance}</td>
+					</tr>
+				</table>
+			</div>
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		</c:if>
+					
 		<div class="title">试验结果 
 			<c:if test="${type == 1}">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -158,7 +193,7 @@
 						<div style="margin-left:10px;margin-bottom: 10px;">
 							<c:forEach items="${labReqList}" var="vo">
 								<c:if test="${vo.type eq 3}">
-									<span class="remark-span">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
+									<span class="remark-span">试验编号：</span> ${facadeBean.partsPatCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
 								</c:if>
 							</c:forEach>
 						</div>
@@ -294,7 +329,7 @@
 					<div style="margin-left:10px;margin-bottom: 10px;">
 						<c:forEach items="${labReqList}" var="vo">
 							<c:if test="${vo.type eq 4}">
-								<span class="remark-span">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
+								<span class="remark-span">试验编号：</span> ${facadeBean.matPatCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
 							</c:if>
 						</c:forEach>
 					</div>
@@ -454,7 +489,7 @@
 							<div style="margin-left:10px;margin-bottom: 10px;">
 								<c:forEach items="${labReqList}" var="vo">
 									<c:if test="${vo.type eq 1}">
-										<span class="remark-span">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
+										<span class="remark-span">试验编号：</span> ${facadeBean.partsAtlCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
 									</c:if>
 								</c:forEach>
 							</div>
@@ -584,7 +619,7 @@
 						<div style="margin-left:10px;margin-bottom: 10px;">
 							<c:forEach items="${labReqList}" var="vo">
 								<c:if test="${vo.type eq 2}">
-									<span class="remark-span">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
+									<span class="remark-span">试验编号：</span> ${facadeBean.matAtlCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
 								</c:if>
 							</c:forEach>
 						</div>
@@ -1402,6 +1437,7 @@
 			$("#materialDiv").toggle();
 			$("#showBtn").toggle();
 			$("#hideBtn").toggle();
+			$("#taskInfoDiv").toggle();
 		}
 	</script>	
 	

@@ -81,6 +81,14 @@
 		        rownumbers: true,
 		        idField: 'id',
 		        frozenColumns:[[{
+					field : '_operation',
+					title : '操作',
+					width : '70',
+					align : 'center',
+					formatter : function(value,row,index){
+						return '<a href="javascript:void(0)" onclick="closeDialog('+ index +')">选择</a>';  	
+					}
+				  },{
 		            field : 'id', 
 		            hidden: 'true'
 		        }, {
@@ -160,15 +168,7 @@
 					width : '100',
 					align : 'center',
 					formatter : formatCellTooltip
-				},{
-					field : '_operation',
-					title : '操作',
-					width : '70',
-					align : 'center',
-					formatter : function(value,row,index){
-						return '<a href="javascript:void(0)" onclick="closeDialog('+ index +')">选择</a>';  	
-					}
-				  } ] ]
+				} ] ]
 			});
 	
 			// 分页信息

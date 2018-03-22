@@ -187,6 +187,45 @@
 			<div class="title">选择基准</div>
 			<div style="margin-left: 20px;"><input id="standard" name="standard" style="width: 370px"></div>
 		</div>
+		
+		<div style="margin-left: 10px;margin-top:20px;">
+			<div class="title">任务信息</div>
+			<table class="info">
+				<tr>
+					<td>
+						<span class="title-span">申请人：</span> 
+						<input id="applicant" name="applicant" class="easyui-textbox" value="${facadeBean.taskInfo.applicant }"  style="width:150px;">
+					</td>
+					<td>
+						<span class="title-span">科室：</span> 
+						<input id="department" name="department" class="easyui-textbox" value="${facadeBean.taskInfo.department }"  style="width:150px;">
+					</td>
+					<td>
+						<span class="title-span">零件图号：</span> 
+						<input id="figure" name="figure" class="easyui-textbox" value="${facadeBean.taskInfo.figure}"  style="width:150px;">
+					</td>
+					<td>
+						<span class="title-span">样品数量：</span> 
+						<input id="num" name="num" class="easyui-textbox" value="${facadeBean.taskInfo.num }"  style="width:150px;">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<span class="title-span">样品来源：</span> 
+						<input id="origin" name="origin" class="easyui-textbox" value="${facadeBean.taskInfo.origin }"  style="width:150px;">
+					</td>
+					<td>
+						<span class="title-span">抽检原因：</span> 
+						<input id="reason" name="reason" class="easyui-textbox" value="${facadeBean.taskInfo.reason }"  style="width:150px;">
+					</td>
+					<td>
+						<span class="title-span">费用出处：</span> 
+						<input id="provenance" name="provenance" class="easyui-textbox" value="${facadeBean.taskInfo.provenance}"  style="width:150px;">
+					</td>
+				</tr>
+			</table>
+		</div>
 
 		<div style="margin-left: 10px;margin-top:20px;">
 			<div class="title">下达实验室</div>
@@ -392,6 +431,14 @@
 					return false;
 				}
 				
+				
+				var num = $("#num").textbox("getValue");
+				if(!isNull(num) && !isPositiveNum(num)){
+					errorMsg("样品数量必须为整数");
+					saving = false;
+					return false;
+				}
+				
 				var partsAtlId_val;
 				if(!$("#partsAtlCheck").is(':checked')){
 					partsAtlId_val = $("#partsAtlId").combotree("getValue");
@@ -443,7 +490,14 @@
 						"partsAtlReq": partsAtlReq,
 						"matAtlCode": matAtlCode,
 						"matAtlTime": matAtlTime,
-						"matAtlReq": matAtlReq
+						"matAtlReq": matAtlReq,
+						"num": num,
+						"applicant": $("#applicant").textbox("getValue"),
+						"department": $("#department").textbox("getValue"),
+						"figure": $("#figure").textbox("getValue"),
+						"origin": $("#origin").textbox("getValue"),
+						"reason": $("#reason").textbox("getValue"),
+						"provenance": $("#provenance").textbox("getValue")
 					},
 					success : function(data) {
 						saving = false;

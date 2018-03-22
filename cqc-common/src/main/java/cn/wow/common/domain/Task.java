@@ -88,6 +88,21 @@ public class Task {
     // 是否接收（1-接收，2-不接收）
     private Integer isReceive;
     
+    // 零部件图谱实验编号
+    private String partsAtlCode;
+    
+    // 原材料图谱实验编号
+    private String matAtlCode;
+    
+    // 零部件型式实验编号
+    private String partsPatCode;
+    
+    // 原材料型式实验编号
+    private String matPatCode;
+    
+    // PPAP和SOP 任务信息
+    private TaskInfo taskInfo;
+    
     public Long getId() {
         return id;
     }
@@ -367,7 +382,44 @@ public class Task {
 	public void setIsReceive(Integer isReceive) {
 		this.isReceive = isReceive;
 	}
-	
-	
-	
+
+	public String getPartsAtlCode() {
+		return partsAtlCode;
+	}
+
+	public void setPartsAtlCode(String partsAtlCode) {
+		this.partsAtlCode = partsAtlCode;
+	}
+
+	public String getMatAtlCode() {
+		return matAtlCode;
+	}
+
+	public void setMatAtlCode(String matAtlCode) {
+		this.matAtlCode = matAtlCode;
+	}
+
+	public String getPartsPatCode() {
+		return partsPatCode;
+	}
+
+	public void setPartsPatCode(String partsPatCode) {
+		this.partsPatCode = partsPatCode;
+	}
+
+	public String getMatPatCode() {
+		return matPatCode;
+	}
+
+	public void setMatPatCode(String matPatCode) {
+		this.matPatCode = matPatCode;
+	}
+
+	public TaskInfo getTaskInfo() {
+		return taskInfo;
+	}
+
+	public void setTaskInfo(TaskInfo taskInfo) {
+		this.taskInfo = taskInfo;
+	}
 }

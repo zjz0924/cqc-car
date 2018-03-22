@@ -6,6 +6,7 @@
 		<meta charset="utf-8">
 		<title>SGMW</title>
 		<%@include file="../../common/source.jsp"%>
+		<script src="${ctx}/resources/js/jquery.form.js"></script>
 		
 		<style type="text/css">			
 			.qlabel{
@@ -387,7 +388,7 @@
 			function examineDetail(id) {
 				$('#examineDetailDialog').dialog({
 					title : '审核信息',
-					width : 900,
+					width : 1100,
 					height : 690,
 					closed : false,
 					cache : false,
@@ -418,7 +419,7 @@
 				saving = true;
 				
 				$.ajax({
-					url: "${ctx}/ots/examine",
+					url: "${ctx}/ots/batchExamine",
 					data:{
 						"ids": ids,
 						"type": type,

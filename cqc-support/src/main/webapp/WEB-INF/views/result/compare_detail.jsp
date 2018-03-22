@@ -133,12 +133,46 @@
 			</table>
 		</div>
 		
+		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		
+		<div class="title">任务信息</div>
+		<div style="width: 98%;display: none;" id="taskInfoDiv">
+			<table class="info">
+				<tr class="single-row">
+					<td class="title-td">申请人：</td>
+					<td class="value-td">${facadeBean.taskInfo.applicant}</td>
+					<td class="title-td">科室：</td>
+					<td class="value-td">${facadeBean.taskInfo.department}</td>
+				</tr>
+				
+				<tr class="couple-row">
+					<td class="title-td">零件图号：</td>
+					<td class="value-td">${facadeBean.taskInfo.figure}</td>
+					<td class="title-td">样品数量：</td>
+					<td class="value-td">${facadeBean.taskInfo.num}</td>
+				</tr>
+				
+				<tr class="single-row">
+					<td class="title-td">样品来源：</td>
+					<td class="value-td">${facadeBean.taskInfo.origin}</td>
+					<td class="title-td">抽检原因：</td>
+					<td class="value-td">${facadeBean.taskInfo.reason}</td>
+				</tr>
+				
+				<tr class="couple-row">
+					<td class="title-td">实验费用出处：</td>
+					<td class="value-td">${facadeBean.taskInfo.provenance}</td>
+				</tr>
+			</table>
+		</div>
+		
 		<c:if test="${not empty labReqList}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">试验说明</div>
 			<div style="margin-bottom: 20px;">
 				<table class="info">
 					<tr class="single-row">
+						<td class="title-td">试验编号</td>
 						<td class="title-td">试验名称</td>
 						<td class="title-td">任务号</td>
 						<td class="title-td">实验要求</td>
@@ -147,6 +181,14 @@
 					
 					<c:forEach items="${labReqList}" var="vo">
 						<tr>
+							<td>
+								<c:choose>
+									<c:when test="${vo.type eq 1}">${facadeBean.partsAtlCode}</c:when>
+									<c:when test="${vo.type eq 2}">${facadeBean.matAtlCode}</c:when>
+									<c:when test="${vo.type eq 3}">${facadeBean.partsPatCode}</c:when>
+									<c:when test="${vo.type eq 4}">${facadeBean.matPatCode}</c:when>
+								</c:choose>
+							</td>
 							<td>
 								<c:choose>
 									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
@@ -466,6 +508,7 @@
 			$("#materialDiv").toggle();
 			$("#showBtn").toggle();
 			$("#hideBtn").toggle();
+			$("#taskInfoDiv").toggle();
 		}
 	</script>	
 	

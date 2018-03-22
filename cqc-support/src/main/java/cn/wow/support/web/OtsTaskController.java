@@ -123,16 +123,17 @@ public class OtsTaskController extends AbstractController {
 	 * 首页
 	 */
 	@RequestMapping(value = "/index")
-	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose, int taskType) {
+	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose,
+			int taskType) {
 		HttpSession session = request.getSession();
 		Menu menu = null;
-		
-		if(taskType == TaskTypeEnum.OTS.getState()) {
+
+		if (taskType == TaskTypeEnum.OTS.getState()) {
 			menu = menuService.selectByAlias("otsTask");
-		}else if(taskType == TaskTypeEnum.GS.getState()) {
+		} else if (taskType == TaskTypeEnum.GS.getState()) {
 			menu = menuService.selectByAlias("gsTask");
 		}
-		
+
 		// 没有权限的菜单
 		Set<Long> illegalMenu = (Set<Long>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);
 
@@ -163,7 +164,7 @@ public class OtsTaskController extends AbstractController {
 		return "task/ots/index";
 	}
 
-	/** --------------------------------  任务申请    ---------------------------------*/
+	/** -------------------------------- 任务申请 --------------------------------- */
 	/**
 	 * 任务申请列表
 	 */
@@ -207,18 +208,18 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if(StringUtils.isNotBlank(task_code)) {
+		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
 		}
-		if(StringUtils.isNotBlank(req_name)) {
+		if (StringUtils.isNotBlank(req_name)) {
 			map.put("userName", req_name);
 		}
-		
+
 		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
-		if(iIdList.size() > 0 ) {
+		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
-		
+
 		// 除了超级管理员，其它用户只能查看自己录入的申请记录
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
 			map.put("aId", account.getId());
@@ -245,7 +246,8 @@ public class OtsTaskController extends AbstractController {
 	 * @return
 	 */
 	@RequestMapping(value = "/requireDetail")
-	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
+	public String requireDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id,
+			int taskType) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
@@ -275,7 +277,8 @@ public class OtsTaskController extends AbstractController {
 			String v_proTime, String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime,
 			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
 			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
-			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone) {
+			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id,
+			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -295,7 +298,8 @@ public class OtsTaskController extends AbstractController {
 				vehicle.setState(Contants.ONDOING_TYPE);
 				vehicle.setCreateTime(date);
 
-				boolean isExist = vehicleService.isExist(null, v_code, v_type, sdf.parse(v_proTime), v_proAddr, v_remark);
+				boolean isExist = vehicleService.isExist(null, v_code, v_type, sdf.parse(v_proTime), v_proAddr,
+						v_remark);
 				if (isExist) {
 					vo.setSuccess(false);
 					vo.setMsg("整车信息已存在");
@@ -309,8 +313,9 @@ public class OtsTaskController extends AbstractController {
 					vehicle.setProAddr(v_proAddr);
 					vehicle.setRemark(v_remark);
 					vehicle.setCode(v_code);
-					
-					boolean isExist = vehicleService.isExist(v_id, v_code, v_type, sdf.parse(v_proTime), v_proAddr, v_remark);
+
+					boolean isExist = vehicleService.isExist(v_id, v_code, v_type, sdf.parse(v_proTime), v_proAddr,
+							v_remark);
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("整车信息已存在");
@@ -321,7 +326,7 @@ public class OtsTaskController extends AbstractController {
 
 			// 零部件信息
 			Parts parts = null;
-			if(taskType == TaskTypeEnum.OTS.getState()) {
+			if (taskType == TaskTypeEnum.OTS.getState()) {
 				if (p_id == null) {
 					parts = new Parts();
 					parts.setType(Contants.STANDARD_TYPE);
@@ -339,8 +344,8 @@ public class OtsTaskController extends AbstractController {
 					parts.setPhone(p_phone);
 					parts.setState(Contants.ONDOING_TYPE);
 
-					boolean isExist = partsService.isExist(null, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo, p_keyCode,
-							p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+					boolean isExist = partsService.isExist(null, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo,
+							p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone);
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -360,9 +365,9 @@ public class OtsTaskController extends AbstractController {
 						parts.setContacts(p_contacts);
 						parts.setPhone(p_phone);
 						parts.setCode(p_code);
-						
-						boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo, p_keyCode,
-								p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+
+						boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place,
+								p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone);
 						if (isExist) {
 							vo.setSuccess(false);
 							vo.setMsg("零部件信息已存在");
@@ -425,7 +430,7 @@ public class OtsTaskController extends AbstractController {
 		return vo;
 	}
 
-	/** --------------------------------  任务审核    ---------------------------------*/
+	/** -------------------------------- 任务审核 --------------------------------- */
 	/**
 	 * 审核列表
 	 */
@@ -464,7 +469,7 @@ public class OtsTaskController extends AbstractController {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime  + " 23:59:59");
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -472,9 +477,9 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
 		}
-		
+
 		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
-		if(iIdList.size() > 0 ) {
+		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
 
@@ -494,7 +499,8 @@ public class OtsTaskController extends AbstractController {
 	 * 详情列表
 	 */
 	@RequestMapping(value = "/examineDetail")
-	public String examineDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
+	public String examineDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id,
+			int taskType) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
@@ -502,24 +508,134 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("taskType", taskType);
 		return "task/ots/examine_detail";
+	}
+
+	/**
+	 * 批量审核结果
+	 * 
+	 * @param ids
+	 *            任务ID
+	 * @param type
+	 *            结果： 1-通过， 2-不通过
+	 * @param remark
+	 *            备注
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/batchExamine")
+	public AjaxVO batchExamine(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids,
+			int type, String remark) {
+		AjaxVO vo = new AjaxVO();
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
+		try {
+			infoService.examine(account, ids, type, remark);
+		} catch (Exception ex) {
+			logger.error("任务批量审核失败", ex);
+
+			vo.setSuccess(false);
+			vo.setMsg("操作失败，系统异常，请重试");
+			return vo;
+		}
+
+		vo.setSuccess(true);
+		vo.setMsg("操作成功");
+		return vo;
 	}
 
 	/**
 	 * 审核结果
 	 * 
-	 * @param ids      任务ID
-	 * @param type    结果： 1-通过， 2-不通过
-	 * @param remark  备注
+	 * @param id
+	 *            任务 ID
+	 * @param result
+	 *            结果： 1-通过， 2-不通过
+	 * @param remark
+	 *            备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
-	public AjaxVO examine(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids, int type, String remark) {
+	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_type,
+			String v_proTime, String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime,
+			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
+			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
+			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id,
+			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone, int result,
+			String examine_remark, Long id) {
+
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 		try {
-			infoService.examine(account, ids, type, remark);
+			// 整车信息
+			Vehicle vehicle = null;
+			vehicle = vehicleService.selectOne(v_id);
+			if (isUpdateVehicleInfo(vehicle, v_code, v_type, v_proTime, v_proAddr, v_remark)) {
+				vehicle.setType(v_type);
+				vehicle.setProTime(sdf.parse(v_proTime));
+				vehicle.setProAddr(v_proAddr);
+				vehicle.setRemark(v_remark);
+				vehicle.setCode(v_code);
+
+				boolean isExist = vehicleService.isExist(v_id, v_code, v_type, sdf.parse(v_proTime), v_proAddr,
+						v_remark);
+				if (isExist) {
+					vo.setSuccess(false);
+					vo.setMsg("整车信息已存在");
+					return vo;
+				}
+			}
+
+			// 零部件信息
+			Parts parts = null;
+			if (taskType == TaskTypeEnum.OTS.getState()) {
+				parts = partsService.selectOne(p_id);
+				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId,
+						p_remark, p_phone, p_contacts)) {
+
+					parts.setProTime(sdf.parse(p_proTime));
+					parts.setRemark(p_remark);
+					parts.setPlace(p_place);
+					parts.setProNo(p_proNo);
+					parts.setName(p_name);
+					parts.setIsKey(p_isKey);
+					parts.setKeyCode(p_keyCode);
+					parts.setOrgId(p_orgId);
+					parts.setContacts(p_contacts);
+					parts.setPhone(p_phone);
+					parts.setCode(p_code);
+
+					boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo,
+							p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+					if (isExist) {
+						vo.setSuccess(false);
+						vo.setMsg("零部件信息已存在");
+						return vo;
+					}
+				}
+			}
+
+			// 原材料信息
+			Material material = null;
+			material = materialService.selectOne(m_id);
+			material.setRemark(m_remark);
+			material.setProNo(m_proNo);
+			material.setMatName(m_matName);
+			material.setMatNo(m_matNo);
+			material.setMatColor(m_matColor);
+			material.setOrgId(m_orgId);
+			material.setContacts(m_contacts);
+			material.setPhone(m_phone);
+
+			if (mfile != null && !mfile.isEmpty()) {
+				String pic = uploadImg(mfile, materialUrl, false);
+				material.setPic(pic);
+			}
+
+			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material);
+
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
 
@@ -533,7 +649,7 @@ public class OtsTaskController extends AbstractController {
 		return vo;
 	}
 
-	/** --------------------------------  任务下达    ---------------------------------*/
+	/** -------------------------------- 任务下达 --------------------------------- */
 	/**
 	 * 任务下达列表
 	 */
@@ -562,13 +678,13 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		
+
 		if (taskType == TaskTypeEnum.OTS.getState()) {
 			map.put("transimtTask_ots", true);
 		} else if (taskType == TaskTypeEnum.GS.getState()) {
 			map.put("transimtTask_gs", true);
 		}
-		
+
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", taskType);
 
@@ -579,7 +695,7 @@ public class OtsTaskController extends AbstractController {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime  + " 23:59:59");
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(nickName)) {
 			map.put("nickName", nickName);
@@ -587,9 +703,9 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
 		}
-		
+
 		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
-		if(iIdList.size() > 0 ) {
+		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
 
@@ -609,7 +725,8 @@ public class OtsTaskController extends AbstractController {
 	 * 详情列表
 	 */
 	@RequestMapping(value = "/transmitDetail")
-	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
+	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id,
+			int taskType) {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
@@ -655,21 +772,25 @@ public class OtsTaskController extends AbstractController {
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			
+
 			List<LabReq> labReqList = new ArrayList<LabReq>();
 			if (partsAtlId != null) {
-				labReqList.add(new LabReq(partsAtlCode, StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, id, 1));
+				labReqList.add(new LabReq(partsAtlCode,
+						StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, id, 1));
 			}
 			if (matAtlId != null) {
-				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null, matAtlReq, id, 2));
+				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null,
+						matAtlReq, id, 2));
 			}
 			if (partsPatId != null) {
-				labReqList.add(new LabReq(partsPatCode, StringUtils.isNotBlank(partsPatTime) ? sdf.parse(partsPatTime) : null, partsPatReq, id, 3));
+				labReqList.add(new LabReq(partsPatCode,
+						StringUtils.isNotBlank(partsPatTime) ? sdf.parse(partsPatTime) : null, partsPatReq, id, 3));
 			}
 			if (matPatId != null) {
-				labReqList.add(new LabReq(matPatCode, StringUtils.isNotBlank(matPatTime) ? sdf.parse(matPatTime) : null, matPatReq, id, 4));
+				labReqList.add(new LabReq(matPatCode, StringUtils.isNotBlank(matPatTime) ? sdf.parse(matPatTime) : null,
+						matPatReq, id, 4));
 			}
-			
+
 			infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId, labReqList);
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
@@ -721,8 +842,7 @@ public class OtsTaskController extends AbstractController {
 		}
 	}
 
-	
-	/** --------------------------------   任务审批     ---------------------------------*/
+	/** -------------------------------- 任务审批 --------------------------------- */
 	/**
 	 * 任务审批列表
 	 */
@@ -751,14 +871,13 @@ public class OtsTaskController extends AbstractController {
 
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
-		
-		if(taskType == TaskTypeEnum.OTS.getState()) {
+
+		if (taskType == TaskTypeEnum.OTS.getState()) {
 			map.put("approveTask_ots", true);
-		}else if(taskType == TaskTypeEnum.GS.getState()) {
+		} else if (taskType == TaskTypeEnum.GS.getState()) {
 			map.put("approveTask_gs", true);
 		}
-		
-		
+
 		map.put("type", taskType);
 
 		if (StringUtils.isNotBlank(code)) {
@@ -776,9 +895,9 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(orgId)) {
 			map.put("orgId", orgId);
 		}
-		
+
 		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
-		if(iIdList.size() > 0 ) {
+		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
 
@@ -798,18 +917,19 @@ public class OtsTaskController extends AbstractController {
 	 * 详情列表
 	 */
 	@RequestMapping(value = "/approveDetail")
-	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id, int taskType) {
+	public String approveDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id,
+			int taskType) {
 		int approveType = 3;
 
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			if(task.getState() == StandardTaskEnum.APPLYING.getState()){
+			if (task.getState() == StandardTaskEnum.APPLYING.getState()) {
 				if (task.getInfoApply() == 1) { // 申请修改信息
 					approveType = 1;
 					ApplyRecord applyRecord = applyRecordService.getRecordByTaskId(task.getId(), 1);
-					
-					if(applyRecord != null){
+
+					if (applyRecord != null) {
 						// GS任务没有零部件
 						if (taskType == TaskTypeEnum.OTS.getState() && applyRecord.getpId() != null) {
 							Parts newParts = partsService.selectOne(applyRecord.getpId());
@@ -826,52 +946,52 @@ public class OtsTaskController extends AbstractController {
 							model.addAttribute("newMaterial", newMaterial);
 						}
 					}
-					
+
 				} else if (task.getResultApply() == 1) { // 申请修改试验结果
 					approveType = 2;
-					
-					/** ---------  原结果  ----------- */
-					if(taskType == TaskTypeEnum.OTS.getState() ) {
+
+					/** --------- 原结果 ----------- */
+					if (taskType == TaskTypeEnum.OTS.getState()) {
 						// 零部件-性能结果（只取最后一次实验）
 						List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
-						
+
 						// 零部件-图谱结果（只取最后一次实验）
 						List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
-						
+
 						model.addAttribute("pPfResult_old", pPfResult_old);
 						model.addAttribute("pAtlasResult_old", pAtlasResult_old);
 					}
 
 					// 原材料-性能结果（只取最后一次实验结果）
 					List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
-					
+
 					// 原材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
-					
+
 					// 试验结论
 					List<LabConclusion> conclusionList_old = labConclusionService.selectByTaskId(task.gettId());
-					
-					/** ---------  修改之后的结果  ----------- */
-					if(taskType == TaskTypeEnum.OTS.getState() ) {
+
+					/** --------- 修改之后的结果 ----------- */
+					if (taskType == TaskTypeEnum.OTS.getState()) {
 						// 零部件-性能结果（只取最后一次实验）
 						List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
 
 						// 零部件-图谱结果（只取最后一次实验）
 						List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
-						
+
 						model.addAttribute("pAtlasResult_new", pAtlasResult_new);
 						model.addAttribute("pPfResult_new", pPfResult_new);
 					}
-					
+
 					// 原材料-性能结果（只取最后一次实验结果）
 					List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
-					
+
 					// 原材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
-					
+
 					// 试验结论
 					List<LabConclusion> conclusionList_new = labConclusionService.selectByTaskId(task.getId());
-					
+
 					if (conclusionList_old != null && conclusionList_old.size() > 0) {
 						for (LabConclusion conclusion : conclusionList_old) {
 							if (conclusion.getType().intValue() == 1) {
@@ -885,7 +1005,7 @@ public class OtsTaskController extends AbstractController {
 							}
 						}
 					}
-					
+
 					if (conclusionList_new != null && conclusionList_new.size() > 0) {
 						for (LabConclusion conclusion : conclusionList_new) {
 							if (conclusion.getType().intValue() == 1) {
@@ -899,7 +1019,7 @@ public class OtsTaskController extends AbstractController {
 							}
 						}
 					}
-					
+
 					model.addAttribute("mPfResult_old", mPfResult_old);
 					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
 					model.addAttribute("mPfResult_new", mPfResult_new);
@@ -913,9 +1033,9 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		model.addAttribute("resUrl", resUrl);
-		
-		if(approveType == 3) {
-			List<LabReq> labReqList =  labReqService.getLabReqListByTaskId(id);
+
+		if (approveType == 3) {
+			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
 			model.addAttribute("labReqList", labReqList);
 		}
 
@@ -929,20 +1049,30 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审批结果
 	 * 
-	 * @param account  操作用户
-	 * @param id       任务ID
-	 * @param result   结果：1-通过，2-不通过
-	 * @param remark   备注
-	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param account
+	 *            操作用户
+	 * @param id
+	 *            任务ID
+	 * @param result
+	 *            结果：1-通过，2-不通过
+	 * @param remark
+	 *            备注
+	 * @param catagory
+	 *            分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param partsAtlId
+	 * @param matAtlId
+	 * @param partsPatId
+	 * @param matPatId
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/approve")
-	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, int catagory, String remark) {
+	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, int catagory, String remark,
+			Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.approve(account, id, result, remark, catagory);
+			infoService.approve(account, id, result, remark, catagory, partsAtlId, matAtlId, partsPatId, matPatId);
 		} catch (Exception ex) {
 			logger.error("OTS任务审批失败", ex);
 
@@ -955,19 +1085,23 @@ public class OtsTaskController extends AbstractController {
 		vo.setMsg("操作成功");
 		return vo;
 	}
-	
-	
+
 	/**
 	 * 批量审批结果
 	 * 
-	 * @param account  操作用户
-	 * @param ids       任务ID
-	 * @param result   结果：1-通过，2-不通过
-	 * @param remark   备注
+	 * @param account
+	 *            操作用户
+	 * @param ids
+	 *            任务ID
+	 * @param result
+	 *            结果：1-通过，2-不通过
+	 * @param remark
+	 *            备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchApprove")
-	public AjaxVO batchApprove(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids, int result, String remark) {
+	public AjaxVO batchApprove(HttpServletRequest request, Model model, @RequestParam(value = "ids[]") Long[] ids,
+			int result, String remark) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
@@ -976,13 +1110,13 @@ public class OtsTaskController extends AbstractController {
 				for (Long id : ids) {
 					Task task = taskService.selectOne(id);
 					int catagory = 5;
-					
-					if(task.getInfoApply() == 1) {
+
+					if (task.getInfoApply() == 1) {
 						catagory = 6;
-					}else if(task.getResultApply() == 1) {
+					} else if (task.getResultApply() == 1) {
 						catagory = 7;
 					}
-					infoService.approve(account, id, result, remark, catagory);
+					infoService.approve(account, id, result, remark, catagory, null, null, null, null);
 				}
 			}
 		} catch (Exception ex) {
@@ -997,4 +1131,41 @@ public class OtsTaskController extends AbstractController {
 		vo.setMsg("操作成功");
 		return vo;
 	}
+
+	/**
+	 * 是否更新整车信息
+	 */
+	boolean isUpdateVehicleInfo(Vehicle vehicle, String v_code, String v_type, String v_proTime, String v_proAddr,
+			String v_remark) {
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (v_code.equals(vehicle.getCode()) && v_type.equals(vehicle.getType())
+				&& v_proTime.equals(sdf.format(vehicle.getProTime())) && v_proAddr.equals(v_proAddr)
+				&& v_remark.equals(vehicle.getRemark())) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * 是否更新零部件信息
+	 */
+	boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
+			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String p_phone,
+			String p_contacts) {
+
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
+				&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
+				&& p_proNo.equals(parts.getProNo()) && p_orgId.longValue() == parts.getOrgId().longValue()
+				&& p_remark.equals(parts.getRemark()) && p_isKey.intValue() == parts.getIsKey().intValue()
+				&& p_phone.equals(parts.getPhone()) && p_contacts.equals(parts.getContacts())) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }

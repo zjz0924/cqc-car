@@ -149,10 +149,12 @@
 						width : '80',
 						align : 'center',
 						formatter : function(value, row, index){
-							var vehicle = row.info.vehicle;
-							if(!isNull(vehicle)){
-								return "<span title='"+ vehicle.type +"'>"+ vehicle.type +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var vehicle = row.info.vehicle;
+								if(!isNull(vehicle)){
+									return "<span title='"+ vehicle.type +"'>"+ vehicle.type +"</span>";
+								}	
+							}
 						}
 					}, {
 						field : 'info.parts.code',
@@ -160,10 +162,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.code +"'>"+ parts.code +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var parts = row.info.parts;
+								if(!isNull(parts)){
+									return "<span title='"+ parts.code +"'>"+ parts.code +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'info.parts.name',
@@ -171,10 +175,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var parts = row.info.parts;
+								if(!isNull(parts)){
+									return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'info.parts.org',
@@ -182,13 +188,15 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								var org = row.info.parts.org;
-								if(!isNull(org)){
-									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
-								}
-							}							
+							if(!isNull(row.info)){
+								var parts = row.info.parts;
+								if(!isNull(parts)){
+									var org = row.info.parts.org;
+									if(!isNull(org)){
+										return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+									}
+								}	
+							}
 						}
 					}, {
 						field : 'info.material.name',
@@ -196,10 +204,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var material = row.info.material;
-							if(!isNull(material)){
-								return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var material = row.info.material;
+								if(!isNull(material)){
+									return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
+								}
+							}
 						}
 					}, {
 						field : 'info.material.org',
@@ -207,10 +217,12 @@
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var org = row.info.material.org;
-							if(!isNull(org)){
-								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
-							}							
+							if(!isNull(row.info)){
+								var org = row.info.material.org;
+								if(!isNull(org)){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+								}	
+							}
 						}
 					}, {
 						field : 'account',
@@ -272,6 +284,10 @@
 							'vehicle_type': $("#vehicle_type").textbox("getValue"),
 							'parts_org': $("#parts_org").combotree("getValue"),
 							'mat_org': $("#mat_org").combotree("getValue"),
+							'applicant': $("#applicant").textbox("getValue"),
+							'department': $("#department").textbox("getValue"),
+							'reason': $("#reason").textbox("getValue"),
+							'provenance': $("#provenance").textbox("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -403,7 +419,11 @@
 					'matName': $("#matName").textbox("getValue"),
 					'vehicle_type': $("#vehicle_type").textbox("getValue"),
 					'parts_org': $("#parts_org").combotree("getValue"),
-					'mat_org': $("#mat_org").combotree("getValue")
+					'mat_org': $("#mat_org").combotree("getValue"),
+					'applicant': $("#applicant").textbox("getValue"),
+					'department': $("#department").textbox("getValue"),
+					'reason': $("#reason").textbox("getValue"),
+					'provenance': $("#provenance").textbox("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -429,6 +449,11 @@
 				$("#vehicle_type").textbox("clear");
 				$("#parts_org").combotree("setValue","");
 				$("#mat_org").combotree("setValue","");
+				$("#applicant").textbox("clear");
+				$("#department").textbox("clear");
+				$("#reason").textbox("clear");
+				$("#provenance").textbox("clear");
+				
 				getData(datagrid, getDataUrl, {});
 			}
 			
@@ -512,7 +537,23 @@
 					<span class="qlabel">完成时间：</span>
 					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
 					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</div>
 				
+				<div style="margin-top: 5px;">
+					<span class="qlabel">申请人：</span>
+					<input id="applicant" name="applicant" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">科室：</span>
+					<input id="department" name="department" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">抽检原因：</span>
+					<input id="reason" name="reason" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">费用出处：</span>
+					<input id="provenance" name="provenance" class="easyui-textbox" style="width: 168px;">
+				</div>
+				
+				<div style="margin-top: 5px;text-align:right;">
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>

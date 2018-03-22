@@ -168,6 +168,7 @@
 				<div>
 					<table class="info">
 						<tr class="single-row">
+							<td class="title-td">试验编号</td>
 							<td class="title-td">试验名称</td>
 							<td class="title-td">分配实验室</td>
 							<td class="title-td">操作</td>
@@ -175,8 +176,18 @@
 						
 						<c:if test="${taskType == 1}">
 							<tr>
+								<td class="value-td">${facadeBean.partsAtlCode }</td>
 								<td class="value-td">零部件图谱试验</td>
-								<td class="value-td">${facadeBean.partsAtl.name}</td>
+								<td class="value-td">
+									<c:choose>
+										<c:when test="${facadeBean.partsAtlResult != 0}">
+											${facadeBean.partsAtl.name}
+										</c:when>
+										<c:otherwise>
+											<input id="partsAtlId" name="partsAtlId">
+										</c:otherwise>
+									</c:choose>
+								</td>
 								<td>
 									<c:if test="${not empty facadeBean.partsAtl}">
 										<span id="partsAtl1" <c:if test="${facadeBean.partsAtlResult != 0}">style="display:none;"</c:if>>
@@ -191,8 +202,18 @@
 						</c:if>
 						
 						<tr>
+							<td class="value-td">${facadeBean.matAtlCode }</td>
 							<td class="value-td">原材料图谱试验</td>
-							<td class="value-td">${facadeBean.matAtl.name}</td>
+							<td class="value-td">
+								<c:choose>
+									<c:when test="${facadeBean.matAtlResult != 0}">
+										${facadeBean.matAtl.name}
+									</c:when>
+									<c:otherwise>
+										<input id="matAtlId" name="matAtlId">
+									</c:otherwise>
+								</c:choose>
+							</td>
 							<td>
 								<c:if test="${not empty facadeBean.matAtl}">
 									<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
@@ -207,8 +228,18 @@
 						
 						<c:if test="${taskType == 1}">
 							<tr>
+								<td class="value-td">${facadeBean.partsPatCode }</td>
 								<td class="value-td">零部件型式试验</td>
-								<td class="value-td">${facadeBean.partsPat.name}</td>
+								<td class="value-td">
+									<c:choose>
+										<c:when test="${facadeBean.partsPatResult != 0}">
+											${facadeBean.partsPat.name}
+										</c:when>
+										<c:otherwise>
+											<input id="partsPatId" name="partsPatId">
+										</c:otherwise>
+									</c:choose>
+								</td>
 								<td>
 									<c:if test="${not empty facadeBean.partsPat}">
 										<span id="partsPat1" <c:if test="${facadeBean.partsPatResult != 0}">style="display:none;"</c:if>>
@@ -223,8 +254,18 @@
 						</c:if>
 						
 						<tr>
+							<td class="value-td">${facadeBean.matPatCode }</td>
 							<td class="value-td">原材料型式试验</td>
-							<td class="value-td">${facadeBean.matPat.name}</td>
+							<td class="value-td">
+								<c:choose>
+									<c:when test="${facadeBean.matPatResult != 0}">
+										${facadeBean.matPat.name}
+									</c:when>
+									<c:otherwise>
+										<input id="matPatId" name="matPatId">
+									</c:otherwise>
+								</c:choose>
+							</td>
 							<td>
 								<c:if test="${not empty facadeBean.matPat}">
 									<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
@@ -997,7 +1038,7 @@
 		}
 		
 		.value-td{
-			width:32%;
+			width:25%;
 			padding-left: 5px;
 		}
 		
@@ -1052,6 +1093,16 @@
 						$("#partsAtl2").show();
 					}else if(partsAtlResult == 6){
 						$("#partsAtl3").show();
+					}else if(partsAtlResult == 0){
+						$('#partsAtlId').combotree({
+							url: '${ctx}/org/getTreeByType?type=3',
+							multiple: false,
+							animate: true,
+							width: '250px'				
+						});
+						setupTree("partsAtlId");
+						
+						$("#partsAtlId").combotree("setValue", "${facadeBean.partsAtl.id}");
 					}
 					
 					// 零部件型式试验结果
@@ -1060,6 +1111,16 @@
 						$("#partsPat2").show();
 					}else if(partsPatResult == 6){
 						$("#partsPat3").show();
+					}else if(partsPatResult == 0){
+						$('#partsPatId').combotree({
+							url: '${ctx}/org/getTreeByType?type=3',
+							multiple: false,
+							animate: true,
+							width: '250px'				
+						});
+						setupTree("partsPatId");
+						
+						$("#partsPatId").combotree("setValue", "${facadeBean.partsPat.id}");
 					}
 				}
 				
@@ -1069,6 +1130,16 @@
 					$("#matAtl2").show();
 				}else if(matAtlResult == 6){
 					$("#matAtl3").show();
+				}else if(matAtlResult == 0){
+					$('#matAtlId').combotree({
+						url: '${ctx}/org/getTreeByType?type=3',
+						multiple: false,
+						animate: true,
+						width: '250px'				
+					});
+					setupTree("matAtlId");
+					
+					$("#matAtlId").combotree("setValue", "${facadeBean.matAtl.id}");
 				}
 				
 				// 原材料型式试验结果
@@ -1077,6 +1148,16 @@
 					$("#matPat2").show();
 				}else if(matPatResult == 6){
 					$("#matPat3").show();
+				}else if(matPatResult == 0){
+					$('#matPatId').combotree({
+						url: '${ctx}/org/getTreeByType?type=3',
+						multiple: false,
+						animate: true,
+						width: '250px'				
+					});
+					setupTree("matPatId");
+					
+					$("#matPatId").combotree("setValue", "${facadeBean.matPat.id}");
 				}
 			}
 		});
@@ -1088,13 +1169,44 @@
 			}
 			saving = true;
 			
+			var partsAtlId = "";
+			var partsPatId = "";
+			
+			if("${taskType}" == 1){
+				var partsAtlResult = "${facadeBean.partsAtlResult}";
+				if(partsAtlResult == 0){
+					partsAtlId = $("#partsAtlId").combotree("getValue");
+				}
+				
+				var partsPatResult = "${facadeBean.partsPatResult}";
+				if(partsPatResult == 0){
+					partsPatId = $("#partsPatId").combotree("getValue");
+				}
+			}
+			
+			var matAtlResult = "${facadeBean.matAtlResult}";
+			var matAtlId = "";
+			if(matAtlResult == 0){
+				matAtlId = $("#matAtlId").combotree("getValue");
+			}
+			
+			var matPatResult = "${facadeBean.matPatResult}";
+			var matPatId = "";
+			if(matPatResult == 0){
+				matPatId = $("#matPatId").combotree("getValue");
+			}
+			
 			$.ajax({
 				url: "${ctx}/ots/approve",
 				data: {
 					"id": "${facadeBean.id}",
 					"result": result,
 					"remark": remark,
-					"catagory": catagory
+					"catagory": catagory,
+					"partsAtlId": partsAtlId,
+					"matAtlId": matAtlId,
+					"partsPatId": partsPatId,
+					"matPatId": matPatId
 				},
 				success: function(data){
 					if(data.success){
@@ -1188,6 +1300,21 @@
 
 		function doCancel() {
 			$("#dlg").dialog("close");
+		}
+		
+		
+		// 只有最底层才能选择
+		function setupTree(id){
+			var treeObj = $('#' + id).combotree('tree');	
+			treeObj.tree({
+			   onBeforeSelect: function(node){
+				   if(isNull(node.children)){
+						return true;
+				   }else{
+					   return false;
+				   }
+			   }
+			});
 		}
 	</script>	
 	

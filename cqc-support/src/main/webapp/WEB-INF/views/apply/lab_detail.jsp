@@ -136,6 +136,40 @@
 			</table>
 		</div>
 		
+		<c:if test="${facadeBean.type == 2 || facadeBean.type == 3 }">
+			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+			<div class="title">任务信息</div>
+			<div style="width: 98%;display: none;" id="taskInfoDiv">
+				<table class="info">
+					<tr class="single-row">
+						<td class="title-td">申请人：</td>
+						<td class="value-td">${facadeBean.taskInfo.applicant}</td>
+						<td class="title-td">科室：</td>
+						<td class="value-td">${facadeBean.taskInfo.department}</td>
+					</tr>
+					
+					<tr class="couple-row">
+						<td class="title-td">零件图号：</td>
+						<td class="value-td">${facadeBean.taskInfo.figure}</td>
+						<td class="title-td">样品数量：</td>
+						<td class="value-td">${facadeBean.taskInfo.num}</td>
+					</tr>
+					
+					<tr class="single-row">
+						<td class="title-td">样品来源：</td>
+						<td class="value-td">${facadeBean.taskInfo.origin}</td>
+						<td class="title-td">抽检原因：</td>
+						<td class="value-td">${facadeBean.taskInfo.reason}</td>
+					</tr>
+					
+					<tr class="couple-row">
+						<td class="title-td">实验费用出处：</td>
+						<td class="value-td">${facadeBean.taskInfo.provenance}</td>
+					</tr>
+				</table>
+			</div>
+		</c:if>
+		
 		<c:if test="${not empty labReqList}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">试验说明</div>
@@ -1320,6 +1354,7 @@
 			$("#materialDiv").toggle();
 			$("#showBtn").toggle();
 			$("#hideBtn").toggle();
+			$("#taskInfoDiv").toggle();
 		}
 		
 		// 实验结论-组装数据
