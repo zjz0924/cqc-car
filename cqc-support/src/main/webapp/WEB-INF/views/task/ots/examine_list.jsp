@@ -66,7 +66,15 @@
 			        columns : [ [ {
 			        	field:'ck',
 			        	checkbox:true 
-			        }, {
+			        },  {
+						field : '_operation',
+						title : '操作',
+						width : '40',
+						align : 'center',
+						formatter : function(value,row,index){
+							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
+						}
+					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -170,15 +178,7 @@
 						width : '125',
 						align : 'center',
 						formatter : DateTimeFormatter
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '40',
-						align : 'center',
-						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="examineDetail('+ row.id +')">审核</a>';  	
-						}
-					}  ] ],
+					} ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						examineDetail(rowData.id);
 					},

@@ -30,6 +30,14 @@
 			        rownumbers: true,
 			        idField: 'id',
 			        columns : [ [ {
+						field : '_operation',
+						title : '操作',
+						width : '120',
+						align : 'center',
+						formatter : function(value,row,index){
+							return '<a href="javascript:void(0)" onclick="applyDetail('+ row.id +')">终止</a>';  	
+						}
+					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -80,14 +88,6 @@
 								str = "取消"
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
-						}
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '120',
-						align : 'center',
-						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="applyDetail('+ row.id +')">终止</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {

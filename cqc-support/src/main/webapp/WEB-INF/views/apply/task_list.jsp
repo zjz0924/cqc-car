@@ -29,6 +29,20 @@
 			        rownumbers: true,
 			        idField: 'id',
 			        frozenColumns:[[{
+						field : '_operation',
+						title : '操作',
+						width : '120',
+						align : 'center',
+						formatter : function(value,row,index){
+							if(row.infoApply == 1){
+								return '<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+							}else if(row.resultApply == 1){
+								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>';
+							}else{
+								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+							}
+						}
+					} , {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -145,21 +159,7 @@
 						width : '120',
 						align : 'center',
 						formatter : DateTimeFormatter
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '120',
-						align : 'center',
-						formatter : function(value,row,index){
-							if(row.infoApply == 1){
-								return '<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
-							}else if(row.resultApply == 1){
-								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>';
-							}else{
-								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
-							}
-						}
-					}  ] ],
+					} ] ],
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
 						getRecordList(rowData.code);

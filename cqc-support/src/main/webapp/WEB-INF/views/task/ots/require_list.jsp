@@ -40,6 +40,14 @@
 			        toolbar : toolbar,
 			        idField: 'id',
 			        columns : [ [ {
+						field : '_operation',
+						title : '操作',
+						width : '50',
+						align : 'center',
+						formatter : function(value,row,index){
+							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">编辑</a>';  	
+						}
+					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -144,14 +152,6 @@
 							}else if(val == 2){
 								return "<span style='color:red;' title='审核不通过'>审核不通过</span>";
 							}
-						}
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '50',
-						align : 'center',
-						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">编辑</a>';  	
 						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {

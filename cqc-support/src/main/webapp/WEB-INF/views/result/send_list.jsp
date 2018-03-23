@@ -29,6 +29,14 @@
 			        rownumbers: true,
 			        idField: 'id',
 			        columns : [ [ {
+						field : '_operation',
+						title : '操作',
+						width : '60',
+						align : 'center',
+						formatter : function(value,row,index){
+							return '<a href="javascript:void(0)" onclick="sendDetail('+ row.id +')">发送结果</a>';  	
+						}
+					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -138,14 +146,6 @@
 						width : '120',
 						align : 'center',
 						formatter : DateTimeFormatter
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '60',
-						align : 'center',
-						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="sendDetail('+ row.id +')">发送结果</a>';  	
-						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						sendDetail(rowData.id);

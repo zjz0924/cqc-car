@@ -38,6 +38,14 @@
 			        toolbar : toolbar,
 			        idField: 'id',
 			        frozenColumns:[[{
+						field : '_operation',
+						title : '操作',
+						width : '80',
+						align : 'center',
+						formatter : function(value,row,index){
+							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">详情</a>';  	
+						}
+					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -246,14 +254,6 @@
 						width : '130',
 						align : 'center',
 						formatter : DateTimeFormatter
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '80',
-						align : 'center',
-						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">详情</a>';  	
-						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						detail(rowData.id);

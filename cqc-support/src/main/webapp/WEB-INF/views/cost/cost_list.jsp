@@ -25,6 +25,18 @@
 			        rownumbers: true,
 			        idField: 'id',
 			        columns : [ [ {
+						field : '_operation',
+						title : '操作',
+						width : '120',
+						align : 'center',
+						formatter : function(value,row,index){
+							var str = "发送"
+							if("${type}" == 2){
+								str = "查看";
+							}
+							return '<a href="javascript:void(0)" onclick="costDetail('+ row.id +')">'+ str +'</a>';  	
+						}
+					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -94,18 +106,6 @@
 						width : '150',
 						align : 'center',
 						formatter : DateTimeFormatter
-					}, {
-						field : '_operation',
-						title : '操作',
-						width : '120',
-						align : 'center',
-						formatter : function(value,row,index){
-							var str = "发送"
-							if("${type}" == 2){
-								str = "查看";
-							}
-							return '<a href="javascript:void(0)" onclick="costDetail('+ row.id +')">'+ str +'</a>';  	
-						}
 					}  ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						costDetail(rowData.id);
