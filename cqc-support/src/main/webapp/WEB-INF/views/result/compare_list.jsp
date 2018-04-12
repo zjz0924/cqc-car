@@ -34,7 +34,7 @@
 						width : '60',
 						align : 'center',
 						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="compareDetail('+ row.id +')">确认</a>';  	
+							return '<a href="javascript:void(0)" onclick="compareDetail('+ row.id +')">比对</a>';  	
 						}
 					}, {
 			            field : 'id', 
