@@ -8,6 +8,7 @@
 		<input type="hidden" id="v_id" name="v_id" value="${facadeBean.info.vehicle.id}">
 		<input type="hidden" id="p_id" name="p_id" value="${facadeBean.info.parts.id }">
 		<input type="hidden" id="m_id" name="m_id" value="${facadeBean.info.material.id }">
+		<input type="hidden" id="draft" name="draft" value="${facadeBean.draft }">
 	
 		<div style="margin-left: 10px;margin-top:20px;">
 			
@@ -193,7 +194,8 @@
 		</div>
 	
 		 <div style="text-align:center;margin-top:35px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="save()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+			<a href="javascript:void(0);"  onclick="save(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);"  onclick="save(1)" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'">暂存</a>
 			<span id="exception_error" class="error-message"></span>
 		</div>
 	</form>
@@ -298,7 +300,7 @@
 				$('#m_orgId').combotree('setValue', "${facadeBean.info.material.orgId}");
 			});
 		
-			function save(){
+			function save(isDraft){
 				if(saving){
 					return false;
 				}
@@ -373,6 +375,8 @@
 						return false;
 					}
 				} */
+				
+				$("#draft").val(isDraft);
 				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/ots/save",

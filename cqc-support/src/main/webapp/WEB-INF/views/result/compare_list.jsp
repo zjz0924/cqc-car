@@ -340,12 +340,13 @@
 					title : '结果信息',
 					width : 1000,
 					height : 650,
+					top: "300px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/result/compareDetail?id=" + id,
 					modal : true
 				});
-				$('#compareDetailDialog').window('center');
+				//$('#compareDetailDialog').window('center');
 			}
 			
 		</script>

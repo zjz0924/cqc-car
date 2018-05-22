@@ -12,6 +12,14 @@
 			var getDataUrl = "${ctx}/cost/getListData?type=${type}";
 			var datagrid = "costTable";
 			
+			var toolbar = [{
+				text : '导出',
+				iconCls : 'icon-export',
+				handler : function() {
+					window.location.href = "${ctx}/cost/exportList?type=${type}";
+				}
+			}];
+			
 			$(function(){
 				 // 任务列表
 				 $("#" + datagrid).datagrid({
@@ -23,6 +31,7 @@
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
+			        toolbar : toolbar,
 			        idField: 'id',
 			        columns : [ [ {
 						field : '_operation',

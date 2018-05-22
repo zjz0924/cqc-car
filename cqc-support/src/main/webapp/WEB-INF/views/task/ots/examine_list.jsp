@@ -46,7 +46,6 @@
 					}
 					$("#batchRemark").textbox("setValue", "");
 					$("#seasonDialog").dialog("open");
-					$('#seasonDialog').window('center');
 				}
 			}];
 			
@@ -515,7 +514,7 @@
 		
 		<div id="examineDetailDialog"></div>
 		
-		<div id="seasonDialog" class="easyui-dialog" title="审核不通过" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
+		<div id="seasonDialog" class="easyui-dialog" title="审核不通过" style="width: 400px; height: 200px; padding: 10px;top:100px;" closed="true" data-options="modal:true">
 			<input id="batchRemark" class="easyui-textbox" label="不通过原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
 			
 			<div align=center style="margin-top: 15px;">

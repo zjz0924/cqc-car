@@ -2,11 +2,6 @@
 <%@include file="/page/taglibs.jsp"%>
 
 <body>
-	<div style="margin-left: 20px; margin-top: 10px;">
-		<a id="showBtn" href="javascript:void(0);" onclick="expand()" style="color:red;">展开</a>
-		<a id="hideBtn" href="javascript:void(0);" onclick="expand()" style="display: none; color: red;">收起</a>
-	</div>
-	
 	<div style="margin-left: 10px;margin-top:20px;margin-bottom:30px;">
 		<div class="title">任务详情</div>
 		<div style="width: 98%;">
@@ -75,7 +70,12 @@
 	
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 	
-		<div class="title">整车信息</div>
+		<div class="title">整车信息
+			<span style="margin-left: 20px; margin-top: 10px;">
+				<a id="showBtn" href="javascript:void(0);" onclick="expand()" style="color:red;">展开</a>
+				<a id="hideBtn" href="javascript:void(0);" onclick="expand()" style="display: none; color: red;">收起</a>
+			</span>
+		</div>
 		<div style="width: 98%;display: none;" id="vehicleDiv">
 			<table class="info">
 				<tr class="single-row">

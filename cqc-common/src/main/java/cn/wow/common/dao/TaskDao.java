@@ -9,6 +9,8 @@ public interface TaskDao extends SqlDao{
    
 	public void updateState(Map<String, Object> map);
 	
+	public void updateDraft(Map<String, Object> map);
+	
 	public List<Task> batchQueryByInfoId(List<Long> list);
 	
 	/**

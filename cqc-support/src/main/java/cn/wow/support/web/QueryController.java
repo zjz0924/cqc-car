@@ -3,6 +3,7 @@ package cn.wow.support.web;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +68,6 @@ public class QueryController extends AbstractController {
 	private TaskService taskService;
 	@Autowired
 	private MenuService menuService;
-	@Autowired
-	private ExamineRecordService examineRecordService;
 	@Autowired
 	private AtlasResultService atlasResultService;
 	@Autowired
@@ -178,7 +177,7 @@ public class QueryController extends AbstractController {
 			} else if ("ots".equals(type)) {
 				map.put("type", 1);
 				queryMap.put("type", 1);
-				
+
 				if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
 					map.put("taskIdList", taskInfoIdList);
 					queryMap.put("taskIdList", taskInfoIdList);
@@ -186,7 +185,7 @@ public class QueryController extends AbstractController {
 			} else if ("gs".equals(type)) {
 				map.put("type", 4);
 				queryMap.put("type", 4);
-				
+
 				if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
 					map.put("taskIdList", taskInfoIdList);
 					queryMap.put("taskIdList", taskInfoIdList);
@@ -336,8 +335,9 @@ public class QueryController extends AbstractController {
 	 */
 	@RequestMapping(value = "/exportTask")
 	public void exportTask(HttpServletRequest request, HttpServletResponse response) {
-		String filename = "任务清单";
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String filename = sdf1.format(new Date()) + "_任务清单";
 
 		try {
 			// 设置头
@@ -473,41 +473,53 @@ public class QueryController extends AbstractController {
 
 				Cell cell5 = contentRow.createCell(4);
 				cell5.setCellStyle(styles.get("cell"));
-				cell5.setCellValue(task.getInfo().getVehicle().getType());
+				if (task.getInfo() != null && task.getInfo().getVehicle() != null) {
+					cell5.setCellValue(task.getInfo().getVehicle().getType());
+				}
 
 				Cell cell6 = contentRow.createCell(5);
 				cell6.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
-					cell6.setCellValue(task.getInfo().getParts().getCode());
+					if (task.getInfo() != null && task.getInfo().getParts() != null) {
+						cell6.setCellValue(task.getInfo().getParts().getCode());
+					}
 				}
 
 				Cell cell7 = contentRow.createCell(6);
 				cell7.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
-					cell7.setCellValue(task.getInfo().getParts().getName());
+					if (task.getInfo() != null && task.getInfo().getParts() != null) {
+						cell7.setCellValue(task.getInfo().getParts().getName());
+					}
 				}
 
 				Cell cell8 = contentRow.createCell(7);
 				cell8.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
-					if (task.getInfo().getParts().getOrg() != null) {
+					if (task.getInfo() != null && task.getInfo().getParts() != null
+							&& task.getInfo().getParts().getOrg() != null) {
 						cell8.setCellValue(task.getInfo().getParts().getOrg().getName());
 					}
 				}
 
 				Cell cell9 = contentRow.createCell(8);
 				cell9.setCellStyle(styles.get("cell"));
-				cell9.setCellValue(task.getInfo().getMaterial().getMatName());
+				if (task.getInfo() != null && task.getInfo().getMaterial() != null) {
+					cell9.setCellValue(task.getInfo().getMaterial().getMatName());
+				}
 
 				Cell cell10 = contentRow.createCell(9);
 				cell10.setCellStyle(styles.get("cell"));
-				if (task.getInfo().getMaterial().getOrg() != null) {
+				if (task.getInfo() != null && task.getInfo().getMaterial() != null
+						&& task.getInfo().getMaterial().getOrg() != null) {
 					cell10.setCellValue(task.getInfo().getMaterial().getOrg().getName());
 				}
 
 				Cell cell11 = contentRow.createCell(10);
 				cell11.setCellStyle(styles.get("cell"));
-				cell11.setCellValue(task.getAccount().getUserName());
+				if (task.getAccount() != null) {
+					cell11.setCellValue(task.getAccount().getUserName());
+				}
 
 				Cell cell12 = contentRow.createCell(11);
 				cell12.setCellStyle(styles.get("cell"));

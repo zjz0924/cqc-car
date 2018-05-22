@@ -115,8 +115,14 @@ public class InfoServiceImpl implements InfoService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", id);
 		map.put("state", state);
-
 		taskDao.updateState(map);
+	}
+
+	public void updateDraft(Long id, Integer draft) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", id);
+		map.put("draft", draft);
+		taskDao.updateDraft(map);
 	}
 
 	public int deleteByPrimaryKey(String userName, Info info) {
@@ -132,7 +138,7 @@ public class InfoServiceImpl implements InfoService {
 	 * 添加信息
 	 */
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId,
-			int taskType) {
+			int taskType, int draft) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
 
@@ -196,6 +202,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatPatTimes(0);
 			task.setInfoApply(0);
 			task.setResultApply(0);
+			task.setDraft(draft);
 			taskDao.insert(task);
 
 			// 操作记录
@@ -211,6 +218,12 @@ public class InfoServiceImpl implements InfoService {
 			logDetail = "任务申请，任务号：" + task.getCode();
 		} else {
 			Task task = taskDao.selectOne(taskId);
+			
+			// 更新草稿状态
+			if (task.getDraft() == null || task.getDraft().intValue() != draft) {
+				this.updateDraft(task.getId(), draft);
+			}
+
 			if (task.getState() == StandardTaskEnum.EXAMINE_NOTPASS.getState()) {
 				// 更新任务状态
 				this.updateState(task.getId(), StandardTaskEnum.EXAMINE.getState());
@@ -290,23 +303,25 @@ public class InfoServiceImpl implements InfoService {
 
 	/**
 	 * 审核
-	 * @param result 结果：1-通过 2-不通过
-	 * @param remark 备注
+	 * 
+	 * @param result
+	 *            结果：1-通过 2-不通过
+	 * @param remark
+	 *            备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
 			Material material) {
-		
+
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
-		
+
 		Info info = task.getInfo();
-		
-		
-		if(task.getType().intValue() == TaskTypeEnum.OTS.getState()) {
+
+		if (task.getType().intValue() == TaskTypeEnum.OTS.getState()) {
 			// 先检查有没有在用
 			if (!isUse(info.getId(), info.getpId(), 2)) {
 				partsDao.update(parts);
-			}else {
+			} else {
 				parts.setState(1);
 				parts.setId(null);
 				partsDao.insert(parts);
@@ -314,22 +329,22 @@ public class InfoServiceImpl implements InfoService {
 				info.setpId(parts.getId());
 			}
 		}
-		
+
 		// 先检查有没有在用
 		if (!isUse(info.getId(), info.getvId(), 1)) {
 			vehicleDao.update(vehicle);
-		}else {
+		} else {
 			vehicle.setState(1);
 			vehicle.setId(null);
 			vehicleDao.insert(vehicle);
 
 			info.setvId(vehicle.getId());
 		}
-		
+
 		if (material != null) {
 			materialDao.update(material);
 		}
-		
+
 		infoDao.update(info);
 
 		// 审核记录
@@ -456,7 +471,7 @@ public class InfoServiceImpl implements InfoService {
 		String taskCode = "";
 		Long taskId = null;
 		boolean flag = true;
-		
+
 		if (t_id == null) {
 			Date date = new Date();
 			String code = generateTaskCode(date);
@@ -1376,7 +1391,7 @@ public class InfoServiceImpl implements InfoService {
 		} else {
 			map.put("mId", id);
 		}
-		//map.put("state", 1);
+		// map.put("state", 1);
 
 		List<Info> infoList = infoDao.selectAllList(map);
 		boolean flag = false;

@@ -11,7 +11,9 @@
 	<link href="${ctx}/resources/css/menu.css" rel="stylesheet">
 	<link href="${ctx}/resources/css/cssreset.css" rel="stylesheet">
 	<script src="${ctx}/resources/js/responsive-menu.js"></script>
-	
+	<script type="text/javascript" src="${ctx}/resources/js/artDialog4.1.7/artDialog.source.js"></script>
+<script type="text/javascript" src="${ctx}/resources/js/artDialog4.1.7/jquery.artDialog.source.js?skin=idialog"></script>
+
 	<script type="text/javascript">
 	    $(function(){
 	    	$("li[_t_nav='GYSTXJS']").addClass('nojuris');

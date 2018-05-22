@@ -340,12 +340,13 @@
 					title : '结果信息',
 					width : 1200,
 					height : 660,
+					top: "300px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/result/sendDetail?id=" + id,
 					modal : true
 				});
-				$('#sendDetailDialog').window('center');
+				//$('#sendDetailDialog').window('center');
 			}
 			
 		</script>

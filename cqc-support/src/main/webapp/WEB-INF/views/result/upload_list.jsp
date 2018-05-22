@@ -340,12 +340,13 @@
 					title : '结果上传信息',
 					width : 1200,
 					height : 700,
+					top: "300px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/result/uploadDetail?id=" + id + "&type=${type}",
 					modal : true
 				});
-				$('#uploadDetailDialog').window('center');
+				//$('#uploadDetailDialog').window('center');
 			}
 			
 		</script>

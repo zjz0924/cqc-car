@@ -42,7 +42,7 @@
 			        columns : [ [ {
 						field : '_operation',
 						title : '操作',
-						width : '50',
+						width : '40',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">编辑</a>';  	
@@ -53,7 +53,7 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '150',
+						width : '120',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
@@ -138,7 +138,7 @@
 					},{
 						field : 'createTime',
 						title : '申请时间',
-						width : '140',
+						width : '130',
 						align : 'center',
 						formatter : DateTimeFormatter
 					},{
@@ -153,7 +153,19 @@
 								return "<span style='color:red;' title='审核不通过'>审核不通过</span>";
 							}
 						}
-					}  ] ],
+					},{
+						field : 'draft',
+						title : '是否草稿',
+						width : '60',
+						align : 'center',
+						formatter : function(val){
+							if(val != 1){
+								return "<span title='否'>否</span>";
+							}else{
+								return "<span style='color:red;' title='是'>是</span>";
+							}
+						}
+					}   ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						detail(rowData.id);
 					}
@@ -167,6 +179,7 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'state': $("#q_state").combobox('getValue'),
+							'draft': $("#q_draft").combobox('getValue'),
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
 							'task_code': $("#task_code").textbox("getValue"),
@@ -244,6 +257,7 @@
 			function doSearch() {
 				var data = {
 					'state' : $("#q_state").combobox("getValue"), 
+					'draft': $("#q_draft").combobox('getValue'),
 					'startCreateTime' : $("#q_startCreateTime").val(),
 					'endCreateTime' : $("#q_endCreateTime").val(),
 					'task_code': $("#task_code").textbox("getValue"),
@@ -260,6 +274,7 @@
 			
 			function doClear() {
 				$("#q_state").combobox('select', "");
+				$("#q_draft").combobox('select', ""),
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
 				$("#task_code").textbox("clear");
@@ -283,6 +298,7 @@
 					title : '详情',
 					width : 1100,
 					height : 625,
+					top: "50px",
 					closed : false,
 					cache : false,
 					href : url,
@@ -291,7 +307,7 @@
 						window.location.reload();
 					}
 				});
-				$('#requireDialog').window('center');
+				//$('#requireDialog').window('center');
 			}
 			
 		
@@ -341,16 +357,19 @@
 					<span class="qlabel">零件生产商：</span>
 					<input id="parts_org" name="parts_org"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
+					<span class="qlabel">是否草稿：</span>
+					<select id="q_draft" name="q_draft" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
+						<option value="">全部</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+				</div>
+				
+				<div style="margin-top: 5px;">
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
-				
-				<c:if test="${taskType == 4}">
-					<div style="margin-top: 5px;">
-						<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
-						<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
-					</div>
-				</c:if>
 			</div>
 		</div>
 		

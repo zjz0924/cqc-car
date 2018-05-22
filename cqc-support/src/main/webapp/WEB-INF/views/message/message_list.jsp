@@ -169,6 +169,7 @@
 					title : '消息详情',
 					width : 700,
 					height : 400,
+					top: "350px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/message/detail?id=" + id,
@@ -177,7 +178,7 @@
 						doSearch();
 					}
 				});
-				$('#detailDialog').window('center');
+				//$('#detailDialog').window('center');
 			}
 			
 		</script>

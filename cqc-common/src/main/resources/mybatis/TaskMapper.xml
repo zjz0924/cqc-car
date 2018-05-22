@@ -16,6 +16,7 @@
 		<result column="fail_num" property="failNum" jdbcType="INTEGER" />
 		<result column="result" property="result" jdbcType="INTEGER" />
 		<result column="is_receive" property="isReceive" jdbcType="INTEGER" />
+		<result column="draft" property="draft" jdbcType="INTEGER" />
 		
 		<!-- 实验室ID -->
 		<result column="parts_atl_id" property="partsAtlId" jdbcType="BIGINT" />
@@ -56,7 +57,7 @@
 	
 	<sql id="base_columns">
 		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.parts_atl_id, t.mat_atl_id, t.parts_pat_id, t.mat_pat_id ,t.remark, t.create_time, t.fail_num, t.a_id, t.parts_atl_result, t.mat_atl_result,
-        t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time, t.info_apply, t.result_apply, t.t_id, t.result, t.is_receive,t.parts_atl_code,t.mat_atl_code,t.parts_pat_code,t.mat_pat_code
+        t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time, t.info_apply, t.result_apply, t.t_id, t.result, t.is_receive,t.parts_atl_code,t.mat_atl_code,t.parts_pat_code,t.mat_pat_code, t.draft
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -73,12 +74,12 @@
 			SELECT @@IDENTITY
 		</selectKey>
 	
-		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id, result, is_receive, parts_atl_code, mat_atl_code, parts_pat_code, mat_pat_code)
+		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id, result, is_receive, parts_atl_code, mat_atl_code, parts_pat_code, mat_pat_code, draft)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
 					#{partsAtlId,jdbcType=BIGINT}, #{matAtlId,jdbcType=BIGINT}, #{partsPatId,jdbcType=BIGINT}, #{matPatId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
 					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, #{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER}, 
 					#{partsAtlTimes,jdbcType=INTEGER}, #{matAtlTimes,jdbcType=INTEGER}, #{partsPatTimes,jdbcType=INTEGER}, #{matPatTimes,jdbcType=INTEGER}, #{confirmTime,jdbcType=TIMESTAMP},
-					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER}, #{tId,jdbcType=BIGINT}, #{result,jdbcType=INTEGER}, #{isReceive,jdbcType=INTEGER}, #{partsAtlCode,jdbcType=VARCHAR}, #{matAtlCode,jdbcType=VARCHAR}, #{partsPatCode,jdbcType=VARCHAR}, #{matPatCode,jdbcType=VARCHAR})
+					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER}, #{tId,jdbcType=BIGINT}, #{result,jdbcType=INTEGER}, #{isReceive,jdbcType=INTEGER}, #{partsAtlCode,jdbcType=VARCHAR}, #{matAtlCode,jdbcType=VARCHAR}, #{partsPatCode,jdbcType=VARCHAR}, #{matPatCode,jdbcType=VARCHAR}, #{draft,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -167,12 +168,19 @@
 			<if test="matPatCode != null">
 				mat_pat_code = #{matPatCode,jdbcType=VARCHAR},
 			</if>
+			<if test="draft != null">	
+				draft = #{draft,jdbcType=INTEGER}
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	
 	<update id="updateState" parameterType="java.util.Map">
 		update task set state = #{state,jdbcType=INTEGER} where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateDraft" parameterType="java.util.Map">
+		update task set draft = #{draft,jdbcType=INTEGER} where id = #{id,jdbcType=BIGINT}
 	</update>
 	
 	<select id="batchQueryByInfoId" resultMap="BaseResultMap" parameterType="java.util.List">
@@ -218,6 +226,14 @@
 
 			<if test="state != null">
 				and t.state = #{state,jdbcType=INTEGER}
+			</if>
+			
+			<if test="draft != null">	
+				and t.draft = #{draft,jdbcType=INTEGER}
+			</if>
+			
+			<if test="neDraft != null">	
+				and t.draft != #{neDraft,jdbcType=INTEGER}
 			</if>
 			
 			<!-- 抽样是否存在 -->

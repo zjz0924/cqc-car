@@ -183,7 +183,7 @@ public class OtsTaskController extends AbstractController {
 	@RequestMapping(value = "/requireListData")
 	public Map<String, Object> requireListData(HttpServletRequest request, Model model, String startCreateTime,
 			String endCreateTime, Integer state, int taskType, String task_code, String parts_code, String parts_name,
-			String parts_org, String req_name, String matName, String mat_org, String vehicle_type) {
+			String parts_org, String req_name, String matName, String mat_org, String vehicle_type, Integer draft) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -213,6 +213,9 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(req_name)) {
 			map.put("userName", req_name);
+		}
+		if (draft != null) {
+			map.put("draft", draft);
 		}
 
 		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
@@ -278,7 +281,7 @@ public class OtsTaskController extends AbstractController {
 			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
 			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
 			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id,
-			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone) {
+			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone, int draft) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -415,7 +418,7 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, t_id, taskType);
+			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, t_id, taskType, draft);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -461,6 +464,7 @@ public class OtsTaskController extends AbstractController {
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("state", StandardTaskEnum.EXAMINE.getState());
 		map.put("type", taskType);
+		map.put("neDraft", "1");
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);

@@ -103,6 +103,9 @@ public class Task {
     // PPAP和SOP 任务信息
     private TaskInfo taskInfo;
     
+    // 是否是草稿（0-否，1-是）
+    private Integer draft;
+    
     public Long getId() {
         return id;
     }
@@ -422,4 +425,13 @@ public class Task {
 	public void setTaskInfo(TaskInfo taskInfo) {
 		this.taskInfo = taskInfo;
 	}
+
+	public Integer getDraft() {
+		return draft;
+	}
+
+	public void setDraft(Integer draft) {
+		this.draft = draft;
+	}
+	
 }

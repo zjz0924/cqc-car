@@ -340,12 +340,13 @@
 					title : '结果信息',
 					width : 1200,
 					height : 650,
+					top: "300px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/result/confirmDetail?id=" + id + "&type=${type}",
 					modal : true
 				});
-				$('#confirmDetailDialog').window('center');
+				//$('#confirmDetailDialog').window('center');
 			}
 			
 		</script>

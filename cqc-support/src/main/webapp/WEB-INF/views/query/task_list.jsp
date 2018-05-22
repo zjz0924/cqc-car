@@ -471,12 +471,13 @@
 					title : '任务详情',
 					width : 1200,
 					height : 660,
+					top: "300px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/query/detail?id=" + id,
 					modal : true
 				});
-				$('#detailDialog').window('center');
+				//$('#detailDialog').window('center');
 			}
 			
 		</script>

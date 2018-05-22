@@ -175,108 +175,108 @@
 						</tr>
 						
 						<c:if test="${taskType == 1}">
-							<tr>
-								<td class="value-td">${facadeBean.partsAtlCode }</td>
-								<td class="value-td">零部件图谱试验</td>
-								<td class="value-td">
-									<c:choose>
-										<c:when test="${facadeBean.partsAtlResult != 0}">
-											${facadeBean.partsAtl.name}
-										</c:when>
-										<c:otherwise>
-											<input id="partsAtlId" name="partsAtlId">
-										</c:otherwise>
-									</c:choose>
-								</td>
-								<td>
-									<c:if test="${not empty facadeBean.partsAtl}">
+							<c:if test="${not empty facadeBean.partsAtl}">
+								<tr>
+									<td class="value-td">${facadeBean.partsAtlCode }</td>
+									<td class="value-td">零部件图谱试验</td>
+									<td class="value-td">
+										<c:choose>
+											<c:when test="${facadeBean.partsAtlResult != 0}">
+												${facadeBean.partsAtl.name}
+											</c:when>
+											<c:otherwise>
+												<input id="partsAtlId" name="partsAtlId">
+											</c:otherwise>
+										</c:choose>
+									</td>
+									<td>
 										<span id="partsAtl1" <c:if test="${facadeBean.partsAtlResult != 0}">style="display:none;"</c:if>>
 											<a href="javascript:void(0);"  onclick="approve(1,'', 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
 											<a href="javascript:void(0);"  onclick="notPass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
 										</span>
 										<span id="partsAtl2" style="color:green;display:none;">同意</span>
 										<span id="partsAtl3" style="color:red;display:none;">不同意</span>
-									</c:if>
-								</td>
-							</tr>
+									</td>
+								</tr>
+							</c:if>
 						</c:if>
 						
-						<tr>
-							<td class="value-td">${facadeBean.matAtlCode }</td>
-							<td class="value-td">原材料图谱试验</td>
-							<td class="value-td">
-								<c:choose>
-									<c:when test="${facadeBean.matAtlResult != 0}">
-										${facadeBean.matAtl.name}
-									</c:when>
-									<c:otherwise>
-										<input id="matAtlId" name="matAtlId">
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td>
-								<c:if test="${not empty facadeBean.matAtl}">
+						<c:if test="${not empty facadeBean.matAtl}">
+							<tr>
+								<td class="value-td">${facadeBean.matAtlCode }</td>
+								<td class="value-td">原材料图谱试验</td>
+								<td class="value-td">
+									<c:choose>
+										<c:when test="${facadeBean.matAtlResult != 0}">
+											${facadeBean.matAtl.name}
+										</c:when>
+										<c:otherwise>
+											<input id="matAtlId" name="matAtlId">
+										</c:otherwise>
+									</c:choose>
+								</td>
+								<td>
 									<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
 										<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
 										<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
 									</span>
 									<span id="matAtl2" style="color:green;display:none;">同意</span>
 									<span id="matAtl3" style="color:red;display:none;">不同意</span>
-								</c:if>
-							</td>
-						</tr>
+								</td>
+							</tr>
+						</c:if>
 						
 						<c:if test="${taskType == 1}">
-							<tr>
-								<td class="value-td">${facadeBean.partsPatCode }</td>
-								<td class="value-td">零部件型式试验</td>
-								<td class="value-td">
-									<c:choose>
-										<c:when test="${facadeBean.partsPatResult != 0}">
-											${facadeBean.partsPat.name}
-										</c:when>
-										<c:otherwise>
-											<input id="partsPatId" name="partsPatId">
-										</c:otherwise>
-									</c:choose>
-								</td>
-								<td>
-									<c:if test="${not empty facadeBean.partsPat}">
+							<c:if test="${not empty facadeBean.partsPat}">
+								<tr>
+									<td class="value-td">${facadeBean.partsPatCode }</td>
+									<td class="value-td">零部件型式试验</td>
+									<td class="value-td">
+										<c:choose>
+											<c:when test="${facadeBean.partsPatResult != 0}">
+												${facadeBean.partsPat.name}
+											</c:when>
+											<c:otherwise>
+												<input id="partsPatId" name="partsPatId">
+											</c:otherwise>
+										</c:choose>
+									</td>
+									<td>
 										<span id="partsPat1" <c:if test="${facadeBean.partsPatResult != 0}">style="display:none;"</c:if>>
 											<a href="javascript:void(0);"  onclick="approve(1,'', 3)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
 											<a href="javascript:void(0);"  onclick="notPass(3)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
 										</span>
 										<span id="partsPat2" style="color:green;display:none;">同意</span>
 										<span id="partsPat3" style="color:red;display:none;">不同意</span>
-									</c:if>
-								</td>
-							</tr>
+									</td>
+								</tr>
+							</c:if>
 						</c:if>
 						
-						<tr>
-							<td class="value-td">${facadeBean.matPatCode }</td>
-							<td class="value-td">原材料型式试验</td>
-							<td class="value-td">
-								<c:choose>
-									<c:when test="${facadeBean.matPatResult != 0}">
-										${facadeBean.matPat.name}
-									</c:when>
-									<c:otherwise>
-										<input id="matPatId" name="matPatId">
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td>
-								<c:if test="${not empty facadeBean.matPat}">
+						<c:if test="${not empty facadeBean.matPat}">
+							<tr>
+								<td class="value-td">${facadeBean.matPatCode }</td>
+								<td class="value-td">原材料型式试验</td>
+								<td class="value-td">
+									<c:choose>
+										<c:when test="${facadeBean.matPatResult != 0}">
+											${facadeBean.matPat.name}
+										</c:when>
+										<c:otherwise>
+											<input id="matPatId" name="matPatId">
+										</c:otherwise>
+									</c:choose>
+								</td>
+								<td>
 									<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
 										<a href="javascript:void(0);"  onclick="approve(1,'', 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
 										<a href="javascript:void(0);"  onclick="notPass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
 									</span>
 									<span id="matPat2" style="color:green;display:none;">同意</span>
 									<span id="matPat3" style="color:red;display:none;">不同意</span>
-								</c:if>
-							</td>
-						</tr>
+								</td>
+							</tr>
+						</c:if>
 					</table>
 				</div>
 		
@@ -1087,77 +1087,86 @@
 			if(approveType == 3){
 				
 				if(taskType == 1){
+					
 					// 零部件图谱试验结果
-					var partsAtlResult = "${facadeBean.partsAtlResult}";
-					if(partsAtlResult == 1){
-						$("#partsAtl2").show();
-					}else if(partsAtlResult == 6){
-						$("#partsAtl3").show();
-					}else if(partsAtlResult == 0){
-						$('#partsAtlId').combotree({
-							url: '${ctx}/org/getTreeByType?type=3',
-							multiple: false,
-							animate: true,
-							width: '250px'				
-						});
-						setupTree("partsAtlId");
-						
-						$("#partsAtlId").combotree("setValue", "${facadeBean.partsAtl.id}");
+					if(!isNull("${facadeBean.partsAtlId}")){
+						var partsAtlResult = "${facadeBean.partsAtlResult}";
+						if(partsAtlResult == 1){
+							$("#partsAtl2").show();
+						}else if(partsAtlResult == 6){
+							$("#partsAtl3").show();
+						}else if(partsAtlResult == 0){
+							$('#partsAtlId').combotree({
+								url: '${ctx}/org/getTreeByType?type=3',
+								multiple: false,
+								animate: true,
+								width: '250px'				
+							});
+							setupTree("partsAtlId");
+							
+							$("#partsAtlId").combotree("setValue", "${facadeBean.partsAtl.id}");
+						}
 					}
 					
 					// 零部件型式试验结果
-					var partsPatResult = "${facadeBean.partsPatResult}";
-					if(partsPatResult == 1){
-						$("#partsPat2").show();
-					}else if(partsPatResult == 6){
-						$("#partsPat3").show();
-					}else if(partsPatResult == 0){
-						$('#partsPatId').combotree({
-							url: '${ctx}/org/getTreeByType?type=3',
-							multiple: false,
-							animate: true,
-							width: '250px'				
-						});
-						setupTree("partsPatId");
-						
-						$("#partsPatId").combotree("setValue", "${facadeBean.partsPat.id}");
+					if(!isNull("${facadeBean.partsPatId}")){
+						var partsPatResult = "${facadeBean.partsPatResult}";
+						if(partsPatResult == 1){
+							$("#partsPat2").show();
+						}else if(partsPatResult == 6){
+							$("#partsPat3").show();
+						}else if(partsPatResult == 0){
+							$('#partsPatId').combotree({
+								url: '${ctx}/org/getTreeByType?type=3',
+								multiple: false,
+								animate: true,
+								width: '250px'				
+							});
+							setupTree("partsPatId");
+							
+							$("#partsPatId").combotree("setValue", "${facadeBean.partsPat.id}");
+						}
 					}
 				}
 				
 				// 原材料图谱试验结果
-				var matAtlResult = "${facadeBean.matAtlResult}";
-				if(matAtlResult == 1){
-					$("#matAtl2").show();
-				}else if(matAtlResult == 6){
-					$("#matAtl3").show();
-				}else if(matAtlResult == 0){
-					$('#matAtlId').combotree({
-						url: '${ctx}/org/getTreeByType?type=3',
-						multiple: false,
-						animate: true,
-						width: '250px'				
-					});
-					setupTree("matAtlId");
-					
-					$("#matAtlId").combotree("setValue", "${facadeBean.matAtl.id}");
+				if(!isNull("${facadeBean.matAtlId}")){
+					var matAtlResult = "${facadeBean.matAtlResult}";
+					if(matAtlResult == 1){
+						$("#matAtl2").show();
+					}else if(matAtlResult == 6){
+						$("#matAtl3").show();
+					}else if(matAtlResult == 0){
+						$('#matAtlId').combotree({
+							url: '${ctx}/org/getTreeByType?type=3',
+							multiple: false,
+							animate: true,
+							width: '250px'				
+						});
+						setupTree("matAtlId");
+						
+						$("#matAtlId").combotree("setValue", "${facadeBean.matAtl.id}");
+					}
 				}
 				
 				// 原材料型式试验结果
-				var matPatResult = "${facadeBean.matPatResult}";
-				if(matPatResult == 1){
-					$("#matPat2").show();
-				}else if(matPatResult == 6){
-					$("#matPat3").show();
-				}else if(matPatResult == 0){
-					$('#matPatId').combotree({
-						url: '${ctx}/org/getTreeByType?type=3',
-						multiple: false,
-						animate: true,
-						width: '250px'				
-					});
-					setupTree("matPatId");
-					
-					$("#matPatId").combotree("setValue", "${facadeBean.matPat.id}");
+				if(!isNull("${facadeBean.matPatId}")){
+					var matPatResult = "${facadeBean.matPatResult}";
+					if(matPatResult == 1){
+						$("#matPat2").show();
+					}else if(matPatResult == 6){
+						$("#matPat3").show();
+					}else if(matPatResult == 0){
+						$('#matPatId').combotree({
+							url: '${ctx}/org/getTreeByType?type=3',
+							multiple: false,
+							animate: true,
+							width: '250px'				
+						});
+						setupTree("matPatId");
+						
+						$("#matPatId").combotree("setValue", "${facadeBean.matPat.id}");
+					}
 				}
 			}
 		});
@@ -1174,25 +1183,25 @@
 			
 			if("${taskType}" == 1){
 				var partsAtlResult = "${facadeBean.partsAtlResult}";
-				if(partsAtlResult == 0){
+				if(partsAtlResult == 0 && !isNull("${facadeBean.partsAtlId}")){
 					partsAtlId = $("#partsAtlId").combotree("getValue");
 				}
 				
 				var partsPatResult = "${facadeBean.partsPatResult}";
-				if(partsPatResult == 0){
+				if(partsPatResult == 0 && !isNull("${facadeBean.partsPatId}")){
 					partsPatId = $("#partsPatId").combotree("getValue");
 				}
 			}
 			
 			var matAtlResult = "${facadeBean.matAtlResult}";
 			var matAtlId = "";
-			if(matAtlResult == 0){
+			if(matAtlResult == 0 && !isNull("${facadeBean.matAtlId}")){
 				matAtlId = $("#matAtlId").combotree("getValue");
 			}
 			
 			var matPatResult = "${facadeBean.matPatResult}";
 			var matPatId = "";
-			if(matPatResult == 0){
+			if(matPatResult == 0 && !isNull("${facadeBean.matPatId}")){
 				matPatId = $("#matPatId").combotree("getValue");
 			}
 			
