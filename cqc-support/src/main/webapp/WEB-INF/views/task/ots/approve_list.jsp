@@ -423,7 +423,7 @@
 					}
 					return ids;
 				}else{
-					errorMsg("请选择要审核的任务");
+					errorMsg("请选择要审批的任务");
 					return false;
 				}
 			}
@@ -470,9 +470,12 @@
 	</head>
 	
 	<body>
-		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
-			<div>
-				<span class="qlabel">任务号：</span>
+		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
+			<p> <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="$('#queryDiv').toggle();">查询条件</a></p>
+			
+			<div id="queryDiv" style="display:none;">
+				<div>
+					<span class="qlabel">任务号：</span>
 					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入单位：</span>
@@ -484,7 +487,6 @@
 					<span class="qlabel">车型：</span>
 					<input id="vehicle_type" name="vehicle_type" class="easyui-textbox" style="width: 168px;">
 				</div>
-				
 				
 				<div style="margin-top: 5px;">
 					<span class="qlabel">材料生产商：</span>
@@ -516,6 +518,7 @@
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
+			</div>
 		</div>
 	
 		<div style="margin-top:10px;">

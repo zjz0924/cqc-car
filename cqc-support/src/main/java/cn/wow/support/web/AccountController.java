@@ -92,7 +92,7 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String userName, String nickName,
-			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId, Integer isCharge) {
+			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId, Integer isCharge, String sort, String order) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -102,8 +102,17 @@ public class AccountController extends AbstractController {
 
 		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "is_charge asc, username asc");
-		queryMap.put("custom_order_sql", "is_charge asc, username asc");
+		
+		String orderSql = "is_charge asc, username asc";
+		if(StringUtils.isNotBlank(sort)) {
+			if("isCharge".equals(sort)) {
+				sort = "is_charge";
+			}
+			orderSql = sort + " " + order;
+		}
+		
+		map.put("custom_order_sql", orderSql);
+		queryMap.put("custom_order_sql", orderSql);
 		
 		if (StringUtils.isNotBlank(userName)) {
 			map.put("qUserName", userName);

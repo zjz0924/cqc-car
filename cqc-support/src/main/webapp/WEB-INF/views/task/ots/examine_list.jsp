@@ -454,8 +454,10 @@
 	</head>
 	
 	<body>
-		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
-			<div>
+		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
+			<p> <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="$('#queryDiv').toggle();">查询条件</a></p>
+			
+			<div id="queryDiv" style="display:none;">
 				<div>
 					<span class="qlabel">任务号：</span>
 					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;

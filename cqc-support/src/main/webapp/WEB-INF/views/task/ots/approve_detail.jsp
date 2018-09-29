@@ -171,7 +171,9 @@
 							<td class="title-td">试验编号</td>
 							<td class="title-td">试验名称</td>
 							<td class="title-td">分配实验室</td>
-							<td class="title-td">操作</td>
+							<c:if test="${taskType == 1}">
+								<td class="title-td">操作</td>
+							</c:if>	
 						</tr>
 						
 						<c:if test="${taskType == 1}">
@@ -215,14 +217,16 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td>
-									<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
-										<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-										<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-									</span>
-									<span id="matAtl2" style="color:green;display:none;">同意</span>
-									<span id="matAtl3" style="color:red;display:none;">不同意</span>
-								</td>
+								<c:if test="${taskType == 1}">
+									<td>
+										<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
+											<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+											<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+										</span>
+										<span id="matAtl2" style="color:green;display:none;">同意</span>
+										<span id="matAtl3" style="color:red;display:none;">不同意</span>
+									</td>
+								</c:if>
 							</tr>
 						</c:if>
 						
@@ -267,14 +271,16 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td>
-									<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
-										<a href="javascript:void(0);"  onclick="approve(1,'', 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-										<a href="javascript:void(0);"  onclick="notPass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-									</span>
-									<span id="matPat2" style="color:green;display:none;">同意</span>
-									<span id="matPat3" style="color:red;display:none;">不同意</span>
-								</td>
+								<c:if test="${taskType == 1}">
+									<td>
+										<span id="matPat1" <c:if test="${facadeBean.matPatResult != 0}">style="display:none;"</c:if>>
+											<a href="javascript:void(0);"  onclick="approve(1,'', 4)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
+											<a href="javascript:void(0);"  onclick="notPass(4)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
+										</span>
+										<span id="matPat2" style="color:green;display:none;">同意</span>
+										<span id="matPat3" style="color:red;display:none;">不同意</span>
+									</td>
+								</c:if>
 							</tr>
 						</c:if>
 					</table>

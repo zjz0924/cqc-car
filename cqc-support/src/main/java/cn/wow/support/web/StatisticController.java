@@ -1,5 +1,7 @@
 package cn.wow.support.web;
 
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +10,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.ResultVO;
 import cn.wow.common.domain.Task;
@@ -22,6 +34,10 @@ import cn.wow.common.service.MenuService;
 import cn.wow.common.service.TaskInfoService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
+import cn.wow.common.utils.Contants;
+import cn.wow.common.utils.ImportExcelUtil;
+import cn.wow.common.utils.operationlog.OperationType;
+import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
@@ -34,6 +50,8 @@ import cn.wow.common.utils.taskState.TaskTypeEnum;
 @RequestMapping(value = "statistic")
 public class StatisticController {
 
+	Logger logger = LoggerFactory.getLogger(StatisticController.class);
+	
 	@Autowired
 	private MenuService menuService;
 	@Autowired
@@ -42,6 +60,8 @@ public class StatisticController {
 	private InfoService infoService;
 	@Autowired
 	private TaskInfoService taskInfoService;
+	
+	private ResultVO resultVO;
 	
 	@RequestMapping(value = "/result")
 	public String result(HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -111,7 +131,7 @@ public class StatisticController {
 		
 		List<Task> taskList = taskService.selectAllList(qMap);
 		
-		ResultVO resultVO = new ResultVO();
+		resultVO = new ResultVO();
 		if (taskList != null && taskList.size() > 0) {
 			resultVO.setTaskNum(taskList.size());
 
@@ -131,6 +151,111 @@ public class StatisticController {
 		vo.setData(resultVO);
 		vo.setSuccess(true);
 		return vo;
+	}
+	
+	
+	/**
+	 * 导出结果
+	 */
+	@RequestMapping(value = "/export")
+	public void export(HttpServletRequest request, HttpServletResponse response) {
+		String filename = "统计结果";
+		
+		try {
+			// 设置头
+			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
+
+			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
+			// 工作簿
+			Sheet sh = wb.createSheet("统计清单");
+			sh.setColumnWidth(0, (short) 4000);
+			sh.setColumnWidth(1, (short) 1000);
+			sh.setColumnWidth(2, (short) 3000);
+			sh.setColumnWidth(3, (short) 4000);
+			sh.setColumnWidth(4, (short) 1000);
+			sh.setColumnWidth(5, (short) 3000);
+			sh.setColumnWidth(6, (short) 4000);
+
+			// 合并单元格（参数说明：1：开始行 2：结束行  3：开始列 4：结束列）
+			sh.addMergedRegion(new CellRangeAddress(1,2,0,0));
+
+			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
+
+			String[] titles = { "任务数量", "合格", "一次不合格"};
+			int r = 0;
+			
+			Row titleRow = sh.createRow(0);
+			titleRow.setHeight((short) 450);
+			
+			Cell cell = titleRow.createCell(0);
+			cell.setCellStyle(styles.get("header"));
+			cell.setCellValue(titles[0]);
+			
+			Cell cel2 = titleRow.createCell(3);
+			cel2.setCellStyle(styles.get("header"));
+			cel2.setCellValue(titles[1]);
+			
+			Cell cel3 = titleRow.createCell(6);
+			cel3.setCellStyle(styles.get("header"));
+			cel3.setCellValue(titles[2]);
+			
+			++r;
+			
+			if(resultVO != null) {
+				Row contentRow = sh.createRow(r);
+				contentRow.setHeight((short) 400);
+				
+				Cell cell1 = contentRow.createCell(0);
+				cell1.setCellStyle(styles.get("cell"));
+				cell1.setCellValue(resultVO.getTaskNum());
+				
+				Cell cell2 = contentRow.createCell(2);
+				cell2.setCellStyle(styles.get("cell"));
+				cell2.setCellValue("数量");
+				
+				Cell cell3 = contentRow.createCell(3);
+				cell3.setCellStyle(styles.get("cell"));
+				cell3.setCellValue(resultVO.getPassNum());
+				
+				Cell cell4 = contentRow.createCell(5);
+				cell4.setCellStyle(styles.get("cell"));
+				cell4.setCellValue("数量");
+				
+				Cell cell5 = contentRow.createCell(6);
+				cell5.setCellStyle(styles.get("cell"));
+				cell5.setCellValue(resultVO.getOnceNum());
+				
+				++r;
+				Row contentRow2 = sh.createRow(r);
+				contentRow2.setHeight((short) 400);
+				
+				Cell cell6 = contentRow2.createCell(2);
+				cell6.setCellStyle(styles.get("cell"));
+				cell6.setCellValue("比例");
+				
+				Cell cell7 = contentRow2.createCell(3);
+				cell7.setCellStyle(styles.get("cell"));
+				cell7.setCellValue((Math.round(resultVO.getPassNum() / resultVO.getTaskNum() * 10000) / 100.00) + "%");
+				
+				Cell cell8 = contentRow2.createCell(5);
+				cell8.setCellStyle(styles.get("cell"));
+				cell8.setCellValue("比例");
+				
+				Cell cell9 = contentRow2.createCell(6);
+				cell9.setCellStyle(styles.get("cell"));
+				cell9.setCellValue((Math.round(resultVO.getOnceNum() / resultVO.getTaskNum() * 10000) / 100.00) + "%");
+			}
+
+			OutputStream os = response.getOutputStream();
+			wb.write(os);
+			os.flush();
+			os.close();
+			
+		} catch (Exception e) {
+			logger.error("统计结果导出失败");
+			
+			e.printStackTrace();
+		}
 	}
 	
 }

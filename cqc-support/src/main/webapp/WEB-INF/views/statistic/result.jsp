@@ -230,7 +230,9 @@
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 
 			<div style="margin-top: 50px;">
-				<div style="font-weight: bold; color: #1874CD;margin-bottom: 30px;font-size:20px;">统计结果：</div>
+				<div style="font-weight: bold; color: #1874CD;margin-bottom: 30px;font-size:20px;">
+					统计结果&nbsp;&nbsp;<a href="${ctx}/statistic/export" class="easyui-linkbutton" data-options="iconCls:'icon-import'" style="width:80px;" title="导出">导出</a>
+				</div>
 				<div class="info-box" style="background-color: #57889c;">
 					<div class="title">任务数量</div>
 					<div class="count" id="taskNum" style="text-align: center;font-size: 50px;">0</div>

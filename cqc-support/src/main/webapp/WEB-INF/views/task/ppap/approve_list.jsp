@@ -55,7 +55,7 @@
 			        singleSelect : false, /*是否选中一行*/
 			        checkOnSelect: false, // 只有点击checkbox才会选中
 			        width:'auto', 	
-			        height: "375px",
+			        height: "350px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -465,45 +465,49 @@
 	</head>
 	
 	<body>
-		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
-			<div>
-				<span class="qlabel">任务号：</span>
-				<input id="q_code" name="q_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<span class="qlabel">录入单位：</span>
-				<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<span class="qlabel">录入用户：</span>
-				<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;
-				
-				<span class="qlabel">车型：</span>
-				<input id="vehicle_type" name="vehicle_type" class="easyui-textbox" style="width: 168px;">
-			</div>
-				
-			<div style="margin-top: 5px;">
-				<span class="qlabel">零件号：</span>
-				<input id="parts_code" name="parts_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<span class="qlabel">零件名称：</span>
-				<input id="parts_name" name="parts_name" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<span class="qlabel">零件生产商：</span>
-				<input id="parts_org" name="parts_org"> &nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<span class="qlabel">材料生产商：</span>
-				<input id="mat_org" name="mat_org">
-			</div>
+		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
+			<p> <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="$('#queryDiv').toggle();">查询条件</a></p>
 			
-			<div style="margin-top: 5px;">
-				<span class="qlabel">材料名称：</span>
-				<input id="matName" name="matName" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+			<div id="queryDiv" style="display:none;">
+				<div>
+					<span class="qlabel">任务号：</span>
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">录入单位：</span>
+					<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">录入用户：</span>
+					<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">车型：</span>
+					<input id="vehicle_type" name="vehicle_type" class="easyui-textbox" style="width: 168px;">
+				</div>
+					
+				<div style="margin-top: 5px;">
+					<span class="qlabel">零件号：</span>
+					<input id="parts_code" name="parts_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">零件名称：</span>
+					<input id="parts_name" name="parts_name" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">零件生产商：</span>
+					<input id="parts_org" name="parts_org"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">材料生产商：</span>
+					<input id="mat_org" name="mat_org">
+				</div>
 				
-				<span class="qlabel">录入时间：</span>
-				<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
-				<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;margin-right: 40px;"/>
-				
-				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
-				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
+				<div style="margin-top: 5px;">
+					<span class="qlabel">材料名称：</span>
+					<input id="matName" name="matName" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">录入时间：</span>
+					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:110px;display:inline-block"/> - 
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:110px;display:inline-block;margin-right: 40px;"/>
+					
+					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
+				</div>
 			</div>
 		</div>
 	

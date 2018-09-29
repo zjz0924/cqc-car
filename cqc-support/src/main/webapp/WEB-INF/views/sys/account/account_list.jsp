@@ -115,8 +115,8 @@
 			$(function(){
 				 $("#" + accountDatagrid).datagrid({
 			        url : accountGetDataUrl,
-			      //  checkOnSelect: true,
-			        singleSelect : true, /*是否选中一行*/
+			        checkOnSelect: true,
+			        singleSelect : false, /*是否选中一行*/
 			        width:'auto', 
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -125,10 +125,10 @@
 			        height: '400px',
 			        title: "用户信息",
 			        idField: 'id',
-			        columns : [ [  /* {
+			        columns : [ [ {
 			        	field: 'ck',
 			        	checkbox: true
-			        }, */{
+			        }, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
@@ -136,18 +136,21 @@
 			            title : '用户名',
 			            width : '100',
 			            align : 'center',
+			            sortable: true,
 			            formatter: formatCellTooltip
 			        }, {
 			            field : 'nickName',
 			            title : '姓名',
 			            width : '100',
 			            align : 'center',
+			            sortable: true,
 			            formatter: formatCellTooltip
 			        }, {
 			            field : 'mobile',
 			            title : '手机号码',
 			            width : '100',
 			            align : 'center',
+			            sortable: true,
 			            formatter: formatCellTooltip
 			        }, {
 			            field : 'org',
@@ -174,12 +177,14 @@
 						title : '邮箱',
 						width : '140',
 						align : 'center',
+						sortable: true,
 						formatter : formatCellTooltip
 					}, {
 						field : 'isCharge',
 						title : '是否收费',
 						width : '80',
 						align : 'center',
+						sortable: true,
 						formatter : function(val){
 							var str = "是";
 							if(isNull(val) || val == 0){
