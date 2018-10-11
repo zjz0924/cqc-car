@@ -18,5 +18,10 @@ public interface MaterialService {
     public List<Material> selectAllList(Map<String, Object> map);
     
     public Material selectByNameAndType(String matName, Integer type);
+    
+    /**
+	 * 获取生产商名称列表
+	 */
+	public List<String> getProduceList(String name);
 
 }

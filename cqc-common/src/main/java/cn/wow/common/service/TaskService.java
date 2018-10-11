@@ -114,4 +114,5 @@ public interface TaskService {
 	 * @code  任务号
 	 */
 	public Task getStandardTask(String code);
+	
 }

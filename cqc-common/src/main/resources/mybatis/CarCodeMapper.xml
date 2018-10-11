@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wow.common.dao.CarCodeDao">
+	<resultMap id="BaseResultMap" type="cn.wow.common.domain.CarCode">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	
+	<sql id="base_columns">
+		id, code, remark
+	</sql>
+	
+	<select id="selectOne" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select <include refid="base_columns" /> from car_code where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="base_columns" /> from car_code where code = #{code,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from car_code where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert" parameterType="cn.wow.common.domain.CarCode">
+		insert into car_code (code, remark) values (#{code,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="update" parameterType="cn.wow.common.domain.CarCode">
+		update car_code
+		<set>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+	  	select 
+	    <include refid="base_columns" />
+	      from car_code
+	     <where>
+			  <if test="code != null and code != ''" >
+		       	and code like concat('%', #{code,jdbcType=VARCHAR}, '%') 
+		      </if>
+	      </where>
+	      
+		  <choose>
+	  		<when test="custom_order_sql != null">
+	  			order by ${custom_order_sql}
+	  		</when>
+	  		<otherwise>
+	  			order by id desc
+	  		</otherwise>
+	 	 </choose>
+	  </select>
+</mapper>

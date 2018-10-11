@@ -17,11 +17,12 @@
 		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
+		<result column="producer" property="producer" jdbcType="VARCHAR" />
+		<!--  <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> -->
 	</resultMap>
 
 	<sql id="base_columns">
-		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone
+		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -41,10 +42,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone) values
+		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer) values
 		(#{type,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{place,jdbcType=VARCHAR}, 
 		#{proNo,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER},
-		#{orgId,jdbcType=BIGINT}, #{isKey,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR})
+		#{orgId,jdbcType=BIGINT}, #{isKey,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Parts">
@@ -85,6 +86,9 @@
 		    </if>
 		    <if test="phone != null" >
 		    	phone = #{phone,jdbcType=VARCHAR},
+		    </if>
+		    <if test="producer != null" >
+		    	producer = #{producer,jdbcType=VARCHAR},
 		    </if>
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
@@ -191,6 +195,12 @@
 		    <if test="ephone != null" >
 		    	and phone = #{ephone,jdbcType=VARCHAR}
 		    </if>
+		     <if test="qproducer != null" >
+		    	and producer like concat('%', #{qproducer,jdbcType=VARCHAR}, '%')
+		    </if>
+		    <if test="producer != null" >
+		    	and producer = #{producer,jdbcType=VARCHAR}
+		    </if>
 		</where>
 	
 		<choose>
@@ -202,5 +212,9 @@
 			</otherwise>
 		</choose>
 	</select>
-
+	
+	<!-- 获取生产商名称列表 -->
+	<select id="getProduceList" resultType="java.lang.String" parameterType="java.lang.String">
+		select DISTINCT producer from parts where producer like concat('%', #{producer,jdbcType=VARCHAR}, '%')
+	</select>
 </mapper>

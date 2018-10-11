@@ -25,6 +25,12 @@ public interface PartsService {
      */
 	public boolean isExist(Long id, String p_code, String p_name, Date p_proTime, String p_place, String p_proNo,
 			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String p_contacts,
-			String p_phone);
+			String p_phone, String p_producer);
 
+	
+	
+	/**
+	 * 获取生产商名称列表
+	 */
+	public List<String> getProduceList(String name);
 }

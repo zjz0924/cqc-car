@@ -56,4 +56,10 @@ public class MaterialServiceImpl implements MaterialService{
 		}
     }
 
+    /**
+	 * 获取生产商名称列表
+	 */
+	public List<String> getProduceList(String name){
+		return materialDao.getProduceList(name);
+	}
 }

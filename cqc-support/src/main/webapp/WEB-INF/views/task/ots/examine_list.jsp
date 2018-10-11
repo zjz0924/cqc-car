@@ -82,7 +82,8 @@
 						width : '150',
 						align : 'center',
 						formatter : formatCellTooltip
-					}, {
+					}, 
+					/* {
 						field : 'info.vehicle.type',
 						title : '车型',
 						width : '80',
@@ -93,7 +94,8 @@
 								return "<span title='"+ vehicle.type +"'>"+ vehicle.type +"</span>";
 							}							
 						}
-					}, {
+					}, */
+					{
 						field : 'info.parts.code',
 						title : '零件号',
 						width : '100',
@@ -106,7 +108,7 @@
 						}
 					}, {
 						field : 'info.parts.name',
-						title : '零件名称',
+						title : '零件名',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
@@ -116,18 +118,15 @@
 							}							
 						}
 					}, {
-						field : 'info.parts.org',
+						field : 'info.parts.producer',
 						title : '生产商',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
 							var parts = row.info.parts;
 							if(!isNull(parts)){
-								var org = row.info.parts.org;
-								if(!isNull(org)){
-									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
-								}
-							}							
+								return "<span title='"+ parts.producer +"'>"+ parts.producer +"</span>";
+							}
 						}
 					}, {
 						field : 'info.material.name',
@@ -141,14 +140,14 @@
 							}							
 						}
 					}, {
-						field : 'info.material.org',
+						field : 'info.material.producer',
 						title : '生产商',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
-							var org = row.info.material.org;
-							if(!isNull(org)){
-								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+							var material = row.info.material;
+							if(!isNull(material)){
+								return "<span title='"+ material.producer +"'>"+ material.producer +"</span>";
 							}							
 						}
 					}, {

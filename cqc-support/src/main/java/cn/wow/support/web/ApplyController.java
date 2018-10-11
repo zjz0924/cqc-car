@@ -536,7 +536,7 @@ public class ApplyController extends AbstractController {
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String m_matName,
 			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark, String p_phone,
-			String p_contacts, String m_phone, String m_contacts,
+			String p_contacts, String m_phone, String m_contacts, String p_producer, String m_producer,
 			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id) {
 
 		AjaxVO vo = new AjaxVO();
@@ -568,7 +568,7 @@ public class ApplyController extends AbstractController {
 					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
 				
 					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getCode(), parts.getName(), parts.getProTime(), parts.getPlace(), parts.getProNo(), parts.getKeyCode(),
-							parts.getIsKey(), parts.getOrgId(), parts.getRemark(), parts.getContacts(), parts.getPhone());
+							parts.getIsKey(), parts.getOrgId(), parts.getRemark(), parts.getContacts(), parts.getPhone(), p_producer);
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");

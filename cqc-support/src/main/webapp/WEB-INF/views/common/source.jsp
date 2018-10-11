@@ -13,3 +13,7 @@
 <script type="text/javascript" src="${ctx}/resources/js/artDialog4.1.7/artDialog.source.js"></script>
 <script type="text/javascript" src="${ctx}/resources/js/artDialog4.1.7/jquery.artDialog.source.js?skin=idialog"></script>
 <script type="text/javascript" src="${ctx}/resources/js/artDialog4.1.7/plugins/iframeTools.source.js"></script>
+
+<script src="${ctx}/resources/js/autocomple/jquery-migrate-1.1.0.min.js"></script>
+<script src="${ctx}/resources/js/autocomple/jquery.autocomplete.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctx}/resources/js/autocomple/jquery.autocomplete.css" />

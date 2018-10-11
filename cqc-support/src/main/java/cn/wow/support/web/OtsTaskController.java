@@ -31,8 +31,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Address;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
@@ -43,8 +45,10 @@ import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -118,6 +122,10 @@ public class OtsTaskController extends AbstractController {
 	private LabReqService labReqService;
 	@Autowired
 	private LabConclusionService labConclusionService;
+	@Autowired
+	private AddressService addressService;
+	@Autowired
+	private CarCodeService carCodeService;
 
 	/**
 	 * 首页
@@ -266,8 +274,15 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("recordList", recordList);
 		}
 
+		// 生产基地
+		List<Address> addressList = getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = getCarCodeList();
+
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
 		return "task/ots/require_detail";
 	}
 
@@ -281,7 +296,8 @@ public class OtsTaskController extends AbstractController {
 			String p_place, String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark,
 			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
 			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id,
-			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone, int draft) {
+			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone, int draft,
+			String p_producer, String m_producer) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -295,14 +311,16 @@ public class OtsTaskController extends AbstractController {
 				vehicle = new Vehicle();
 				vehicle.setType(v_type);
 				vehicle.setCode(v_code);
-				vehicle.setProTime(sdf.parse(v_proTime));
+				if (StringUtils.isNotBlank(v_proTime)) {
+					vehicle.setProTime(sdf.parse(v_proTime));
+				}
 				vehicle.setProAddr(v_proAddr);
 				vehicle.setRemark(v_remark);
 				vehicle.setState(Contants.ONDOING_TYPE);
 				vehicle.setCreateTime(date);
 
-				boolean isExist = vehicleService.isExist(null, v_code, v_type, sdf.parse(v_proTime), v_proAddr,
-						v_remark);
+				boolean isExist = vehicleService.isExist(null, v_code, v_type,
+						StringUtils.isNotBlank(v_proTime) ? sdf.parse(v_proTime) : null, v_proAddr, v_remark);
 				if (isExist) {
 					vo.setSuccess(false);
 					vo.setMsg("整车信息已存在");
@@ -312,13 +330,15 @@ public class OtsTaskController extends AbstractController {
 				vehicle = vehicleService.selectOne(v_id);
 				if (vehicle.getState().intValue() == 0) {
 					vehicle.setType(v_type);
-					vehicle.setProTime(sdf.parse(v_proTime));
+					if (StringUtils.isNotBlank(v_proTime)) {
+						vehicle.setProTime(sdf.parse(v_proTime));
+					}
 					vehicle.setProAddr(v_proAddr);
 					vehicle.setRemark(v_remark);
 					vehicle.setCode(v_code);
 
-					boolean isExist = vehicleService.isExist(v_id, v_code, v_type, sdf.parse(v_proTime), v_proAddr,
-							v_remark);
+					boolean isExist = vehicleService.isExist(v_id, v_code, v_type,
+							StringUtils.isNotBlank(v_proTime) ? sdf.parse(v_proTime) : null, v_proAddr, v_remark);
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("整车信息已存在");
@@ -341,14 +361,15 @@ public class OtsTaskController extends AbstractController {
 					parts.setCode(p_code);
 					parts.setIsKey(p_isKey);
 					parts.setKeyCode(p_keyCode);
-					parts.setOrgId(p_orgId);
+					// parts.setOrgId(p_orgId);
+					parts.setProducer(p_producer);
 					parts.setCreateTime(date);
 					parts.setContacts(p_contacts);
 					parts.setPhone(p_phone);
 					parts.setState(Contants.ONDOING_TYPE);
 
 					boolean isExist = partsService.isExist(null, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo,
-							p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+							p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone, p_producer);
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -364,13 +385,14 @@ public class OtsTaskController extends AbstractController {
 						parts.setName(p_name);
 						parts.setIsKey(p_isKey);
 						parts.setKeyCode(p_keyCode);
-						parts.setOrgId(p_orgId);
+						// parts.setOrgId(p_orgId);
+						parts.setProducer(p_producer);
 						parts.setContacts(p_contacts);
 						parts.setPhone(p_phone);
 						parts.setCode(p_code);
 
 						boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place,
-								p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+								p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone, p_producer);
 						if (isExist) {
 							vo.setSuccess(false);
 							vo.setMsg("零部件信息已存在");
@@ -390,7 +412,8 @@ public class OtsTaskController extends AbstractController {
 				material.setMatName(m_matName);
 				material.setMatNo(m_matNo);
 				material.setMatColor(m_matColor);
-				material.setOrgId(m_orgId);
+				// material.setOrgId(m_orgId);
+				material.setProducer(m_producer);
 				material.setCreateTime(date);
 				material.setContacts(m_contacts);
 				material.setPhone(m_phone);
@@ -407,7 +430,8 @@ public class OtsTaskController extends AbstractController {
 				material.setMatName(m_matName);
 				material.setMatNo(m_matNo);
 				material.setMatColor(m_matColor);
-				material.setOrgId(m_orgId);
+				// material.setOrgId(m_orgId);
+				material.setProducer(m_producer);
 				material.setContacts(m_contacts);
 				material.setPhone(m_phone);
 
@@ -511,6 +535,13 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("facadeBean", task);
 		}
 
+		// 生产基地
+		List<Address> addressList = getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = getCarCodeList();
+		
+		model.addAttribute("carCodeList", carCodeList);
+		model.addAttribute("addressList", addressList);
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
 		return "task/ots/examine_detail";
@@ -519,12 +550,9 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 批量审核结果
 	 * 
-	 * @param ids
-	 *            任务ID
-	 * @param type
-	 *            结果： 1-通过， 2-不通过
-	 * @param remark
-	 *            备注
+	 * @param ids    任务ID
+	 * @param type   结果： 1-通过， 2-不通过
+	 * @param remark 备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchExamine")
@@ -551,12 +579,9 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审核结果
 	 * 
-	 * @param id
-	 *            任务 ID
-	 * @param result
-	 *            结果： 1-通过， 2-不通过
-	 * @param remark
-	 *            备注
+	 * @param id     任务 ID
+	 * @param result 结果： 1-通过， 2-不通过
+	 * @param remark 备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
@@ -566,7 +591,7 @@ public class OtsTaskController extends AbstractController {
 			Long m_id, String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
 			String m_remark, @RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id,
 			int taskType, String p_contacts, String p_phone, String m_contacts, String m_phone, int result,
-			String examine_remark, Long id) {
+			String examine_remark, Long id, String p_producer, String m_producer) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -606,13 +631,14 @@ public class OtsTaskController extends AbstractController {
 					parts.setName(p_name);
 					parts.setIsKey(p_isKey);
 					parts.setKeyCode(p_keyCode);
-					parts.setOrgId(p_orgId);
+					// parts.setOrgId(p_orgId);
+					parts.setProducer(p_producer);
 					parts.setContacts(p_contacts);
 					parts.setPhone(p_phone);
 					parts.setCode(p_code);
 
 					boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo,
-							p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone);
+							p_keyCode, p_isKey, p_orgId, p_remark, p_contacts, p_phone, p_producer);
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -629,7 +655,8 @@ public class OtsTaskController extends AbstractController {
 			material.setMatName(m_matName);
 			material.setMatNo(m_matNo);
 			material.setMatColor(m_matColor);
-			material.setOrgId(m_orgId);
+			// material.setOrgId(m_orgId);
+			material.setProducer(m_producer);
 			material.setContacts(m_contacts);
 			material.setPhone(m_phone);
 
@@ -754,16 +781,11 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 下达任务结果
 	 * 
-	 * @param id
-	 *            任务ID
-	 * @param partsAtlId
-	 *            零部件图谱实验室ID
-	 * @param matAtlId
-	 *            原材料图谱实验室ID
-	 * @param partsPatId
-	 *            零部件型式实验室ID
-	 * @param matPatId
-	 *            原材料型式实验室ID
+	 * @param id         任务ID
+	 * @param partsAtlId 零部件图谱实验室ID
+	 * @param matAtlId   原材料图谱实验室ID
+	 * @param partsPatId 零部件型式实验室ID
+	 * @param matPatId   原材料型式实验室ID
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
@@ -1053,16 +1075,11 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 审批结果
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param result
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
-	 * @param catagory
-	 *            分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param account    操作用户
+	 * @param id         任务ID
+	 * @param result     结果：1-通过，2-不通过
+	 * @param remark     备注
+	 * @param catagory   分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 * @param partsAtlId
 	 * @param matAtlId
 	 * @param partsPatId
@@ -1093,14 +1110,10 @@ public class OtsTaskController extends AbstractController {
 	/**
 	 * 批量审批结果
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param ids
-	 *            任务ID
-	 * @param result
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
+	 * @param account 操作用户
+	 * @param ids     任务ID
+	 * @param result  结果：1-通过，2-不通过
+	 * @param remark  备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchApprove")
@@ -1134,6 +1147,34 @@ public class OtsTaskController extends AbstractController {
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;
+	}
+
+	/**
+	 * 获取生产商列表（自动补全）
+	 * 
+	 * @param type: 1-零部件 2-原材料
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getProducerList")
+	public String getProducerList(HttpServletRequest request, Model model, int type) throws Exception {
+		String qName = request.getParameter("q"); // 参数必须为q
+
+		List<String> orgNameList = new ArrayList<String>();
+		if (type == 1) {
+			orgNameList = partsService.getProduceList(qName);
+		} else {
+			orgNameList = materialService.getProduceList(qName);
+		}
+
+		String jsonString = ""; // 多行数据使用\n进行换行
+		for (int i = 0; i < orgNameList.size(); i++) {
+			if (i != (orgNameList.size() - 1)) {
+				jsonString += "{\'text\':\'" + orgNameList.get(i) + "\'}\n";
+			} else {
+				jsonString += "{\'text\':\'" + orgNameList.get(i) + "\'}";
+			}
+		}
+		return jsonString;
 	}
 
 	/**
@@ -1172,4 +1213,25 @@ public class OtsTaskController extends AbstractController {
 		}
 	}
 
+	/**
+	 * 获取 车型代码列表
+	 */
+	private List<CarCode> getCarCodeList() {
+		Map<String, Object> carCodeMap = new PageMap(false);
+		carCodeMap.put("custom_order_sql", "code asc");
+		List<CarCode> carCodeList = carCodeService.selectAllList(carCodeMap);
+
+		return carCodeList;
+	}
+
+	/**
+	 * 获取 生产基地列表
+	 */
+	private List<Address> getAddressList() {
+		Map<String, Object> addressMap = new PageMap(false);
+		addressMap.put("custom_order_sql", "name asc");
+		List<Address> addressList = addressService.selectAllList(addressMap);
+
+		return addressList;
+	}
 }

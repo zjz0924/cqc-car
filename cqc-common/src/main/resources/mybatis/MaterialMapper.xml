@@ -15,11 +15,12 @@
 		<result column="contacts" property="contacts" jdbcType="VARCHAR" />
 		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
+		<result column="producer" property="producer" jdbcType="VARCHAR" />
+		<!--  <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/>--> 
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone
+		id, type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone, producer
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -35,10 +36,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into material (type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone)
+		insert into material (type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone, producer)
 		values (#{type,jdbcType=INTEGER}, #{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR},
 		#{proNo,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-		#{state,jdbcType=INTEGER}, #{orgId,jdbcType=BIGINT}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR})
+		#{state,jdbcType=INTEGER}, #{orgId,jdbcType=BIGINT}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Material">
@@ -77,6 +78,9 @@
 		    </if>
 		    <if test="phone != null" >
 		    	phone = #{phone,jdbcType=VARCHAR},
+		    </if>
+		     <if test="producer != null" >
+		    	producer = #{producer,jdbcType=VARCHAR},
 		    </if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -133,6 +137,9 @@
 		    <if test="phone != null" >
 		    	and phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
 		    </if>
+		     <if test="producer != null" >
+		    	and producer like concat('%', #{producer,jdbcType=VARCHAR}, '%')
+		    </if>
 	      </where>
 	      
 		  <choose>
@@ -145,5 +152,8 @@
 	 	 </choose>
 	  </select>
 	
-	
+	<!-- 获取生产商名称列表 -->
+	<select id="getProduceList" resultType="java.lang.String" parameterType="java.lang.String">
+		select DISTINCT producer from parts where producer like concat('%', #{producer,jdbcType=VARCHAR}, '%')
+	</select>
 </mapper>

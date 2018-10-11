@@ -17,4 +17,9 @@ public interface TaskDao extends SqlDao{
 	 * 获取任务数
 	 */
 	public Integer getTaskNum(Map<String, Object> map);
+	
+	/**
+	 * 获取生产商名称列表
+	 */
+	public List<String> getOrgNameList(Map<String, Object> map);
 }
