@@ -16,7 +16,6 @@
 		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="producer" property="producer" jdbcType="VARCHAR" />
-		<!--  <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/>--> 
 	</resultMap>
 	
 	<sql id="base_columns">

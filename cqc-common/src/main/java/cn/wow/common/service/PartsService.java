@@ -3,7 +3,9 @@ package cn.wow.common.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import cn.wow.common.domain.Parts;
+import cn.wow.common.vo.ResultFlagVO;
 
 public interface PartsService {
     public Parts selectOne(Long id);
@@ -23,8 +25,8 @@ public interface PartsService {
     /**
      * 检查零部件信息是否存在
      */
-	public boolean isExist(Long id, String p_code, String p_name, Date p_proTime, String p_place, String p_proNo,
-			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String p_contacts,
+	public ResultFlagVO isExist(Long id, String p_code, String p_name, Date p_proTime, String p_place, String p_proNo,
+			String p_keyCode, Integer p_isKey, String p_remark, String p_contacts,
 			String p_phone, String p_producer);
 
 	

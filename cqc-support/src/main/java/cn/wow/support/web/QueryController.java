@@ -102,8 +102,8 @@ public class QueryController extends AbstractController {
 	@RequestMapping(value = "/getListData")
 	public Map<String, Object> getListData(HttpServletRequest request, Model model, String code, String startCreateTime,
 			String endCreateTime, String taskType, String orgId, String nickName, String startConfirmTime,
-			String endConfirmTime, String parts_code, String parts_name, String parts_org, String matName,
-			String mat_org, String vehicle_type, String applicant, String department, String reason,
+			String endConfirmTime, String parts_code, String parts_name, String parts_producer, String matName,
+			String mat_producer, String applicant, String department, String reason,
 			String provenance) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
@@ -198,7 +198,7 @@ public class QueryController extends AbstractController {
 			}
 		}
 
-		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
@@ -350,7 +350,7 @@ public class QueryController extends AbstractController {
 			sh.setColumnWidth(1, (short) 6000);
 			sh.setColumnWidth(2, (short) 4000);
 			sh.setColumnWidth(3, (short) 4000);
-			sh.setColumnWidth(4, (short) 5000);
+			sh.setColumnWidth(4, (short) 6000);
 			sh.setColumnWidth(5, (short) 6000);
 			sh.setColumnWidth(6, (short) 6000);
 			sh.setColumnWidth(7, (short) 6000);
@@ -358,7 +358,6 @@ public class QueryController extends AbstractController {
 			sh.setColumnWidth(9, (short) 6000);
 			sh.setColumnWidth(10, (short) 6000);
 			sh.setColumnWidth(11, (short) 6000);
-			sh.setColumnWidth(12, (short) 6000);
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
@@ -471,13 +470,7 @@ public class QueryController extends AbstractController {
 				}
 				cell4.setCellValue(result);
 
-				Cell cell5 = contentRow.createCell(4);
-				cell5.setCellStyle(styles.get("cell"));
-				if (task.getInfo() != null && task.getInfo().getVehicle() != null) {
-					cell5.setCellValue(task.getInfo().getVehicle().getType());
-				}
-
-				Cell cell6 = contentRow.createCell(5);
+				Cell cell6 = contentRow.createCell(4);
 				cell6.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
 					if (task.getInfo() != null && task.getInfo().getParts() != null) {
@@ -485,7 +478,7 @@ public class QueryController extends AbstractController {
 					}
 				}
 
-				Cell cell7 = contentRow.createCell(6);
+				Cell cell7 = contentRow.createCell(5);
 				cell7.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
 					if (task.getInfo() != null && task.getInfo().getParts() != null) {
@@ -493,7 +486,7 @@ public class QueryController extends AbstractController {
 					}
 				}
 
-				Cell cell8 = contentRow.createCell(7);
+				Cell cell8 = contentRow.createCell(6);
 				cell8.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
 					if (task.getInfo() != null && task.getInfo().getParts() != null
@@ -502,30 +495,30 @@ public class QueryController extends AbstractController {
 					}
 				}
 
-				Cell cell9 = contentRow.createCell(8);
+				Cell cell9 = contentRow.createCell(7);
 				cell9.setCellStyle(styles.get("cell"));
 				if (task.getInfo() != null && task.getInfo().getMaterial() != null) {
 					cell9.setCellValue(task.getInfo().getMaterial().getMatName());
 				}
 
-				Cell cell10 = contentRow.createCell(9);
+				Cell cell10 = contentRow.createCell(8);
 				cell10.setCellStyle(styles.get("cell"));
 				if (task.getInfo() != null && task.getInfo().getMaterial() != null
 						&& task.getInfo().getMaterial().getOrg() != null) {
 					cell10.setCellValue(task.getInfo().getMaterial().getOrg().getName());
 				}
 
-				Cell cell11 = contentRow.createCell(10);
+				Cell cell11 = contentRow.createCell(9);
 				cell11.setCellStyle(styles.get("cell"));
 				if (task.getAccount() != null) {
 					cell11.setCellValue(task.getAccount().getUserName());
 				}
 
-				Cell cell12 = contentRow.createCell(11);
+				Cell cell12 = contentRow.createCell(10);
 				cell12.setCellStyle(styles.get("cell"));
 				cell12.setCellValue(sdf.format(task.getCreateTime()));
 
-				Cell cell13 = contentRow.createCell(12);
+				Cell cell13 = contentRow.createCell(11);
 				cell13.setCellStyle(styles.get("cell"));
 				if (task.getConfirmTime() != null) {
 					cell13.setCellValue(sdf.format(task.getConfirmTime()));

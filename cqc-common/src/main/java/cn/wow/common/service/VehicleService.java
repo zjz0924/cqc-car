@@ -3,7 +3,9 @@ package cn.wow.common.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.vo.ResultFlagVO;
 
 public interface VehicleService {
     public Vehicle selectOne(Long id);
@@ -21,5 +23,5 @@ public interface VehicleService {
     /**
      * 检查整车信息是否存在
      */
-    public boolean isExist(Long id, String code, String type, Date proTime, String proAddr, String remark);
+    public ResultFlagVO isExist(Long id, String code, Date proTime, String proAddr);
 }

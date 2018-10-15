@@ -15,6 +15,7 @@ import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.vo.ResultFlagVO;
 
 @Service
 @Transactional
@@ -28,8 +29,8 @@ public class VehicleServiceImpl implements VehicleService {
 	public Vehicle selectOne(Long id) {
 		return vehicleDao.selectOne(id);
 	}
-	
-	public Vehicle selectByCode(String code){
+
+	public Vehicle selectByCode(String code) {
 		return vehicleDao.selectByCode(code);
 	}
 
@@ -50,26 +51,28 @@ public class VehicleServiceImpl implements VehicleService {
 		return vehicleDao.selectAllList(map);
 	}
 
-	 /**
-     * 检查整车信息是否存在
-     */
-	public boolean isExist(Long id, String code, String type, Date proTime, String proAddr, String remark) {
+	/**
+	 * 检查整车信息是否存在
+	 */
+	public ResultFlagVO isExist(Long id, String code, Date proTime, String proAddr) {
+		ResultFlagVO vo = new ResultFlagVO();
+
 		Map<String, Object> map = new PageMap(false);
-		if(id != null) {
+		if (id != null) {
 			map.put("eid", id);
 		}
 		map.put("ecode", code);
-		map.put("etype", type);
 		map.put("eProTime", proTime);
 		map.put("proAddr", proAddr);
-		map.put("remark", remark);
 
 		List<Vehicle> dataList = vehicleDao.selectAllList(map);
 		if (dataList != null && dataList.size() > 0) {
-			return true;
+			vo.setFlag(true);
+			vo.setState(dataList.get(0).getState());
 		} else {
-			return false;
+			vo.setFlag(false);
 		}
+		return vo;
 	}
-	
+
 }

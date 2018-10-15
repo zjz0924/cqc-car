@@ -20,16 +20,6 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>车型：</span>
-						<span class="val" title="${facadeBean.info.vehicle.type }">${facadeBean.info.vehicle.type }</span>
-					</td>
-					<td class="input-td">
-						<input id="v_type" name="v_type" class="easyui-textbox" />
-					</td>
-				</tr>
-
-				<tr>
-					<td>
 						<span class="title-span"><span class="req-span">*</span>生产日期：</span>
 						<span class="val" title="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
 					</td>

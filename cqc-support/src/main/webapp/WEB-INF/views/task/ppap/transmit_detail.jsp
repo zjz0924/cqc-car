@@ -43,15 +43,11 @@
 						<input id="v_code" name="v_code" class="easyui-textbox" value="${facadeBean.info.vehicle.code }" disabled style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>车型：</span> 
-						<input id="v_type" name="v_type" class="easyui-textbox" value="${facadeBean.info.vehicle.type }" disabled style="width:150px;">
-					</td>
-					<td>
 						<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
 						<input id="v_proTime" name="v_proTime" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" disabled style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>生产地址：</span> 
+						<span class="title-span"><span class="req-span">*</span>生产基地：</span> 
 						<input id="v_proAddr" name="v_proAddr" class="easyui-textbox" value="${facadeBean.info.vehicle.proAddr }" disabled style="width:150px;">
 					</td>
 				</tr>

@@ -14,13 +14,11 @@
 				<tr class="single-row">
 					<td class="title-td">代码：</td>
 					<td class="value-td">${facadeBean.info.vehicle.code}</td>
-					<td class="title-td">车型：</td>
-					<td class="value-td">${facadeBean.info.vehicle.type}</td>
 				</tr>
 				<tr class="couple-row">
 					<td class="title-td">生产日期：</td>
 					<td class="value-td"><fmt:formatDate value='${facadeBean.info.vehicle.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-					<td class="title-td">生产地址：</td>
+					<td class="title-td">生产基地：</td>
 					<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
 				</tr>
 				<tr class="single-row">

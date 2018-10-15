@@ -218,7 +218,17 @@ public class InfoServiceImpl implements InfoService {
 			logDetail = "任务申请，任务号：" + task.getCode();
 		} else {
 			Task task = taskDao.selectOne(taskId);
+
+			Info info = task.getInfo();
+			if(info.getvId().longValue() != vehicle.getId().longValue()) {
+				info.setvId(vehicle.getId());
+			}
+			if (info.getpId().longValue() != parts.getId().longValue()) {
+				info.setpId(parts.getId());
+			}
+			infoDao.update(info);
 			
+
 			// 更新草稿状态
 			if (task.getDraft() == null || task.getDraft().intValue() != draft) {
 				this.updateDraft(task.getId(), draft);
@@ -248,14 +258,10 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 审核
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param type
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
+	 * @param account 操作用户
+	 * @param id      任务ID
+	 * @param type    结果：1-通过，2-不通过
+	 * @param remark  备注
 	 */
 	public void examine(Account account, Long[] ids, int type, String remark) {
 		if (ids != null && ids.length > 0) {
@@ -304,10 +310,8 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 审核
 	 * 
-	 * @param result
-	 *            结果：1-通过 2-不通过
-	 * @param remark
-	 *            备注
+	 * @param result 结果：1-通过 2-不通过
+	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
 			Material material) {
@@ -386,20 +390,13 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 下达任务（OTO任务）
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param partsAtlId
-	 *            零部件图谱实验室ID
-	 * @param matAtlId
-	 *            原材料图谱实验室ID
-	 * @param partsPatId
-	 *            零部件型式实验室ID
-	 * @param matPatId
-	 *            原材料型式实验室ID
-	 * @param labReqList
-	 *            试验说明
+	 * @param account    操作用户
+	 * @param id         任务ID
+	 * @param partsAtlId 零部件图谱实验室ID
+	 * @param matAtlId   原材料图谱实验室ID
+	 * @param partsPatId 零部件型式实验室ID
+	 * @param matPatId   原材料型式实验室ID
+	 * @param labReqList 试验说明
 	 */
 	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
 			List<LabReq> labReqList) {
@@ -450,20 +447,13 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 下达任务（PPAP）
 	 * 
-	 * @param t_id
-	 *            任务ID
-	 * @param i_id
-	 *            信息ID
-	 * @param taskType
-	 *            任务类型
-	 * @param partsAtlId
-	 *            零部件图谱实验室ID
-	 * @param matAtlId
-	 *            原材料图谱实验室ID
-	 * @param partsPatId
-	 *            零部件型式实验室ID
-	 * @param matPatId
-	 *            原材料型式实验室ID
+	 * @param t_id       任务ID
+	 * @param i_id       信息ID
+	 * @param taskType   任务类型
+	 * @param partsAtlId 零部件图谱实验室ID
+	 * @param matAtlId   原材料图谱实验室ID
+	 * @param partsPatId 零部件型式实验室ID
+	 * @param matPatId   原材料型式实验室ID
 	 */
 	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId,
 			Long matPatId, int taskType, List<LabReq> labReqList, String applicant, String department, String figure,
@@ -596,16 +586,11 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 审批（OTS）
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param result
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
-	 * @param catagory
-	 *            分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param account  操作用户
+	 * @param id       任务ID
+	 * @param result   结果：1-通过，2-不通过
+	 * @param remark   备注
+	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
 			Long matAtlId, Long partsPatId, Long matPatId) {
@@ -853,16 +838,11 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 审批（PPAP）
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param result
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
-	 * @param catagory
-	 *            分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
+	 * @param account  操作用户
+	 * @param id       任务ID
+	 * @param result   结果：1-通过，2-不通过
+	 * @param remark   备注
+	 * @param catagory 分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
 	 */
 	public void approve(Account account, Long id, int result, int catagory, String remark, Long partsAtlId,
 			Long matAtlId) {
@@ -1041,14 +1021,10 @@ public class InfoServiceImpl implements InfoService {
 	 * 申请信息修改
 	 * 
 	 * @param account
-	 * @param vehicle
-	 *            整车信息
-	 * @param parts
-	 *            零部件信息
-	 * @param material
-	 *            原材料信息
-	 * @param task
-	 *            任务
+	 * @param vehicle  整车信息
+	 * @param parts    零部件信息
+	 * @param material 原材料信息
+	 * @param task     任务
 	 */
 	public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material) {
 		task.setInfoApply(1);
@@ -1103,18 +1079,12 @@ public class InfoServiceImpl implements InfoService {
 	 * 申请结果修改
 	 * 
 	 * @param account
-	 * @param taskId
-	 *            任务ID
-	 * @param pfResultList
-	 *            性能结果
-	 * @param atlResultList
-	 *            图谱结果
-	 * @param compareList
-	 *            对比结果
-	 * @param conclusionDataList
-	 *            试验结论
-	 * @param isPass
-	 *            是否合格（1-合格，2-不合格）
+	 * @param taskId             任务ID
+	 * @param pfResultList       性能结果
+	 * @param atlResultList      图谱结果
+	 * @param compareList        对比结果
+	 * @param conclusionDataList 试验结论
+	 * @param isPass             是否合格（1-合格，2-不合格）
 	 */
 	public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList,
 			List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass) {
@@ -1239,45 +1209,18 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 获取信息ID列表
 	 * 
-	 * @param vehicle_type
-	 *            车型
-	 * @param parts_code
-	 *            零件号
-	 * @param parts_name
-	 *            零件名称
-	 * @param parts_org
-	 *            零件生产商
-	 * @param matName
-	 *            材料名称
-	 * @param mat_org
-	 *            材料生产商
+	 * @param parts_code   零件号
+	 * @param parts_name   零件名称
+	 * @param parts_producer    零件生产商
+	 * @param matName      材料名称
+	 * @param mat_producer      材料生产商
 	 */
-	public List<Long> selectIds(String vehicle_type, String parts_code, String parts_name, String parts_org,
-			String matName, String mat_org) {
+	public List<Long> selectIds(String parts_code, String parts_name, String parts_producer,
+			String matName, String mat_producer) {
 
-		List<Long> vIdList = new ArrayList<Long>();
 		List<Long> pIdList = new ArrayList<Long>();
 		List<Long> mIdList = new ArrayList<Long>();
 		List<Long> iIdList = new ArrayList<Long>();
-
-		// 整车
-		Map<String, Object> vMap = new PageMap(false);
-		vMap.put("notstate", 2);
-
-		if (StringUtils.isNotBlank(vehicle_type)) {
-			vMap.put("type", vehicle_type);
-
-			List<Vehicle> vehicleList = vehicleDao.selectAllList(vMap);
-			if (vehicleList != null && vehicleList.size() > 0) {
-				for (Vehicle v : vehicleList) {
-					if (v != null) {
-						vIdList.add(v.getId());
-					}
-				}
-			} else {
-				vIdList.add(-1l);
-			}
-		}
 
 		// 零部件
 		Map<String, Object> pMap = new PageMap(false);
@@ -1291,8 +1234,8 @@ public class InfoServiceImpl implements InfoService {
 			pMap.put("name", parts_name);
 		}
 
-		if (StringUtils.isNotBlank(parts_org)) {
-			pMap.put("orgId", parts_org);
+		if (StringUtils.isNotBlank(parts_producer)) {
+			pMap.put("qproducer", parts_producer);
 		}
 
 		if (pMap.size() > 4) {
@@ -1316,8 +1259,8 @@ public class InfoServiceImpl implements InfoService {
 			mMap.put("qmatName", matName);
 		}
 
-		if (StringUtils.isNotBlank(mat_org)) {
-			mMap.put("orgId", mat_org);
+		if (StringUtils.isNotBlank(mat_producer)) {
+			mMap.put("producer", mat_producer);
 		}
 
 		if (mMap.size() > 4) {
@@ -1335,10 +1278,7 @@ public class InfoServiceImpl implements InfoService {
 
 		// 信息
 		Map<String, Object> iMap = new PageMap(false);
-		if (vIdList.size() > 0 || mIdList.size() > 0 || pIdList.size() > 0) {
-			if (vIdList.size() > 0) {
-				iMap.put("vIdList", vIdList);
-			}
+		if (mIdList.size() > 0 || pIdList.size() > 0) {
 			if (mIdList.size() > 0) {
 				iMap.put("mIdList", mIdList);
 			}
@@ -1373,12 +1313,9 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 是否有在使用的
 	 * 
-	 * @param iId
-	 *            信息ID
-	 * @param id
-	 *            ID
-	 * @param type
-	 *            类型：1-整车信息，2-零部件信息，3-原材料信息
+	 * @param iId  信息ID
+	 * @param id   ID
+	 * @param type 类型：1-整车信息，2-零部件信息，3-原材料信息
 	 * @return
 	 */
 	boolean isUse(Long iId, Long id, int type) {

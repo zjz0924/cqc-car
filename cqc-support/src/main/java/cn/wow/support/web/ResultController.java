@@ -134,7 +134,7 @@ public class ResultController extends AbstractController {
 	@RequestMapping(value = "/uploadListData")
 	public Map<String, Object> uploadListData(HttpServletRequest request, Model model, String code, String orgId,
 			String startCreateTime, String endCreateTime, String nickName, int type, String parts_code,
-			String parts_name, String parts_org, String matName, String mat_org, String vehicle_type) {
+			String parts_name, String parts_producer, String matName, String mat_producer) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		
 		// 设置默认记录数
@@ -178,7 +178,7 @@ public class ResultController extends AbstractController {
 			map.put("orgId", orgId);
 		}
 
-		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
 		if(iIdList.size() > 0 ) {
 			map.put("iIdList", iIdList);
 		}
@@ -401,7 +401,7 @@ public class ResultController extends AbstractController {
 	@RequestMapping(value = "/sendListData")
 	public Map<String, Object> sendListData(HttpServletRequest request, Model model, String code, String orgId,
 			String startCreateTime, String endCreateTime, String nickName, String parts_code, String parts_name,
-			String parts_org, String req_name, String matName, String mat_org, String vehicle_type) {
+			String parts_producer, String req_name, String matName, String mat_producer) {
 		
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		
@@ -437,7 +437,7 @@ public class ResultController extends AbstractController {
 			map.put("orgId", orgId);
 		}
 		
-		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
 		if(iIdList.size() > 0 ) {
 			map.put("iIdList", iIdList);
 		}
@@ -647,7 +647,7 @@ public class ResultController extends AbstractController {
 	@RequestMapping(value = "/confirmListData")
 	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String code, String orgId,
 			String startCreateTime, String endCreateTime, String nickName, int type, String parts_code, String parts_name,
-			String parts_org, String req_name, String matName, String mat_org, String vehicle_type) {
+			String parts_producer, String req_name, String matName, String mat_producer) {
 		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -680,7 +680,7 @@ public class ResultController extends AbstractController {
 			map.put("orgId", orgId);
 		}
 		
-		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
 		if(iIdList.size() > 0 ) {
 			map.put("iIdList", iIdList);
 		}
@@ -848,7 +848,7 @@ public class ResultController extends AbstractController {
 	@RequestMapping(value = "/compareListData")
 	public Map<String, Object> compareListData(HttpServletRequest request, Model model, String code, String orgId,
 			String startCreateTime, String endCreateTime, String nickName, String parts_code, String parts_name,
-			String parts_org, String req_name, String matName, String mat_org, String vehicle_type) {
+			String parts_producer, String req_name, String matName, String mat_producer) {
 		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -877,7 +877,7 @@ public class ResultController extends AbstractController {
 			map.put("orgId", orgId);
 		}
 		
-		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
 		if(iIdList.size() > 0 ) {
 			map.put("iIdList", iIdList);
 		}

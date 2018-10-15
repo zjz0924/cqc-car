@@ -24,7 +24,7 @@
 		</div>
 		
 		<div class="data-row">
-			<span class="title-span"><span class="req-span">*</span>生产地址：</span> 
+			<span class="title-span"><span class="req-span">*</span>生产基地：</span> 
 			<input id="proAddr" name="proAddr" class="easyui-textbox" multiline="true" value="${facadeBean.proAddr}">
 			<span id="proAddr_error" class="error-message"></span>
 		</div>
@@ -70,7 +70,7 @@
 			}
 
 			if(isNull(proAddr)){
-				err("proAddr_error", "生产地址必填");
+				err("proAddr_error", "生产基地必选");
 				return false;
 			}else{
 				err("proAddr_error", "");

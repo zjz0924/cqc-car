@@ -180,20 +180,18 @@ public interface InfoService {
 	/**
 	 * 获取信息ID列表
 	 * 
-	 * @param vehicle_type
-	 *            车型
 	 * @param parts_code
 	 *            零件号
 	 * @param parts_name
 	 *            零件名称
-	 * @param parts_org
+	 * @param parts_producer
 	 *            零件生产商
 	 * @param matName
 	 *            材料名称
-	 * @param mat_org
+	 * @param mat_producer
 	 *            材料生产商
 	 */
-	public List<Long> selectIds(String vehicle_type, String parts_code, String parts_name, String parts_org,
-			String matName, String mat_org);
+	public List<Long> selectIds(String parts_code, String parts_name, String parts_producer,
+			String matName, String mat_producer);
 
 }

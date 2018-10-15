@@ -1,10 +1,11 @@
 package cn.wow.support.web;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
+
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Material;
@@ -56,7 +56,7 @@ public class MaterialController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String type,
-			String proNo, String matName, String matNo, Long orgId) {
+			String proNo, String matName, String matNo, String producer) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -80,8 +80,8 @@ public class MaterialController extends AbstractController {
 		if (StringUtils.isNotBlank(matNo)) {
 			map.put("matNo", matNo);
 		}
-		if (orgId != null) {
-			map.put("orgId", orgId);
+		if (StringUtils.isNotBlank(producer)) {
+			map.put("producer", producer);
 		}
 
 		List<Material> dataList = materialService.selectAllList(map);

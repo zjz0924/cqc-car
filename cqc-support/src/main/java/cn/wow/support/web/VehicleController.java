@@ -48,8 +48,8 @@ public class VehicleController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getList")
-	public Map<String, Object> getList(HttpServletRequest request, Model model, String code, String type,
-			String startProTime, String endProTime) {
+	public Map<String, Object> getList(HttpServletRequest request, Model model, String code, String startProTime,
+			String endProTime) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -63,9 +63,6 @@ public class VehicleController extends AbstractController {
 
 		if (StringUtils.isNotBlank(code)) {
 			map.put("code", code);
-		}
-		if (StringUtils.isNotBlank(type)) {
-			map.put("type", type);
 		}
 		if (StringUtils.isNotBlank(startProTime)) {
 			map.put("startProTime", startProTime);
@@ -101,8 +98,8 @@ public class VehicleController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/save")
-	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String type, String proTime,
-			String proAddr, String remark) {
+	public AjaxVO save(HttpServletRequest request, Model model, String id, String code, String proTime, String proAddr,
+			String remark) {
 		AjaxVO vo = new AjaxVO();
 		Vehicle vehicle = null;
 
@@ -111,7 +108,6 @@ public class VehicleController extends AbstractController {
 				vehicle = vehicleService.selectOne(Long.parseLong(id));
 
 				if (vehicle != null) {
-					vehicle.setType(type);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					vehicle.setProTime(sdf.parse(proTime));
 					vehicle.setProAddr(proAddr);
@@ -129,7 +125,6 @@ public class VehicleController extends AbstractController {
 					return vo;
 				} else {
 					vehicle = new Vehicle();
-					vehicle.setType(type);
 					vehicle.setCode(code);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					vehicle.setProTime(sdf.parse(proTime));

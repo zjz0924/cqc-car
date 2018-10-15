@@ -248,19 +248,6 @@
 				if($('#qCode').length > 0){
 					$('#qCode').textbox("setValue", "");
 				}
-				
-				// 不可编辑
-				$('#p_code').textbox('disable'); 
-				$('#p_name').textbox('disable'); 
-				$('#p_proTime').datebox('disable');
-				$('#p_place').textbox('disable'); 
-				$('#p_proNo').textbox('disable'); 
-				$('#p_remark').textbox('disable'); 
-				$('#p_keyCode').textbox('disable'); 
-				$('#p_phone').textbox('disable'); 
-				$('#p_contacts').textbox('disable'); 
-				$("#p_isKey").combobox('disable');
-				$("#p_orgId").combotree('disable');
 			}
 			
 			$('#partsDialog').dialog('close');

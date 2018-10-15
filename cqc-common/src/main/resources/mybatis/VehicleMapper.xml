@@ -4,7 +4,6 @@
 	<resultMap id="BaseResultMap" type="cn.wow.common.domain.Vehicle">
 		<id column="id" property="id" jdbcType="BIGINT" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
-		<result column="type" property="type" jdbcType="VARCHAR" />
 		<result column="pro_time" property="proTime" jdbcType="DATE" />
 		<result column="pro_addr" property="proAddr" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
@@ -13,7 +12,7 @@
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, code, type, pro_time, pro_addr, remark, create_time, state
+		id, code, pro_time, pro_addr, remark, create_time, state
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -33,8 +32,8 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into vehicle (code, type, pro_time, pro_addr, remark, create_time, state)
-			values (#{code,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{proAddr,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+		insert into vehicle (code, pro_time, pro_addr, remark, create_time, state)
+			values (#{code,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{proAddr,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
 				#{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
 	</insert>
 	
@@ -43,9 +42,6 @@
 		<set>
 			<if test="code != null">
 				code = #{code,jdbcType=VARCHAR},
-			</if>
-			<if test="type != null">
-				type = #{type,jdbcType=VARCHAR},
 			</if>
 			<if test="proTime != null">
 				pro_time = #{proTime,jdbcType=DATE},
@@ -71,10 +67,6 @@
 	     <where>
 		      <if test="code != null and code != ''" >
 		        and code like concat('%', #{code,jdbcType=VARCHAR}, '%') 
-		      </if>
-		      
-		      <if test="type != null and type != ''" >
-		        and type like concat('%', #{type,jdbcType=VARCHAR}, '%') 
 		      </if>
 		      
 		      <if test="state != null">
@@ -103,10 +95,6 @@
 		      
 		       <if test="ecode != null and code != ''" >
 		        and code = #{ecode,jdbcType=VARCHAR}
-		      </if>
-		      
-		      <if test="etype != null and etype != ''" >
-		        and type = #{etype,jdbcType=VARCHAR}
 		      </if>
 		      
 		       <if test="eProTime != null and eProTime != ''">  

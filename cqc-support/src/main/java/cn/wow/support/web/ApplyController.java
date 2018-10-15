@@ -122,8 +122,8 @@ public class ApplyController extends AbstractController {
 	@RequestMapping(value = "/taskListData")
 	public Map<String, Object> taskListData(HttpServletRequest request, Model model, String code,
 			String startCreateTime, String endCreateTime, String orgId, String nickName, String startConfirmTime,
-			String endConfirmTime, String parts_code, String parts_name, String parts_org, String req_name,
-			String matName, String mat_org, String vehicle_type) {
+			String endConfirmTime, String parts_code, String parts_name, String parts_producer, String req_name,
+			String matName, String mat_producer) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -162,7 +162,7 @@ public class ApplyController extends AbstractController {
 			map.put("accomplishTask_lab", account.getOrgId());
 		}
 		
-		List<Long> iIdList = infoService.selectIds(vehicle_type, parts_code, parts_name, parts_org, matName, mat_org);
+		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
 		if(iIdList.size() > 0 ) {
 			map.put("iIdList", iIdList);
 		}
@@ -532,7 +532,7 @@ public class ApplyController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/applyInfoSave")
-	public AjaxVO applyInfoSave(HttpServletRequest request, Model model, String v_code, String v_type, String v_proTime,
+	public AjaxVO applyInfoSave(HttpServletRequest request, Model model, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String m_matName,
 			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark, String p_phone,
@@ -547,11 +547,11 @@ public class ApplyController extends AbstractController {
 
 			// 整车信息
 			Vehicle vehicle = null;
-			if (isUpdateVehicleInfo(v_code, v_type, v_proTime, v_proAddr, v_remark)) {
+			if (isUpdateVehicleInfo(v_code,v_proTime, v_proAddr, v_remark)) {
 				vehicle = vehicleService.selectOne(task.getInfo().getvId());
-				assembleVehicleInfo(vehicle, v_code, v_type, v_proTime, v_proAddr, v_remark, date);
+				assembleVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark, date);
 				
-				boolean isExist = vehicleService.isExist(task.getInfo().getvId(), vehicle.getCode(), vehicle.getType(), vehicle.getProTime(), vehicle.getProAddr(), vehicle.getRemark());
+				boolean isExist = vehicleService.isExist(task.getInfo().getvId(), vehicle.getCode(), vehicle.getProTime(), vehicle.getProAddr()).getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
 					vo.setMsg("整车信息已存在");
@@ -568,7 +568,7 @@ public class ApplyController extends AbstractController {
 					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
 				
 					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getCode(), parts.getName(), parts.getProTime(), parts.getPlace(), parts.getProNo(), parts.getKeyCode(),
-							parts.getIsKey(), parts.getOrgId(), parts.getRemark(), parts.getContacts(), parts.getPhone(), p_producer);
+							parts.getIsKey(), parts.getRemark(), parts.getContacts(), parts.getPhone(), p_producer).getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -722,8 +722,8 @@ public class ApplyController extends AbstractController {
 	/**
 	 * 是否更新整车信息
 	 */
-	boolean isUpdateVehicleInfo(String v_code, String v_type, String v_proTime, String v_proAddr, String v_remark) {
-		if (StringUtils.isBlank(v_code) && StringUtils.isBlank(v_type) && StringUtils.isBlank(v_proTime)
+	boolean isUpdateVehicleInfo(String v_code, String v_proTime, String v_proAddr, String v_remark) {
+		if (StringUtils.isBlank(v_code) && StringUtils.isBlank(v_proTime)
 				&& StringUtils.isBlank(v_proAddr) && StringUtils.isBlank(v_remark)) {
 			return false;
 		} else {
@@ -767,14 +767,10 @@ public class ApplyController extends AbstractController {
 	/**
 	 * 组装整车信息
 	 */
-	void assembleVehicleInfo(Vehicle vehicle, String v_code, String v_type, String v_proTime, String v_proAddr, String v_remark,
+	void assembleVehicleInfo(Vehicle vehicle, String v_code, String v_proTime, String v_proAddr, String v_remark,
 			Date date) {
 		if (StringUtils.isNotBlank(v_code)) {
 			vehicle.setCode(v_code);
-		}
-		
-		if (StringUtils.isNotBlank(v_type)) {
-			vehicle.setType(v_type);
 		}
 
 		if (StringUtils.isNotBlank(v_proTime)) {

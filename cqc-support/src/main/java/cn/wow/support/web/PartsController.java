@@ -54,7 +54,7 @@ public class PartsController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String code, String type,
-			String startProTime, String endProTime, String name, Long orgId, String proNo, Integer isKey, String keyCode) {
+			String startProTime, String endProTime, String name, String proNo, Integer isKey, String keyCode) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -87,9 +87,6 @@ public class PartsController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(keyCode)) {
 			map.put("keyCode", keyCode);
-		}
-		if(orgId != null){
-			map.put("orgId", orgId);
 		}
 		
 		List<Parts> dataList = partsService.selectAllList(map);

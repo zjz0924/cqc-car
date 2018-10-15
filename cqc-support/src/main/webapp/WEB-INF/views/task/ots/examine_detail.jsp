@@ -25,10 +25,6 @@
 						</c:forEach>
 					</select>
 				</td>
-				<%-- <td>
-					<span class="title-span"><span class="req-span">*</span>车型：</span> 
-					<input id="v_type" name="v_type" class="easyui-textbox" value="${facadeBean.info.vehicle.type }"  style="width:150px;">
-				</td> --%>
 				<td>
 					<span class="title-span">生产日期：</span> 
 					<input id="v_proTime" name="v_proTime" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" style="width:150px;">
@@ -367,7 +363,7 @@
 			if(!isRequire("v_code", "整车代码必填")){ saving = false; return false; }
 			//if(!isRequire("v_type", "车型必填")){ saving = false; return false; }
 			//if(!isRequire("v_proTime", "整车生产日期必填")){ saving = false; return false; }
-			if(!isRequire("v_proAddr", "整车生产地址必填")){ saving = false; return false; }
+			if(!isRequire("v_proAddr", "整车生产基地必填")){ saving = false; return false; }
 			
 			// 零部件信息
 			var taskType = "${taskType}";

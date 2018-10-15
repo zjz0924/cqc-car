@@ -16,11 +16,9 @@ public class Vehicle extends JpaEntity{
 	private Long id;
 	//代码
     private String code;
-    // 车型
-    private String type;
     //生产时间
     private Date proTime;
-    //生产地址
+    //生产基地
     private String proAddr;
     //备注
     private String remark;
@@ -44,14 +42,6 @@ public class Vehicle extends JpaEntity{
 
     public void setCode(String code) {
         this.code = code == null ? null : code.trim();
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
     }
 
     public Date getProTime() {
