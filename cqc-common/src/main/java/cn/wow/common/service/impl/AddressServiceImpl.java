@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.dao.AddressDao;
 import cn.wow.common.domain.Address;
 import cn.wow.common.service.AddressService;
@@ -45,4 +46,16 @@ public class AddressServiceImpl implements AddressService{
     public Address selectByName(String name) {
     	return addressDao.selectByName(name);
     }
+    
+    
+    /**
+	 * 获取 生产基地列表
+	 */
+	public List<Address> getAddressList() {
+		Map<String, Object> addressMap = new PageMap(false);
+		addressMap.put("custom_order_sql", "name asc");
+		List<Address> addressList = addressDao.selectAllList(addressMap);
+
+		return addressList;
+	}
 }

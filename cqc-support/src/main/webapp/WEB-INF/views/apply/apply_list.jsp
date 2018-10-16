@@ -12,6 +12,24 @@
 				display: inline-block;
 				width: 63px;
 			}
+			
+			.inputAutocomple{
+				border: 1px solid #D3D3D3;
+			    outline-style: none;
+			    resize: none;
+				position: relative;
+			    background-color: #fff;
+			    vertical-align: middle;
+			    display: inline-block;
+			    overflow: hidden;
+			    white-space: nowrap;
+			    margin: 0;
+			    padding: 4px;
+			    border-radius: 5px 5px 5px 5px;
+				height: 22px;
+			    line-height: 22px;
+			    font-size: 12px;
+			}
 		</style>
 		
 		<script type="text/javascript">

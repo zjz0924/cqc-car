@@ -81,18 +81,14 @@
 				<tr class="single-row">
 					<td class="title-td">代码：</td>
 					<td class="value-td">${facadeBean.info.vehicle.code}</td>
-					<td class="title-td">车型：</td>
-					<td class="value-td">${facadeBean.info.vehicle.type}</td>
+					<td class="title-td">生产基地：</td>
+					<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
 				</tr>
 				<tr class="couple-row">
 					<td class="title-td">生产日期：</td>
 					<td class="value-td"><fmt:formatDate value='${facadeBean.info.vehicle.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-					<td class="title-td">生产基地：</td>
-					<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
-				</tr>
-				<tr class="single-row">
 					<td class="title-td">备注：</td>
-					<td class="value-td" colspan="3">${facadeBean.info.vehicle.remark}</td>
+					<td class="value-td">${facadeBean.info.vehicle.remark}</td>
 				</tr>
 			</table>
 		</div>
@@ -111,7 +107,7 @@
 					</tr>
 					<tr class="couple-row">
 						<td class="title-td">生产商：</td>
-						<td class="value-td">${facadeBean.info.parts.org.name}</td>
+						<td class="value-td">${facadeBean.info.parts.producer}</td>
 						<td class="title-td">生产批号：</td>
 						<td class="value-td">${facadeBean.info.parts.proNo}</td>
 					</tr>
@@ -169,9 +165,7 @@
 				
 				<tr class="couple-row">
 					<td class="title-td">生产商：</td>
-					<td class="value-td">${facadeBean.info.material.org.name}</td>
-					<td class="title-td">生产商地址：</td>
-					<td class="value-td">${facadeBean.info.material.org.addr}</td>
+					<td class="value-td" colspan="3">${facadeBean.info.material.producer}</td>
 				</tr>
 				
 				<tr class="single-row">

@@ -75,7 +75,7 @@ public class StatisticController {
 	@ResponseBody
 	@RequestMapping(value = "/getResult")
 	public AjaxVO getResult(HttpServletRequest request, Model model, String startConfirmTime, String endConfirmTime, String v_code,
-			String v_type, String p_code, String taskType, Long parts_org, Long lab_org, String applicant, String department, String reason,
+			String v_type, String p_code, String taskType, String parts_producer, Long lab_org, String applicant, String department, String reason,
 			String provenance) {
 		AjaxVO vo = new AjaxVO();
 
@@ -96,7 +96,7 @@ public class StatisticController {
 		
 		List<Long> iIdList = new ArrayList<Long>();
 		if (StringUtils.isNotBlank(v_code) || StringUtils.isNotBlank(v_type) || StringUtils.isNotBlank(p_code)
-				|| parts_org != null) {
+				|| StringUtils.isNotBlank(parts_producer)) {
 			
 			Map<String, Object> iMap = new PageMap(false);
 			iMap.put("state", 1);
@@ -110,8 +110,8 @@ public class StatisticController {
 			if (StringUtils.isNotBlank(p_code)) {
 				iMap.put("p_code", p_code);
 			}
-			if (parts_org != null) {
-				iMap.put("parts_org", parts_org);
+			if (StringUtils.isNotBlank(parts_producer)) {
+				iMap.put("producer", parts_producer);
 			}
 			iIdList = infoService.selectIdList(iMap);
 

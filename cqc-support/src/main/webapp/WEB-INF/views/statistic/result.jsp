@@ -48,28 +48,45 @@
 	        	margin-left: 20px;
 	        	font-size: 15px;
 	        }
+	        
+	        .inputAutocomple{
+				border: 1px solid #D3D3D3;
+			    outline-style: none;
+			    resize: none;
+				position: relative;
+			    background-color: #fff;
+			    vertical-align: middle;
+			    display: inline-block;
+			    overflow: hidden;
+			    white-space: nowrap;
+			    margin: 0;
+			    padding: 4px;
+			    border-radius: 5px 5px 5px 5px;
+				height: 22px;
+			    line-height: 22px;
+			    font-size: 12px;
+			}
 		</style>
 		
 		<script type="text/javascript">
 			$(function(){
-				$('#parts_org').combotree({
-					url: '${ctx}/org/getTreeByType?type=2',
-					multiple: false,
-					animate: true,
-					width: '163px'
+				// 零部件生产商
+				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
+					formatItem: function(row,i,max) {
+						var obj =eval("(" + row + ")");//转换成js对象
+						return obj.text;
+					},
+					formatResult: function(row) {
+						var obj =eval("(" + row + ")");
+						return obj.text;
+					}
 				});
 				
-				// 只有最底层才能选择
-				var pOrgTree = $('#parts_org').combotree('tree');	
-				pOrgTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});	
+				//选择后处理方法
+				$("#parts_producer").result(function(event, data, formatted){ 
+					var obj = eval("(" + data + ")"); //转换成js对象 
+					$("#parts_producer").val(obj.text);
+				});
 				
 				$('#lab_org').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
@@ -83,9 +100,8 @@
 				var endConfirmTime = $("#q_endConfirmTime").val();
 				var taskType = $("#q_taskType").combobox("getValue");
 				var v_code = $("#v_code").textbox("getValue");
-				var v_type = $("#v_type").textbox("getValue");
 				var p_code = $("#p_code").textbox("getValue");
-				var parts_org = $("#parts_org").combotree("getValue");
+				var parts_producer = $("#parts_producer").val();
 				var lab_org = $("#lab_org").combotree("getValue");
 				
 				if(isNull(startConfirmTime) && isNull(endConfirmTime)){
@@ -105,9 +121,8 @@
 						"endConfirmTime": endConfirmTime, 
 						"taskType": taskType,
 						"v_code": v_code,
-						"v_type": v_type,
 						"p_code": p_code,
-						"parts_org": parts_org, 
+						"parts_producer": parts_producer, 
 						"lab_org": lab_org,
 						'applicant': $("#applicant").textbox("getValue"),
 						'department': $("#department").textbox("getValue"),
@@ -146,9 +161,8 @@
 				$("#q_endConfirmTime").val('');
 				$("#q_taskType").combobox('select', "");
 				$("#v_code").textbox('clear');
-				$("#v_type").textbox('clear');
 				$("#p_code").textbox('clear');
-				$("#parts_org").combotree("setValue","");
+				$("#parts_producer").val("");
 				$("#lab_org").combotree("setValue","");
 				$("#applicant").textbox("clear");
 				$("#department").textbox("clear");
@@ -178,20 +192,17 @@
 					<span class="qlabel">整车代码：</span>
 					<input id="v_code" name="v_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel">车型：</span>
-					<input id="v_type" name="v_type" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					
 					<span class="qlabel">零件号：</span>
 					<input id="p_code" name="p_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">零件生产商：</span>
-					<input id="parts_org" name="parts_org"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="parts_producer" name="parts_producer" type="text"  class="inputAutocomple" style="width:168px;">&nbsp;&nbsp;&nbsp;&nbsp;
+				
+					<span class="qlabel">实验室：</span>
+					<input id="lab_org" name="lab_org" style="width: 168px;"/>
 				</div>
 				
 				<div style="margin-top:10px;">
-					<span class="qlabel">实验室：</span>
-					<input id="lab_org" name="lab_org" style="width: 168px;"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
 					<span class="qlabel">任务类型：</span>
 					<select id="q_taskType" name="q_taskType" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">全部</option>
@@ -202,26 +213,23 @@
 					</select> &nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">确认时间：</span>
-					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
+					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					
-				</div>
-				
-				<div style="margin-top:10px;">
 					<span class="qlabel">申请人：</span>
-					<input id="applicant" name="applicant" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="applicant" name="applicant" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">科室：</span>
 					<input id="department" name="department" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-					
+				</div>
+				
+				<div style="margin-top:10px;">
 					<span class="qlabel">抽检原因：</span>
 					<input id="reason" name="reason" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">费用出处：</span>
-					<input id="provenance" name="provenance" class="easyui-textbox" style="width: 168px;">
-				</div>
-				
-				<div style="margin-top: 10px;text-align:right;">
+					<input id="provenance" name="provenance" class="easyui-textbox" style="width: 168px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="getResult()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="clearAll()">清空</a>
 				</div>
@@ -229,7 +237,7 @@
 
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 
-			<div style="margin-top: 50px;">
+			<div style="margin-top: 20px;">
 				<div style="font-weight: bold; color: #1874CD;margin-bottom: 30px;font-size:20px;">
 					统计结果&nbsp;&nbsp;<a href="${ctx}/statistic/export" class="easyui-linkbutton" data-options="iconCls:'icon-import'" style="width:80px;" title="导出">导出</a>
 				</div>

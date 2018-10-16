@@ -276,9 +276,9 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		// 生产基地
-		List<Address> addressList = getAddressList();
+		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
-		List<CarCode> carCodeList = getCarCodeList();
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
@@ -565,9 +565,9 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		// 生产基地
-		List<Address> addressList = getAddressList();
+		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
-		List<CarCode> carCodeList = getCarCodeList();
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 
 		model.addAttribute("carCodeList", carCodeList);
 		model.addAttribute("addressList", addressList);
@@ -1239,26 +1239,5 @@ public class OtsTaskController extends AbstractController {
 			return true;
 		}
 	}
-
-	/**
-	 * 获取 车型代码列表
-	 */
-	private List<CarCode> getCarCodeList() {
-		Map<String, Object> carCodeMap = new PageMap(false);
-		carCodeMap.put("custom_order_sql", "code asc");
-		List<CarCode> carCodeList = carCodeService.selectAllList(carCodeMap);
-
-		return carCodeList;
-	}
-
-	/**
-	 * 获取 生产基地列表
-	 */
-	private List<Address> getAddressList() {
-		Map<String, Object> addressMap = new PageMap(false);
-		addressMap.put("custom_order_sql", "name asc");
-		List<Address> addressList = addressService.selectAllList(addressMap);
-
-		return addressList;
-	}
+	
 }

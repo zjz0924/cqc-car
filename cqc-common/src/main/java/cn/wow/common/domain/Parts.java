@@ -180,7 +180,7 @@ public class Parts extends JpaEntity{
 	}
 
 	public void setProducer(String producer) {
-		this.producer = producer;
+		this.producer = producer == null ? null : producer.trim();
 	}
 
 	@JsonIgnore

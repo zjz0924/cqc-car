@@ -18,4 +18,8 @@ public interface AddressService {
     
     public Address selectByName(String name);
 
+    /**
+	 * 获取 生产基地列表
+	 */
+    public List<Address> getAddressList();
 }

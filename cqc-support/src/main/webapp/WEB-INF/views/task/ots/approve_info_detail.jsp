@@ -13,16 +13,14 @@
 						<tr class="single-row">
 							<td class="title-td">代码：</td>
 							<td class="value-td">${facadeBean.info.vehicle.code}</td>
+							<td class="title-td">生产基地：</td>
+							<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
 						</tr>
 						<tr class="couple-row">
 							<td class="title-td">生产日期：</td>
 							<td class="value-td"><fmt:formatDate value='${facadeBean.info.vehicle.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-							<td class="title-td">生产基地：</td>
-							<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
-						</tr>
-						<tr class="single-row">
 							<td class="title-td">备注：</td>
-							<td class="value-td" colspan="3">${facadeBean.info.vehicle.remark}</td>
+							<td class="value-td">${facadeBean.info.vehicle.remark}</td>
 						</tr>
 					</table>
 				</div>
@@ -39,16 +37,6 @@
 							<span class="val <c:if test="${ facadeBean.info.vehicle.code != newVehicle.code}">red-color</c:if>" title="${newVehicle.code }">${newVehicle.code }</span>
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>车型：</span>
-							<span class="val" title="${facadeBean.info.vehicle.type }">${facadeBean.info.vehicle.type }</span>
-						</td>
-						<td class="input-td">
-							<span class="val <c:if test="${ facadeBean.info.vehicle.type != newVehicle.type}">red-color</c:if>" title="${newVehicle.type }">${newVehicle.type }</span>
-						</td>
-					</tr>
-	
 					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产日期：</span>
@@ -88,14 +76,14 @@
 				<div style="width: 98%;">
 					<table class="info" style="width: 98%;">
 						<tr class="single-row">
-							<td class="title-td">代码：</td>
+							<td class="title-td">零件代码：</td>
 							<td class="value-td">${facadeBean.info.parts.code}</td>
-							<td class="title-td">名称：</td>
+							<td class="title-td">零件名：</td>
 							<td class="value-td">${facadeBean.info.parts.name}</td>
 						</tr>
 						<tr class="couple-row">
 							<td class="title-td">生产商：</td>
-							<td class="value-td">${facadeBean.info.parts.org.name}</td>
+							<td class="value-td">${facadeBean.info.parts.producer}</td>
 							<td class="title-td">生产批号：</td>
 							<td class="value-td">${facadeBean.info.parts.proNo}</td>
 						</tr>
@@ -152,7 +140,7 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>名称：</span>
+							<span class="title-span"><span class="req-span">*</span>零件名：</span>
 							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
 						</td>
 						<td class="input-td">
@@ -162,10 +150,10 @@
 					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-							<span class="val" title="${facadeBean.info.parts.org.name}">${facadeBean.info.parts.org.name}</span>
+							<span class="val" title="${facadeBean.info.parts.producer}">${facadeBean.info.parts.producer}</span>
 						</td>
 						<td class="input-td">
-							<span class="val <c:if test="${ facadeBean.info.parts.org.name != newParts.org.name}">red-color</c:if>" title="${newParts.org.name}">${newParts.org.name}</span>
+							<span class="val <c:if test="${ facadeBean.info.parts.producer != newParts.producer}">red-color</c:if>" title="${newParts.org.name}">${newParts.org.name}</span>
 						</td>
 					</tr>
 					<tr>
@@ -262,9 +250,7 @@
 						
 						<tr class="couple-row">
 							<td class="title-td">生产商：</td>
-							<td class="value-td">${facadeBean.info.material.org.name}</td>
-							<td class="title-td">生产商地址：</td>
-							<td class="value-td">${facadeBean.info.material.org.addr}</td>
+							<td class="value-td" colspan="3">${facadeBean.info.material.producer}</td>
 						</tr>
 						
 						<tr class="single-row">
@@ -319,10 +305,10 @@
 					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-							<span class="val" title="${facadeBean.info.material.org.name }">${facadeBean.info.material.org.name }</span>
+							<span class="val" title="${facadeBean.info.material.producer }">${facadeBean.info.material.producer }</span>
 						</td>
 						<td class="input-td">
-							<span class="val <c:if test="${ facadeBean.info.material.org.name != newMaterial.org.name}">red-color</c:if>" title="${newMaterial.org.name }">${newMaterial.org.name }</span>
+							<span class="val <c:if test="${ facadeBean.info.material.producer != newMaterial.producer}">red-color</c:if>" title="${newMaterial.org.name }">${newMaterial.org.name }</span>
 						</td>
 					</tr>
 					<tr>

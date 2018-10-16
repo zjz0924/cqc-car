@@ -17,5 +17,10 @@ public interface CarCodeService {
     public List<CarCode> selectAllList(Map<String, Object> map);
     
     public CarCode selectByCode(String code);
+    
+    /**
+	 * 获取 车型代码列表
+	 */
+    public List<CarCode> getCarCodeList();
 
 }

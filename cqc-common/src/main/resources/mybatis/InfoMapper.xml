@@ -131,8 +131,8 @@
 			<if test="p_code != null">
 				and p.code like concat('%', #{p_code,jdbcType=VARCHAR}, '%')
 			</if>
-			<if test="parts_org != null">
-				and p.org_id = #{parts_org,jdbcType=BIGINT}
+			<if test="producer != null">
+				and p.producer like concat('%', #{producer,jdbcType=VARCHAR}, '%')
 			</if>
 			<if test="state != null">
 				and i.state = #{state,jdbcType=INTEGER}

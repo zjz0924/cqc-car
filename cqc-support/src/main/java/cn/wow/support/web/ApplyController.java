@@ -28,8 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Address;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
@@ -39,8 +41,10 @@ import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
@@ -90,6 +94,10 @@ public class ApplyController extends AbstractController {
 	private LabReqService labReqService;
 	@Autowired
 	private LabConclusionService labConclusionService;
+	@Autowired
+	private AddressService addressService;
+	@Autowired
+	private CarCodeService carCodeService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -190,6 +198,14 @@ public class ApplyController extends AbstractController {
 
 			model.addAttribute("facadeBean", task);
 		}
+		
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
 		model.addAttribute("resUrl", resUrl);
 		return "apply/info_detail";
 	}
@@ -534,8 +550,8 @@ public class ApplyController extends AbstractController {
 	@RequestMapping(value = "/applyInfoSave")
 	public AjaxVO applyInfoSave(HttpServletRequest request, Model model, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String m_matName,
-			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark, String p_phone,
+			String p_proNo, String p_keyCode, Integer p_isKey, String p_remark, String m_matName,
+			String m_matColor, String m_proNo, String m_matNo, String m_remark, String p_phone,
 			String p_contacts, String m_phone, String m_contacts, String p_producer, String m_producer,
 			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id) {
 
@@ -563,9 +579,9 @@ public class ApplyController extends AbstractController {
 			if (task.getType() != TaskTypeEnum.GS.getState()) {
 				// 零部件信息
 				parts = partsService.selectOne(task.getInfo().getpId());
-				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId,
+				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_producer,
 						p_remark, p_phone, p_contacts)) {
-					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_orgId, p_remark, date, p_phone, p_contacts);
+					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_producer, p_remark, date, p_phone, p_contacts);
 				
 					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getCode(), parts.getName(), parts.getProTime(), parts.getPlace(), parts.getProNo(), parts.getKeyCode(),
 							parts.getIsKey(), parts.getRemark(), parts.getContacts(), parts.getPhone(), p_producer).getFlag();
@@ -581,9 +597,9 @@ public class ApplyController extends AbstractController {
 
 			// 原材料信息
 			Material material = null;
-			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile, m_phone, m_contacts)) {
+			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, mfile, m_phone, m_contacts)) {
 				material = materialService.selectOne(task.getInfo().getmId());
-				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_orgId, m_matNo, m_remark, mfile, date, m_phone, m_contacts);
+				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, mfile, date, m_phone, m_contacts);
 			}
 
 			if (task.getType() == TaskTypeEnum.GS.getState()) {
@@ -735,12 +751,12 @@ public class ApplyController extends AbstractController {
 	 * 是否更新零部件信息
 	 */
 	boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, String p_phone,
+			String p_proNo, String p_keyCode, Integer p_isKey, String p_producer, String p_remark, String p_phone,
 			String p_contacts) {
 
 		if (StringUtils.isBlank(p_code) && StringUtils.isBlank(p_name) && StringUtils.isBlank(p_proTime)
 				&& StringUtils.isBlank(p_place) && StringUtils.isBlank(p_proNo) && StringUtils.isBlank(p_keyCode)
-				&& p_orgId == null && StringUtils.isBlank(p_remark) && p_isKey.intValue() == parts.getIsKey().intValue()
+				&& StringUtils.isBlank(p_producer) && StringUtils.isBlank(p_remark) && p_isKey.intValue() == parts.getIsKey().intValue()
 				&& StringUtils.isBlank(p_phone) && StringUtils.isBlank(p_contacts)) {
 			return false;
 		} else {
@@ -753,11 +769,11 @@ public class ApplyController extends AbstractController {
 	 * 
 	 * @return
 	 */
-	boolean isUpdateMetailInfo(String m_matName, String m_matColor, String m_proNo, Long m_orgId, String m_matNo,
+	boolean isUpdateMetailInfo(String m_matName, String m_matColor, String m_proNo, String m_producer, String m_matNo,
 			String m_remark, MultipartFile mfile, String m_phone, String m_contacts) {
 		if (StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_matColor) && StringUtils.isBlank(m_proNo)
 				&& StringUtils.isBlank(m_matNo) && StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_remark)
-				&& m_orgId == null && mfile == null && StringUtils.isBlank(m_phone) && StringUtils.isBlank(m_contacts)) {
+				&& StringUtils.isBlank(m_producer) && mfile == null && StringUtils.isBlank(m_phone) && StringUtils.isBlank(m_contacts)) {
 			return false;
 		} else {
 			return true;
@@ -798,7 +814,7 @@ public class ApplyController extends AbstractController {
 	 * 组装零部件信息
 	 */
 	void assemblePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place, String p_proNo,
-			String p_keyCode, Integer p_isKey, Long p_orgId, String p_remark, Date date, String p_phone, String p_contacts) {
+			String p_keyCode, Integer p_isKey, String p_producer, String p_remark, Date date, String p_phone, String p_contacts) {
 
 		if (StringUtils.isNotBlank(p_code)) {
 			parts.setCode(p_code);
@@ -830,8 +846,8 @@ public class ApplyController extends AbstractController {
 
 		parts.setIsKey(p_isKey);
 
-		if (p_orgId != null) {
-			parts.setOrgId(p_orgId);
+		if (StringUtils.isNotBlank(p_producer)) {
+			parts.setProducer(p_producer);
 		}
 
 		if (StringUtils.isNotBlank(p_remark)) {
@@ -854,7 +870,7 @@ public class ApplyController extends AbstractController {
 	/**
 	 * 组装原材料信息
 	 */
-	void assembleMaterialInfo(Material material, String m_matName, String m_matColor, String m_proNo, Long m_orgId,
+	void assembleMaterialInfo(Material material, String m_matName, String m_matColor, String m_proNo, String m_producer,
 			String m_matNo, String m_remark, MultipartFile mfile, Date date, String m_phone, String m_contacts) throws Exception {
 
 		if (StringUtils.isNotBlank(m_matName)) {
@@ -869,8 +885,8 @@ public class ApplyController extends AbstractController {
 			material.setProNo(m_proNo);
 		}
 
-		if (m_orgId != null) {
-			material.setOrgId(m_orgId);
+		if (StringUtils.isNotBlank(m_producer)) {
+			material.setProducer(m_producer);
 		}
 
 		if (StringUtils.isNotBlank(m_matNo)) {

@@ -208,7 +208,7 @@
 			<div>
 				<div>
 					<span class="qlabel">任务号：</span>
-					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 138px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input id="q_code" name="q_code" class="easyui-textbox" style="width: 163px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">任务类型：</span>
 					<select id="taskType" name="taskType" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
@@ -229,19 +229,19 @@
 						<option value="4">原材料型式</option>
 					</select> &nbsp;&nbsp;&nbsp;&nbsp;
 					
+					<span class="qlabel">创建时间：</span>
+					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+				</div>
+				
+				<div style="margin-top: 10px;">
 					<span class="qlabel">实验结果：</span>
 					<select id="labResult" name="labResult" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">全部</option>	
 						<option value="1">合格</option>
 						<option value="2">不合格</option>
-					</select>
-				</div>
-				
-				<div style="margin-top: 10px;">
-					<span class="qlabel">创建时间：</span>
-					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
-				
+					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>

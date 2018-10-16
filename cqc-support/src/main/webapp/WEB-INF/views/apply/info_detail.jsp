@@ -15,12 +15,17 @@
 						<span class="val" title="${facadeBean.info.vehicle.code }">${facadeBean.info.vehicle.code }</span>
 					</td>
 					<td class="input-td">
-						<input id="v_code" name="v_code" class="easyui-textbox" />
+						<select id="v_code" name="v_code" style="width:180px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+							<option value="">请选择</option>
+							<c:forEach items="${carCodeList}" var="vo">
+								<option value="${vo.code}">${vo.code}</option>
+							</c:forEach>
+						</select>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>生产日期：</span>
+						<span class="title-span">生产日期：</span>
 						<span class="val" title="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
 					</td>
 					<td class="input-td">
@@ -30,11 +35,16 @@
 
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>生产地址：</span>
+						<span class="title-span"><span class="req-span">*</span>生产基地：</span>
 						<span class="val" title="${facadeBean.info.vehicle.proAddr }">${facadeBean.info.vehicle.proAddr }</span>
 					</td>
 					<td class="input-td">
-						<input id="v_proAddr" name="v_proAddr" class="easyui-textbox" />
+						<select id="v_proAddr" name="v_proAddr" style="width:180px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+							<option value="">请选择</option>
+							<c:forEach items="${addressList}" var="vo">
+								<option value="${vo.name}" <c:if test="${facadeBean.info.vehicle.proAddr == vo.name }">selected="selected"</c:if>>${vo.name}</option>
+							</c:forEach>
+						</select>
 					</td>
 				</tr>
 				<tr>
@@ -65,7 +75,7 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>名称：</span>
+							<span class="title-span">零件名：</span>
 							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
 						</td>
 						<td class="input-td">
@@ -75,15 +85,15 @@
 					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-							<span class="val" title="${facadeBean.info.parts.org.name}">${facadeBean.info.parts.org.name}</span>
+							<span class="val" title="${facadeBean.info.parts.producer}">${facadeBean.info.parts.producer}</span>
 						</td>
 						<td class="input-td">
-							<input id="p_orgId" name="p_orgId" />
+							<input id="p_producer" name="p_producer" type="text" class="inputAutocomple" >
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
+							<span class="title-span">生产批号：</span> 
 							<span class="val" title="${facadeBean.info.parts.proNo }">${facadeBean.info.parts.proNo }</span>
 						</td>
 						<td class="input-td">
@@ -101,7 +111,7 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产场地：</span> 
+							<span class="title-span">生产场地：</span> 
 							<span class="val" title="${facadeBean.info.parts.place }">${facadeBean.info.parts.place }</span>
 						</td>
 						<td class="input-td">
@@ -188,10 +198,10 @@
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-						<span class="val" title="${facadeBean.info.material.org.name }">${facadeBean.info.material.org.name }</span>
+						<span class="val" title="${facadeBean.info.material.producer }">${facadeBean.info.material.producer }</span>
 					</td>
 					<td class="input-td">
-						<input id="m_orgId" name="m_orgId">
+						<input id="m_producer" name="m_producer" type="text"  class="inputAutocomple">
 					</td>
 				</tr>
 				<tr>
@@ -334,6 +344,24 @@
 				margin-bottom: 15px;
 				font-weight:bold;
 			}
+			
+			.inputAutocomple{
+				border: 1px solid #D3D3D3;
+			    outline-style: none;
+			    resize: none;
+				position: relative;
+			    background-color: #fff;
+			    vertical-align: middle;
+			    display: inline-block;
+			    overflow: hidden;
+			    white-space: nowrap;
+			    margin: 0;
+			    padding: 4px;
+			    border-radius: 5px 5px 5px 5px;
+				height: 22px;
+			    line-height: 22px;
+			    font-size: 12px;
+			}
 		</style>
 		
 		<script type="text/javascript">
@@ -343,43 +371,39 @@
 			$(function(){
 				var taskType = "${facadeBean.type}";
 				if(taskType != 4){
-					$('#p_orgId').combotree({
-						url: '${ctx}/org/getTreeByType?type=2',
-						multiple: false,
-						animate: true,
-						width: '163px'
+					$("#p_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
+						formatItem: function(row,i,max) {
+							var obj =eval("(" + row + ")");//转换成js对象
+							return obj.text;
+						},
+						formatResult: function(row) {
+							var obj =eval("(" + row + ")");
+							return obj.text;
+						}
 					});
 					
-					// 只有最底层才能选择
-					var pOrgTree = $('#p_orgId').combotree('tree');	
-					pOrgTree.tree({
-					   onBeforeSelect: function(node){
-						   if(isNull(node.children)){
-								return true;
-						   }else{
-							   return false;
-						   }
-					   }
+					//选择后处理方法
+					$("#p_producer").result(function(event, data, formatted){ 
+						var obj = eval("(" + data + ")"); //转换成js对象 
+						$("#p_producer").val(obj.text);
 					});
 				}
 				
-				$('#m_orgId').combotree({
-					url: '${ctx}/org/getTreeByType?type=2',
-					multiple: false,
-					animate: true,
-					width: '163px'
+				$("#m_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
+					formatItem: function(row,i,max) {
+						var obj =eval("(" + row + ")");//转换成js对象
+						return obj.text;
+					},
+					formatResult: function(row) {
+						var obj =eval("(" + row + ")");
+						return obj.text;
+					}
 				});
 				
-				// 只有最底层才能选择
-				var mOrgTree = $('#m_orgId').combotree('tree');	
-				mOrgTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
+				//选择后处理方法
+				$("#m_producer").result(function(event, data, formatted){ 
+					var obj = eval("(" + data + ")"); //转换成js对象 
+					$("#m_producer").val(obj.text);
 				});
 			});
 		
