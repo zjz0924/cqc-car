@@ -269,28 +269,6 @@
 			var taskType = "${taskType}";
 			
 			if(taskType == 1){
-				/* $('#p_orgId').combotree({
-					url: '${ctx}/org/getTreeByType?type=2',
-					multiple: false,
-					animate: true,
-					width: '163px'
-				});
-				
-				// 只有最底层才能选择
-				var pOrgTree = $('#p_orgId').combotree('tree');	
-				pOrgTree.tree({
-				   onBeforeSelect: function(node){
-					   if(isNull(node.children)){
-							return true;
-					   }else{
-						   return false;
-					   }
-				   }
-				});
-				
-				// 设置机构的值
-				$('#p_orgId').combotree('setValue', "${facadeBean.info.parts.orgId}"); */
-				
 				$("#p_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -308,29 +286,6 @@
 					$("#p_producer").val(obj.text);
 				});
 			}
-			
-			
-			/* $('#m_orgId').combotree({
-				url: '${ctx}/org/getTreeByType?type=2',
-				multiple: false,
-				animate: true,
-				width: '163px'
-			});
-			
-			// 只有最底层才能选择
-			var mOrgTree = $('#m_orgId').combotree('tree');	
-			mOrgTree.tree({
-			   onBeforeSelect: function(node){
-				   if(isNull(node.children)){
-						return true;
-				   }else{
-					   return false;
-				   }
-			   }
-			});
-			
-			// 设置机构的值
-			$('#m_orgId').combotree('setValue', "${facadeBean.info.material.orgId}"); */
 			
 			$("#m_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 				formatItem: function(row,i,max) {
@@ -433,6 +388,9 @@
 		function notPass(){
 			$("#remark").textbox("setValue", "");
 			$("#dlg").dialog("open");
+			
+			// 移去滚动条
+			window.parent.parent.scrollY(480);
 		}
 		
 		function doSubmit(){

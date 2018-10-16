@@ -35,22 +35,23 @@
 				text : '重置密码',
 				iconCls : 'icon-key',
 				handler : function() {
-					var row = $("#" + accountDatagrid).datagrid('getSelected');
-		           	if(isNull(row)){
-		           		errorMsg("请选择一条记录进行操作!");
-		           		return;
-		           	}
+					var result = getSelectedIds();
+					if(!result){
+						return false;
+					}
 		           	
-		           	 $.messager.confirm('系统提示', "此操作将重置该用户密码，您确定要继续吗？", function(r){
+		           	 $.messager.confirm('系统提示', "此操作将重置已选择的用户密码，您确定要继续吗？", function(r){
 		                    if (r){
 		                        $.ajax({
 		                        	url: "${ctx}/account/resetPwd",
 		                        	data: {
-		                        		id: row.id,
+		                        		ids: result
 		                        	},
 		                        	success: function(data){
 		                        		if(data.success){
-		                					tipMsg(data.msg);
+		                					tipMsg(data.msg, function(){
+		                						$('#' + accountDatagrid).datagrid('clearSelections');
+		                					});
 		                				}else{
 		                					errorMsg(data.msg);
 		                				}
@@ -77,18 +78,17 @@
 				text : '删除',
 				iconCls : 'icon-remove',
 				handler : function() {
-					var row = $("#" + accountDatagrid).datagrid('getSelected');
-		           	if(isNull(row)){
-		           		errorMsg("请选择一条记录进行操作!");
-		           		return;
-		           	}
+					var result = getSelectedIds();
+					if(!result){
+						return false;
+					}
 		           	
-		           	 $.messager.confirm('系统提示', "此操作将删除该用户，您确定要继续吗？", function(r){
+		           	 $.messager.confirm('系统提示', "此操作将删除已选择的用户，您确定要继续吗？", function(r){
 		                    if (r){
 		                        $.ajax({
 		                        	url: "${ctx}/account/delete",
 		                        	data: {
-		                        		id: row.id,
+		                        		ids: result
 		                        	},
 		                        	success: function(data){
 		                        		if(data.success){
@@ -257,8 +257,21 @@
 					   }
 				   }
 				});
-				
 			});
+			
+			function getSelectedIds(){
+				var rows =  $("#" + accountDatagrid).datagrid('getChecked');
+				if(!isNull(rows)){
+					var ids = [];
+					for(var i = 0; i < rows.length; i++){
+						ids.push(rows[i].id);
+					}
+					return ids;
+				}else{
+					errorMsg("请选择要操作的记录");
+					return false;
+				}
+			}
 		
 			function doSearch() {
 				var data = {

@@ -413,6 +413,9 @@
 					}
 				});
 				$('#approveDetailDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.scrollY(475);
 			}
 			
 			function getSelectedIds(){

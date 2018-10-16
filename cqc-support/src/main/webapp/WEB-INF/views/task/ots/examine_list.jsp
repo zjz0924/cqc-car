@@ -64,6 +64,9 @@
 					}
 					$("#batchRemark").textbox("setValue", "");
 					$("#seasonDialog").dialog("open");
+					
+					// 移去滚动条
+					window.parent.scrollY(300);
 				}
 			}];
 			
@@ -395,6 +398,9 @@
 					modal : true
 				});
 				$('#examineDetailDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.scrollY(480);
 			}
 			
 			function getSelectedIds(){

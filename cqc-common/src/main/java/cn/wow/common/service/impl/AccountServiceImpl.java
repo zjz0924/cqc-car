@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.dao.AccountDao;
 import cn.wow.common.domain.Account;
 import cn.wow.common.service.AccountService;
+import cn.wow.common.utils.cookie.MD5;
 import cn.wow.common.utils.pagination.PageHelperExt;
 
 @Service
@@ -56,20 +57,46 @@ public class AccountServiceImpl implements AccountService {
 	public void batchUpdate(List<Account> list) {
 		accountDao.batchUpdate(list);
 	}
-	
-	public void clearPic(Long id){
+
+	public void clearPic(Long id) {
 		accountDao.clearPic(id);
 	}
-	
+
 	/**
 	 * 获取下达任务的机构ID
-	 * @param taskId  任务ID
-	 * @param state   任务记录状态
+	 * 
+	 * @param taskId 任务ID
+	 * @param state  任务记录状态
 	 */
 	public List<Account> getOperationUser(Long taskId, Integer state) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("taskId", taskId);
 		map.put("state", state);
 		return accountDao.getOperationUser(map);
+	}
+
+	/**
+	 * 批量删除
+	 */
+	public void batchDelete(String userName, Long[] ids) {
+		if (ids != null && ids.length > 0) {
+			for (Long id : ids) {
+				Account account = accountDao.selectOne(id);
+				this.deleteByPrimaryKey(userName, account);
+			}
+		}
+	}
+
+	/**
+	 * 批量重置密码
+	 */
+	public void batchResetPwd(String userName, Long[] ids, String defaultPwd) {
+		if (ids != null && ids.length > 0) {
+			for (Long id : ids) {
+				Account account = this.selectOne(id);
+				account.setPassword(MD5.getMD5(defaultPwd, "utf-8").toUpperCase());
+				this.update(userName, account);
+			}
+		}
 	}
 }

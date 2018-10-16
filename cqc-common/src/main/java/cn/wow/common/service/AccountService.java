@@ -31,4 +31,14 @@ public interface AccountService {
 	 * @param state   任务记录状态
 	 */
 	public List<Account> getOperationUser(Long taskId, Integer state);
+	
+	/**
+	 * 批量删除
+	 */
+	public void batchDelete(String userName, Long[] ids);
+	
+	/**
+	 * 批量重置密码
+	 */
+	public void batchResetPwd(String userName, Long[] ids, String defaultPwd);
 }

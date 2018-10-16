@@ -392,6 +392,9 @@
 			$("#matPatReq").textbox("setValue", "");
 			
 			$("#dlg").dialog("open");
+			
+			// 移去滚动条
+			window.parent.parent.scrollY(515);
 		}
 		
 		function doSubmit(){

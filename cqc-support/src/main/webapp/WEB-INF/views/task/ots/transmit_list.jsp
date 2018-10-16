@@ -66,7 +66,7 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '150',
+						width : '120',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
@@ -127,7 +127,7 @@
 					}, {
 						field : 'org',
 						title : '录入单位',
-						width : '120',
+						width : '110',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -137,7 +137,7 @@
 					}, {
 						field : 'account',
 						title : '录入用户',
-						width : '120',
+						width : '110',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -147,9 +147,21 @@
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '140',
+						width : '130',
 						align : 'center',
 						formatter : DateTimeFormatter
+					},{
+						field : 'state',
+						title : '是否已下达',
+						width : '70',
+						align : 'center',
+						formatter : function(value, row, index){
+							if(isNull(row.partsAtlId) && isNull(row.matAtlId) && isNull(row.partsPatId) && isNull(row.matPatId)){
+								return "<span title='否'>否</span>";
+							}else{
+								return "<span style='color:green;font-weight:bold;' title='是'>是</span>";
+							}
+						}
 					} ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						transmitDetail(rowData.id);
@@ -367,6 +379,9 @@
 					}
 				});
 				$('#transmitDetailDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.scrollY(475);
 			}
 			
 		</script>

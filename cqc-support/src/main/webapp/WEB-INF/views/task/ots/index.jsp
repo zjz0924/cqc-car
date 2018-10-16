@@ -65,6 +65,11 @@
 			    });   
 			}; 
 			
+			// 移动y滚动条
+			function scrollY(val){
+				top.parent.scrollTo(0, val);
+			}
+			
 		</script>
 		
 	</head>

@@ -66,7 +66,7 @@ public class AccountController extends AbstractController {
 
 	@Value("${account.sign.url}")
 	protected String signlUrl;
-	
+
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -92,7 +92,8 @@ public class AccountController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String userName, String nickName,
-			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId, Integer isCharge, String sort, String order) {
+			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId,
+			Integer isCharge, String sort, String order) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -102,18 +103,18 @@ public class AccountController extends AbstractController {
 
 		queryMap.clear();
 		Map<String, Object> map = new PageMap(request);
-		
+
 		String orderSql = "is_charge asc, username asc";
-		if(StringUtils.isNotBlank(sort)) {
-			if("isCharge".equals(sort)) {
+		if (StringUtils.isNotBlank(sort)) {
+			if ("isCharge".equals(sort)) {
 				sort = "is_charge";
 			}
 			orderSql = sort + " " + order;
 		}
-		
+
 		map.put("custom_order_sql", orderSql);
 		queryMap.put("custom_order_sql", orderSql);
-		
+
 		if (StringUtils.isNotBlank(userName)) {
 			map.put("qUserName", userName);
 			queryMap.put("qUserName", userName);
@@ -189,8 +190,7 @@ public class AccountController extends AbstractController {
 		model.addAttribute("resUrl", resUrl);
 		return "sys/account/account_detail";
 	}
-	
-	
+
 	/**
 	 * 当前用户信息
 	 */
@@ -214,7 +214,6 @@ public class AccountController extends AbstractController {
 		model.addAttribute("facadeBean", account);
 		return "sys/account/account_info";
 	}
-	
 
 	@ResponseBody
 	@RequestMapping(value = "/save")
@@ -228,7 +227,7 @@ public class AccountController extends AbstractController {
 			if (StringUtils.isNotBlank(id)) {
 				account = accountService.selectOne(Long.parseLong(id));
 				Integer oldSignType = account.getSignType();
-				
+
 				if (account != null) {
 					account.setRoleId(roleId);
 					account.setMobile(mobile);
@@ -238,17 +237,17 @@ public class AccountController extends AbstractController {
 					account.setRemark(remark);
 					account.setSignType(signType);
 					account.setIsCharge(isCharge);
-					
-					if(signType == 2){
+
+					if (signType == 2) {
 						if (file != null && !file.isEmpty()) {
 							String pic = uploadImg(file, signlUrl, true);
 							account.setPic(pic);
 						}
 					}
 					accountService.update(getCurrentUserName(), account);
-					
+
 					// 原来是图片签名的，现在改成用户名，清空图片
-					if(oldSignType != null && oldSignType == 2 && signType == 1){
+					if (oldSignType != null && oldSignType == 2 && signType == 1) {
 						accountService.clearPic(account.getId());
 					}
 				}
@@ -276,8 +275,8 @@ public class AccountController extends AbstractController {
 					account.setRemark(remark);
 					account.setSignType(signType);
 					account.setIsCharge(isCharge);
-					
-					if(signType == 2){
+
+					if (signType == 2) {
 						if (file != null && !file.isEmpty()) {
 							String pic = uploadImg(file, signlUrl, true);
 							account.setPic(pic);
@@ -301,20 +300,12 @@ public class AccountController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/delete")
-	public AjaxVO delete(HttpServletRequest request, String id) {
+	public AjaxVO delete(HttpServletRequest request, @RequestParam(value = "ids[]") Long[] ids) {
 		AjaxVO vo = new AjaxVO();
 		vo.setMsg("删除成功");
 
 		try {
-			Account account = accountService.selectOne(Long.parseLong(id));
-
-			if (account != null) {
-				accountService.deleteByPrimaryKey(getCurrentUserName(), account);
-			} else {
-				vo.setMsg("删除失败，记录不存在");
-				vo.setSuccess(false);
-				return vo;
-			}
+			accountService.batchDelete(getCurrentUserName(), ids);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("用户删除失败", ex);
@@ -337,7 +328,7 @@ public class AccountController extends AbstractController {
 	public AjaxVO lock(HttpServletRequest request, String id, String lock) {
 		AjaxVO vo = new AjaxVO();
 		vo.setData("操作成功");
-		
+
 		try {
 			if (StringUtils.isNotBlank(id)) {
 				Account account = accountService.selectOne(Long.parseLong(id));
@@ -348,7 +339,7 @@ public class AccountController extends AbstractController {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("用户锁定/解锁失败", ex);
-			
+
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常");
 			return vo;
@@ -363,31 +354,23 @@ public class AccountController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/resetPwd")
-	public AjaxVO resetPwd(HttpServletRequest request, String id, String lock) {
-		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+	public AjaxVO resetPwd(HttpServletRequest request, @RequestParam(value = "ids[]") Long[] ids) {
 		AjaxVO vo = new AjaxVO();
-		vo.setMsg("密码重置成功，默认密码为：888888");
-		
+		vo.setMsg("密码重置成功，默认密码为：" + DEFAULT_PWD);
+		vo.setSuccess(true);
+
 		try {
-			if (StringUtils.isNotBlank(id)) {
-				Account account = accountService.selectOne(Long.parseLong(id));
-
-				String newPwd = MD5.getMD5(DEFAULT_PWD, "utf-8").toUpperCase();
-
-				account.setPassword(newPwd);
-				accountService.update(getCurrentUserName(), account);
-			}
+			accountService.batchResetPwd(getCurrentUserName(), ids, DEFAULT_PWD);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("用户重置密码失败", ex);
-			
+
 			vo.setSuccess(false);
 			vo.setMsg("重置失败，系统异常");
 			return vo;
 		}
 		return vo;
 	}
-
 
 	@ResponseBody
 	@RequestMapping(value = "/updatePwd")
@@ -413,7 +396,7 @@ public class AccountController extends AbstractController {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("用户修改密码失败", ex);
-			
+
 			vo.setSuccess(false);
 			vo.setMsg("修改失败，系统异常");
 			vo.setData("exception");
@@ -430,7 +413,7 @@ public class AccountController extends AbstractController {
 		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		String filename = "用户清单";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+
 		try {
 			// 设置头
 			ImportExcelUtil.setResponseHeader(response, filename + ".xlsx");
@@ -446,22 +429,22 @@ public class AccountController extends AbstractController {
 			sh.setColumnWidth(5, (short) 6000);
 			sh.setColumnWidth(6, (short) 3000);
 			sh.setColumnWidth(7, (short) 6000);
-			
+
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
 			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "角色", "邮箱", "状态", "创建时间" };
 			int r = 0;
-			
+
 			Row titleRow = sh.createRow(0);
 			titleRow.setHeight((short) 450);
-			for(int k = 0; k < titles.length; k++){
+			for (int k = 0; k < titles.length; k++) {
 				Cell cell = titleRow.createCell(k);
 				cell.setCellStyle(styles.get("header"));
 				cell.setCellValue(titles[k]);
 			}
-			
+
 			++r;
-			
+
 			List<Account> dataList = accountService.selectAllList(queryMap);
 			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
@@ -482,12 +465,12 @@ public class AccountController extends AbstractController {
 
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
-				if(account.getOrg() != null) {
+				if (account.getOrg() != null) {
 					cell4.setCellValue(account.getOrg().getName());
 				}
-				
+
 				String roleStr = "";
-				if(account.getRole() != null){
+				if (account.getRole() != null) {
 					roleStr = account.getRole().getName();
 				}
 				Cell cell5 = contentRow.createCell(4);
@@ -516,28 +499,28 @@ public class AccountController extends AbstractController {
 			wb.write(os);
 			os.flush();
 			os.close();
-			
-			String logDetail =  "导出用户列表";
-			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.ACCOUNT, logDetail);
-			
+
+			String logDetail = "导出用户列表";
+			operationLogService.save(currentAccount.getUserName(), OperationType.EXPORT, ServiceType.ACCOUNT,
+					logDetail);
+
 		} catch (Exception e) {
 			logger.error("用户清单导出失败");
-			
+
 			e.printStackTrace();
 		}
 	}
-	
-	
-	/**  
-     * 用户导入
-     */  
+
+	/**
+	 * 用户导入
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/importUser")
 	public AjaxVO importUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		AjaxVO vo = new AjaxVO();
 		Account currentAccount = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-		
+
 		List<String> titleList = new ArrayList<String>();
 		titleList.add("用户名");
 		titleList.add("姓名");
@@ -545,7 +528,7 @@ public class AccountController extends AbstractController {
 		titleList.add("机构编码");
 		titleList.add("角色编码");
 		titleList.add("邮箱");
-		
+
 		MultipartFile file = multipartRequest.getFile("upfile");
 		if (file.isEmpty()) {
 			vo.setSuccess(false);
@@ -562,11 +545,11 @@ public class AccountController extends AbstractController {
 			if (execelList != null && execelList.size() > 0) {
 				// 检查模板是否正确
 				List<Object> titleObj = execelList.get(0);
-				if(titleObj == null || titleObj.size() < 6) {
+				if (titleObj == null || titleObj.size() < 6) {
 					vo.setSuccess(false);
 					vo.setData("导入模板不正确");
 					return vo;
-				}else {
+				} else {
 					boolean flag = true;
 
 					if (!"用户名".equals(titleObj.get(0).toString())) {
@@ -594,7 +577,7 @@ public class AccountController extends AbstractController {
 						return vo;
 					}
 				}
-				
+
 				Map<String, Org> orgMap = new HashMap<String, Org>();
 				Map<String, Role> roleMap = new HashMap<String, Role>();
 				Map<String, Account> accountMap = new HashMap<String, Account>();
@@ -602,51 +585,52 @@ public class AccountController extends AbstractController {
 
 				for (int i = 1; i < execelList.size(); i++) {
 					List<Object> obj = execelList.get(i);
-					
-					if(obj.size() < 1 || obj.get(0) == null){
+
+					if (obj.size() < 1 || obj.get(0) == null) {
 						continue;
 					}
-					
+
 					String userName = obj.get(0).toString();
 					String nickName = null;
-					if(obj.size() >= 2 && obj.get(1) != null){
+					if (obj.size() >= 2 && obj.get(1) != null) {
 						nickName = obj.get(1).toString();
 					}
-					
+
 					String mobile = null;
-					if(obj.size() >= 3 && obj.get(2) != null){
+					if (obj.size() >= 3 && obj.get(2) != null) {
 						mobile = obj.get(2).toString();
-						
-						if(StringUtils.isNoneBlank(mobile)) {
+
+						if (StringUtils.isNoneBlank(mobile)) {
 							boolean isMatch = Pattern.matches("^[1][3,4,5,7,8][0-9]{9}$", mobile);
-							if(!isMatch) {
+							if (!isMatch) {
 								mobile = "";
 							}
 						}
 					}
-					
+
 					String orgCode = null;
-					if(obj.size() >= 4 && obj.get(3) != null){
+					if (obj.size() >= 4 && obj.get(3) != null) {
 						orgCode = obj.get(3).toString();
 					}
-					
+
 					String roleCodes = null;
-					if(obj.size() >= 5 && obj.get(4) != null){
+					if (obj.size() >= 5 && obj.get(4) != null) {
 						roleCodes = obj.get(4).toString();
 					}
-					
+
 					String email = null;
-					if(obj.size() >= 6  && obj.get(5) != null){
+					if (obj.size() >= 6 && obj.get(5) != null) {
 						email = obj.get(5).toString();
-						
-						if(StringUtils.isNoneBlank(email)) {
-							boolean isMatch = Pattern.matches("^^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$", email);
-							if(!isMatch) {
+
+						if (StringUtils.isNoneBlank(email)) {
+							boolean isMatch = Pattern.matches("^^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",
+									email);
+							if (!isMatch) {
 								email = "";
 							}
 						}
 					}
-					
+
 					if (StringUtils.isBlank(userName)) {
 						continue;
 					}
@@ -701,10 +685,11 @@ public class AccountController extends AbstractController {
 			}
 			String msg = "新增：" + createList.size() + " 用户，修改：" + updateList.size() + "用户";
 			vo.setMsg(msg);
-			
-			String logDetail =  "导入用户，" + msg;
-			operationLogService.save(currentAccount.getUserName(), OperationType.IMPORT, ServiceType.ACCOUNT, logDetail);
-			
+
+			String logDetail = "导入用户，" + msg;
+			operationLogService.save(currentAccount.getUserName(), OperationType.IMPORT, ServiceType.ACCOUNT,
+					logDetail);
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("用户导入失败：", ex);
@@ -715,7 +700,7 @@ public class AccountController extends AbstractController {
 		}
 		return vo;
 	}
-	
+
 	/**
 	 * 把list转换成map
 	 */
@@ -733,7 +718,7 @@ public class AccountController extends AbstractController {
 				roleMap.put(role.getCode(), role);
 			}
 		}
-		
+
 		List<Account> accountList = accountService.selectAllList(new PageMap(false));
 		if (accountList != null && accountList.size() > 0) {
 			for (Account account : accountList) {
@@ -741,9 +726,5 @@ public class AccountController extends AbstractController {
 			}
 		}
 	}
-	
-
-	
-	
 
 }

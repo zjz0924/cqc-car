@@ -308,7 +308,10 @@
 						window.location.reload();
 					}
 				});
-				//$('#requireDialog').window('center');
+				$('#requireDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.scrollY(510);
 			}
 			
 		

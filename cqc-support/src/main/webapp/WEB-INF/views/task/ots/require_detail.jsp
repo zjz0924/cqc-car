@@ -420,6 +420,10 @@
 					href : "${ctx}/vehicle/list",
 					modal : true
 				});
+				$('#vehicleDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.parent.scrollY(510);
 			}
 			
 			function materialInfo() {
@@ -433,6 +437,9 @@
 					modal : true
 				});
 				$('#materialDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.parent.scrollY(510);
 			}
 			
 			
@@ -447,6 +454,9 @@
 					modal : true
 				});
 				$('#partsDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.parent.scrollY(510);
 			}
 			
 			// 新增整车信息

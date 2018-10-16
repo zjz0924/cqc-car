@@ -64,7 +64,6 @@
 			        content : content   
 			    });   
 			}; 
-			
 		</script>
 		
 	</head>
