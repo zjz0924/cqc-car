@@ -46,7 +46,9 @@ public class Parts extends JpaEntity{
     private String phone;
     // 生产商
     private String producer;
-
+    // 生产商代码
+    private String producerCode;
+    
     public Long getId() {
         return id;
     }
@@ -181,6 +183,14 @@ public class Parts extends JpaEntity{
 
 	public void setProducer(String producer) {
 		this.producer = producer == null ? null : producer.trim();
+	}
+	
+	public String getProducerCode() {
+		return producerCode;
+	}
+
+	public void setProducerCode(String producerCode) {
+		this.producerCode = producerCode == null ? null : producerCode.trim();
 	}
 
 	@JsonIgnore

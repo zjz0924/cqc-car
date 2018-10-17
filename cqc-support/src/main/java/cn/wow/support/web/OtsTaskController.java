@@ -32,6 +32,7 @@ import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Address;
+import cn.wow.common.domain.Applicat;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CarCode;
@@ -46,6 +47,7 @@ import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.AddressService;
+import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
@@ -127,6 +129,8 @@ public class OtsTaskController extends AbstractController {
 	private AddressService addressService;
 	@Autowired
 	private CarCodeService carCodeService;
+	@Autowired
+	private ApplicatService applicatService;
 
 	/**
 	 * 首页
@@ -298,13 +302,27 @@ public class OtsTaskController extends AbstractController {
 			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark,
 			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType,
 			String p_contacts, String p_phone, String m_contacts, String m_phone, int draft, String p_producer,
-			String m_producer) {
+			String m_producer, String applicatName, String applicatDepart, Long applicatOrg, String applicatContact,
+			String applicatRemark, int atlType, String atlRemark, String p_producerCode, Long applicat_id) {
 
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+			// 申请人信息
+			Applicat applicat = null;
+			if (applicat_id == null) {
+				applicat = new Applicat();
+			} else {
+				applicat = applicatService.selectOne(applicat_id);
+			}
+			applicat.setName(applicatName);
+			applicat.setDepart(applicatDepart);
+			applicat.setOrgId(applicatOrg);
+			applicat.setContact(applicatContact);
+			applicat.setRemark(applicatRemark);
 
 			// 整车信息
 			Vehicle vehicle = null;
@@ -378,6 +396,7 @@ public class OtsTaskController extends AbstractController {
 					parts.setIsKey(p_isKey);
 					parts.setKeyCode(p_keyCode);
 					parts.setProducer(p_producer);
+					parts.setProducerCode(p_producerCode);
 					parts.setCreateTime(date);
 					parts.setContacts(p_contacts);
 					parts.setPhone(p_phone);
@@ -430,6 +449,7 @@ public class OtsTaskController extends AbstractController {
 					parts.setContacts(p_contacts);
 					parts.setPhone(p_phone);
 					parts.setCode(p_code);
+					parts.setProducerCode(p_producerCode);
 				}
 			}
 
@@ -471,7 +491,8 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, Contants.STANDARD_TYPE, t_id, taskType, draft);
+			infoService.insert(account, vehicle, parts, material, applicat, Contants.STANDARD_TYPE, t_id, taskType,
+					draft, atlType, atlRemark);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -1239,5 +1260,5 @@ public class OtsTaskController extends AbstractController {
 			return true;
 		}
 	}
-	
+
 }

@@ -18,11 +18,12 @@
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="producer" property="producer" jdbcType="VARCHAR" />
+		<result column="producer_code" property="producerCode" jdbcType="VARCHAR" />
 		<!--  <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> -->
 	</resultMap>
 
 	<sql id="base_columns">
-		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer
+		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer, producer_code
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -42,10 +43,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer) values
+		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer, producer_code) values
 		(#{type,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{place,jdbcType=VARCHAR}, 
 		#{proNo,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER},
-		#{orgId,jdbcType=BIGINT}, #{isKey,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR})
+		#{orgId,jdbcType=BIGINT}, #{isKey,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR}, #{producerCode,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Parts">
@@ -90,6 +91,10 @@
 		    <if test="producer != null" >
 		    	producer = #{producer,jdbcType=VARCHAR},
 		    </if>
+		    <if test="producerCode != null" >
+		   		producer_code = #{producerCode,jdbcType=VARCHAR},
+		   	</if>
+		    
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -200,6 +205,12 @@
 		    </if>
 		    <if test="producer != null" >
 		    	and producer = #{producer,jdbcType=VARCHAR}
+		    </if>
+		    <if test="qproducerCode != null" >
+		    	and producer_code like concat('%', #{qproducerCode,jdbcType=VARCHAR}, '%')
+		    </if>
+		      <if test="producerCode != null" >
+		    	and producer_code = #{producerCode,jdbcType=VARCHAR}
 		    </if>
 		</where>
 	

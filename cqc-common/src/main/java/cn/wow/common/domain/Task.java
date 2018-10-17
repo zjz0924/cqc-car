@@ -106,6 +106,17 @@ public class Task {
     // 是否是草稿（0-否，1-是）
     private Integer draft;
     
+    // 基准图谱类型（1-零件基准图谱，2-材料基准图谱）
+    private Integer atlType;
+    
+    // 基准图谱备注
+    private String atlRemark;
+    
+    // 申请人ID
+    private Long applicatId;
+    
+    private Applicat applicat;
+    
     public Long getId() {
         return id;
     }
@@ -433,5 +444,36 @@ public class Task {
 	public void setDraft(Integer draft) {
 		this.draft = draft;
 	}
-	
+
+	public Integer getAtlType() {
+		return atlType;
+	}
+
+	public void setAtlType(Integer atlType) {
+		this.atlType = atlType;
+	}
+
+	public String getAtlRemark() {
+		return atlRemark;
+	}
+
+	public void setAtlRemark(String atlRemark) {
+		this.atlRemark = atlRemark;
+	}
+
+	public Long getApplicatId() {
+		return applicatId;
+	}
+
+	public void setApplicatId(Long applicatId) {
+		this.applicatId = applicatId;
+	}
+
+	public Applicat getApplicat() {
+		return applicat;
+	}
+
+	public void setApplicat(Applicat applicat) {
+		this.applicat = applicat;
+	}
 }

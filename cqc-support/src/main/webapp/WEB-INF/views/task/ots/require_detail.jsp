@@ -9,6 +9,7 @@
 		<input type="hidden" id="p_id" name="p_id" value="${facadeBean.info.parts.id }">
 		<input type="hidden" id="m_id" name="m_id" value="${facadeBean.info.material.id }">
 		<input type="hidden" id="draft" name="draft" value="${facadeBean.draft }">
+		<input type="hidden" id="applicat_id" name="applicat_id" value="${facadeBean.applicat.id }">
 	
 		<div style="margin-left: 10px;margin-top:20px;">
 			
@@ -32,8 +33,62 @@
 						   </c:choose>
 				</div>		
 			</c:if>
+			
+			<!-- 申请人信息 -->
+			<div style="margin-top:20px;">
+				<div class="title">申请人信息</div>
+				<table class="info">
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>申请人：</span> 
+							<input id="applicatName" name="applicatName" class="easyui-textbox" value="${facadeBean.applicat.name }" style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>科室：</span> 
+							<input id="applicatDepart" name="applicatDepart" class="easyui-textbox" value="${facadeBean.applicat.depart }" style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>机构/单位：</span> 
+							<input id="applicatOrg" name="applicatOrg" style="width: 168px;"/>
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>联系方式：</span> 
+							<input id="applicatContact" name="applicatContact" class="easyui-textbox" value="${facadeBean.applicat.contact }"  style="width:150px;">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span">备注：</span> 
+							<input id="applicatRemark" name="applicatRemark" class="easyui-textbox" value="${facadeBean.applicat.remark }"  style="width:150px;">
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<!-- 基准图谱类型 -->
+			<div style="margin-top:20px;">
+				<div class="title">基准图谱类型</div>
+				<table class="info">
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>类型：</span> 
+							 <select id="atlType" name="atlType" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+							 	<option value="">请选择</option>
+							 	<option value="1" <c:if test="${facadeBean.atlType == 1 }">selected="selected"</c:if>>零件基准图谱</option>
+							 	<option value="2" <c:if test="${facadeBean.atlType == 2 }">selected="selected"</c:if>>材料基准图谱</option>
+							 </select>
+						</td>
+						<td>
+							<span class="title-span">备注：</span> 
+							<input id="atlRemark" name="atlRemark" class="easyui-textbox" value="${facadeBean.atlRemark }" style="width:150px;">
+						</td>
+					</tr>
+				</table>
+			</div>
+			
 		
-			<div class="title">整车信息&nbsp;&nbsp;
+			<!-- 整车信息 -->
+			<div class="title" style="margin-top:20px;">整车信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="addVehicle()" title="清空"><i class="icon icon-edit"></i></a>
 			</div>
@@ -89,15 +144,19 @@
 							<input id="p_name" name="p_name" class="easyui-textbox" value="${facadeBean.info.parts.name }" style="width:150px;">
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
+							<span class="title-span"><span class="req-span">*</span>供应商：</span> 
 							<input id="p_producer" name="p_producer" type="text" value="${facadeBean.info.parts.producer }" class="inputAutocomple" >
 						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
+							<input id="p_producerCode" name="p_producerCode" type="text" value="${facadeBean.info.parts.producerCode }" class="inputAutocomple" >
+						</td>
+					</tr>
+					<tr>
 						<td>
 							<span class="title-span">生产批号：</span> 
 							<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }"  style="width:150px;">
 						</td>
-					</tr>
-					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
 							<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false" value="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>"  style="width:150px;">
@@ -113,12 +172,12 @@
 								<option value="1" <c:if test="${facadeBean.info.parts.isKey == 1 }">selected="selected"</c:if>>是</option>
 							</select>
 						</td>
+					</tr>
+					<tr>
 						<td>
 							<span class="title-span"><span class="req-span" id="keyCode_req" style="display:none;">*</span>零件型号：</span> 
 							<input id="p_keyCode" name="p_keyCode" class="easyui-textbox" value="${facadeBean.info.parts.keyCode }" style="width:150px;">
 						</td>
-					</tr>
-					<tr>
 						<td>
 							<span class="title-span">联系人：</span> 
 							<input id="p_contacts" name="p_contacts" class="easyui-textbox" value="${facadeBean.info.parts.contacts }" style="width:150px;">
@@ -314,6 +373,28 @@
 					var obj = eval("(" + data + ")"); //转换成js对象 
 					$("#m_producer").val(obj.text);
 				});
+				
+				// 申请人科室
+				$('#applicatOrg').combotree({
+					url: '${ctx}/org/getTreeByType?type=2',
+					multiple: false,
+					animate: true
+				});
+				
+				// 只能选择子节点
+				var mOrgTree = $('#applicatOrg').combotree('tree');	
+				mOrgTree.tree({
+				   onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+				
+				// 设置值
+				$('#applicatOrg').combotree('setValue', "${facadeBean.applicat.orgId}");
 			});
 		
 			function save(isDraft){
@@ -321,6 +402,15 @@
 					return false;
 				}
 				saving = true;
+				
+				// 申请人信息
+				if(!isRequire("applicatName", "申请人必填")){ saving = false; return false; }
+				if(!isRequire("applicatDepart", "申请人科室必填")){ saving = false; return false; }
+				if(!isRequire("applicatOrg", "申请人机构/单位必选")){ saving = false; return false; }
+				if(!isRequire("applicatContact", "申请人联系方式必填")){ saving = false; return false; }
+				
+				//基准图谱类型
+				if(!isRequire("atlType", "基准图谱类型必选")){ saving = false; return false; }
 				
 				// 整车信息
 				if(!isRequire("v_code", "车型代码必选")){ saving = false; return false; }
@@ -334,6 +424,7 @@
 					if(!isRequire("p_name", "零部件名称必填")){ saving = false; return false; }
 					//if(!isRequire("p_orgId", "零部件生产商必填")){ saving = false; return false; }
 					if(!isRequire("p_producer", "零部件生产商必填")){ saving = false; return false; }
+					if(!isRequire("p_producerCode", "零部件生产商代码必填")){ saving = false; return false; }
 					if(!isRequire("p_proTime", "零部件生产日期必填")){ saving = false; return false; }
 					//if(!isRequire("p_place", "零部件生产场地必填")){ saving = false; return false; }
 					//if(!isRequire("p_proNo", "零部件生产批号必填")){ saving = false; return false; }

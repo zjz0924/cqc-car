@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Applicat;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
@@ -26,8 +27,8 @@ public interface InfoService {
 
 	public List<Info> selectAllList(Map<String, Object> map);
 
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId,
-			int taskType, int draft);
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, int type, Long taskId,
+			int taskType, int draft, int atlType, String atlRemark);
 
 	/**
 	 * 审批审核

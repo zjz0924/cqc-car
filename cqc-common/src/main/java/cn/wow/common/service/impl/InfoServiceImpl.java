@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.wow.common.dao.ApplicatDao;
 import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.ExamineRecordDao;
@@ -28,6 +29,7 @@ import cn.wow.common.dao.TaskInfoDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Applicat;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
@@ -98,6 +100,8 @@ public class InfoServiceImpl implements InfoService {
 	private LabConclusionService labConclusionService;
 	@Autowired
 	private TaskInfoDao taskInfoDao;
+	@Autowired
+	private ApplicatDao applicatDao;
 
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -137,11 +141,17 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, int type, Long taskId,
-			int taskType, int draft) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, int type, Long taskId,
+			int taskType, int draft, int atlType, String atlRemark) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
 
+		if(applicat.getId() == null) {
+			applicatDao.insert(applicat);
+		}else {
+			applicatDao.update(applicat);	
+		}
+		
 		if (vehicle.getId() == null) {
 			vehicleDao.insert(vehicle);
 		} else {
@@ -203,6 +213,9 @@ public class InfoServiceImpl implements InfoService {
 			task.setInfoApply(0);
 			task.setResultApply(0);
 			task.setDraft(draft);
+			task.setAtlType(atlType);
+			task.setAtlRemark(atlRemark);
+			task.setApplicatId(applicat.getId());
 			taskDao.insert(task);
 
 			// 操作记录
@@ -218,6 +231,8 @@ public class InfoServiceImpl implements InfoService {
 			logDetail = "任务申请，任务号：" + task.getCode();
 		} else {
 			Task task = taskDao.selectOne(taskId);
+			task.setAtlType(atlType);
+			task.setAtlRemark(atlRemark);
 
 			Info info = task.getInfo();
 			if(info.getvId().longValue() != vehicle.getId().longValue()) {
@@ -231,13 +246,16 @@ public class InfoServiceImpl implements InfoService {
 
 			// 更新草稿状态
 			if (task.getDraft() == null || task.getDraft().intValue() != draft) {
-				this.updateDraft(task.getId(), draft);
+				//this.updateDraft(task.getId(), draft);
+				task.setDraft(draft);
 			}
 
 			if (task.getState() == StandardTaskEnum.EXAMINE_NOTPASS.getState()) {
 				// 更新任务状态
-				this.updateState(task.getId(), StandardTaskEnum.EXAMINE.getState());
+				//this.updateState(task.getId(), StandardTaskEnum.EXAMINE.getState());
+				task.setState(StandardTaskEnum.EXAMINE.getState());
 			}
+			taskDao.update(task);
 
 			// 操作记录
 			TaskRecord record = new TaskRecord();
