@@ -1,5 +1,7 @@
 package cn.wow.common.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +69,7 @@ public class PartsServiceImpl implements PartsService {
 	/**
 	 * 检查零部件信息是否存在
 	 */
-	public ResultFlagVO isExist(Long id, String p_code, String p_name, Date p_proTime, String p_place, String p_proNo,
-			String p_keyCode, Integer p_isKey, String p_remark, String p_contacts, String p_phone, String p_producer) {
+	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode) {
 
 		ResultFlagVO vo = new ResultFlagVO();
 
@@ -76,17 +77,10 @@ public class PartsServiceImpl implements PartsService {
 		if (id != null) {
 			map.put("eid", id);
 		}
-		// map.put("code", p_code);
-		map.put("ename", p_name);
-		map.put("producer", p_producer);
-		// map.put("eproNo", p_proNo);
-		map.put("eProTime", p_proTime);
-		// map.put("place", p_place);
-		map.put("isKey", p_isKey);
-		map.put("ekeyCode", p_keyCode);
-		// map.put("econtacts", p_contacts);
-		// map.put("ephone", p_phone);
-		// map.put("remark", p_remark);
+		map.put("ename", name);
+		map.put("producer", producer);
+		map.put("producerCode", producerCode);
+		map.put("eProTime", proTime);
 
 		List<Parts> dataList = partsDao.selectAllList(map);
 		if (dataList != null && dataList.size() > 0) {
@@ -103,5 +97,23 @@ public class PartsServiceImpl implements PartsService {
 	 */
 	public List<String> getProduceList(String name) {
 		return partsDao.getProduceList(name);
+	}
+	
+	
+	/**
+	 * 是否更新零部件信息
+	 */
+	public boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
+			String p_proNo, String p_remark, int p_num) {
+
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
+				&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
+				&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark()) && p_num == parts.getNum()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

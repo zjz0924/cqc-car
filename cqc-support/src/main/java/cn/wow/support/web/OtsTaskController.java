@@ -9,11 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +22,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
-
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Address;
 import cn.wow.common.domain.Applicat;
@@ -298,12 +293,11 @@ public class OtsTaskController extends AbstractController {
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, String p_remark, Long m_id, String m_matName,
-			String m_matColor, String m_proNo, Long m_orgId, String m_matNo, String m_remark,
-			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType,
-			String p_contacts, String p_phone, String m_contacts, String m_phone, int draft, String p_producer,
-			String m_producer, String applicatName, String applicatDepart, Long applicatOrg, String applicatContact,
-			String applicatRemark, int atlType, String atlRemark, String p_producerCode, Long applicat_id) {
+			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
+			String m_proNo, Long m_orgId, String m_matNo, String m_remark, Long t_id, int taskType, int m_num,
+			int draft, String p_producer, String m_producer, String applicatName, String applicatDepart,
+			Long applicatOrg, String applicatContact, String applicatRemark, int atlType, String atlRemark,
+			String p_producerCode, Long applicat_id) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -393,17 +387,14 @@ public class OtsTaskController extends AbstractController {
 					parts.setProNo(p_proNo);
 					parts.setName(p_name);
 					parts.setCode(p_code);
-					parts.setIsKey(p_isKey);
-					parts.setKeyCode(p_keyCode);
 					parts.setProducer(p_producer);
 					parts.setProducerCode(p_producerCode);
 					parts.setCreateTime(date);
-					parts.setContacts(p_contacts);
-					parts.setPhone(p_phone);
+					parts.setNum(p_num);
 					parts.setState(Contants.ONDOING_TYPE);
 
-					boolean isExist = partsService.isExist(null, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo,
-							p_keyCode, p_isKey, p_remark, p_contacts, p_phone, p_producer).getFlag();
+					boolean isExist = partsService
+							.isExist(null, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -414,8 +405,8 @@ public class OtsTaskController extends AbstractController {
 
 					// 编辑时
 					if (parts.getState().intValue() == 0) {
-						boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place,
-								p_proNo, p_keyCode, p_isKey, p_remark, p_contacts, p_phone, p_producer).getFlag();
+						boolean isExist = partsService
+								.isExist(p_id, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
 						if (isExist) {
 							vo.setSuccess(false);
 							vo.setMsg("零部件信息已存在");
@@ -423,8 +414,8 @@ public class OtsTaskController extends AbstractController {
 						}
 					} else {
 						// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
-						ResultFlagVO isExist = partsService.isExist(null, p_code, p_name, sdf.parse(p_proTime), p_place,
-								p_proNo, p_keyCode, p_isKey, p_remark, p_contacts, p_phone, p_producer);
+						ResultFlagVO isExist = partsService.isExist(null, p_name, sdf.parse(p_proTime), p_producer,
+								p_producerCode);
 
 						if (!isExist.getFlag()) {
 							parts.setId(null);
@@ -443,12 +434,9 @@ public class OtsTaskController extends AbstractController {
 					parts.setPlace(p_place);
 					parts.setProNo(p_proNo);
 					parts.setName(p_name);
-					parts.setIsKey(p_isKey);
-					parts.setKeyCode(p_keyCode);
 					parts.setProducer(p_producer);
-					parts.setContacts(p_contacts);
-					parts.setPhone(p_phone);
 					parts.setCode(p_code);
+					parts.setNum(p_num);
 					parts.setProducerCode(p_producerCode);
 				}
 			}
@@ -465,14 +453,8 @@ public class OtsTaskController extends AbstractController {
 				material.setMatColor(m_matColor);
 				material.setProducer(m_producer);
 				material.setCreateTime(date);
-				material.setContacts(m_contacts);
-				material.setPhone(m_phone);
+				material.setNum(m_num);
 				material.setState(Contants.ONDOING_TYPE);
-
-				if (mfile != null && !mfile.isEmpty()) {
-					String pic = uploadImg(mfile, materialUrl, false);
-					material.setPic(pic);
-				}
 			} else {
 				material = materialService.selectOne(m_id);
 				material.setRemark(m_remark);
@@ -481,13 +463,7 @@ public class OtsTaskController extends AbstractController {
 				material.setMatNo(m_matNo);
 				material.setMatColor(m_matColor);
 				material.setProducer(m_producer);
-				material.setContacts(m_contacts);
-				material.setPhone(m_phone);
-
-				if (mfile != null && !mfile.isEmpty()) {
-					String pic = uploadImg(mfile, materialUrl, false);
-					material.setPic(pic);
-				}
+				material.setNum(m_num);
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -637,11 +613,9 @@ public class OtsTaskController extends AbstractController {
 	@RequestMapping(value = "/examine")
 	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, Long p_id, String p_keyCode, Integer p_isKey, String p_remark, Long m_id, String m_matName,
-			String m_matColor, String m_proNo, String m_matNo, String m_remark,
-			@RequestParam(value = "m_pic", required = false) MultipartFile mfile, Long t_id, int taskType,
-			String p_contacts, String p_phone, String m_contacts, String m_phone, int result, String examine_remark,
-			Long id, String p_producer, String m_producer) {
+			String p_proNo, Long p_id, Integer p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
+			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int result, String examine_remark,
+			Long id, String p_producer, String m_producer, String p_producerCode, int m_num) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -651,7 +625,7 @@ public class OtsTaskController extends AbstractController {
 			// 整车信息
 			Vehicle vehicle = null;
 			vehicle = vehicleService.selectOne(v_id);
-			if (isUpdateVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark)) {
+			if (vehicleService.isUpdateVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark)) {
 				vehicle.setProTime(sdf.parse(v_proTime));
 				vehicle.setProAddr(v_proAddr);
 				vehicle.setRemark(v_remark);
@@ -670,24 +644,20 @@ public class OtsTaskController extends AbstractController {
 			Parts parts = null;
 			if (taskType == TaskTypeEnum.OTS.getState()) {
 				parts = partsService.selectOne(p_id);
-				if (isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_keyCode, p_isKey, p_remark,
-						p_phone, p_contacts)) {
+				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark,
+						p_num)) {
 
 					parts.setProTime(sdf.parse(p_proTime));
 					parts.setRemark(p_remark);
 					parts.setPlace(p_place);
 					parts.setProNo(p_proNo);
 					parts.setName(p_name);
-					parts.setIsKey(p_isKey);
-					parts.setKeyCode(p_keyCode);
-					// parts.setOrgId(p_orgId);
 					parts.setProducer(p_producer);
-					parts.setContacts(p_contacts);
-					parts.setPhone(p_phone);
 					parts.setCode(p_code);
+					parts.setNum(p_num);
 
-					boolean isExist = partsService.isExist(p_id, p_code, p_name, sdf.parse(p_proTime), p_place, p_proNo,
-							p_keyCode, p_isKey, p_remark, p_contacts, p_phone, p_producer).getFlag();
+					boolean isExist = partsService
+							.isExist(p_id, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -705,13 +675,7 @@ public class OtsTaskController extends AbstractController {
 			material.setMatNo(m_matNo);
 			material.setMatColor(m_matColor);
 			material.setProducer(m_producer);
-			material.setContacts(m_contacts);
-			material.setPhone(m_phone);
-
-			if (mfile != null && !mfile.isEmpty()) {
-				String pic = uploadImg(mfile, materialUrl, false);
-				material.setPic(pic);
-			}
+			material.setNum(m_num);
 
 			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material);
 
@@ -1223,42 +1187,6 @@ public class OtsTaskController extends AbstractController {
 			}
 		}
 		return jsonString;
-	}
-
-	/**
-	 * 是否更新整车信息
-	 */
-	boolean isUpdateVehicleInfo(Vehicle vehicle, String v_code, String v_proTime, String v_proAddr, String v_remark) {
-		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		if (v_code.equals(vehicle.getCode())
-				&& ((StringUtils.isNotBlank(v_proTime) && vehicle.getProTime() != null
-						&& v_proTime.equals(sdf.format(vehicle.getProTime())))
-						|| (StringUtils.isBlank(v_proTime) && vehicle.getProTime() == null))
-				&& v_proAddr.equals(v_proAddr) && v_remark.equals(vehicle.getRemark())) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 * 是否更新零部件信息
-	 */
-	boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_keyCode, Integer p_isKey, String p_remark, String p_phone, String p_contacts) {
-
-		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
-				&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
-				&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark())
-				&& p_isKey.intValue() == parts.getIsKey().intValue() && p_phone.equals(parts.getPhone())
-				&& p_contacts.equals(parts.getContacts())) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 }

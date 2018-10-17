@@ -6,24 +6,19 @@
 		<result column="type" property="type" jdbcType="INTEGER" />
 		<result column="code" property="code" jdbcType="VARCHAR" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="org_id" property="orgId" jdbcType="BIGINT" />
-		<result column="is_key" property="isKey" jdbcType="INTEGER" />
-		<result column="key_code" property="keyCode" jdbcType="VARCHAR" />
 		<result column="pro_time" property="proTime" jdbcType="DATE" />
 		<result column="place" property="place" jdbcType="VARCHAR" />
 		<result column="pro_no" property="proNo" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
-		<result column="contacts" property="contacts" jdbcType="VARCHAR" />
-		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="state" property="state" jdbcType="INTEGER" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="producer" property="producer" jdbcType="VARCHAR" />
 		<result column="producer_code" property="producerCode" jdbcType="VARCHAR" />
-		<!--  <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> -->
+		<result column="num" property="num" jdbcType="INTEGER" />
 	</resultMap>
 
 	<sql id="base_columns">
-		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer, producer_code
+		id, type, code, name, pro_time, place, pro_no, remark, create_time, state, producer, producer_code, num
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -43,10 +38,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, org_id, is_key, key_code, contacts, phone, producer, producer_code) values
+		insert into parts (type, code, name, pro_time, place, pro_no, remark, create_time, state, producer, producer_code, num) values
 		(#{type,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{proTime,jdbcType=DATE}, #{place,jdbcType=VARCHAR}, 
 		#{proNo,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER},
-		#{orgId,jdbcType=BIGINT}, #{isKey,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR}, #{producerCode,jdbcType=VARCHAR})
+		#{producer,jdbcType=VARCHAR}, #{producerCode,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Parts">
@@ -73,28 +68,15 @@
 			<if test="state != null">
 				state = #{state,jdbcType=INTEGER},
 			</if>
-			<if test="orgId != null" >
-		        org_id = #{orgId,jdbcType=BIGINT},
-		    </if>
-		    <if test="isKey != null" >
-		    	is_key = #{isKey,jdbcType=INTEGER},
-		    </if>
-		    <if test="keyCode != null" >
-		   	 	key_code = #{keyCode,jdbcType=VARCHAR},
-		    </if>
-		    <if test="contacts != null" >
-		    	contacts = #{contacts,jdbcType=VARCHAR}, 
-		    </if>
-		    <if test="phone != null" >
-		    	phone = #{phone,jdbcType=VARCHAR},
-		    </if>
 		    <if test="producer != null" >
 		    	producer = #{producer,jdbcType=VARCHAR},
 		    </if>
 		    <if test="producerCode != null" >
 		   		producer_code = #{producerCode,jdbcType=VARCHAR},
 		   	</if>
-		    
+		   	<if test="num != null">
+				num = #{num,jdbcType=INTEGER},
+			</if>
 			remark = #{remark,jdbcType=VARCHAR}
 		</set>
 		where id = #{id,jdbcType=BIGINT}
@@ -127,13 +109,6 @@
 				and state != #{notstate,jdbcType=INTEGER}
 			 </if>
 			 
-			 <if test="contacts != null" >
-		    	and contacts like concat('%', #{contacts,jdbcType=VARCHAR}, '%')
-		    </if>
-		    <if test="phone != null" >
-		    	and phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
-		    </if>
-	
 			<if test="startProTime != null and startProTime != ''">
 				and pro_time &gt;= #{startProTime, jdbcType=DATE}
 			</if>
@@ -152,22 +127,6 @@
 	
 			<if test="proNo != null and proNo != ''">
 				and pro_no like concat('%', #{proNo,jdbcType=VARCHAR}, '%')
-			</if>
-	
-			<if test="orgId != null">
-				and org_id = #{orgId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="isKey != null">
-				and is_key = #{isKey,jdbcType=INTEGER}
-			</if>
-			
-			<if test="keyCode != null">
-				and key_code like concat('%', #{keyCode,jdbcType=VARCHAR}, '%')
-			</if>
-			
-			<if test="ekeyCode != null">
-				and key_code = #{ekeyCode,jdbcType=VARCHAR}
 			</if>
 			
 			<if test="remark != null">
@@ -194,12 +153,6 @@
 				and place = #{place,jdbcType=VARCHAR}
 			</if>
 			
-			 <if test="econtacts != null" >
-		    	and contacts = #{econtacts,jdbcType=VARCHAR}
-		    </if>
-		    <if test="ephone != null" >
-		    	and phone = #{ephone,jdbcType=VARCHAR}
-		    </if>
 		     <if test="qproducer != null" >
 		    	and producer like concat('%', #{qproducer,jdbcType=VARCHAR}, '%')
 		    </if>

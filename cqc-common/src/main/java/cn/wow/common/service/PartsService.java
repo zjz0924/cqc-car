@@ -3,7 +3,6 @@ package cn.wow.common.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import cn.wow.common.domain.Parts;
 import cn.wow.common.vo.ResultFlagVO;
 
@@ -25,14 +24,18 @@ public interface PartsService {
     /**
      * 检查零部件信息是否存在
      */
-	public ResultFlagVO isExist(Long id, String p_code, String p_name, Date p_proTime, String p_place, String p_proNo,
-			String p_keyCode, Integer p_isKey, String p_remark, String p_contacts,
-			String p_phone, String p_producer);
-
+	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode);
 	
 	
 	/**
 	 * 获取生产商名称列表
 	 */
 	public List<String> getProduceList(String name);
+	
+	
+	/**
+	 * 是否更新零部件信息
+	 */
+	public boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
+			String p_proNo, String p_remark, int p_num);
 }

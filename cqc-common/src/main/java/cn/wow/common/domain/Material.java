@@ -21,27 +21,20 @@ public class Material extends JpaEntity{
     private String matName;
     // 材料牌号
     private String matNo;
+    // 供应商
+    private String producer;
     // 材料颜色
     private String matColor;
-    // 材料生产商
-    private Long orgId;
-    private Org org;
-    // 生产批次
+    // 材料批号
     private String proNo;
-    // 图片
-    private String pic;
+    // 样品数量
+    private Integer num;
     // 备注
     private String remark;
     // 状态(0-审批中, 1-完成)
     private Integer state;
 
     private Date createTime;
-    // 联系人
-    private String contacts;
-    // 联系电话 
-    private String phone;
-    // 生产商
-    private String producer;
 
     public Long getId() {
         return id;
@@ -83,36 +76,12 @@ public class Material extends JpaEntity{
         this.matColor = matColor == null ? null : matColor.trim();
     }
 
-    public Long getOrgId() {
-		return orgId;
-	}
-
-	public void setOrgId(Long orgId) {
-		this.orgId = orgId;
-	}
-
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
-	}
-
 	public String getProNo() {
         return proNo;
     }
 
     public void setProNo(String proNo) {
         this.proNo = proNo == null ? null : proNo.trim();
-    }
-
-    public String getPic() {
-        return pic;
-    }
-
-    public void setPic(String pic) {
-        this.pic = pic == null ? null : pic.trim();
     }
 
     public String getRemark() {
@@ -139,28 +108,20 @@ public class Material extends JpaEntity{
 		this.state = state;
 	}
 
-	public String getContacts() {
-		return contacts;
-	}
-
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
 	public String getProducer() {
 		return producer;
 	}
 
 	public void setProducer(String producer) {
 		this.producer = producer == null ? null : producer.trim();
+	}
+	
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
 	}
 
 	@JsonIgnore

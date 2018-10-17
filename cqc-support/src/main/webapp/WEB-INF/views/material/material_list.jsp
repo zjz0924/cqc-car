@@ -8,7 +8,7 @@
 				<span class="qlabel">材料名称：</span>
 				<input id="q_matName" name="q_matName" class="easyui-textbox" style="width: 200px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<span class="qlabel">生产批次：</span>
+				<span class="qlabel">材料批号：</span>
 				<input id="q_proNo" name="q_proNo" class="easyui-textbox" style="width: 200px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<span class="qlabel">材料牌号：</span>
@@ -17,7 +17,7 @@
 			
 			<div style="margin-top:10px;margin-right: 40px;">
 				<span class="qlabel">材料生产商：</span>
-				<input id="q_producer" name="q_producer" class="easyui-textbox" style="width: 200px;">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="q_producer" name="q_producer" type="text"  class="inputAutocomple" style="width:200px;">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
@@ -58,49 +58,43 @@
 		        }, {
 					field : 'matName',
 					title : '材料名称',
-					width : '100',
+					width : '120',
 					align : 'center',
 					formatter : formatCellTooltip
 				}, {
 					field : 'proNo',
-					title : '生产批次',
-					width : '100',
+					title : '材料批号',
+					width : '110',
 					align : 'center',
 					formatter : formatCellTooltip
 				}, {
 					field : 'matNo',
 					title : '材料牌号',
-					width : '100',
+					width : '110',
 					align : 'center',
 					formatter : formatCellTooltip
 				}, {
 					field : 'matColor',
 					title : '材料颜色',
-					width : '100',
+					width : '110',
 					align : 'center',
 					formatter : formatCellTooltip
 				}, {
 					field : 'producer',
-					title : '材料生产商',
-					width : '120',
+					title : '材料供应商',
+					width : '130',
 					align : 'center',
 					formatter: formatCellTooltip
 				}, {
-					field : 'contacts',
-					title : '联系人',
+					field : 'num',
+					title : '样品数量',
 					width : '90',
 					align : 'center',
-					formatter : formatCellTooltip
-				}, {
-					field : 'phone',
-					title : '联系电话',
-					width : '100',
-					align : 'center',
-					formatter : formatCellTooltip
+					formatter: formatCellTooltip
 				}, {
 					field : 'remark',
 					title : '备注',
-					width : '150',
+					width : '170',
 					align : 'center',
 					formatter : formatCellTooltip
 				} ] ]
@@ -116,12 +110,30 @@
 						'proNo' : $("#q_proNo").textbox("getValue"), 
 						'matName' : $("#q_matName").textbox("getValue"), 
 						'matNo' : $("#q_matNo").textbox("getValue"), 
-						'producer' : $("#q_producer").textbox("getValue"),
+						'producer' : $("#q_producer").val(),
 						'pageNum' : pageNumber,
 						'pageSize' : pageSize
 					}
 					getData(datagrid, getDataUrl, data);
 				}
+			});
+			
+			// 供应商
+			$("#q_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
+				formatItem: function(row,i,max) {
+					var obj =eval("(" + row + ")");//转换成js对象
+					return obj.text;
+				},
+				formatResult: function(row) {
+					var obj =eval("(" + row + ")");
+					return obj.text;
+				}
+			});
+			
+			//选择后处理方法
+			$("#q_producer").result(function(event, data, formatted){ 
+				var obj = eval("(" + data + ")"); //转换成js对象 
+				$("#q_producer").val(obj.text);
 			});
 		});
 	
@@ -130,7 +142,7 @@
 				'proNo' : $("#q_proNo").textbox("getValue"), 
 				'matName' : $("#q_matName").textbox("getValue"), 
 				'matNo' : $("#q_matNo").textbox("getValue"), 
-				'producer' : $("#q_producer").textbox("getValue")
+				'producer' : $("#q_producer").val()
 			}
 			getData(datagrid, getDataUrl, data);
 		}
@@ -139,7 +151,7 @@
 			$("#q_proNo").textbox('clear');
 			$("#q_matName").textbox('clear');
 			$("#q_matNo").textbox('clear');
-			$("#q_producer").textbox("clear");
+			$("#q_producer").val("");
 			getData(datagrid, getDataUrl, {});
 		}
 		
@@ -155,11 +167,7 @@
 				$("#m_matNo").textbox("setValue", row.matNo);
 				$("#m_matColor").textbox("setValue", row.matColor);
 				$("#m_remark").textbox("setValue", row.remark);
-				$("#m_contacts").textbox("setValue", row.contacts);
-				$("#m_phone").textbox("setValue", row.phone);
-				$("#m_pic_span").show();
-				$("#m_pic_a").attr("href", "${resUrl}/" + row.pic);
-				$("#m_pic").attr("src", "${resUrl}/" + row.pic);
+				$("#m_num").textbox("setValue", row.num);
 				$("#m_id").val(row.id);
 				
 				if($('#qCode').length > 0){
@@ -185,6 +193,24 @@
 		.qlabel{
 			display: inline-block;
 			width: 72px;
+		}
+		
+		.inputAutocomple{
+			border: 1px solid #D3D3D3;
+		    outline-style: none;
+		    resize: none;
+			position: relative;
+		    background-color: #fff;
+		    vertical-align: middle;
+		    display: inline-block;
+		    overflow: hidden;
+		    white-space: nowrap;
+		    margin: 0;
+		    padding: 4px;
+		    border-radius: 5px 5px 5px 5px;
+			height: 22px;
+		    line-height: 22px;
+		    font-size: 12px;
 		}
 	</style>
 

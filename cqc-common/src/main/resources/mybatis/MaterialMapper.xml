@@ -8,18 +8,15 @@
 		<result column="mat_no" property="matNo" jdbcType="VARCHAR" />
 		<result column="mat_color" property="matColor" jdbcType="VARCHAR" />
 		<result column="pro_no" property="proNo" jdbcType="VARCHAR" />
-		<result column="pic" property="pic" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="state" property="state" jdbcType="INTEGER" />
-		<result column="org_id" property="orgId" jdbcType="BIGINT" />
-		<result column="contacts" property="contacts" jdbcType="VARCHAR" />
-		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="producer" property="producer" jdbcType="VARCHAR" />
+		<result column="num" property="num" jdbcType="INTEGER" />
 	</resultMap>
 	
 	<sql id="base_columns">
-		id, type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone, producer
+		id, type, mat_name, mat_no, mat_color, pro_no, remark, create_time, state, producer, num
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -35,10 +32,10 @@
 			SELECT @@IDENTITY
 		</selectKey>
 		
-		insert into material (type, mat_name, mat_no, mat_color, pro_no, pic, remark, create_time, state, org_id, contacts, phone, producer)
+		insert into material (type, mat_name, mat_no, mat_color, pro_no, remark, create_time, state, producer, num)
 		values (#{type,jdbcType=INTEGER}, #{matName,jdbcType=VARCHAR}, #{matNo,jdbcType=VARCHAR}, #{matColor,jdbcType=VARCHAR},
-		#{proNo,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-		#{state,jdbcType=INTEGER}, #{orgId,jdbcType=BIGINT}, #{contacts,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{producer,jdbcType=VARCHAR})
+		#{proNo,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+		#{state,jdbcType=INTEGER}, #{producer,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Material">
@@ -62,25 +59,16 @@
 			<if test="proNo != null">
 				pro_no = #{proNo,jdbcType=VARCHAR},
 			</if>
-			<if test="pic != null">
-				pic = #{pic,jdbcType=VARCHAR},
-			</if>
 				remark = #{remark,jdbcType=VARCHAR},
 			<if test="createTime != null">
 				create_time = #{createTime,jdbcType=TIMESTAMP},
 			</if>
-			<if test="orgId != null" >
-		        org_id = #{orgId,jdbcType=BIGINT},
-		    </if>
-		     <if test="contacts != null" >
-		    	contacts = #{contacts,jdbcType=VARCHAR}, 
-		    </if>
-		    <if test="phone != null" >
-		    	phone = #{phone,jdbcType=VARCHAR},
-		    </if>
 		     <if test="producer != null" >
 		    	producer = #{producer,jdbcType=VARCHAR},
 		    </if>
+		    <if test="num != null">
+				num = #{num,jdbcType=INTEGER},
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -126,16 +114,6 @@
 		        and mat_no like concat('%', #{matNo,jdbcType=VARCHAR}, '%') 
 		      </if>
 		      
-		      <if test="orgId != null">
-				and org_id = #{orgId,jdbcType=BIGINT}
-			  </if>
-			  
-			 <if test="contacts != null" >
-		    	and contacts like concat('%', #{contacts,jdbcType=VARCHAR}, '%')
-		    </if>
-		    <if test="phone != null" >
-		    	and phone like concat('%', #{phone,jdbcType=VARCHAR}, '%')
-		    </if>
 		     <if test="producer != null" >
 		    	and producer like concat('%', #{producer,jdbcType=VARCHAR}, '%')
 		    </if>

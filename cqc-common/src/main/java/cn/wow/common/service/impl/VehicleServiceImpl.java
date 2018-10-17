@@ -1,9 +1,12 @@
 package cn.wow.common.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,4 +78,21 @@ public class VehicleServiceImpl implements VehicleService {
 		return vo;
 	}
 
+	
+	/**
+	 * 是否更新整车信息
+	 */
+	public boolean isUpdateVehicleInfo(Vehicle vehicle, String v_code, String v_proTime, String v_proAddr, String v_remark) {
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (v_code.equals(vehicle.getCode())
+				&& ((StringUtils.isNotBlank(v_proTime) && vehicle.getProTime() != null
+						&& v_proTime.equals(sdf.format(vehicle.getProTime())))
+						|| (StringUtils.isBlank(v_proTime) && vehicle.getProTime() == null))
+				&& v_proAddr.equals(v_proAddr) && v_remark.equals(vehicle.getRemark())) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }

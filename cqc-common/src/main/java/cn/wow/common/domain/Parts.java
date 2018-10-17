@@ -17,19 +17,18 @@ public class Parts extends JpaEntity{
 	private Long id;
     // 类型（1-基准， 2-抽样）
     private Integer type;
-    // 零件号
+    // 零件图号
     private String code;
-    // 名称
+    // 零件名称
     private String name;
-    // 零部件厂商ID
-    private Long orgId;
-    private Org org;
-    // 是否为关键零件：0-否，1-是	
-    private Integer isKey;
-    // 零件型号（如果为关键零件）
-    private String keyCode;
+    // 供应商
+    private String producer;
+    // 供应商代码
+    private String producerCode;
     // 生产日期
     private Date proTime;
+    // 样件数量
+    private Integer num;
     // 生产场地
     private String place;
     // 生产批次
@@ -40,14 +39,7 @@ public class Parts extends JpaEntity{
     private Integer state;
     
     private Date createTime;
-    // 联系人
-    private String contacts;
-    // 联系电话 
-    private String phone;
-    // 生产商
-    private String producer;
-    // 生产商代码
-    private String producerCode;
+    
     
     public Long getId() {
         return id;
@@ -129,54 +121,6 @@ public class Parts extends JpaEntity{
 		this.state = state;
 	}
 	
-	public Long getOrgId() {
-		return orgId;
-	}
-
-	public void setOrgId(Long orgId) {
-		this.orgId = orgId;
-	}
-
-	public Integer getIsKey() {
-		return isKey;
-	}
-
-	public void setIsKey(Integer isKey) {
-		this.isKey = isKey;
-	}
-
-	public String getKeyCode() {
-		return keyCode;
-	}
-
-	public void setKeyCode(String keyCode) {
-		this.keyCode = keyCode;
-	}
-	
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
-	}
-
-	public String getContacts() {
-		return contacts;
-	}
-
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	
 	public String getProducer() {
 		return producer;
 	}
@@ -191,6 +135,14 @@ public class Parts extends JpaEntity{
 
 	public void setProducerCode(String producerCode) {
 		this.producerCode = producerCode == null ? null : producerCode.trim();
+	}
+
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
 	}
 
 	@JsonIgnore

@@ -1,8 +1,12 @@
 package cn.wow.common.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.vo.ResultFlagVO;
@@ -24,4 +28,9 @@ public interface VehicleService {
      * 检查整车信息是否存在
      */
     public ResultFlagVO isExist(Long id, String code, Date proTime, String proAddr);
+    
+    /**
+	 * 是否更新整车信息
+	 */
+	public boolean isUpdateVehicleInfo(Vehicle vehicle, String v_code, String v_proTime, String v_proAddr, String v_remark);
 }

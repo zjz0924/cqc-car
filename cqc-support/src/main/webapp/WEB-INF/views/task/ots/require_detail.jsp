@@ -136,56 +136,41 @@
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span">零件号：</span> 
-							<input id="p_code" name="p_code" class="easyui-textbox" value="${facadeBean.info.parts.code }" style="width:150px;">
-						</td>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>零件名：</span> 
+							<span class="title-span"><span class="req-span">*</span>零件名称：</span> 
 							<input id="p_name" name="p_name" class="easyui-textbox" value="${facadeBean.info.parts.name }" style="width:150px;">
 						</td>
 						<td>
+							<span class="title-span">零件图号：</span> 
+							<input id="p_code" name="p_code" class="easyui-textbox" value="${facadeBean.info.parts.code }" style="width:150px;">
+						</td>
+						<td>
 							<span class="title-span"><span class="req-span">*</span>供应商：</span> 
-							<input id="p_producer" name="p_producer" type="text" value="${facadeBean.info.parts.producer }" class="inputAutocomple" >
+							<input id="p_producer" name="p_producer" type="text" value="${facadeBean.info.parts.producer }" class="inputAutocomple" style="width:150px;">
 						</td>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
-							<input id="p_producerCode" name="p_producerCode" type="text" value="${facadeBean.info.parts.producerCode }" class="inputAutocomple" >
+							<input id="p_producerCode" name="p_producerCode" class="easyui-textbox" value="${facadeBean.info.parts.producerCode }" style="width:150px;">
 						</td>
 					</tr>
 					<tr>
-						<td>
-							<span class="title-span">生产批号：</span> 
-							<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }"  style="width:150px;">
-						</td>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
 							<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false" value="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>"  style="width:150px;">
 						</td>
 						<td>
+							<span class="title-span">样件数量：</span> 
+							<input id="p_num" name="p_num" type="text" class="easyui-textbox" value="${facadeBean.info.parts.num }" style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span">样件批号：</span> 
+							<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }"  style="width:150px;">
+						</td>
+						<td>
 							<span class="title-span">生产场地：</span> 
 							<input id="p_place" name="p_place" class="easyui-textbox" value="${facadeBean.info.parts.place }"  style="width:150px;">
 						</td>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>关键零件：</span> 
-							<select id="p_isKey" name="p_isKey" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto', onChange: function(n, o){isKeyChange()}">
-								<option value="0" <c:if test="${facadeBean.info.parts.isKey == 0 }">selected="selected"</c:if>>否</option>
-								<option value="1" <c:if test="${facadeBean.info.parts.isKey == 1 }">selected="selected"</c:if>>是</option>
-							</select>
-						</td>
 					</tr>
 					<tr>
-						<td>
-							<span class="title-span"><span class="req-span" id="keyCode_req" style="display:none;">*</span>零件型号：</span> 
-							<input id="p_keyCode" name="p_keyCode" class="easyui-textbox" value="${facadeBean.info.parts.keyCode }" style="width:150px;">
-						</td>
-						<td>
-							<span class="title-span">联系人：</span> 
-							<input id="p_contacts" name="p_contacts" class="easyui-textbox" value="${facadeBean.info.parts.contacts }" style="width:150px;">
-						</td>
-						<td>
-							<span class="title-span">联系电话：</span> 
-							<input id="p_phone" name="p_phone" class="easyui-textbox" value="${facadeBean.info.parts.phone }"  style="width:150px;">
-						</td>
 						<td>
 							<span class="title-span">&nbsp;备注：</span> 
 							<input id="p_remark" name="p_remark" class="easyui-textbox" value="${facadeBean.info.parts.remark }" style="width:150px;">	
@@ -208,54 +193,33 @@
 						<input id="m_matName" name="m_matName" class="easyui-textbox" value="${facadeBean.info.material.matName }" style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
-						<input id="m_proNo" name="m_proNo" class="easyui-textbox" value="${facadeBean.info.material.proNo }" style="width:150px;">
+						<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
+						<input id="m_matNo" name="m_matNo" class="easyui-textbox" value="${facadeBean.info.material.matNo }" style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>生产商：</span> 
+						<span class="title-span"><span class="req-span">*</span>供应商：</span> 
 						<input id="m_producer" name="m_producer" type="text"  value="${facadeBean.info.material.producer }" class="inputAutocomple">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
-						<input id="m_matNo" name="m_matNo" class="easyui-textbox" value="${facadeBean.info.material.matNo }" style="width:150px;">
+						<span class="title-span">材料颜色：</span> 
+						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" style="width:150px;">
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>材料颜色：</span> 
-						<input id="m_matColor" name="m_matColor" class="easyui-textbox" value="${facadeBean.info.material.matColor }" style="width:150px;">
+						<span class="title-span"><span class="req-span">*</span>材料批号：</span> 
+						<input id="m_proNo" name="m_proNo" class="easyui-textbox" value="${facadeBean.info.material.proNo }" style="width:150px;">
 					</td>
 					
 					<td>
-						<span class="title-span">联系人：</span> 
-						<input id="m_contacts" name="m_contacts" class="easyui-textbox" value="${facadeBean.info.material.contacts }" style="width:150px;">	
-					</td>
-					
-					<td>
-						<span class="title-span">联系电话：</span> 
-						<input id="m_phone" name="m_phone" class="easyui-textbox" value="${facadeBean.info.material.phone }" style="width:150px;">	
+						<span class="title-span">样品数量：</span> 
+						<input id="m_num" name="m_num" class="easyui-textbox" value="${facadeBean.info.material.num }" style="width:150px;">
 					</td>
 					
 					<td>
 						<span class="title-span">备注：</span> 
 						<input id="m_remark" name="m_remark" class="easyui-textbox" value="${facadeBean.info.material.remark }" style="width:150px;">	
 					</td>
-				</tr>
-				
-				<tr>
-					<td>
-						<span class="title-span">成分表：</span> 
-						<input id="m_pic" name="m_pic" class="easyui-filebox" style="width:150px" data-options="buttonText: '选择'">
-					</td>
-					
-					<c:if test="${ not empty facadeBean.info.material.pic}">
-						<td>
-							<span class="title-span">成分表：</span>
-							<span>
-								<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
-							</span> 
-						</td>
-					</c:if>
 				</tr>
 			</table>
 		</div>
@@ -414,64 +378,28 @@
 				
 				// 整车信息
 				if(!isRequire("v_code", "车型代码必选")){ saving = false; return false; }
-				//if(!isRequire("v_proTime", "整车生产日期必填")){ saving = false; return false; }
 				if(!isRequire("v_proAddr", "整车生产基地必选")){ saving = false; return false; }
 				
 				// 零部件信息
 				var taskType = "${taskType}";
 				if(taskType == 1){
-					//if(!isRequire("p_code", "零件号必填")){ saving = false; return false; }
-					if(!isRequire("p_name", "零部件名称必填")){ saving = false; return false; }
-					//if(!isRequire("p_orgId", "零部件生产商必填")){ saving = false; return false; }
-					if(!isRequire("p_producer", "零部件生产商必填")){ saving = false; return false; }
-					if(!isRequire("p_producerCode", "零部件生产商代码必填")){ saving = false; return false; }
-					if(!isRequire("p_proTime", "零部件生产日期必填")){ saving = false; return false; }
-					//if(!isRequire("p_place", "零部件生产场地必填")){ saving = false; return false; }
-					//if(!isRequire("p_proNo", "零部件生产批号必填")){ saving = false; return false; }
-					var isKey = $("#p_isKey").val();
-					if(isKey == 1){
-						if(!isRequire("p_keyCode", "零件型号必填")){ saving = false; return false; }
-					}
-					//if(!isRequire("p_contacts", "零部件联系人必填")){ saving = false; return false; }
-					//if(!isRequire("p_phone", "零部件联系电话必填")){ saving = false; return false; }
-					
-					var p_phone = $("#p_phone").val();
-					if (!isNull(p_phone)) {
-						if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(p_phone))) {
-							errorMsg("零部件联系电话格式不正确");
-							$("#p_phone").next('span').find('input').focus();
-							saving = false; 
-							return false;
-						}
-					}
+					if(!isRequire("p_name", "零件名称必填")){ saving = false; return false; }
+					if(!isRequire("p_producer", "零件供应商必填")){ saving = false; return false; }
+					if(!isRequire("p_producerCode", "零件供应商代码必填")){ saving = false; return false; }
+					if(!isRequire("p_proTime", "样件生产日期必填")){ saving = false; return false; }
 				}
 				
 				// 原材料信息
-				if(!isRequire("m_matName", "原材料名称必填")){ saving = false; return false; }
-				if(!isRequire("m_proNo", "原材料生产批号必填")){ saving = false; return false; }
-				//if(!isRequire("m_orgId", "材料生产商必填")){ saving = false; return false; }
-				if(!isRequire("m_producer", "材料生产商必填")){ saving = false; return false; }
-				if(!isRequire("m_matNo", "原材料材料牌号必填")){ saving = false; return false; }
-				if(!isRequire("m_matColor", "原材料材料颜色必填")){ saving = false; return false; }
-				
-				//if(!isRequire("m_contacts", "原材料联系人必填")){ saving = false; return false; }
-				//if(!isRequire("m_phone", "原材料联系电话必填")){ saving = false; return false; }
-				
-				var m_phone = $("#m_phone").val();
-				if (!isNull(m_phone)) {
-					if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(m_phone))) {
-						errorMsg("原材料联系电话格式不正确");
-						$("#m_phone").next('span').find('input').focus();
-						saving = false; 
-						return false;
-					}
-				}
+				if(!isRequire("m_matName", "材料名称必填")){ saving = false; return false; }
+				if(!isRequire("m_matNo", "材料牌号必填")){ saving = false; return false; }
+				if(!isRequire("m_producer", "材料供应商必填")){ saving = false; return false; }
+				if(!isRequire("m_proNo", "材料批号必填")){ saving = false; return false; }
 				
 				$("#draft").val(isDraft);
 				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/ots/save",
-					dataType : 'text',
+					dataType : 'json',
 					success:function(msg){
 						var data = eval('(' + msg + ')');
 						if(data.success){
@@ -553,7 +481,6 @@
 			// 新增整车信息
 			function addVehicle(){
 				$("#v_code").textbox("setValue", "");
-				$("#v_type").textbox("setValue", "");
 				$("#v_proTime").datebox('setValue', "");
 				$("#v_proAddr").textbox("setValue", "");
 				$("#v_remark").textbox("setValue", "");
@@ -568,11 +495,9 @@
 				$("#p_place").textbox("setValue", "");
 				$("#p_proNo").textbox("setValue", "");
 				$("#p_remark").textbox("setValue", "");
-				$("#p_keyCode").textbox("setValue", "");
-				$("#p_phone").textbox("setValue", "");
-				$("#p_contacts").textbox("setValue", "");
-				$("#p_isKey").combobox('select', 0);
-				$("#p_producer").textbox('setValue', ""); 
+				$("#p_producer").val(""); 
+				$("#p_producerCode").textbox('setValue', ""); 
+				$("#p_num").textbox('setValue', ""); 
 				$("#p_id").val("");
 			}
 			
@@ -583,20 +508,8 @@
 				$("#m_producer").val("");
 				$("#m_matNo").textbox("setValue", "");
 				$("#m_matColor").textbox("setValue", "");
-				$("#m_contacts").textbox("setValue", "");
-				$("#m_phone").textbox("setValue", "");
 				$("#m_remark").textbox("setValue", "");
-				$("#m_pic").filebox("clear");
-			}
-			
-			function isKeyChange(){
-				var isKey = $("#p_isKey").combobox('getValue');
-				
-				if(isKey == 0){
-					$("#keyCode_req").hide();
-				}else{
-					$("#keyCode_req").show();
-				}
+				$("#m_num").textbox("clear");
 			}
 		</script>
 	

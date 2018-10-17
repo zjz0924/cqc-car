@@ -490,8 +490,8 @@ public class QueryController extends AbstractController {
 				cell8.setCellStyle(styles.get("cell"));
 				if (task.getType() != TaskTypeEnum.GS.getState()) {
 					if (task.getInfo() != null && task.getInfo().getParts() != null
-							&& task.getInfo().getParts().getOrg() != null) {
-						cell8.setCellValue(task.getInfo().getParts().getOrg().getName());
+							&& task.getInfo().getParts().getProducer() != null) {
+						cell8.setCellValue(task.getInfo().getParts().getProducer());
 					}
 				}
 
@@ -504,8 +504,8 @@ public class QueryController extends AbstractController {
 				Cell cell10 = contentRow.createCell(8);
 				cell10.setCellStyle(styles.get("cell"));
 				if (task.getInfo() != null && task.getInfo().getMaterial() != null
-						&& task.getInfo().getMaterial().getOrg() != null) {
-					cell10.setCellValue(task.getInfo().getMaterial().getOrg().getName());
+						&& task.getInfo().getMaterial().getProducer() != null) {
+					cell10.setCellValue(task.getInfo().getMaterial().getProducer());
 				}
 
 				Cell cell11 = contentRow.createCell(9);
