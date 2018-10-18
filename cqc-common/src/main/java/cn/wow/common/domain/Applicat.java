@@ -11,6 +11,8 @@ public class Applicat {
 	private String depart;
 	// 机构
 	private Long orgId;
+	
+	private Org org;
 	// 联系方式
 	private String contact;
 	// 备注
@@ -62,5 +64,13 @@ public class Applicat {
 
 	public void setRemark(String remark) {
 		this.remark = remark == null ? null : remark.trim();
+	}
+
+	public Org getOrg() {
+		return org;
+	}
+
+	public void setOrg(Org org) {
+		this.org = org;
 	}
 }

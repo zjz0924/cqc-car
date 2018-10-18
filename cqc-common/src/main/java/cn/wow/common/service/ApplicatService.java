@@ -15,5 +15,8 @@ public interface ApplicatService {
     public int deleteByPrimaryKey(String userName, Applicat applicat);
 
     public List<Applicat> selectAllList(Map<String, Object> map);
+    
+    // 获取申请人ID
+    public List<Long> selectIds(String applicat_name, String applicat_depart, Integer applicat_org);
 
 }

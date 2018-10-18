@@ -41,6 +41,7 @@ import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.StandardVO;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
@@ -100,12 +101,13 @@ public class PpapTaskController extends AbstractController {
 	private LabReqService labReqService;
 	@Autowired
 	private LabConclusionService labConclusionService;
+	@Autowired
+	private ApplicatService applicatService;
 
 	/**
 	 * 首页
 	 * 
-	 * @param taskType
-	 *            任务类型：２-PPAP，3-SOP
+	 * @param taskType 任务类型：２-PPAP，3-SOP
 	 */
 	@RequestMapping(value = "/index")
 	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose,
@@ -153,8 +155,7 @@ public class PpapTaskController extends AbstractController {
 	/**
 	 * 任务下达列表
 	 * 
-	 * @param taskType
-	 *            任务类型：２-PPAP，3-SOP
+	 * @param taskType 任务类型：２-PPAP，3-SOP
 	 */
 	@RequestMapping(value = "/transmitList")
 	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
@@ -168,9 +169,11 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
-	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
-			String parts_name, String parts_producer, String matName, String mat_producer) {
+	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -187,8 +190,8 @@ public class PpapTaskController extends AbstractController {
 			map.put("type", TaskTypeEnum.SOP.getState());
 		}
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -196,16 +199,17 @@ public class PpapTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -272,34 +276,20 @@ public class PpapTaskController extends AbstractController {
 	/**
 	 * 下达任务结果
 	 * 
-	 * @param t_id
-	 *            任务ID
-	 * @param i_id
-	 *            信息ID
-	 * @param taskType
-	 *            任务类型
-	 * @param partsAtlId
-	 *            零部件图谱实验室ID
-	 * @param matAtlId
-	 *            原材料图谱实验室ID
-	 * @param partsPatId
-	 *            零部件型式实验室ID
-	 * @param matPatId
-	 *            原材料型式实验室ID
-	 * @param applicant
-	 *            申请人
-	 * @param department
-	 *            科室
-	 * @param figure
-	 *            零件图号
-	 * @param num
-	 *            样品数量
-	 * @param origin
-	 *            样品来源
-	 * @param reason
-	 *            抽检原因
-	 * @param provenance
-	 *            实验费用出处
+	 * @param t_id       任务ID
+	 * @param i_id       信息ID
+	 * @param taskType   任务类型
+	 * @param partsAtlId 零部件图谱实验室ID
+	 * @param matAtlId   原材料图谱实验室ID
+	 * @param partsPatId 零部件型式实验室ID
+	 * @param matPatId   原材料型式实验室ID
+	 * @param applicant  申请人
+	 * @param department 科室
+	 * @param figure     零件图号
+	 * @param num        样品数量
+	 * @param origin     样品来源
+	 * @param reason     抽检原因
+	 * @param provenance 实验费用出处
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
@@ -325,7 +315,7 @@ public class PpapTaskController extends AbstractController {
 
 			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId,
 					taskType, labReqList, applicant, department, figure, num, origin, reason, provenance);
-			
+
 			if (!flag) {
 				vo.setSuccess(true);
 				vo.setMsg("操作成功，已有进行中抽样");
@@ -361,9 +351,11 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
-	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
-			String parts_name, String parts_producer, String matName, String mat_producer) {
+	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -380,8 +372,8 @@ public class PpapTaskController extends AbstractController {
 			map.put("type", TaskTypeEnum.SOP.getState());
 		}
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -389,16 +381,17 @@ public class PpapTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -534,16 +527,11 @@ public class PpapTaskController extends AbstractController {
 	/**
 	 * 审批结果
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param result
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
-	 * @param catagory
-	 *            分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
+	 * @param account  操作用户
+	 * @param id       任务ID
+	 * @param result   结果：1-通过，2-不通过
+	 * @param remark   备注
+	 * @param catagory 分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/approve")
@@ -571,14 +559,10 @@ public class PpapTaskController extends AbstractController {
 	/**
 	 * 批量审批结果
 	 * 
-	 * @param account
-	 *            操作用户
-	 * @param id
-	 *            任务ID
-	 * @param result
-	 *            结果：1-通过，2-不通过
-	 * @param remark
-	 *            备注
+	 * @param account 操作用户
+	 * @param id      任务ID
+	 * @param result  结果：1-通过，2-不通过
+	 * @param remark  备注
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchApprove")
@@ -633,9 +617,11 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/confirmListData")
-	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
-			String parts_name, String parts_producer, String matName, String mat_producer) {
+	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -648,8 +634,8 @@ public class PpapTaskController extends AbstractController {
 		map.put("state", SamplingTaskEnum.RECONFIRM.getState());
 		map.put("type", taskType);
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -657,16 +643,17 @@ public class PpapTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -731,12 +718,9 @@ public class PpapTaskController extends AbstractController {
 	/**
 	 * 结果确认
 	 * 
-	 * @param taskId
-	 *            任务ID
-	 * @param result
-	 *            结果：1-第二次抽样，2-中止任务
-	 * @param remark
-	 *            中止任务原因
+	 * @param taskId 任务ID
+	 * @param result 结果：1-第二次抽样，2-中止任务
+	 * @param remark 中止任务原因
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/confirmResult")

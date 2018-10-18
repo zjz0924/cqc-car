@@ -42,6 +42,7 @@ import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.AddressService;
+import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
@@ -98,6 +99,8 @@ public class ApplyController extends AbstractController {
 	private AddressService addressService;
 	@Autowired
 	private CarCodeService carCodeService;
+	@Autowired
+	private ApplicatService applicatService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -128,10 +131,11 @@ public class ApplyController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/taskListData")
-	public Map<String, Object> taskListData(HttpServletRequest request, Model model, String code,
-			String startCreateTime, String endCreateTime, String orgId, String nickName, String startConfirmTime,
-			String endConfirmTime, String parts_code, String parts_name, String parts_producer, String req_name,
-			String matName, String mat_producer) {
+	public Map<String, Object> taskListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String startConfirmTime, String endConfirmTime, String task_code, Integer state,
+			Integer draft, Integer atlType, String parts_name, String parts_producer, String parts_producerCode,
+			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
+			String v_proAddr, String applicat_name, String applicat_depart, Integer applicat_org) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -143,14 +147,8 @@ public class ApplyController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
-		}
-		if (StringUtils.isNotBlank(startCreateTime)) {
-			map.put("startCreateTime", startCreateTime + " 00:00:00");
-		}
-		if (StringUtils.isNotBlank(endCreateTime)) {
-			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startConfirmTime)) {
 			map.put("startConfirmTime", startConfirmTime + " 00:00:00");
@@ -158,11 +156,11 @@ public class ApplyController extends AbstractController {
 		if (StringUtils.isNotBlank(endConfirmTime)) {
 			map.put("endConfirmTime", endConfirmTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 
 		// 非超级管理员，只能看到分配到自己实验室的任务
@@ -170,7 +168,14 @@ public class ApplyController extends AbstractController {
 			map.put("accomplishTask_lab", account.getOrgId());
 		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
+		}
+
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
@@ -598,11 +603,11 @@ public class ApplyController extends AbstractController {
 
 			// 原材料信息
 			Material material = null;
-			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, m_phone,
-					m_contacts, m_num)) {
+			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, m_phone, m_contacts,
+					m_num)) {
 				material = materialService.selectOne(task.getInfo().getmId());
-				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark,
-						date, m_num);
+				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, date,
+						m_num);
 			}
 
 			if (task.getType() == TaskTypeEnum.GS.getState()) {

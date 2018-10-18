@@ -141,17 +141,17 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, int type, Long taskId,
-			int taskType, int draft, int atlType, String atlRemark) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, int type,
+			Long taskId, int taskType, int draft, int atlType, String atlRemark) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
 
-		if(applicat.getId() == null) {
+		if (applicat.getId() == null) {
 			applicatDao.insert(applicat);
-		}else {
-			applicatDao.update(applicat);	
+		} else {
+			applicatDao.update(applicat);
 		}
-		
+
 		if (vehicle.getId() == null) {
 			vehicleDao.insert(vehicle);
 		} else {
@@ -235,24 +235,23 @@ public class InfoServiceImpl implements InfoService {
 			task.setAtlRemark(atlRemark);
 
 			Info info = task.getInfo();
-			if(info.getvId().longValue() != vehicle.getId().longValue()) {
+			if (info.getvId().longValue() != vehicle.getId().longValue()) {
 				info.setvId(vehicle.getId());
 			}
 			if (info.getpId().longValue() != parts.getId().longValue()) {
 				info.setpId(parts.getId());
 			}
 			infoDao.update(info);
-			
 
 			// 更新草稿状态
 			if (task.getDraft() == null || task.getDraft().intValue() != draft) {
-				//this.updateDraft(task.getId(), draft);
+				// this.updateDraft(task.getId(), draft);
 				task.setDraft(draft);
 			}
 
 			if (task.getState() == StandardTaskEnum.EXAMINE_NOTPASS.getState()) {
 				// 更新任务状态
-				//this.updateState(task.getId(), StandardTaskEnum.EXAMINE.getState());
+				// this.updateState(task.getId(), StandardTaskEnum.EXAMINE.getState());
 				task.setState(StandardTaskEnum.EXAMINE.getState());
 			}
 			taskDao.update(task);
@@ -1226,34 +1225,60 @@ public class InfoServiceImpl implements InfoService {
 
 	/**
 	 * 获取信息ID列表
-	 * 
-	 * @param parts_code   零件号
-	 * @param parts_name   零件名称
-	 * @param parts_producer    零件生产商
-	 * @param matName      材料名称
-	 * @param mat_producer      材料生产商
 	 */
-	public List<Long> selectIds(String parts_code, String parts_name, String parts_producer,
-			String matName, String mat_producer) {
+	public List<Long> selectIds(String parts_name, String parts_producer, String parts_producerCode,
+			String startProTime, String endProTime, String matName, String matNo, String mat_producer, String v_code,
+			String v_proAddr) {
 
+		List<Long> vIdList = new ArrayList<Long>();
 		List<Long> pIdList = new ArrayList<Long>();
 		List<Long> mIdList = new ArrayList<Long>();
 		List<Long> iIdList = new ArrayList<Long>();
+
+		// 整车信息
+		Map<String, Object> vMap = new PageMap(false);
+		if (StringUtils.isNotBlank(v_code)) {
+			vMap.put("code", v_code);
+		}
+		if (StringUtils.isNotBlank(v_proAddr)) {
+			vMap.put("proAddr", v_proAddr);
+		}
+
+		if (vMap.size() > 3) {
+			List<Vehicle> vehicleList = vehicleDao.selectAllList(vMap);
+			if (vehicleList != null && vehicleList.size() > 0) {
+				for (Vehicle v : vehicleList) {
+					if (v != null) {
+						vIdList.add(v.getId());
+					}
+				}
+			} else {
+				vIdList.add(-1l);
+			}
+		}
 
 		// 零部件
 		Map<String, Object> pMap = new PageMap(false);
 		pMap.put("notstate", 2);
 
-		if (StringUtils.isNotBlank(parts_code)) {
-			pMap.put("qcode", parts_code);
-		}
-
 		if (StringUtils.isNotBlank(parts_name)) {
 			pMap.put("name", parts_name);
 		}
 
+		if (StringUtils.isNotBlank(parts_producerCode)) {
+			pMap.put("qproducerCode", parts_producerCode);
+		}
+
 		if (StringUtils.isNotBlank(parts_producer)) {
 			pMap.put("qproducer", parts_producer);
+		}
+
+		if (StringUtils.isNotBlank(startProTime)) {
+			pMap.put("startProTime", startProTime);
+		}
+
+		if (StringUtils.isNotBlank(endProTime)) {
+			pMap.put("endProTime", endProTime);
 		}
 
 		if (pMap.size() > 4) {
@@ -1277,8 +1302,12 @@ public class InfoServiceImpl implements InfoService {
 			mMap.put("qmatName", matName);
 		}
 
+		if (StringUtils.isNotBlank(matNo)) {
+			mMap.put("qmatNo", matNo);
+		}
+
 		if (StringUtils.isNotBlank(mat_producer)) {
-			mMap.put("producer", mat_producer);
+			mMap.put("qproducer", mat_producer);
 		}
 
 		if (mMap.size() > 4) {
@@ -1296,12 +1325,15 @@ public class InfoServiceImpl implements InfoService {
 
 		// 信息
 		Map<String, Object> iMap = new PageMap(false);
-		if (mIdList.size() > 0 || pIdList.size() > 0) {
+		if (mIdList.size() > 0 || pIdList.size() > 0 || vIdList.size() > 0) {
 			if (mIdList.size() > 0) {
 				iMap.put("mIdList", mIdList);
 			}
 			if (pIdList.size() > 0) {
 				iMap.put("pIdList", pIdList);
+			}
+			if(vIdList.size() > 0) {
+				iMap.put("vIdList", vIdList);
 			}
 
 			List<Info> infoList = infoDao.selectAllList(iMap);

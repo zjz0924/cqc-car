@@ -180,6 +180,14 @@ public class OtsTaskController extends AbstractController {
 	public String requireList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", REQUIRE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+
 		return "task/ots/require_list";
 	}
 
@@ -190,8 +198,11 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/requireListData")
 	public Map<String, Object> requireListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, Integer state, int taskType, String task_code, String parts_code, String parts_name,
-			String parts_producer, String req_name, String matName, String mat_producer, Integer draft) {
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
+
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -210,30 +221,37 @@ public class OtsTaskController extends AbstractController {
 		}
 		map.put("type", taskType);
 
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
+		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(task_code)) {
-			map.put("code", task_code);
-		}
-		if (StringUtils.isNotBlank(req_name)) {
-			map.put("userName", req_name);
-		}
 		if (draft != null) {
 			map.put("draft", draft);
 		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
+		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
 
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
+		}
+
 		// 除了超级管理员，其它用户只能查看自己录入的申请记录
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-			map.put("aId", account.getId());
+			map.put("applicatId", account.getId());
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -244,7 +262,6 @@ public class OtsTaskController extends AbstractController {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		dataMap.put("total", pageList.getTotal());
 		dataMap.put("rows", pageList.getResult());
-
 		return dataMap;
 	}
 
@@ -500,9 +517,11 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examineListData")
-	public Map<String, Object> examineListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
-			String parts_name, String parts_producer, String matName, String mat_producer) {
+	public Map<String, Object> examineListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -516,8 +535,8 @@ public class OtsTaskController extends AbstractController {
 		map.put("type", taskType);
 		map.put("neDraft", "1");
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -525,16 +544,17 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -709,9 +729,11 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
-	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
-			String parts_name, String parts_producer, String matName, String mat_producer) {
+	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -731,8 +753,8 @@ public class OtsTaskController extends AbstractController {
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", taskType);
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -740,16 +762,17 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -897,9 +920,11 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
-	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String code, String orgId,
-			String startCreateTime, String endCreateTime, String nickName, int taskType, String parts_code,
-			String parts_name, String parts_producer, String matName, String mat_producer) {
+	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
+			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -918,8 +943,8 @@ public class OtsTaskController extends AbstractController {
 
 		map.put("type", taskType);
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -927,16 +952,17 @@ public class OtsTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);

@@ -37,6 +37,7 @@ import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
+import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
@@ -80,6 +81,8 @@ public class QueryController extends AbstractController {
 	private TaskRecordService taskRecordService;
 	@Autowired
 	private TaskInfoService taskInfoService;
+	@Autowired
+	private ApplicatService applicatService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -100,11 +103,12 @@ public class QueryController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
-	public Map<String, Object> getListData(HttpServletRequest request, Model model, String code, String startCreateTime,
-			String endCreateTime, String taskType, String orgId, String nickName, String startConfirmTime,
-			String endConfirmTime, String parts_code, String parts_name, String parts_producer, String matName,
-			String mat_producer, String applicant, String department, String reason,
-			String provenance) {
+	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startConfirmTime,
+			String endConfirmTime, String reason, String provenance, String task_code, Integer state, Integer draft,
+			Integer atlType, String parts_name, String parts_producer, String parts_producerCode, String startProTime,
+			String endProTime, String matName, String mat_producer, String matNo, String v_code, String v_proAddr,
+			String applicat_name, String applicat_depart, Integer applicat_org, String startCreateTime,
+			String endCreateTime, String taskType) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -118,9 +122,9 @@ public class QueryController extends AbstractController {
 		map.put("custom_order_sql", "t.create_time desc");
 		queryMap.put("custom_order_sql", "t.create_time desc");
 
-		if (StringUtils.isNotBlank(code)) {
-			map.put("code", code);
-			queryMap.put("code", code);
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
+			queryMap.put("code", task_code);
 		}
 		if (StringUtils.isNotBlank(startCreateTime)) {
 			map.put("startCreateTime", startCreateTime + " 00:00:00");
@@ -138,20 +142,12 @@ public class QueryController extends AbstractController {
 			map.put("endConfirmTime", endConfirmTime + " 23:59:59");
 			queryMap.put("endConfirmTime", endConfirmTime + " 23:59:59");
 		}
-		if (StringUtils.isNotBlank(nickName)) {
-			map.put("nickName", nickName);
-			queryMap.put("nickName", nickName);
-		}
-		if (StringUtils.isNotBlank(orgId)) {
-			map.put("orgId", orgId);
-			queryMap.put("orgId", orgId);
-		}
 		if (StringUtils.isNotBlank(taskType)) {
 			map.put("type", taskType);
 			queryMap.put("type", taskType);
 		}
 
-		List<Long> taskInfoIdList = taskInfoService.getTaskIds(applicant, department, reason, provenance);
+		List<Long> taskInfoIdList = taskInfoService.getTaskIds(applicat_name, applicat_depart, reason, provenance);
 
 		/**
 		 * 1) SQE审批人全范围 2) 其它审批人只能查看本部门的任务 3) 其它人只能看自己的任务
@@ -198,9 +194,16 @@ public class QueryController extends AbstractController {
 			}
 		}
 
-		List<Long> iIdList = infoService.selectIds(parts_code, parts_name, parts_producer, matName, mat_producer);
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
+		}
+		
+		// 申请人信息
+		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);

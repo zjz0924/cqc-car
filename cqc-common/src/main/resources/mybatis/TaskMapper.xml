@@ -439,6 +439,11 @@
 				and t.i_id in <foreach collection="iIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
 			</if>
 			
+			<!-- 申请人ID -->
+			<if test="applicatIdList != null">
+				and t.applicat_id in <foreach collection="applicatIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
+			
 			<!-- 实验室ID -->
 			<if test="labOrgId != null">
 				and (t.parts_atl_id = #{labOrgId, jdbcType=BIGINT} or t.mat_atl_id = #{labOrgId, jdbcType=BIGINT} or t.parts_pat_id = #{labOrgId, jdbcType=BIGINT} or t.mat_pat_id = #{labOrgId, jdbcType=BIGINT})

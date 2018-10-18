@@ -387,6 +387,15 @@
 					if(!isRequire("p_producer", "零件供应商必填")){ saving = false; return false; }
 					if(!isRequire("p_producerCode", "零件供应商代码必填")){ saving = false; return false; }
 					if(!isRequire("p_proTime", "样件生产日期必填")){ saving = false; return false; }
+					
+					var pNum = $("#p_num").textbox("getValue");
+					if(!isNull(pNum) && isNaN(pNum)){
+						saving = false;
+						errorMsg("系统提示：提交失败，样件数量必须为整数");
+						$("#p_num").next('span').find('input').focus();
+						$("#p_num").textbox("setValue", "");
+						return false;
+					}
 				}
 				
 				// 原材料信息
@@ -395,13 +404,21 @@
 				if(!isRequire("m_producer", "材料供应商必填")){ saving = false; return false; }
 				if(!isRequire("m_proNo", "材料批号必填")){ saving = false; return false; }
 				
+				var mNum = $("#m_num").textbox("getValue");
+				if(!isNull(mNum) && isNaN(mNum)){
+					saving = false;
+					errorMsg("系统提示：提交失败，样品数量必须为整数");
+					$("#m_num").next('span').find('input').focus();
+					$("#m_num").textbox("setValue", "");
+					return false;
+				}
+				
 				$("#draft").val(isDraft);
 				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/ots/save",
 					dataType : 'json',
-					success:function(msg){
-						var data = eval('(' + msg + ')');
+					success:function(data){
 						if(data.success){
 							tipMsg(data.msg, function(){
 								window.location.reload();

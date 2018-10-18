@@ -117,7 +117,7 @@
 						}
 					}, {
 						field : 'info.parts.name',
-						title : '零件名',
+						title : '零件名称',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
@@ -128,7 +128,7 @@
 						}
 					}, {
 						field : 'info.parts.producer',
-						title : '生产商',
+						title : '供应商',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
@@ -136,6 +136,17 @@
 							if(!isNull(parts)){
 								return "<span title='"+ parts.producer +"'>"+ parts.producer +"</span>";
 							}
+						}
+					}, {
+						field : 'info.parts.producerCode',
+						title : '供应商代码',
+						width : '80',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.info.parts;
+							if(!isNull(parts)){
+								return "<span title='"+ parts.producerCode +"'>"+ parts.producerCode +"</span>";
+							}							
 						}
 					}, {
 						field : 'info.material.name',
@@ -150,7 +161,7 @@
 						}
 					}, {
 						field : 'info.material.producer',
-						title : '生产商',
+						title : '供应商',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
@@ -287,7 +298,7 @@
 					}
 				});
 				
-				// 零部件生产商
+				// 零部件供应商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -305,7 +316,7 @@
 					$("#parts_producer").val(obj.text);
 				});
 				
-				// 原材料生产商
+				// 原材料供应商
 				$("#mat_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -476,7 +487,7 @@
 				</div>
 				
 				<div style="margin-top: 5px;">
-					<span class="qlabel">材料生产商：</span>
+					<span class="qlabel">材料供应商：</span>
 					<input id="mat_producer" name="mat_producer" type="text"  class="inputAutocomple" style="width:168px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">材料名称：</span>
@@ -496,10 +507,10 @@
 					<span class="qlabel">零件号：</span>
 					<input id="parts_code" name="parts_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel">零件名：</span>
+					<span class="qlabel">零件名称：</span>
 					<input id="parts_name" name="parts_name" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel">零件生产商：</span>
+					<span class="qlabel">零件供应商：</span>
 					<input id="parts_producer" name="parts_producer" type="text"  class="inputAutocomple" style="width:168px;">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>

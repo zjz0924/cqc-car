@@ -111,11 +111,19 @@
 		      </if>
 		      
 		      <if test="matNo != null and matNo != ''" >
-		        and mat_no like concat('%', #{matNo,jdbcType=VARCHAR}, '%') 
+		        and mat_no = #{matNo,jdbcType=VARCHAR}
+		      </if>
+		      
+		      <if test="qmatNo != null and qmatNo != ''" >
+		        and mat_no like concat('%', #{qmatNo,jdbcType=VARCHAR}, '%') 
 		      </if>
 		      
 		     <if test="producer != null" >
-		    	and producer like concat('%', #{producer,jdbcType=VARCHAR}, '%')
+		    	and producer = #{producer,jdbcType=VARCHAR}
+		    </if>
+		    
+		     <if test="qproducer != null" >
+		    	and producer like concat('%', #{qproducer,jdbcType=VARCHAR}, '%')
 		    </if>
 	      </where>
 	      
