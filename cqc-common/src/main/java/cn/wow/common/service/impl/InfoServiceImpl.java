@@ -331,12 +331,18 @@ public class InfoServiceImpl implements InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material) {
+			Material material, Applicat applicat, int atlType, String atlRemark) {
 
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
 		Info info = task.getInfo();
+		
+		// 更新申请人信息
+		applicatDao.update(applicat);
+		
+		task.setAtlType(atlType);
+		task.setAtlRemark(atlRemark);
 
 		if (task.getType().intValue() == TaskTypeEnum.OTS.getState()) {
 			// 先检查有没有在用
@@ -388,15 +394,19 @@ public class InfoServiceImpl implements InfoService {
 
 		if (result == 1) {
 			// 更新任务状态
-			this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
+			//this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
+			task.setState(StandardTaskEnum.TESTING.getState());
 			record.setState(StandardTaskRecordEnum.EXAMINE_PASS.getState());
 			record.setRemark("信息审核通过");
 		} else {
 			// 审核不通过
-			this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
+			//this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
+			task.setState(StandardTaskEnum.EXAMINE_NOTPASS.getState());
 			record.setState(StandardTaskRecordEnum.EXAMINE_NOTPASS.getState());
 			record.setRemark(remark);
 		}
+		
+		taskDao.update(task);
 		taskRecordDao.insert(record);
 
 		String str = result == 1 ? "通过" : "不通过";

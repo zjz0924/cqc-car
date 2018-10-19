@@ -292,8 +292,8 @@
 							'matName': $("#matName").textbox("getValue"),
 							'matNo': $("#matNo").textbox("getValue"),
 							'mat_producer': $("#mat_producer").val(),
-							'v_code': $("#v_code").combobox('getValue'),
-							'v_proAddr': $("#v_proAddr").combobox('getValue'),
+							'v_code': $("#q_v_code").combobox('getValue'),
+							'v_proAddr': $("#q_v_proAddr").combobox('getValue'),
 							'applicat_name': $("#applicat_name").textbox("getValue"),
 							'applicat_depart': $("#applicat_depart").textbox("getValue"),
 							'applicat_org': $('#applicat_org').combotree('getValue'),
@@ -344,27 +344,26 @@
 				
 				// 机构单位
 				$('#applicat_org').combotree({
-					url: '${ctx}/org/getTreeByType?type=3',
+					url: '${ctx}/org/getTreeByType?type=2',
 					multiple: false,
-					animate: true
+					animate: true,
+				    onBeforeSelect: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				    }
 				});
-				
 				
 				if("${taskType}" == 4){
 					var dg = $("#" + datagrid);
-					// 隐藏列
-					dg.datagrid('hideColumn', 'info.parts.name'); 
-					dg.datagrid('hideColumn', 'info.parts.org'); 
-					dg.datagrid('hideColumn', 'info.parts.code'); 
-					
-					// 修改列宽度 
-					dg.datagrid('getColumnOption', 'code').width = 180;
-					dg.datagrid('getColumnOption', 'state').width = 110;
-					dg.datagrid('getColumnOption', 'info.vehicle.type').width = 140;
-					dg.datagrid('getColumnOption', 'info.material.name').width = 160;
-					dg.datagrid('getColumnOption', 'info.material.org').width = 160;
-					dg.datagrid('getColumnOption', 'account').width = 100;
-					dg.datagrid('getColumnOption', 'createTime').width = 160;
+					// 隐藏零件信息
+					dg.datagrid('hideColumn', 'info.parts.producer'); 
+					dg.datagrid('hideColumn', 'info.parts.producerCode'); 
+					dg.datagrid('hideColumn', 'info.parts.proTime'); 
+					dg.datagrid('hideColumn', 'info.parts.name');
+					dg.datagrid('hideColumn', 'datagrid-td-group1-0-1');
 					dg.datagrid();
 				}
 			});
@@ -383,8 +382,8 @@
 					'matName': $("#matName").textbox("getValue"),
 					'matNo': $("#matNo").textbox("getValue"),
 					'mat_producer': $("#mat_producer").val(),
-					'v_code': $("#v_code").combobox('getValue'),
-					'v_proAddr': $("#v_proAddr").combobox('getValue'),
+					'v_code': $("#q_v_code").combobox('getValue'),
+					'v_proAddr': $("#q_v_proAddr").combobox('getValue'),
 					'applicat_name': $("#applicat_name").textbox("getValue"),
 					'applicat_depart': $("#applicat_depart").textbox("getValue"),
 					'applicat_org': $('#applicat_org').combotree('getValue'),
@@ -407,8 +406,8 @@
 				$("#matName").textbox("setValue","");
 				$("#matNo").textbox("setValue","");
 				$("#mat_producer").val("");
-				$("#v_code").textbox("setValue","");
-				$("#v_proAddr").textbox("setValue","");
+				$("#q_v_code").textbox("setValue","");
+				$("#q_v_proAddr").textbox("setValue","");
 				$("#applicat_name").textbox("setValue","");
 				$("#applicat_depart").textbox("setValue","");
 				$('#applicat_org').combotree('setValue', "");
@@ -503,7 +502,7 @@
 					<input id="mat_producer" name="mat_producer" type="text"  class="inputAutocomple" style="width:168px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">车型代码：</span>
-					<select id="v_code" name="v_code" style="width:168px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+					<select id="q_v_code" name="q_v_code" style="width:168px;" class="easyui-combobox" data-options="panelHeight: '200px'">
 						<option value="">请选择</option>
 						<c:forEach items="${carCodeList}" var="vo">
 							<option value="${vo.code}" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>${vo.code}</option>
@@ -513,7 +512,7 @@
 				
 				<div style="margin-top: 5px;">
 					<span class="qlabel">生产基地：</span>
-					<select id="v_proAddr" name="v_proAddr" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+					<select id="q_v_proAddr" name="q_v_proAddr" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">请选择</option>
 						<c:forEach items="${addressList}" var="vo">
 							<option value="${vo.name}" <c:if test="${facadeBean.info.vehicle.proAddr == vo.name }">selected="selected"</c:if>>${vo.name}</option>

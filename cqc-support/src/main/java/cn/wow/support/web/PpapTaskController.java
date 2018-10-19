@@ -170,7 +170,7 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String endCreateTime, String task_code, Integer atlType, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Integer applicat_org, int taskType) {
@@ -198,6 +198,9 @@ public class PpapTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -352,7 +355,7 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String endCreateTime, String task_code, Integer atlType, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Integer applicat_org, int taskType) {
@@ -380,6 +383,9 @@ public class PpapTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -618,7 +624,7 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/confirmListData")
 	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String endCreateTime, String task_code, Integer atlType, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Integer applicat_org, int taskType) {
@@ -642,6 +648,9 @@ public class PpapTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,

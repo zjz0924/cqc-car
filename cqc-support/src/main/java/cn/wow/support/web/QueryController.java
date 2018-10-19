@@ -104,11 +104,11 @@ public class QueryController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
 	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startConfirmTime,
-			String endConfirmTime, String reason, String provenance, String task_code, Integer state, Integer draft,
-			Integer atlType, String parts_name, String parts_producer, String parts_producerCode, String startProTime,
-			String endProTime, String matName, String mat_producer, String matNo, String v_code, String v_proAddr,
-			String applicat_name, String applicat_depart, Integer applicat_org, String startCreateTime,
-			String endCreateTime, String taskType) {
+			String endConfirmTime, String reason, String provenance, String task_code, Integer atlType,
+			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
+			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org, String startCreateTime, String endCreateTime,
+			String taskType) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -145,6 +145,10 @@ public class QueryController extends AbstractController {
 		if (StringUtils.isNotBlank(taskType)) {
 			map.put("type", taskType);
 			queryMap.put("type", taskType);
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
+			queryMap.put("atlType", atlType);
 		}
 
 		List<Long> taskInfoIdList = taskInfoService.getTaskIds(applicat_name, applicat_depart, reason, provenance);
@@ -199,7 +203,7 @@ public class QueryController extends AbstractController {
 		if (iIdList.size() > 0) {
 			map.put("iIdList", iIdList);
 		}
-		
+
 		// 申请人信息
 		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {

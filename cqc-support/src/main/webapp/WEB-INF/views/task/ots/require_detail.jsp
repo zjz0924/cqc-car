@@ -342,13 +342,8 @@
 				$('#applicatOrg').combotree({
 					url: '${ctx}/org/getTreeByType?type=2',
 					multiple: false,
-					animate: true
-				});
-				
-				// 只能选择子节点
-				var mOrgTree = $('#applicatOrg').combotree('tree');	
-				mOrgTree.tree({
-				   onBeforeSelect: function(node){
+					animate: true,
+					onBeforeSelect: function(node){
 					   if(isNull(node.children)){
 							return true;
 					   }else{
@@ -497,9 +492,9 @@
 			
 			// 新增整车信息
 			function addVehicle(){
-				$("#v_code").textbox("setValue", "");
+				$("#v_code").combobox("select", '');
+				$("#v_proAddr").combobox("select", "");
 				$("#v_proTime").datebox('setValue', "");
-				$("#v_proAddr").textbox("setValue", "");
 				$("#v_remark").textbox("setValue", "");
 				$("#v_id").val("");
 			}

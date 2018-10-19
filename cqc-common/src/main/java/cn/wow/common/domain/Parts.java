@@ -31,7 +31,7 @@ public class Parts extends JpaEntity{
     private Integer num;
     // 生产场地
     private String place;
-    // 生产批次
+    // 样件批号
     private String proNo;
     // 备注
     private String remark;

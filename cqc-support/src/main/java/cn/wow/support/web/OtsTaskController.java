@@ -509,6 +509,14 @@ public class OtsTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", EXAMINE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+
 		return "task/ots/examine_list";
 	}
 
@@ -518,10 +526,10 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/examineListData")
 	public Map<String, Object> examineListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int taskType) {
+			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
+			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
+			Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -543,6 +551,9 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -631,20 +642,29 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
-	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
-			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, Long p_id, Integer p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
-			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int result, String examine_remark,
-			Long id, String p_producer, String m_producer, String p_producerCode, int m_num) {
+	public AjaxVO examine(HttpServletRequest request, Model model, Long applicat_id, String applicatName,
+			String applicatDepart, Long applicatOrg, String applicatContact, String applicatRemark, Long v_id,
+			String v_code, String v_proTime, String v_proAddr, String v_remark, int atlType, String atlRemark,
+			String p_code, String p_name, String p_proTime, String p_place, String p_proNo, Long p_id, int p_num,
+			String p_remark, Long m_id, String m_matName, String m_matColor, String m_proNo, String m_matNo,
+			String m_remark, Long t_id, int taskType, int result, String examine_remark, Long id, String p_producer,
+			String m_producer, String p_producerCode, int m_num) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
+			// 申请人信息
+			Applicat applicat = applicatService.selectOne(applicat_id);
+			applicat.setName(applicatName);
+			applicat.setDepart(applicatDepart);
+			applicat.setOrgId(applicatOrg);
+			applicat.setContact(applicatContact);
+			applicat.setRemark(applicatRemark);
+
 			// 整车信息
-			Vehicle vehicle = null;
-			vehicle = vehicleService.selectOne(v_id);
+			Vehicle vehicle = vehicleService.selectOne(v_id);
 			if (vehicleService.isUpdateVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark)) {
 				vehicle.setProTime(sdf.parse(v_proTime));
 				vehicle.setProAddr(v_proAddr);
@@ -666,7 +686,6 @@ public class OtsTaskController extends AbstractController {
 				parts = partsService.selectOne(p_id);
 				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark,
 						p_num)) {
-
 					parts.setProTime(sdf.parse(p_proTime));
 					parts.setRemark(p_remark);
 					parts.setPlace(p_place);
@@ -697,7 +716,8 @@ public class OtsTaskController extends AbstractController {
 			material.setProducer(m_producer);
 			material.setNum(m_num);
 
-			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material);
+			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, applicat, atlType,
+					atlRemark);
 
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
@@ -721,6 +741,14 @@ public class OtsTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
+		
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+		
 		return "task/ots/transmit_list";
 	}
 
@@ -730,10 +758,10 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int taskType) {
+			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
+			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
+			Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -761,6 +789,9 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -912,6 +943,14 @@ public class OtsTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
+		
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+		
 		return "task/ots/approve_list";
 	}
 
@@ -921,10 +960,10 @@ public class OtsTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int taskType) {
+			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
+			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
+			Integer applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -951,6 +990,9 @@ public class OtsTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,

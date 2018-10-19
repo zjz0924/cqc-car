@@ -132,10 +132,10 @@ public class ApplyController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/taskListData")
 	public Map<String, Object> taskListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String startConfirmTime, String endConfirmTime, String task_code, Integer state,
-			Integer draft, Integer atlType, String parts_name, String parts_producer, String parts_producerCode,
-			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
-			String v_proAddr, String applicat_name, String applicat_depart, Integer applicat_org) {
+			String endCreateTime, String startConfirmTime, String endConfirmTime, String task_code, Integer atlType,
+			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
+			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Integer applicat_org) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -161,6 +161,9 @@ public class ApplyController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (atlType != null) {
+			map.put("atlType", atlType);
 		}
 
 		// 非超级管理员，只能看到分配到自己实验室的任务

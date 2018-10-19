@@ -47,7 +47,7 @@ public interface InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material);
+			Material material, Applicat applicat, int atlType, String atlRemark);
 
 	/**
 	 * 更新任务状态
@@ -135,13 +135,11 @@ public interface InfoService {
 	public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList,
 			List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass);
 
-	
 	/**
 	 * 获取信息ID列表
 	 */
 	public List<Long> selectIdList(Map<String, Object> map);
 
-	
 	/**
 	 * 获取信息ID列表
 	 */
