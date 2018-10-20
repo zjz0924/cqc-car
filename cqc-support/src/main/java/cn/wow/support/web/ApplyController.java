@@ -120,6 +120,13 @@ public class ApplyController extends AbstractController {
 
 		Menu menu = menuService.selectByAlias("updateApply");
 
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+
 		model.addAttribute("menuName", menu.getName());
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		return "apply/task_list";
@@ -557,9 +564,9 @@ public class ApplyController extends AbstractController {
 	@RequestMapping(value = "/applyInfoSave")
 	public AjaxVO applyInfoSave(HttpServletRequest request, Model model, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_remark, String m_matName, int p_num, String m_matColor, String m_proNo,
-			String m_matNo, String m_remark, String p_phone, String m_phone, String m_contacts, String p_producer,
-			String p_producerCode, String m_producer, Long t_id, int m_num) {
+			String p_proNo, int p_num, String p_producer, String p_producerCode, String p_remark, String m_matName,
+			String m_matColor, String m_proNo, String m_matNo, String m_remark, int m_num, String m_producer,
+			Long t_id) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -587,10 +594,10 @@ public class ApplyController extends AbstractController {
 			if (task.getType() != TaskTypeEnum.GS.getState()) {
 				// 零部件信息
 				parts = partsService.selectOne(task.getInfo().getpId());
-				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark,
-						p_num)) {
+				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
+						p_producer, p_producerCode)) {
 					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date,
-							p_num);
+							p_num, p_producerCode);
 
 					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getName(), parts.getProTime(),
 							p_producer, p_producerCode).getFlag();
@@ -606,8 +613,7 @@ public class ApplyController extends AbstractController {
 
 			// 原材料信息
 			Material material = null;
-			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, m_phone, m_contacts,
-					m_num)) {
+			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, m_num)) {
 				material = materialService.selectOne(task.getInfo().getmId());
 				assembleMaterialInfo(material, m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, date,
 						m_num);
@@ -771,11 +777,10 @@ public class ApplyController extends AbstractController {
 	 * @return
 	 */
 	boolean isUpdateMetailInfo(String m_matName, String m_matColor, String m_proNo, String m_producer, String m_matNo,
-			String m_remark, String m_phone, String m_contacts, int m_num) {
+			String m_remark, int m_num) {
 		if (StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_matColor) && StringUtils.isBlank(m_proNo)
 				&& StringUtils.isBlank(m_matNo) && StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_remark)
-				&& StringUtils.isBlank(m_producer) && StringUtils.isBlank(m_phone) && m_num == 0
-				&& StringUtils.isBlank(m_contacts)) {
+				&& StringUtils.isBlank(m_producer) && m_num == 0) {
 			return false;
 		} else {
 			return true;
@@ -816,7 +821,7 @@ public class ApplyController extends AbstractController {
 	 * 组装零部件信息
 	 */
 	void assemblePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place, String p_proNo,
-			String p_producer, String p_remark, Date date, int p_num) {
+			String p_producer, String p_remark, Date date, int p_num, String p_producerCode) {
 
 		if (StringUtils.isNotBlank(p_code)) {
 			parts.setCode(p_code);
@@ -844,6 +849,10 @@ public class ApplyController extends AbstractController {
 
 		if (StringUtils.isNotBlank(p_producer)) {
 			parts.setProducer(p_producer);
+		}
+
+		if (StringUtils.isNotBlank(p_producerCode)) {
+			parts.setProducerCode(p_producerCode);
 		}
 
 		if (StringUtils.isNotBlank(p_remark)) {

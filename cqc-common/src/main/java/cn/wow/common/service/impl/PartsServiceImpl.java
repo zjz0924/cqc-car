@@ -98,19 +98,19 @@ public class PartsServiceImpl implements PartsService {
 	public List<String> getProduceList(String name) {
 		return partsDao.getProduceList(name);
 	}
-	
-	
+
 	/**
 	 * 是否更新零部件信息
 	 */
 	public boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_remark, int p_num) {
+			String p_proNo, String p_remark, int p_num, String p_producer, String p_producerCode) {
 
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
 				&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
-				&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark()) && p_num == parts.getNum()) {
+				&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark()) && p_num == parts.getNum()
+				&& parts.getProducer().equals(p_producer) && parts.getProducerCode().equals(p_producerCode)) {
 			return false;
 		} else {
 			return true;

@@ -23,6 +23,113 @@
 				</div>		
 			</c:if>
 			
+			<!-- 申请人信息 -->
+			<div style="margin-top:20px;">
+				<div class="title">申请人信息</div>
+				<table class="info">
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>申请人：</span> 
+							<input id="applicatName" name="applicatName" class="easyui-textbox" value="${facadeBean.applicat.name }" style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>科室：</span> 
+							<input id="applicatDepart" name="applicatDepart" class="easyui-textbox" value="${facadeBean.applicat.depart }" style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>机构/单位：</span> 
+							<input id="applicatOrg" name="applicatOrg" style="width: 168px;"/>
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>联系方式：</span> 
+							<input id="applicatContact" name="applicatContact" class="easyui-textbox" value="${facadeBean.applicat.contact }"  style="width:150px;">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span">备注：</span> 
+							<input id="applicatRemark" name="applicatRemark" class="easyui-textbox" value="${facadeBean.applicat.remark }"  style="width:150px;">
+						</td>
+					</tr>
+				</table>
+			</div>	
+			
+			<!-- 试验类型 -->
+			<div style="margin-top:20px;">
+				<div class="title">试验类型</div>
+				<table class="info">
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>类型：</span> 
+							<select id="v_code" name="v_code" style="width:160px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+								<option value="">请选择</option>
+								<option value="1" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>零件图谱</option>
+								<option value="2" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>材料图谱</option>
+							</select>
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>实验室：</span> 
+							<input id="applicat_org" name="applicat_org" style="width: 168px;"/>
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>期望完成时间：</span> 
+							<input id="v_proTime" name="v_proTime" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.info.vehicle.proTime }' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>" style="width:150px;">
+						</td>
+						<td>
+							<span class="title-span">备注：</span> 
+							<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" style="width:150px;">	
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<!-- 抽样原因 -->
+			<div style="margin-top:20px;">
+				<div class="title">抽样原因</div>
+				<table class="info">
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>样件来源：</span> 
+							<select id="v_code" name="v_code" style="width:160px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+								<option value="">请选择</option>
+								<c:forEach items="${carCodeList}" var="vo">
+									<option value="${vo.code}" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>${vo.code}</option>
+								</c:forEach>
+							</select>
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>抽样原因：</span> 
+							<select id="v_code" name="v_code" style="width:160px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+								<option value="">请选择</option>
+								<c:forEach items="${carCodeList}" var="vo">
+									<option value="${vo.code}" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>${vo.code}</option>
+								</c:forEach>
+							</select>
+						</td>
+						<td>
+							<span class="title-span">其他原因描述：</span> 
+							<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" style="width:150px;">	
+						</td>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>费用出处：</span> 
+							<select id="v_code" name="v_code" style="width:160px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+								<option value="">请选择</option>
+								<c:forEach items="${carCodeList}" var="vo">
+									<option value="${vo.code}" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>${vo.code}</option>
+								</c:forEach>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span">备注：</span> 
+							<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" style="width:150px;">	
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+		
 			<div style="margin-top: 15px; margin-bottom: 15px;">
 				<div class="title">任务号</div>
 				<div style="margin-left: 10px;">
@@ -30,7 +137,6 @@
 					<a href="javascript:void(0)" onclick="doQuery()" title="检索"><i class="icon icon-search"></i></a>
 				</div>
 			</div>
-			
 		
 			<div class="title">整车信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>

@@ -311,7 +311,7 @@ public class OtsTaskController extends AbstractController {
 	public AjaxVO save(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
-			String m_proNo, Long m_orgId, String m_matNo, String m_remark, Long t_id, int taskType, int m_num,
+			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int m_num,
 			int draft, String p_producer, String m_producer, String applicatName, String applicatDepart,
 			Long applicatOrg, String applicatContact, String applicatRemark, int atlType, String atlRemark,
 			String p_producerCode, Long applicat_id) {
@@ -685,7 +685,7 @@ public class OtsTaskController extends AbstractController {
 			if (taskType == TaskTypeEnum.OTS.getState()) {
 				parts = partsService.selectOne(p_id);
 				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark,
-						p_num)) {
+						p_num, p_producer, p_producerCode)) {
 					parts.setProTime(sdf.parse(p_proTime));
 					parts.setRemark(p_remark);
 					parts.setPlace(p_place);

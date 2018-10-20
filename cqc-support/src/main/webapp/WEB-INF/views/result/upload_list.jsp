@@ -464,7 +464,7 @@
 					href : "${ctx}/result/uploadDetail?id=" + id + "&type=${type}",
 					modal : true
 				});
-				//$('#uploadDetailDialog').window('center');
+				$('#uploadDetailDialog').window('center');
 			}
 			
 		</script>

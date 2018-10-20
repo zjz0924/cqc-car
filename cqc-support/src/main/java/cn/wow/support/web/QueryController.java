@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Address;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
@@ -37,8 +39,10 @@ import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
+import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -83,6 +87,10 @@ public class QueryController extends AbstractController {
 	private TaskInfoService taskInfoService;
 	@Autowired
 	private ApplicatService applicatService;
+	@Autowired
+	private AddressService addressService;
+	@Autowired
+	private CarCodeService carCodeService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -91,6 +99,13 @@ public class QueryController extends AbstractController {
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 
 		Menu menu = menuService.selectByAlias("query");
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
 
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
@@ -107,8 +122,8 @@ public class QueryController extends AbstractController {
 			String endConfirmTime, String reason, String provenance, String task_code, Integer atlType,
 			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
 			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, String startCreateTime, String endCreateTime,
-			String taskType) {
+			String applicat_depart, Integer applicat_org, String startCreateTime, String endCreateTime, String taskType,
+			String sort, String order) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -118,9 +133,14 @@ public class QueryController extends AbstractController {
 		}
 		queryMap.clear();
 
+		String orderSql = "t.create_time desc";
+		if (StringUtils.isNotBlank(sort)) {
+			orderSql = sort + " " + order;
+		}
+		
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "t.create_time desc");
-		queryMap.put("custom_order_sql", "t.create_time desc");
+		map.put("custom_order_sql", orderSql);
+		queryMap.put("custom_order_sql", orderSql);
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);

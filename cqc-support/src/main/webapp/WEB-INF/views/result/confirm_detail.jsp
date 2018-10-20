@@ -1178,6 +1178,8 @@
 			$("#showBtn").toggle();
 			$("#hideBtn").toggle();
 			$("#taskInfoDiv").toggle();
+			$("#applicatDiv").toggle();
+			$("#atlDiv").toggle();
 		}
 	</script>	
 	

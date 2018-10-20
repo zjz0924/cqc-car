@@ -33,49 +33,29 @@
 			<div style="width: 98%; display: none;" id="partsDiv">
 				<table class="info">
 					<tr class="single-row">
-						<td class="title-td">代码：</td>
-						<td class="value-td">${facadeBean.info.parts.code}</td>
-						<td class="title-td">名称：</td>
+						<td class="title-td">零件名称：</td>
 						<td class="value-td">${facadeBean.info.parts.name}</td>
+						<td class="title-td">零件图号：</td>
+						<td class="value-td">${facadeBean.info.parts.code}</td>
 					</tr>
 					<tr class="couple-row">
-						<td class="title-td">生产商：</td>
+						<td class="title-td">供应商：</td>
 						<td class="value-td">${facadeBean.info.parts.producer}</td>
-						<td class="title-td">生产批号：</td>
-						<td class="value-td">${facadeBean.info.parts.proNo}</td>
+						<td class="title-td">供应商代码：</td>
+						<td class="value-td">${facadeBean.info.parts.producerCode}</td>
 					</tr>
 					<tr class="single-row">
 						<td class="title-td">生产日期：</td>
 						<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-						<td class="title-td">生产地址：</td>
+						<td class="title-td">样件数量：</td>
+						<td class="value-td">${facadeBean.info.parts.num}</td>
+					</tr>
+					<tr class="single-row">
+						<td class="title-td">样件批号：</td>
+						<td class="value-td">${facadeBean.info.parts.proNo}</td>
+						<td class="title-td">生产场地：</td>
 						<td class="value-td">${facadeBean.info.parts.place}</td>
 					</tr>
-					<tr class="couple-row">
-						<td class="title-td">关键零件：</td>
-						<td class="value-td">
-							<c:choose>
-								<c:when test="${facadeBean.info.parts.isKey == 0}">
-									否
-								</c:when>
-								<c:otherwise>
-									是
-								</c:otherwise>
-							</c:choose>
-						</td>
-						<td class="title-td">零件型号</td>
-						<td class="value-td">
-							${facadeBean.info.parts.keyCode}
-						</td>
-					</tr>
-					
-					<tr class="single-row">
-						<td class="title-td">联系人：</td>
-						<td class="value-td">${facadeBean.info.parts.contacts}</td>
-						
-						<td class="title-td">联系电话：</td>
-						<td class="value-td">${facadeBean.info.parts.phone}</td>
-					</tr>
-					
 					<tr class="couple-row">
 						<td class="title-td">备注：</td>
 						<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
@@ -93,39 +73,28 @@
 				<tr class="single-row">
 					<td class="title-td">材料名称：</td>
 					<td class="value-td">${facadeBean.info.material.matName}</td>
-					<td class="title-td">生产批号：</td>
-					<td class="value-td">${facadeBean.info.material.proNo}</td>
+					<td class="title-td">材料牌号：</td>
+					<td class="value-td">${facadeBean.info.material.matNo}</td>
+				
 				</tr>
 				
 				<tr class="couple-row">
-					<td class="title-td">生产商：</td>
-					<td class="value-td" colspan="3">${facadeBean.info.material.producer}</td>
-				</tr>
-				
-				<tr class="single-row">
-					<td class="title-td">材料牌号：</td>
-					<td class="value-td">${facadeBean.info.material.matNo}</td>
+					<td class="title-td">供应商：</td>
+					<td class="value-td">${facadeBean.info.material.producer}</td>
 					<td class="title-td">材料颜色：</td>
 					<td class="value-td">${facadeBean.info.material.matColor}</td>
 				</tr>
 				
-				<tr class="couple-row">
-					<td class="title-td">联系人：</td>
-					<td class="value-td">${facadeBean.info.material.contacts}</td>
-					
-					<td class="title-td">联系电话：</td>
-					<td class="value-td">${facadeBean.info.material.phone}</td>
+				<tr class="single-row">
+					<td class="title-td">材料批号：</td>
+					<td class="value-td">${facadeBean.info.material.proNo}</td>
+					<td class="title-td">样品数量：</td>
+					<td class="value-td">${facadeBean.info.material.num}</td>
 				</tr>
 				
 				<tr class="single-row">
-					<td class="title-td">材料成分表：</td>
-					<td class="value-td">
-						<c:if test="${not empty facadeBean.info.material.pic}">
-							<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
-						</c:if>
-					</td>
 					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.info.material.remark}</td>
+					<td class="value-td" colspan="3">${facadeBean.info.material.remark}</td>
 				</tr>
 			</table>
 		</div>

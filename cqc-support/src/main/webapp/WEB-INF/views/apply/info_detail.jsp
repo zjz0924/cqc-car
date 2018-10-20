@@ -2,7 +2,7 @@
 <%@include file="/page/taglibs.jsp"%>
 
 <body>
-	<form method="POST" enctype="multipart/form-data" id="uploadForm">
+	<form method="POST" id="uploadForm">
 		<input type="hidden" id="t_id" name="t_id" value="${facadeBean.id }">
 	
 		<div style="margin-left: 10px;margin-top:20px;">
@@ -11,7 +11,7 @@
 			<table class="info">
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>代码：</span>
+						<span class="title-span"><span class="req-span">*</span>车型代码：</span>
 						<span class="val" title="${facadeBean.info.vehicle.code }">${facadeBean.info.vehicle.code }</span>
 					</td>
 					<td class="input-td">
@@ -42,7 +42,7 @@
 						<select id="v_proAddr" name="v_proAddr" style="width:180px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 							<option value="">请选择</option>
 							<c:forEach items="${addressList}" var="vo">
-								<option value="${vo.name}" <c:if test="${facadeBean.info.vehicle.proAddr == vo.name }">selected="selected"</c:if>>${vo.name}</option>
+								<option value="${vo.name}">${vo.name}</option>
 							</c:forEach>
 						</select>
 					</td>
@@ -66,7 +66,17 @@
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>零件号：</span> 
+							<span class="title-span">零件名称：</span>
+							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
+						</td>
+						<td class="input-td">
+							<input id="p_name" name="p_name" class="easyui-textbox" />
+						</td>
+						
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>零件图号：</span> 
 							<span class="val" title="${facadeBean.info.parts.code}">${facadeBean.info.parts.code}</span>
 						</td>
 						<td class="input-td">
@@ -75,16 +85,7 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span">零件名：</span>
-							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
-						</td>
-						<td class="input-td">
-							<input id="p_name" name="p_name" class="easyui-textbox" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
+							<span class="title-span"><span class="req-span">*</span>供应商：</span> 
 							<span class="val" title="${facadeBean.info.parts.producer}">${facadeBean.info.parts.producer}</span>
 						</td>
 						<td class="input-td">
@@ -93,7 +94,16 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span">生产批号：</span> 
+							<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
+							<span class="val" title="${facadeBean.info.parts.producerCode}">${facadeBean.info.parts.producerCode}</span>
+						</td>
+						<td class="input-td">
+							<input id="p_producerCode" name="p_producerCode" class="easyui-textbox">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span">样件批号：</span> 
 							<span class="val" title="${facadeBean.info.parts.proNo }">${facadeBean.info.parts.proNo }</span>
 						</td>
 						<td class="input-td">
@@ -120,46 +130,13 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>关键零件：</span> 
-							<span class="val" title="<c:if test="${facadeBean.info.parts.isKey == 0 }">否</c:if><c:if test="${facadeBean.info.parts.isKey == 1 }">是</c:if>"><c:if test="${facadeBean.info.parts.isKey == 0 }">否</c:if><c:if test="${facadeBean.info.parts.isKey == 1 }">是</c:if></span>
+							<span class="title-span">样件数量：</span> 
+							<span class="val" title="${facadeBean.info.parts.num }">${facadeBean.info.parts.num }</span>
 						</td>
 						<td class="input-td">
-							<select id="p_isKey" name="p_isKey" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
-								<option value="0" <c:if test="${facadeBean.info.parts.isKey == 0 }">selected="selected"</c:if>>否</option>
-								<option value="1" <c:if test="${facadeBean.info.parts.isKey == 1 }">selected="selected"</c:if>>是</option>
-							</select>
+							<input id="p_num" name="p_num" class="easyui-textbox" />
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<span class="title-span">零件型号：</span> 
-							<span class="val" title="${facadeBean.info.parts.keyCode }">${facadeBean.info.parts.keyCode }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_keyCode" name="p_keyCode" class="easyui-textbox">
-						</td>
-					</tr>
-					
-					<tr>
-						<td>
-							<span class="title-span">联系人：</span> 
-							<span class="val" title="${facadeBean.info.parts.contacts }">${facadeBean.info.parts.contacts }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_contacts" name="p_contacts" class="easyui-textbox">
-						</td>
-					</tr>
-					
-					<tr>
-						<td>
-							<span class="title-span">联系电话：</span> 
-							<span class="val" title="${facadeBean.info.parts.phone }">${facadeBean.info.parts.phone }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_phone" name="p_phone" class="easyui-textbox">
-						</td>
-					</tr>
-					
 					<tr>
 						<td>
 							<span class="title-span">&nbsp;备注：</span> 
@@ -188,29 +165,20 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
-						<span class="val" title="${facadeBean.info.material.proNo }">${facadeBean.info.material.proNo }</span>
-					</td>
-					<td class="input-td">
-						<input id="m_proNo" name="m_proNo" class="easyui-textbox">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-						<span class="val" title="${facadeBean.info.material.producer }">${facadeBean.info.material.producer }</span>
-					</td>
-					<td class="input-td">
-						<input id="m_producer" name="m_producer" type="text"  class="inputAutocomple">
-					</td>
-				</tr>
-				<tr>
-					<td>
 						<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
 						<span class="val" title="${facadeBean.info.material.matNo }">${facadeBean.info.material.matNo }</span>
 					</td>
 					<td class="input-td">
 						<input id="m_matNo" name="m_matNo" class="easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>供应商：</span> 
+						<span class="val" title="${facadeBean.info.material.producer }">${facadeBean.info.material.producer }</span>
+					</td>
+					<td class="input-td">
+						<input id="m_producer" name="m_producer" type="text"  class="inputAutocomple">
 					</td>
 				</tr>
 				<tr>
@@ -224,32 +192,20 @@
 				</tr>
 				<tr>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>成分表：</span> 
-						<c:if test="${not empty facadeBean.info.material.pic }">
-							<a target= _blank  href="${resUrl}/${facadeBean.info.material.pic }">${fn:substringAfter(facadeBean.info.material.pic, "/")}</a>
-						</c:if>
+						<span class="title-span"><span class="req-span">*</span>材料批号：</span> 
+						<span class="val" title="${facadeBean.info.material.proNo }">${facadeBean.info.material.proNo }</span>
 					</td>
-					
 					<td class="input-td">
-						<input id="m_pic" name="m_pic" class="easyui-filebox" style="width:171px" data-options="buttonText: '选择'">
+						<input id="m_proNo" name="m_proNo" class="easyui-textbox">
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="title-span">联系人：</span> 
-						<span class="val" title="${facadeBean.info.material.contacts }">${facadeBean.info.material.contacts }</span>
+						<span class="title-span">样品数量：</span> 
+						<span class="val" title="${facadeBean.info.material.num }">${facadeBean.info.material.num }</span>
 					</td>
 					<td class="input-td">
-						<input id="m_contacts" name="m_contacts" class="easyui-textbox">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="title-span">联系电话：</span> 
-						<span class="val" title="${facadeBean.info.material.phone }">${facadeBean.info.material.phone }</span>
-					</td>
-					<td class="input-td">
-						<input id="m_phone" name="m_phone" class="easyui-textbox">
+						<input id="m_num" name="m_num" class="easyui-textbox">
 					</td>
 				</tr>
 				<tr>	
@@ -414,35 +370,12 @@
 				saving = true;
 				$("#exception_error").html("");
 				
-				var p_phone = $("#p_phone").val();
-				if (!isNull(p_phone)) {
-					if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(p_phone))) {
-						$("#exception_error").html("零部件联系电话格式不正确");
-						$("#p_phone").next('span').find('input').focus();
-						saving = false; 
-						return false;
-					}
-				}
-				$("#exception_error").html("");
-				
-				var m_phone = $("#m_phone").val();
-				if (!isNull(m_phone)) {
-					if (!(/^[1][3,4,5,7,8][0-9]{9}$/.test(m_phone))) {
-						$("#exception_error").html("原材料联系电话格式不正确");
-						$("#m_phone").next('span').find('input').focus();
-						saving = false; 
-						return false;
-					}
-				}
-				$("#exception_error").html("");
-				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/apply/applyInfoSave",
-					dataType : 'text',
-					success:function(msg){
+					dataType : 'json',
+					success:function(data){
 						saving = false;
 						
-						var data = eval('(' + msg + ')');
 						if(data.success){
 							closeDialog(data.msg, "infoDetailDialog");
 						}else{

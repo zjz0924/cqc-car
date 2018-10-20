@@ -46,7 +46,7 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产地址：</span>
+							<span class="title-span"><span class="req-span">*</span>生产基地：</span>
 							<span class="val" title="${facadeBean.info.vehicle.proAddr }">${facadeBean.info.vehicle.proAddr }</span>
 						</td>
 						<td class="input-td">
@@ -73,49 +73,29 @@
 				<div style="width: 98%;">
 					<table class="info" style="width: 98%;">
 						<tr class="single-row">
-							<td class="title-td">代码：</td>
-							<td class="value-td">${facadeBean.info.parts.code}</td>
-							<td class="title-td">名称：</td>
+							<td class="title-td">零件名称：</td>
 							<td class="value-td">${facadeBean.info.parts.name}</td>
+							<td class="title-td">零件图号：</td>
+							<td class="value-td">${facadeBean.info.parts.code}</td>
 						</tr>
 						<tr class="couple-row">
-							<td class="title-td">生产商：</td>
+							<td class="title-td">供应商：</td>
 							<td class="value-td">${facadeBean.info.parts.producer}</td>
-							<td class="title-td">生产批号：</td>
-							<td class="value-td">${facadeBean.info.parts.proNo}</td>
+							<td class="title-td">供应商代码：</td>
+							<td class="value-td">${facadeBean.info.parts.producerCode}</td>
 						</tr>
 						<tr class="single-row">
 							<td class="title-td">生产日期：</td>
 							<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-							<td class="title-td">生产地址：</td>
+							<td class="title-td">样件数量：</td>
+							<td class="value-td">${facadeBean.info.parts.num}</td>
+						</tr>
+						<tr class="single-row">
+							<td class="title-td">样件批号：</td>
+							<td class="value-td">${facadeBean.info.parts.proNo}</td>
+							<td class="title-td">生产场地：</td>
 							<td class="value-td">${facadeBean.info.parts.place}</td>
 						</tr>
-						<tr class="couple-row">
-							<td class="title-td">关键零件：</td>
-							<td class="value-td">
-								<c:choose>
-									<c:when test="${facadeBean.info.parts.isKey == 0}">
-										否
-									</c:when>
-									<c:otherwise>
-										是
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td class="title-td">零件型号</td>
-							<td class="value-td">
-								${facadeBean.info.parts.keyCode}
-							</td>
-						</tr>
-						
-						<tr class="single-row">
-							<td class="title-td">联系人：</td>
-							<td class="value-td">${facadeBean.info.parts.contacts}</td>
-							
-							<td class="title-td">联系电话：</td>
-							<td class="value-td">${facadeBean.info.parts.phone}</td>
-						</tr>
-						
 						<tr class="couple-row">
 							<td class="title-td">备注：</td>
 							<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
@@ -128,16 +108,7 @@
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>零件号：</span> 
-							<span class="val" title="${facadeBean.info.parts.code}">${facadeBean.info.parts.code}</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newParts.code}">${newParts.code}</span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>零件名：</span>
+							<span class="title-span"><span class="req-span">*</span>零件名称：</span>
 							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
 						</td>
 						<td class="input-td">
@@ -146,8 +117,17 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-							<span class="val" title="${facadeBean.info.parts.org.name}">${facadeBean.info.parts.producer}</span>
+							<span class="title-span"><span class="req-span">*</span>零件图号：</span> 
+							<span class="val" title="${facadeBean.info.parts.code}">${facadeBean.info.parts.code}</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newParts.code}">${newParts.code}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>供应商：</span> 
+							<span class="val" title="${facadeBean.info.parts.producer}">${facadeBean.info.parts.producer}</span>
 						</td>
 						<td class="input-td">
 							<span class="val red-color" title="${newParts.producer}">${newParts.producer}</span>
@@ -155,7 +135,16 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
+							<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
+							<span class="val" title="${facadeBean.info.parts.producerCode}">${facadeBean.info.parts.producerCode}</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newParts.producerCode}">${newParts.producerCode}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>样件批号：</span> 
 							<span class="val" title="${facadeBean.info.parts.proNo }">${facadeBean.info.parts.proNo }</span>
 						</td>
 						<td class="input-td">
@@ -182,43 +171,13 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>关键零件：</span> 
-							<span class="val" title="<c:if test="${facadeBean.info.parts.isKey == 0 }">否</c:if><c:if test="${facadeBean.info.parts.isKey == 1 }">是</c:if>"><c:if test="${facadeBean.info.parts.isKey == 0 }">否</c:if><c:if test="${facadeBean.info.parts.isKey == 1 }">是</c:if></span>
+							<span class="title-span">样件数量：</span> 
+							<span class="val" title="${facadeBean.info.parts.num }">${facadeBean.info.parts.num }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="<c:if test="${newParts.isKey == 0 }">否</c:if><c:if test="${newParts.isKey == 1 }">是</c:if>"><c:if test="${newParts.isKey == 0 }">否</c:if><c:if test="${newParts.isKey == 1 }">是</c:if></span>
+							<span class="val red-color" title="${newParts.num }">${newParts.num }</span>
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<span class="title-span">零件型号：</span> 
-							<span class="val" title="${facadeBean.info.parts.keyCode }">${facadeBean.info.parts.keyCode }</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newParts.keyCode }">${newParts.keyCode }</span>
-						</td>
-					</tr>
-					
-					<tr>
-						<td>
-							<span class="title-span">联系人：</span> 
-							<span class="val" title="${facadeBean.info.parts.contacts }">${facadeBean.info.parts.contacts }</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newParts.contacts }">${newParts.contacts }</span>
-						</td>
-					</tr>
-					
-					<tr>
-						<td>
-							<span class="title-span">联系电话：</span> 
-							<span class="val" title="${facadeBean.info.parts.phone }">${facadeBean.info.parts.phone }</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newParts.phone }">${newParts.phone }</span>
-						</td>
-					</tr>
-					
 					<tr>
 						<td>
 							<span class="title-span">&nbsp;备注：</span> 
@@ -241,39 +200,28 @@
 						<tr class="single-row">
 							<td class="title-td">材料名称：</td>
 							<td class="value-td">${facadeBean.info.material.matName}</td>
-							<td class="title-td">生产批号：</td>
-							<td class="value-td">${facadeBean.info.material.proNo}</td>
+							<td class="title-td">材料牌号：</td>
+							<td class="value-td">${facadeBean.info.material.matNo}</td>
+						
 						</tr>
 						
 						<tr class="couple-row">
-							<td class="title-td">生产商：</td>
-							<td class="value-td" colspan="3">${facadeBean.info.material.producer}</td>
-						</tr>
-						
-						<tr class="single-row">
-							<td class="title-td">材料牌号：</td>
-							<td class="value-td">${facadeBean.info.material.matNo}</td>
+							<td class="title-td">供应商：</td>
+							<td class="value-td">${facadeBean.info.material.producer}</td>
 							<td class="title-td">材料颜色：</td>
 							<td class="value-td">${facadeBean.info.material.matColor}</td>
 						</tr>
 						
-						<tr class="couple-row">
-							<td class="title-td">联系人：</td>
-							<td class="value-td">${facadeBean.info.material.contacts}</td>
-							
-							<td class="title-td">联系电话：</td>
-							<td class="value-td">${facadeBean.info.material.phone}</td>
+						<tr class="single-row">
+							<td class="title-td">材料批号：</td>
+							<td class="value-td">${facadeBean.info.material.proNo}</td>
+							<td class="title-td">样品数量：</td>
+							<td class="value-td">${facadeBean.info.material.num}</td>
 						</tr>
 						
 						<tr class="single-row">
-							<td class="title-td">材料成分表：</td>
-							<td class="value-td">
-								<c:if test="${not empty facadeBean.info.material.pic}">
-									<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">${facadeBean.info.material.pic }</a>
-								</c:if>
-							</td>
 							<td class="title-td">备注：</td>
-							<td class="value-td">${facadeBean.info.material.remark}</td>
+							<td class="value-td" colspan="3">${facadeBean.info.material.remark}</td>
 						</tr>
 					</table>
 				</div>
@@ -292,29 +240,20 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>生产批号：</span> 
-							<span class="val" title="${facadeBean.info.material.proNo }">${facadeBean.info.material.proNo }</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.proNo }">${newMaterial.proNo }</span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产商：</span> 
-							<span class="val" title="${facadeBean.info.material.producer }">${facadeBean.info.material.producer }</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.producer }">${newMaterial.producer }</span>
-						</td>
-					</tr>
-					<tr>
-						<td>
 							<span class="title-span"><span class="req-span">*</span>材料牌号：</span> 
 							<span class="val" title="${facadeBean.info.material.matNo }">${facadeBean.info.material.matNo }</span>
 						</td>
 						<td class="input-td">
 							<span class="val red-color" title="${newMaterial.matNo }">${newMaterial.matNo }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="title-span"><span class="req-span">*</span>供应商：</span> 
+							<span class="val" title="${facadeBean.info.material.producer }">${facadeBean.info.material.producer }</span>
+						</td>
+						<td class="input-td">
+							<span class="val red-color" title="${newMaterial.producer }">${newMaterial.producer }</span>
 						</td>
 					</tr>
 					<tr>
@@ -328,39 +267,22 @@
 					</tr>
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>成分表：</span> 
-							<c:if test="${not empty facadeBean.info.material.pic }">
-								<a target= _blank  href="${resUrl}/${facadeBean.info.material.pic }">${facadeBean.info.material.pic }</a>
-							</c:if>
+							<span class="title-span"><span class="req-span">*</span>材料批号：</span> 
+							<span class="val" title="${facadeBean.info.material.proNo }">${facadeBean.info.material.proNo }</span>
 						</td>
-						
 						<td class="input-td">
-							<c:if test="${not empty newMaterial.pic }">
-								<a target= _blank  href="${resUrl}/${newMaterial.pic }">${newMaterial.pic }</a>
-							</c:if>
+							<span class="val red-color" title="${newMaterial.proNo }">${newMaterial.proNo }</span>
 						</td>
 					</tr>
-					
 					<tr>
 						<td>
-							<span class="title-span">联系人：</span> 
-							<span class="val" title="${facadeBean.info.material.contacts }">${facadeBean.info.material.contacts }</span>
+							<span class="title-span"><span class="req-span">*</span>样品数量：</span> 
+							<span class="val" title="${facadeBean.info.material.num }">${facadeBean.info.material.num }</span>
 						</td>
 						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.contacts }">${newParts.contacts }</span>
+							<span class="val red-color" title="${newMaterial.num }">${newMaterial.num }</span>
 						</td>
 					</tr>
-					
-					<tr>
-						<td>
-							<span class="title-span">联系电话：</span> 
-							<span class="val" title="${facadeBean.info.material.phone }">${facadeBean.info.material.phone }</span>
-						</td>
-						<td class="input-td">
-							<span class="val red-color" title="${newMaterial.phone }">${newParts.phone }</span>
-						</td>
-					</tr>
-					
 					<tr>	
 						<td>
 							<span class="title-span">备注：</span> 
@@ -383,7 +305,7 @@
 				<tr class="single-row">
 					<td class="title-td">代码：</td>
 					<td class="value-td">${facadeBean.info.vehicle.code}</td>
-					<td class="title-td">生产地址：</td>
+					<td class="title-td">生产基地：</td>
 					<td class="value-td">${facadeBean.info.vehicle.proAddr}</td>
 				</tr>
 				<tr class="couple-row">
@@ -401,49 +323,29 @@
 		<div style="width: 98%;">
 			<table class="info">
 				<tr class="single-row">
-					<td class="title-td">代码：</td>
-					<td class="value-td">${facadeBean.info.parts.code}</td>
-					<td class="title-td">名称：</td>
+					<td class="title-td">零件名称：</td>
 					<td class="value-td">${facadeBean.info.parts.name}</td>
+					<td class="title-td">零件图号：</td>
+					<td class="value-td">${facadeBean.info.parts.code}</td>
 				</tr>
 				<tr class="couple-row">
-					<td class="title-td">生产商：</td>
+					<td class="title-td">供应商：</td>
 					<td class="value-td">${facadeBean.info.parts.producer}</td>
-					<td class="title-td">生产批号：</td>
-					<td class="value-td">${facadeBean.info.parts.proNo}</td>
+					<td class="title-td">供应商代码：</td>
+					<td class="value-td">${facadeBean.info.parts.producerCode}</td>
 				</tr>
 				<tr class="single-row">
 					<td class="title-td">生产日期：</td>
 					<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-					<td class="title-td">生产地址：</td>
+					<td class="title-td">样件数量：</td>
+					<td class="value-td">${facadeBean.info.parts.num}</td>
+				</tr>
+				<tr class="single-row">
+					<td class="title-td">样件批号：</td>
+					<td class="value-td">${facadeBean.info.parts.proNo}</td>
+					<td class="title-td">生产场地：</td>
 					<td class="value-td">${facadeBean.info.parts.place}</td>
 				</tr>
-				<tr class="couple-row">
-					<td class="title-td">关键零件：</td>
-					<td class="value-td">
-						<c:choose>
-							<c:when test="${facadeBean.info.parts.isKey == 0}">
-								否
-							</c:when>
-							<c:otherwise>
-								是
-							</c:otherwise>
-						</c:choose>
-					</td>
-					<td class="title-td">零件型号</td>
-					<td class="value-td">
-						${facadeBean.info.parts.keyCode}
-					</td>
-				</tr>
-				
-				<tr class="single-row">
-					<td class="title-td">联系人：</td>
-					<td class="value-td">${facadeBean.info.parts.contacts}</td>
-					
-					<td class="title-td">联系电话：</td>
-					<td class="value-td">${facadeBean.info.parts.phone}</td>
-				</tr>
-					
 				<tr class="couple-row">
 					<td class="title-td">备注：</td>
 					<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
@@ -460,41 +362,28 @@
 				<tr class="single-row">
 					<td class="title-td">材料名称：</td>
 					<td class="value-td">${facadeBean.info.material.matName}</td>
-					<td class="title-td">生产批号：</td>
-					<td class="value-td">${facadeBean.info.material.proNo}</td>
+					<td class="title-td">材料牌号：</td>
+					<td class="value-td">${facadeBean.info.material.matNo}</td>
+				
 				</tr>
 				
 				<tr class="couple-row">
-					<td class="title-td">生产商：</td>
-					<td class="value-td" colspan="3">${facadeBean.info.material.producer}</td>
-				</tr>
-				
-				<tr class="single-row">
-					<td class="title-td">材料牌号：</td>
-					<td class="value-td">${facadeBean.info.material.matNo}</td>
+					<td class="title-td">供应商：</td>
+					<td class="value-td">${facadeBean.info.material.producer}</td>
 					<td class="title-td">材料颜色：</td>
 					<td class="value-td">${facadeBean.info.material.matColor}</td>
 				</tr>
 				
-				<tr class="couple-row">
-					<td class="title-td">联系人：</td>
-					<td class="value-td">${facadeBean.info.material.contacts}</td>
-					
-					<td class="title-td">联系电话：</td>
-					<td class="value-td">${facadeBean.info.material.phone}</td>
+				<tr class="single-row">
+					<td class="title-td">材料批号：</td>
+					<td class="value-td">${facadeBean.info.material.proNo}</td>
+					<td class="title-td">样品数量：</td>
+					<td class="value-td">${facadeBean.info.material.num}</td>
 				</tr>
 				
 				<tr class="single-row">
-					<td class="title-td">材料成分表：</td>
-					<td class="value-td">
-						<c:if test="${not empty facadeBean.info.material.pic}">
-							<a target="_blank" href="${resUrl}/${facadeBean.info.material.pic}">
-								<img src="${resUrl}/${facadeBean.info.material.pic}" style="width: 100px;height: 50px;"></img>
-							</a>
-						</c:if>
-					</td>
 					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.info.material.remark}</td>
+					<td class="value-td" colspan="3">${facadeBean.info.material.remark}</td>
 				</tr>
 			</table>
 		</div>

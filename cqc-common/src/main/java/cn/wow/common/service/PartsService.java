@@ -37,5 +37,5 @@ public interface PartsService {
 	 * 是否更新零部件信息
 	 */
 	public boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_remark, int p_num);
+			String p_proNo, String p_remark, int p_num, String p_producer, String p_producerCode);
 }
