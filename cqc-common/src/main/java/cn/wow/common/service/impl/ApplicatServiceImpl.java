@@ -47,7 +47,7 @@ public class ApplicatServiceImpl implements ApplicatService {
 	}
 
 	// 获取申请人ID
-	public List<Long> selectIds(String applicat_name, String applicat_depart, Integer applicat_org) {
+	public List<Long> selectIds(String applicat_name, String applicat_depart, Long applicat_org) {
 		List<Long> idList = new ArrayList<Long>();
 
 		Map<String, Object> map = new PageMap(false);

@@ -46,7 +46,7 @@ public class ReasonOptionController extends AbstractController {
 		}
 
 		Map<String, Object> map = new PageMap(request);
-		map.put("custom_order_sql", "type asc, name asc");
+		map.put("custom_order_sql", "type asc, name desc");
 
 		if (StringUtils.isNotBlank(name)) {
 			map.put("qname", name);
@@ -82,14 +82,18 @@ public class ReasonOptionController extends AbstractController {
 		ReasonOption reasonOption = null;
 
 		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("name", name);
+			map.put("type", type);
+
 			if (StringUtils.isNotBlank(id)) {
 				reasonOption = reasonOptionService.selectOne(Long.parseLong(id));
 
 				if (reasonOption != null) {
 					if (!name.equals(reasonOption.getName())) {
-						ReasonOption existReasonOption = reasonOptionService.selectByName(name);
+						ReasonOption existReasonOption = reasonOptionService.selectByName(map);
 
-						if (existReasonOption != null) {
+						if (existReasonOption != null && reasonOption.getId() != existReasonOption.getId()) {
 							vo.setData("name");
 							vo.setMsg("名称已经存在");
 							vo.setSuccess(false);
@@ -104,7 +108,7 @@ public class ReasonOptionController extends AbstractController {
 
 				vo.setMsg("编辑成功");
 			} else {
-				ReasonOption existReasonOption = reasonOptionService.selectByName(name);
+				ReasonOption existReasonOption = reasonOptionService.selectByName(map);
 				if (existReasonOption != null) {
 					vo.setData("name");
 					vo.setMsg("名称已经存在");

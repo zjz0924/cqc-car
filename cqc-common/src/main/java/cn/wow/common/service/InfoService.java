@@ -1,5 +1,6 @@
 package cn.wow.common.service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.Reason;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
 
@@ -77,14 +79,8 @@ public interface InfoService {
 	 * @param t_id       任务ID
 	 * @param i_id       信息ID
 	 * @param taskType   任务类型
-	 * @param partsAtlId 零部件图谱实验室ID
-	 * @param matAtlId   原材料图谱实验室ID
-	 * @param partsPatId 零部件型式实验室ID
-	 * @param matPatId   原材料型式实验室ID
 	 */
-	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId,
-			Long matPatId, int taskType, List<LabReq> labReqList, String applicant, String department, String figure,
-			Integer num, String origin, String reason, String provenance);
+	public boolean transmit(Account account, Applicat applicat, Reason reason, Long t_id, Long i_id, int taskType, int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException;
 
 	/**
 	 * 审批（OTS）

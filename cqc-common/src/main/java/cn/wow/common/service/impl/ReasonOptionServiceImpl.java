@@ -42,7 +42,7 @@ public class ReasonOptionServiceImpl implements ReasonOptionService {
 		return reasonOptionDao.selectAllList(map);
 	}
 
-	public ReasonOption selectByName(String name) {
-		return reasonOptionDao.selectByName(name);
+	public ReasonOption selectByName(Map<String, Object> map) {
+		return reasonOptionDao.selectByName(map);
 	}
 }

@@ -15,10 +15,10 @@ public class Task {
     // 信息ID
     private Long iId;
     private Info info;
-    // 申请机构ID
+    // 填写机构ID
     private Long orgId;
     private Org org;
-    // 申请人
+    // 填写人
     private Long aId;
     private Account account;
     // 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
@@ -106,16 +106,26 @@ public class Task {
     // 是否是草稿（0-否，1-是）
     private Integer draft;
     
-    // 基准图谱类型（1-零件基准图谱，2-材料基准图谱）
+    // 基准图谱类型（1-零件基准图谱，2-材料基准图谱， 3-材料型式试验，4-零件型式试验）
     private Integer atlType;
     
     // 基准图谱备注
     private String atlRemark;
     
+    // 期望完成时间
+    private Date expectDate;
+    
+    // 委托实验室
+    private Long labId;
+    private Org lab;
+    
     // 申请人ID
     private Long applicatId;
-    
     private Applicat applicat;
+    
+    // 抽样原因
+    private Long reasonId;
+    private Reason reason;
     
     public Long getId() {
         return id;
@@ -476,4 +486,45 @@ public class Task {
 	public void setApplicat(Applicat applicat) {
 		this.applicat = applicat;
 	}
+
+	public Long getReasonId() {
+		return reasonId;
+	}
+
+	public void setReasonId(Long reasonId) {
+		this.reasonId = reasonId;
+	}
+
+	public Reason getReason() {
+		return reason;
+	}
+
+	public void setReason(Reason reason) {
+		this.reason = reason;
+	}
+
+	public Date getExpectDate() {
+		return expectDate;
+	}
+
+	public void setExpectDate(Date expectDate) {
+		this.expectDate = expectDate;
+	}
+
+	public Org getLab() {
+		return lab;
+	}
+
+	public void setLab(Org lab) {
+		this.lab = lab;
+	}
+
+	public Long getLabId() {
+		return labId;
+	}
+
+	public void setLabId(Long labId) {
+		this.labId = labId;
+	}
+	
 }

@@ -16,8 +16,8 @@
 		select <include refid="base_columns" /> from reason_option where id = #{id,jdbcType=BIGINT}
 	</select>
 	
-	<select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select <include refid="base_columns" /> from reason_option where name = #{name,jdbcType=VARCHAR}
+	<select id="selectByName" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="base_columns" /> from reason_option where name = #{name,jdbcType=VARCHAR} and type = #{type,jdbcType=INTEGER}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

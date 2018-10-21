@@ -16,6 +16,6 @@ public interface ReasonOptionService {
 
     public List<ReasonOption> selectAllList(Map<String, Object> map);
     
-    public ReasonOption selectByName(String name);
+    public ReasonOption selectByName(Map<String, Object> map);
     
 }

@@ -142,7 +142,7 @@ public class ApplyController extends AbstractController {
 			String endCreateTime, String startConfirmTime, String endConfirmTime, String task_code, Integer atlType,
 			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
 			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org) {
+			String applicat_depart, Long applicat_org) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数

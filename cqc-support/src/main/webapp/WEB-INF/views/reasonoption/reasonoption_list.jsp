@@ -173,7 +173,7 @@
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			名称：<input id="q_name" name="q_name" class="easyui-textbox" style="width: 150px;">&nbsp;&nbsp;&nbsp;&nbsp;
 	
-			类型：<select id="q_type" name="q_type" style="width:168px;" class="easyui-combobox" data-options="panelHeight: '200px'">
+			类型：<select id="q_type" name="q_type" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 				<option value="">请选择</option>
 				<option value="1">样件来源</option>
 				<option value="2">抽样原因</option>

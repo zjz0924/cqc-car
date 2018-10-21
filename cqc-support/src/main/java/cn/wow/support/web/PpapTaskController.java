@@ -1,6 +1,5 @@
 package cn.wow.support.web;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +27,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Address;
+import cn.wow.common.domain.Applicat;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
@@ -38,12 +40,16 @@ import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
+import cn.wow.common.domain.Reason;
+import cn.wow.common.domain.ReasonOption;
 import cn.wow.common.domain.StandardVO;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -51,6 +57,8 @@ import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PartsService;
+import cn.wow.common.service.ReasonOptionService;
+import cn.wow.common.service.ReasonService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.service.VehicleService;
 import cn.wow.common.utils.AjaxVO;
@@ -103,6 +111,14 @@ public class PpapTaskController extends AbstractController {
 	private LabConclusionService labConclusionService;
 	@Autowired
 	private ApplicatService applicatService;
+	@Autowired
+	private ReasonOptionService reasonOptionService;
+	@Autowired
+	private AddressService addressService;
+	@Autowired
+	private CarCodeService carCodeService;
+	@Autowired
+	private ReasonService reasonService;
 
 	/**
 	 * 首页
@@ -161,6 +177,20 @@ public class PpapTaskController extends AbstractController {
 	public String transmitList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
 		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+
+		// 抽样原因选项
+		Map<String, Object> optionMap = new PageMap(false);
+		optionMap.put("custom_order_sql", "type asc, name desc");
+		List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+		model.addAttribute("optionList", optionList);
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
 		return "task/ppap/transmit_list";
 	}
 
@@ -170,10 +200,10 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int taskType) {
+			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
+			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
+			Long applicat_org, int taskType, String origin, String reason, String source, Long labId) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -202,6 +232,9 @@ public class PpapTaskController extends AbstractController {
 		if (atlType != null) {
 			map.put("atlType", atlType);
 		}
+		if(labId != null) {
+			map.put("labId", labId);
+		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
@@ -213,6 +246,12 @@ public class PpapTaskController extends AbstractController {
 		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
+		}
+		
+		// 抽样原因
+		List<Long> reasonIdList = reasonService.selectIds(origin, source, reason);
+		if(reasonIdList.size() > 0) {
+			map.put("reasonIdList", reasonIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -271,6 +310,19 @@ public class PpapTaskController extends AbstractController {
 			model.addAttribute("recordList", recordList);
 		}
 
+		// 抽样原因选项
+		Map<String, Object> optionMap = new PageMap(false);
+		optionMap.put("custom_order_sql", "type asc, name desc");
+		List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+
+		model.addAttribute("optionList", optionList);
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
 		return "task/ppap/transmit_detail";
@@ -279,45 +331,49 @@ public class PpapTaskController extends AbstractController {
 	/**
 	 * 下达任务结果
 	 * 
-	 * @param t_id       任务ID
-	 * @param i_id       信息ID
-	 * @param taskType   任务类型
-	 * @param partsAtlId 零部件图谱实验室ID
-	 * @param matAtlId   原材料图谱实验室ID
-	 * @param partsPatId 零部件型式实验室ID
-	 * @param matPatId   原材料型式实验室ID
-	 * @param applicant  申请人
-	 * @param department 科室
-	 * @param figure     零件图号
-	 * @param num        样品数量
-	 * @param origin     样品来源
-	 * @param reason     抽检原因
-	 * @param provenance 实验费用出处
+	 * @param t_id     任务ID
+	 * @param i_id     信息ID
+	 * @param taskType 任务类型
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, Long partsAtlId,
-			Long matAtlId, Long partsPatId, Long matPatId, int taskType, String partsAtlCode, String partsAtlTime,
-			String partsAtlReq, String matAtlCode, String matAtlTime, String matAtlReq, String applicant,
-			String department, String figure, Integer num, String origin, String reason, String provenance) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, int taskType,
+			Long applicat_id, String applicatName, String applicatDepart, Long applicatOrg, String applicatContact,
+			String applicatRemark, int atlType, String atlRemark, String expectDate, Long lab_org, Long reason_id,
+			String origin, String reason, String otherRemark, String source, String reasonRemark) {
 		AjaxVO vo = new AjaxVO();
-		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
-			List<LabReq> labReqList = new ArrayList<LabReq>();
-			if (partsAtlId != null) {
-				labReqList.add(new LabReq(partsAtlCode,
-						StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, t_id, 1));
+			// 申请人信息
+			Applicat applicat = null;
+			if (applicat_id == null) {
+				applicat = new Applicat();
+			} else {
+				applicat = applicatService.selectOne(applicat_id);
 			}
-			if (matAtlId != null) {
-				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null,
-						matAtlReq, t_id, 2));
-			}
+			applicat.setName(applicatName);
+			applicat.setDepart(applicatDepart);
+			applicat.setOrgId(applicatOrg);
+			applicat.setContact(applicatContact);
+			applicat.setRemark(applicatRemark);
 
-			boolean flag = infoService.transmit(account, t_id, i_id, partsAtlId, matAtlId, partsPatId, matPatId,
-					taskType, labReqList, applicant, department, figure, num, origin, reason, provenance);
+			// 抽样原因
+			Reason reasonObj = null;
+			if (reason_id == null) {
+				reasonObj = new Reason();
+			} else {
+				reasonObj = reasonService.selectOne(reason_id);
+			}
+			reasonObj.setOrigin(origin);
+			reasonObj.setOtherRemark(otherRemark);
+			reasonObj.setReason(reason);
+			reasonObj.setRemark(reasonRemark);
+			reasonObj.setSource(source);
+
+			boolean flag = infoService.transmit(account, applicat, reasonObj, t_id, i_id, taskType, atlType, atlRemark,
+					expectDate, lab_org);
 
 			if (!flag) {
 				vo.setSuccess(true);
@@ -346,6 +402,19 @@ public class PpapTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
+		
+		// 抽样原因选项
+		Map<String, Object> optionMap = new PageMap(false);
+		optionMap.put("custom_order_sql", "type asc, name desc");
+		List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+		model.addAttribute("optionList", optionList);		
 		return "task/ppap/approve_list";
 	}
 
@@ -355,10 +424,10 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int taskType) {
+			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
+			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
+			Long applicat_org, int taskType, String origin, String reason, String source, Long labId) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -387,6 +456,9 @@ public class PpapTaskController extends AbstractController {
 		if (atlType != null) {
 			map.put("atlType", atlType);
 		}
+		if(labId != null) {
+			map.put("labId", labId);
+		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
@@ -398,6 +470,12 @@ public class PpapTaskController extends AbstractController {
 		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
+		}
+		
+		// 抽样原因
+		List<Long> reasonIdList = reasonService.selectIds(origin, source, reason);
+		if(reasonIdList.size() > 0) {
+			map.put("reasonIdList", reasonIdList);
 		}
 
 		List<Task> dataList = taskService.selectAllList(map);
@@ -624,10 +702,10 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/confirmListData")
 	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int taskType) {
+			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
+			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
+			Long applicat_org, int taskType) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");

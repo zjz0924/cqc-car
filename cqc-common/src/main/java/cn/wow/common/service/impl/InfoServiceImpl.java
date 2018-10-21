@@ -1,6 +1,7 @@
 package cn.wow.common.service.impl;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,7 @@ import cn.wow.common.dao.LabReqDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
 import cn.wow.common.dao.PfResultDao;
+import cn.wow.common.dao.ReasonDao;
 import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskInfoDao;
 import cn.wow.common.dao.TaskRecordDao;
@@ -39,8 +41,8 @@ import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.Reason;
 import cn.wow.common.domain.Task;
-import cn.wow.common.domain.TaskInfo;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.ApplyRecordService;
@@ -102,6 +104,8 @@ public class InfoServiceImpl implements InfoService {
 	private TaskInfoDao taskInfoDao;
 	@Autowired
 	private ApplicatDao applicatDao;
+	@Autowired
+	private ReasonDao reasonDao;
 
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -337,10 +341,10 @@ public class InfoServiceImpl implements InfoService {
 		Date date = new Date();
 
 		Info info = task.getInfo();
-		
+
 		// 更新申请人信息
 		applicatDao.update(applicat);
-		
+
 		task.setAtlType(atlType);
 		task.setAtlRemark(atlRemark);
 
@@ -394,18 +398,18 @@ public class InfoServiceImpl implements InfoService {
 
 		if (result == 1) {
 			// 更新任务状态
-			//this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
+			// this.updateState(task.getId(), StandardTaskEnum.TESTING.getState());
 			task.setState(StandardTaskEnum.TESTING.getState());
 			record.setState(StandardTaskRecordEnum.EXAMINE_PASS.getState());
 			record.setRemark("信息审核通过");
 		} else {
 			// 审核不通过
-			//this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
+			// this.updateState(task.getId(), StandardTaskEnum.EXAMINE_NOTPASS.getState());
 			task.setState(StandardTaskEnum.EXAMINE_NOTPASS.getState());
 			record.setState(StandardTaskRecordEnum.EXAMINE_NOTPASS.getState());
 			record.setRemark(remark);
 		}
-		
+
 		taskDao.update(task);
 		taskRecordDao.insert(record);
 
@@ -474,20 +478,28 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 下达任务（PPAP）
 	 * 
-	 * @param t_id       任务ID
-	 * @param i_id       信息ID
-	 * @param taskType   任务类型
-	 * @param partsAtlId 零部件图谱实验室ID
-	 * @param matAtlId   原材料图谱实验室ID
-	 * @param partsPatId 零部件型式实验室ID
-	 * @param matPatId   原材料型式实验室ID
+	 * @param t_id     任务ID
+	 * @param i_id     信息ID
+	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Long t_id, Long i_id, Long partsAtlId, Long matAtlId, Long partsPatId,
-			Long matPatId, int taskType, List<LabReq> labReqList, String applicant, String department, String figure,
-			Integer num, String origin, String reason, String provenance) {
+	public boolean transmit(Account account, Applicat applicat, Reason reason, Long t_id, Long i_id, int taskType,
+			int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException {
 		String taskCode = "";
 		Long taskId = null;
 		boolean flag = true;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (applicat.getId() == null) {
+			applicatDao.insert(applicat);
+		} else {
+			applicatDao.update(applicat);
+		}
+
+		if (reason.getId() == null) {
+			reasonDao.insert(reason);
+		} else {
+			reasonDao.update(reason);
+		}
 
 		if (t_id == null) {
 			Date date = new Date();
@@ -508,18 +520,14 @@ public class InfoServiceImpl implements InfoService {
 			task.setCreateTime(date);
 			task.setiId(i_id);
 			task.setOrgId(account.getOrgId());
+			task.setaId(account.getId());
 			task.setState(SamplingTaskEnum.APPROVE.getState());
 			task.setType(taskType);
 			task.setFailNum(0);
-			task.setaId(account.getId());
 			task.setMatAtlResult(0);
 			task.setMatPatResult(0);
 			task.setPartsAtlResult(0);
 			task.setPartsPatResult(0);
-			task.setPartsAtlId(partsAtlId);
-			task.setPartsPatId(partsPatId);
-			task.setMatAtlId(matAtlId);
-			task.setMatPatId(matPatId);
 			task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
 			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
 			task.setPartsAtlTimes(0);
@@ -528,6 +536,12 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatPatTimes(0);
 			task.setInfoApply(0);
 			task.setResultApply(0);
+			task.setAtlRemark(atlRemark);
+			task.setAtlType(atlType);
+			task.setExpectDate(sdf.parse(expectDate));
+			task.setLabId(lab_org);
+			task.setReasonId(reason.getId());
+			task.setApplicatId(applicat.getId());
 			taskDao.insert(task);
 
 			// 操作记录
@@ -542,22 +556,20 @@ public class InfoServiceImpl implements InfoService {
 
 			taskCode = task.getCode();
 			taskId = task.getId();
-
-			if (labReqList != null && labReqList.size() > 0) {
-				for (LabReq labReq : labReqList) {
-					labReq.setTaskId(task.getId());
-				}
-			}
-
 		} else {
 			Date date = new Date();
 			Task task = taskDao.selectOne(t_id);
 			task.setiId(i_id);
-			task.setPartsAtlId(partsAtlId);
-			task.setMatAtlId(matAtlId);
 			task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
 			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
 			task.setState(SamplingTaskEnum.APPROVE.getState());
+			task.setResultApply(0);
+			task.setAtlRemark(atlRemark);
+			task.setAtlType(atlType);
+			task.setExpectDate(sdf.parse(expectDate));
+			task.setLabId(lab_org);
+			task.setReasonId(reason.getId());
+			task.setApplicatId(applicat.getId());
 			taskDao.update(task);
 
 			// 操作记录
@@ -572,36 +584,6 @@ public class InfoServiceImpl implements InfoService {
 
 			taskCode = task.getCode();
 			taskId = t_id;
-		}
-
-		labReqDao.deleteByTaskId(t_id);
-		if (labReqList != null && labReqList.size() > 0) {
-			labReqDao.batchAdd(labReqList);
-		}
-
-		TaskInfo info = null;
-		if (t_id == null) {
-			info = new TaskInfo();
-		} else {
-			TaskInfo taskInfo = taskInfoDao.selectOne(t_id);
-			if (taskInfo == null) {
-				taskInfo = new TaskInfo();
-			}
-		}
-
-		info.setApplicant(applicant);
-		info.setDepartment(department);
-		info.setFigure(figure);
-		info.setNum(num);
-		info.setOrigin(origin);
-		info.setProvenance(provenance);
-		info.setReason(reason);
-		info.setTaskId(taskId);
-
-		if (info.getId() == null) {
-			taskInfoDao.insert(info);
-		} else {
-			taskInfoDao.update(info);
 		}
 
 		String logDetail = "下达任务，任务号：" + taskCode;
@@ -1342,7 +1324,7 @@ public class InfoServiceImpl implements InfoService {
 			if (pIdList.size() > 0) {
 				iMap.put("pIdList", pIdList);
 			}
-			if(vIdList.size() > 0) {
+			if (vIdList.size() > 0) {
 				iMap.put("vIdList", vIdList);
 			}
 

@@ -122,7 +122,7 @@ public class QueryController extends AbstractController {
 			String endConfirmTime, String reason, String provenance, String task_code, Integer atlType,
 			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
 			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, String startCreateTime, String endCreateTime, String taskType,
+			String applicat_depart, Long applicat_org, String startCreateTime, String endCreateTime, String taskType,
 			String sort, String order) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 

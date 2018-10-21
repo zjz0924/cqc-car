@@ -156,7 +156,7 @@ public class ResultController extends AbstractController {
 			String endCreateTime, String task_code, Integer atlType, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org, int type) {
+			String applicat_depart, Long applicat_org, int type) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -445,7 +445,7 @@ public class ResultController extends AbstractController {
 			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org) {
+			String applicat_depart, Long applicat_org) {
 
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
@@ -703,7 +703,7 @@ public class ResultController extends AbstractController {
 			String startCreateTime, String endCreateTime, String task_code, Integer state, Integer draft,
 			Integer atlType, String parts_name, String parts_producer, String parts_producerCode, String startProTime,
 			String endProTime, String matName, String mat_producer, String matNo, String v_code, String v_proAddr,
-			String applicat_name, String applicat_depart, Integer applicat_org) {
+			String applicat_name, String applicat_depart, Long applicat_org) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -920,7 +920,7 @@ public class ResultController extends AbstractController {
 			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Integer applicat_org) {
+			String applicat_depart, Long applicat_org) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");

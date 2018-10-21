@@ -56,7 +56,7 @@
 			
 			// 创建tab
 		 	function createTab(title, url, selected) {  
-				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="900px">'; 
+				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="960px">'; 
 			    $('#systemTabs').tabs('add', {   
 			        title : title,   
 			        selected : selected,   
@@ -65,6 +65,10 @@
 			    });   
 			}; 
 			
+			// 移动y滚动条
+			function scrollY(val){
+				top.parent.scrollTo(0, val);
+			}
 		</script>
 		
 	</head>
@@ -77,7 +81,7 @@
 			<span style="font-size: 30px;font-weight: bold; margin-top: 70px; display: inline-block; margin-left: 80px;color: #4169E1">${menuName}</span>
 		</div>
 		
-		<div style="width: auto;height: 900px; min-height: 650px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
+		<div style="width: auto;height: 960px; min-height: 650px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
 			<div id="systemTabs" style="width:100%;height:auto;" data-options="plain: true,pill: true, justified: true, narrow: false">
 		    </div>
 		</div>
