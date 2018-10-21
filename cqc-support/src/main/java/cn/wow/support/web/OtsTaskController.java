@@ -9,9 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +24,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
+
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Address;
 import cn.wow.common.domain.Applicat;
@@ -38,6 +42,8 @@ import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.Reason;
+import cn.wow.common.domain.ReasonOption;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
@@ -54,6 +60,8 @@ import cn.wow.common.service.MaterialService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PartsService;
 import cn.wow.common.service.PfResultService;
+import cn.wow.common.service.ReasonOptionService;
+import cn.wow.common.service.ReasonService;
 import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.service.VehicleService;
@@ -126,6 +134,10 @@ public class OtsTaskController extends AbstractController {
 	private CarCodeService carCodeService;
 	@Autowired
 	private ApplicatService applicatService;
+	@Autowired
+	private ReasonOptionService reasonOptionService;
+	@Autowired
+	private ReasonService reasonService;
 
 	/**
 	 * 首页
@@ -185,6 +197,16 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+			model.addAttribute("optionList", optionList);
+		}
+
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
 
@@ -295,6 +317,15 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+			model.addAttribute("optionList", optionList);
+		}
 
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
@@ -311,10 +342,11 @@ public class OtsTaskController extends AbstractController {
 	public AjaxVO save(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
-			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int m_num,
-			int draft, String p_producer, String m_producer, String applicatName, String applicatDepart,
-			Long applicatOrg, String applicatContact, String applicatRemark, int atlType, String atlRemark,
-			String p_producerCode, Long applicat_id) {
+			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int m_num, int draft,
+			String p_producer, String m_producer, String applicatName, String applicatDepart, Long applicatOrg,
+			String applicatContact, String applicatRemark, int atlType, String atlRemark, String atlItem,
+			String p_producerCode, Long applicat_id, Long reason_id, String origin, String reason, String otherRemark,
+			String source, String reasonRemark) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -334,6 +366,21 @@ public class OtsTaskController extends AbstractController {
 			applicat.setOrgId(applicatOrg);
 			applicat.setContact(applicatContact);
 			applicat.setRemark(applicatRemark);
+
+			Reason reasonObj = null;
+			if (taskType == TaskTypeEnum.GS.getState()) {
+				// 抽样原因
+				if (reason_id == null) {
+					reasonObj = new Reason();
+				} else {
+					reasonObj = reasonService.selectOne(reason_id);
+				}
+				reasonObj.setOrigin(origin);
+				reasonObj.setOtherRemark(otherRemark);
+				reasonObj.setReason(reason);
+				reasonObj.setRemark(reasonRemark);
+				reasonObj.setSource(source);
+			}
 
 			// 整车信息
 			Vehicle vehicle = null;
@@ -394,68 +441,66 @@ public class OtsTaskController extends AbstractController {
 
 			// 零部件信息
 			Parts parts = null;
-			if (taskType == TaskTypeEnum.OTS.getState()) {
-				if (p_id == null) {
-					parts = new Parts();
-					parts.setType(Contants.STANDARD_TYPE);
-					parts.setProTime(sdf.parse(p_proTime));
-					parts.setRemark(p_remark);
-					parts.setPlace(p_place);
-					parts.setProNo(p_proNo);
-					parts.setName(p_name);
-					parts.setCode(p_code);
-					parts.setProducer(p_producer);
-					parts.setProducerCode(p_producerCode);
-					parts.setCreateTime(date);
-					parts.setNum(p_num);
-					parts.setState(Contants.ONDOING_TYPE);
+			if (p_id == null) {
+				parts = new Parts();
+				parts.setType(Contants.STANDARD_TYPE);
+				parts.setProTime(sdf.parse(p_proTime));
+				parts.setRemark(p_remark);
+				parts.setPlace(p_place);
+				parts.setProNo(p_proNo);
+				parts.setName(p_name);
+				parts.setCode(p_code);
+				parts.setProducer(p_producer);
+				parts.setProducerCode(p_producerCode);
+				parts.setCreateTime(date);
+				parts.setNum(p_num);
+				parts.setState(Contants.ONDOING_TYPE);
 
+				boolean isExist = partsService
+						.isExist(null, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
+				if (isExist) {
+					vo.setSuccess(false);
+					vo.setMsg("零部件信息已存在");
+					return vo;
+				}
+			} else {
+				parts = partsService.selectOne(p_id);
+
+				// 编辑时
+				if (parts.getState().intValue() == 0) {
 					boolean isExist = partsService
-							.isExist(null, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
+							.isExist(p_id, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
 						return vo;
 					}
 				} else {
-					parts = partsService.selectOne(p_id);
+					// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
+					ResultFlagVO isExist = partsService.isExist(null, p_name, sdf.parse(p_proTime), p_producer,
+							p_producerCode);
 
-					// 编辑时
-					if (parts.getState().intValue() == 0) {
-						boolean isExist = partsService
-								.isExist(p_id, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
-						if (isExist) {
+					if (!isExist.getFlag()) {
+						parts.setId(null);
+					} else {
+						// 存在正在审批的记录
+						if (isExist.getState() == 0) {
 							vo.setSuccess(false);
 							vo.setMsg("零部件信息已存在");
 							return vo;
 						}
-					} else {
-						// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
-						ResultFlagVO isExist = partsService.isExist(null, p_name, sdf.parse(p_proTime), p_producer,
-								p_producerCode);
-
-						if (!isExist.getFlag()) {
-							parts.setId(null);
-						} else {
-							// 存在正在审批的记录
-							if (isExist.getState() == 0) {
-								vo.setSuccess(false);
-								vo.setMsg("零部件信息已存在");
-								return vo;
-							}
-						}
 					}
-
-					parts.setProTime(sdf.parse(p_proTime));
-					parts.setRemark(p_remark);
-					parts.setPlace(p_place);
-					parts.setProNo(p_proNo);
-					parts.setName(p_name);
-					parts.setProducer(p_producer);
-					parts.setCode(p_code);
-					parts.setNum(p_num);
-					parts.setProducerCode(p_producerCode);
 				}
+
+				parts.setProTime(sdf.parse(p_proTime));
+				parts.setRemark(p_remark);
+				parts.setPlace(p_place);
+				parts.setProNo(p_proNo);
+				parts.setName(p_name);
+				parts.setProducer(p_producer);
+				parts.setCode(p_code);
+				parts.setNum(p_num);
+				parts.setProducerCode(p_producerCode);
 			}
 
 			// 原材料信息
@@ -484,8 +529,8 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, applicat, Contants.STANDARD_TYPE, t_id, taskType,
-					draft, atlType, atlRemark);
+			infoService.insert(account, vehicle, parts, material, applicat, reasonObj, Contants.STANDARD_TYPE, t_id,
+					taskType, draft, atlType, atlRemark, atlItem);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -514,6 +559,16 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+			model.addAttribute("optionList", optionList);
+		}
+		
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
 
@@ -596,6 +651,15 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+			model.addAttribute("optionList", optionList);
+		}
 
 		model.addAttribute("carCodeList", carCodeList);
 		model.addAttribute("addressList", addressList);
@@ -684,8 +748,8 @@ public class OtsTaskController extends AbstractController {
 			Parts parts = null;
 			if (taskType == TaskTypeEnum.OTS.getState()) {
 				parts = partsService.selectOne(p_id);
-				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark,
-						p_num, p_producer, p_producerCode)) {
+				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
+						p_producer, p_producerCode)) {
 					parts.setProTime(sdf.parse(p_proTime));
 					parts.setRemark(p_remark);
 					parts.setPlace(p_place);
@@ -741,14 +805,23 @@ public class OtsTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+			model.addAttribute("optionList", optionList);
+		}
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		return "task/ots/transmit_list";
 	}
 
@@ -838,7 +911,22 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
 		}
+		
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
 
+			model.addAttribute("optionList", optionList);
+		}
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
 		model.addAttribute("taskType", taskType);
 		model.addAttribute("resUrl", resUrl);
 		return "task/ots/transmit_detail";
@@ -943,14 +1031,14 @@ public class OtsTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		return "task/ots/approve_list";
 	}
 
@@ -1143,6 +1231,15 @@ public class OtsTaskController extends AbstractController {
 		if (approveType == 3) {
 			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
 			model.addAttribute("labReqList", labReqList);
+		}
+		
+		if (taskType == 4) {
+			// 抽样原因选项
+			Map<String, Object> optionMap = new PageMap(false);
+			optionMap.put("custom_order_sql", "type asc, name desc");
+			List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+			model.addAttribute("optionList", optionList);
 		}
 
 		if (approveType == 1) {

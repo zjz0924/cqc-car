@@ -120,6 +120,9 @@
 						}
 			        ]],
 			        columns : [ [ {
+						title:'抽样原因', 
+						colspan: 3
+					}, {
 						title:'车型信息', 
 						colspan:2
 					},{
@@ -133,6 +136,42 @@
 						colspan: 3
 					}],
 					[{
+						field : 'reason.origin',
+						title : '样件来源',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var reason = row.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.origin +"'>"+ reason.origin +"</span>";
+							}							
+						}
+					},{
+						field : 'reason.reason',
+						title : '抽样原因',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var reason = row.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.reason +"'>"+ reason.reason +"</span>";
+							}							
+						}
+					},{
+						field : 'reason.source',
+						title : '费用出处',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var reason = row.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.source +"'>"+ reason.source +"</span>";
+							}							
+						}
+					}, {
 						field : 'info.vehicle.code',
 						title : '车型代码',
 						width : '120',
@@ -356,16 +395,17 @@
 				    }
 				});
 				
-				if("${taskType}" == 4){
-					var dg = $("#" + datagrid);
-					// 隐藏零件信息
-					dg.datagrid('hideColumn', 'info.parts.producer'); 
-					dg.datagrid('hideColumn', 'info.parts.producerCode'); 
-					dg.datagrid('hideColumn', 'info.parts.proTime'); 
-					dg.datagrid('hideColumn', 'info.parts.name');
-					dg.datagrid('hideColumn', 'datagrid-td-group1-0-1');
-					dg.datagrid();
-				}
+				if("${taskType}" == 1){
+                    var dg = $("#" + datagrid);
+                    // 隐藏零件信息
+                    dg.datagrid('hideColumn', 'reason.origin');
+                    dg.datagrid('hideColumn', 'reason.reason');
+                    dg.datagrid('hideColumn', 'reason.source');
+                    dg.datagrid();
+                    
+                    $('#datagrid-td-group1-0-0').hide();
+                 }
+				
 			});
 	
 			function doSearch() {
@@ -449,7 +489,7 @@
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<p> <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="$('#queryDiv').toggle();">查询条件</a></p>
 			
-			<div id="queryDiv" style=";">
+			<div id="queryDiv" style="display:none;">
 				<div>
 					<span class="qlabel">任务号：</span>
 					<input id="task_code" name="task_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -457,8 +497,16 @@
 					<span class="qlabel">图谱类型：</span>
 					<select id="q_atlType" name="q_atlType" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
 						<option value="">全部</option>
-						<option value="1">零件基准图谱</option>
-						<option value="2">材料基准图谱</option>
+						<c:if test="${taskType == 1}">
+							<option value="1">零件基准图谱</option>
+							<option value="2">材料基准图谱</option>
+						</c:if>
+						<c:if test="${taskType == 4}">
+							<option value="1">零件图谱试验</option>
+							<option value="2">材料图谱试验</option>
+							<option value="4">零件型式试验</option>
+							<option value="3">材料型式试验</option>
+						</c:if>
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<span class="qlabel">状态：</span>

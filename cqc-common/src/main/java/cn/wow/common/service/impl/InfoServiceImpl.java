@@ -145,17 +145,29 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, int type,
-			Long taskId, int taskType, int draft, int atlType, String atlRemark) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat,
+			Reason reason, int type, Long taskId, int taskType, int draft, int atlType, String atlRemark,
+			String atlItem) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
 
+		// 申请人信息
 		if (applicat.getId() == null) {
 			applicatDao.insert(applicat);
 		} else {
 			applicatDao.update(applicat);
 		}
 
+		// 抽样原因
+		if (taskType == TaskTypeEnum.GS.getState()) {
+			if (reason.getId() == null) {
+				reasonDao.insert(reason);
+			} else {
+				reasonDao.update(reason);
+			}
+		}
+
+		// 整车信息
 		if (vehicle.getId() == null) {
 			vehicleDao.insert(vehicle);
 		} else {
@@ -164,16 +176,16 @@ public class InfoServiceImpl implements InfoService {
 			}
 		}
 
-		if (taskType == TaskTypeEnum.OTS.getState()) {
-			if (parts.getId() == null) {
-				partsDao.insert(parts);
-			} else {
-				if (parts.getState() == Contants.ONDOING_TYPE) {
-					partsDao.update(parts);
-				}
+		// 整件信息
+		if (parts.getId() == null) {
+			partsDao.insert(parts);
+		} else {
+			if (parts.getState() == Contants.ONDOING_TYPE) {
+				partsDao.update(parts);
 			}
 		}
 
+		// 材料信息
 		if (material.getId() == null) {
 			materialDao.insert(material);
 		} else {
@@ -187,10 +199,7 @@ public class InfoServiceImpl implements InfoService {
 			Info info = new Info();
 			info.setCreateTime(date);
 			info.setmId(material.getId());
-
-			if (taskType == TaskTypeEnum.OTS.getState()) {
-				info.setpId(parts.getId());
-			}
+			info.setpId(parts.getId());
 			info.setState(Contants.ONDOING_TYPE);
 			info.setvId(vehicle.getId());
 			info.setType(type);
@@ -219,7 +228,11 @@ public class InfoServiceImpl implements InfoService {
 			task.setDraft(draft);
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
+			task.setAtlItem(atlItem);
 			task.setApplicatId(applicat.getId());
+			if (task.getType() == 4) {
+				task.setReasonId(reason.getId());
+			}
 			taskDao.insert(task);
 
 			// 操作记录
@@ -237,12 +250,15 @@ public class InfoServiceImpl implements InfoService {
 			Task task = taskDao.selectOne(taskId);
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
+			if (task.getType() == 4) {
+				task.setReasonId(reason.getId());
+			}
 
 			Info info = task.getInfo();
 			if (info.getvId().longValue() != vehicle.getId().longValue()) {
 				info.setvId(vehicle.getId());
 			}
-			if (info.getpId().longValue() != parts.getId().longValue()) {
+			if (info.getpId() != null && info.getpId().longValue() != parts.getId().longValue()) {
 				info.setpId(parts.getId());
 			}
 			infoDao.update(info);

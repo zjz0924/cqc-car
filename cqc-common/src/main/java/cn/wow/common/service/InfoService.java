@@ -29,8 +29,8 @@ public interface InfoService {
 
 	public List<Info> selectAllList(Map<String, Object> map);
 
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, int type,
-			Long taskId, int taskType, int draft, int atlType, String atlRemark);
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, Reason reason, int type,
+			Long taskId, int taskType, int draft, int atlType, String atlRemark, String atlItem);
 
 	/**
 	 * 审批审核

@@ -109,6 +109,9 @@ public class Task {
     // 基准图谱类型（1-零件基准图谱，2-材料基准图谱， 3-材料型式试验，4-零件型式试验）
     private Integer atlType;
     
+    // 测试项目
+    private String atlItem;
+    
     // 基准图谱备注
     private String atlRemark;
     
@@ -526,5 +529,12 @@ public class Task {
 	public void setLabId(Long labId) {
 		this.labId = labId;
 	}
-	
+
+	public String getAtlItem() {
+		return atlItem;
+	}
+
+	public void setAtlItem(String atlItem) {
+		this.atlItem = atlItem;
+	}
 }

@@ -125,6 +125,9 @@
 						}
 			        ]],
 			        columns : [ [{
+						title:'抽样原因', 
+						colspan: 3
+					}, {
 						title:'车型信息', 
 						colspan:2
 					},{
@@ -138,6 +141,42 @@
 						colspan: 3
 					}],
 					[{
+						field : 'reason.origin',
+						title : '样件来源',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var reason = row.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.origin +"'>"+ reason.origin +"</span>";
+							}							
+						}
+					},{
+						field : 'reason.reason',
+						title : '抽样原因',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var reason = row.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.reason +"'>"+ reason.reason +"</span>";
+							}							
+						}
+					},{
+						field : 'reason.source',
+						title : '费用出处',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var reason = row.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.source +"'>"+ reason.source +"</span>";
+							}							
+						}
+					}, {
 						field : 'info.vehicle.code',
 						title : '车型代码',
 						width : '120',
@@ -432,16 +471,16 @@
 				});
 				
 				
-				if("${taskType}" == 4){
-					var dg = $("#" + datagrid);
-					// 隐藏零件信息
-					dg.datagrid('hideColumn', 'info.parts.producer'); 
-					dg.datagrid('hideColumn', 'info.parts.producerCode'); 
-					dg.datagrid('hideColumn', 'info.parts.proTime'); 
-					dg.datagrid('hideColumn', 'info.parts.name');
-					dg.datagrid('hideColumn', 'datagrid-td-group1-0-1');
-					dg.datagrid();
-				}
+				if("${taskType}" == 1){
+                    var dg = $("#" + datagrid);
+                    // 隐藏零件信息
+                    dg.datagrid('hideColumn', 'reason.origin');
+                    dg.datagrid('hideColumn', 'reason.reason');
+                    dg.datagrid('hideColumn', 'reason.source');
+                    dg.datagrid();
+                    
+                    $('#datagrid-td-group1-0-0').hide();
+                 }
 			});
 		
 			function doSearch() {
