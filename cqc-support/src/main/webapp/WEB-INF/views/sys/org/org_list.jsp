@@ -7,6 +7,7 @@
 		<meta charset="utf-8">
 		<title>SGMW</title>
 		<%@include file="../../common/source.jsp"%>
+		<script src="${ctx}/resources/js/jquery.form.js"></script>
 		
 		<script type="text/javascript">
 			//操作类型, 0: 新建修改  1：删除
@@ -216,6 +217,39 @@
 					}
 				});
 			}
+			
+			function openImport(){
+				$('#excelDialog').dialog('open');
+				$('#excelDialog').window('center');
+			}
+			
+			function importExcel() {
+				$("#result").html("");
+				
+				var fileDir = $("#upfile").filebox("getValue");
+				var suffix = fileDir.substr(fileDir.lastIndexOf("."));
+				if ("" == fileDir) {
+					$("#fileInfo").html("请选择要导入的Excel文件");
+					return false;
+				}
+				if (".xls" != suffix && ".xlsx" != suffix) {
+					$("#fileInfo").html("请选择Excel格式的文件导入！");
+					return false;
+				}
+				
+				$("#fileInfo").html("");
+		
+				$('#uploadForm').ajaxSubmit({
+					url : '${ctx}/org/import',
+					dataType : 'text',
+					success : function(msg) {
+						var data = eval('(' + msg + ')');
+						$("#upfile").filebox("clear");
+						$("#result").html(data.msg);
+						window.location.reload();
+					}
+				});
+			}
 		</script>
 		
 		<style type="text/css">
@@ -245,15 +279,20 @@
 		
 	</head>
 
-	<body>
-		<div class="table">
-			<div class="column" style="height: 600px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:10px;padding-left:10px;">
+	<body style="overflow-y: hidden;">
+	    <div style="height: 20px;margin-left:20px;margin-top:5px;">
+	    	<a href="${ctx}/org/export" class="easyui-linkbutton" data-options="iconCls:'icon-export'" style="width:80px">导出</a>&nbsp;&nbsp;
+		   <%--  <a href="javascript:void(0)" onclick="openImport();" class="easyui-linkbutton" data-options="iconCls:'icon-import'" style="width:80px">导入</a>&nbsp;&nbsp;
+		    <a href="${ctx}/resources/template/机构导入模板.xlsx" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'" style="width:80px">模板</a> --%>
+	    </div>
+	    
+		<div class="table" style="margin-top:10px;">
+			<div class="column" style="line-height: 300px;height: 500px;width: 300px;border-right:1px dashed #e6e6e6;overflow-x:auto;overflow-y:auto;padding-top:10px;padding-left:10px;">
 				<!-- <input id="orgSearchbox" style="width: 280px;"></input>
 				<div id="searchMenu">
 			        <div data-options="name:'name'">名称</div>
 			        <div data-options="name:'code'">编码</div>
 			    </div> -->
-				
 				<div style="margin-top:10px;margin-right: 10px;">
 					<ul id="orgTree" name="orgTree"></ul>
 				</div>
@@ -308,6 +347,25 @@
 		
 		<div id="orgdialog"></div>
 		
+		<!-- Excel 导入 -->
+		<div id="excelDialog" class="easyui-dialog" title="机构导入" style="width: 300px; height: 200px; padding: 10px;" data-options="modal: true" closed="true">
+			<form method="POST" enctype="multipart/form-data" id="uploadForm">
+				<div>
+					请选择要导入的文件（<span style="color: red;">只支持 Excel</span>）：
+				</div>
+				
+				<div style="margin-top: 10px;">
+					<input class="easyui-filebox" id="upfile" name="upfile" style="width: 90%" data-options="buttonText: '选择文件'">
+					<p id="fileInfo" style="color:red;margin-top:5px;"></p>
+				</div>
+				
+				<div style="margin-top: 15px;">
+					<a href="javascript:void(0);" class="easyui-linkbutton" style="width: 90%" onclick="importExcel()">上传</a>
+				</div>
+				
+				<div id="result" style="margin-top:5px;"></div>
+			</form>
+		</div>
 		
 	</body>
 </html>

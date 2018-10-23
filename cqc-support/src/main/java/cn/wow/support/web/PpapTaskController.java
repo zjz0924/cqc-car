@@ -28,7 +28,6 @@ import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Address;
-import cn.wow.common.domain.Applicat;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CarCode;
@@ -45,8 +44,8 @@ import cn.wow.common.domain.ReasonOption;
 import cn.wow.common.domain.StandardVO;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
-import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
@@ -110,8 +109,6 @@ public class PpapTaskController extends AbstractController {
 	@Autowired
 	private LabConclusionService labConclusionService;
 	@Autowired
-	private ApplicatService applicatService;
-	@Autowired
 	private ReasonOptionService reasonOptionService;
 	@Autowired
 	private AddressService addressService;
@@ -119,6 +116,8 @@ public class PpapTaskController extends AbstractController {
 	private CarCodeService carCodeService;
 	@Autowired
 	private ReasonService reasonService;
+	@Autowired
+	private AccountService accountService;
 
 	/**
 	 * 首页
@@ -232,7 +231,7 @@ public class PpapTaskController extends AbstractController {
 		if (atlType != null) {
 			map.put("atlType", atlType);
 		}
-		if(labId != null) {
+		if (labId != null) {
 			map.put("labId", labId);
 		}
 
@@ -243,14 +242,14 @@ public class PpapTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
-		
+
 		// 抽样原因
 		List<Long> reasonIdList = reasonService.selectIds(origin, source, reason);
-		if(reasonIdList.size() > 0) {
+		if (reasonIdList.size() > 0) {
 			map.put("reasonIdList", reasonIdList);
 		}
 
@@ -337,27 +336,13 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, int taskType,
-			Long applicat_id, String applicatName, String applicatDepart, Long applicatOrg, String applicatContact,
-			String applicatRemark, int atlType, String atlRemark, String expectDate, Long lab_org, Long reason_id,
-			String origin, String reason, String otherRemark, String source, String reasonRemark) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, int taskType, int atlType,
+			String atlRemark, String expectDate, Long lab_org, Long reason_id, String origin, String reason,
+			String otherRemark, String source, String reasonRemark) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-
-			// 申请人信息
-			Applicat applicat = null;
-			if (applicat_id == null) {
-				applicat = new Applicat();
-			} else {
-				applicat = applicatService.selectOne(applicat_id);
-			}
-			applicat.setName(applicatName);
-			applicat.setDepart(applicatDepart);
-			applicat.setOrgId(applicatOrg);
-			applicat.setContact(applicatContact);
-			applicat.setRemark(applicatRemark);
 
 			// 抽样原因
 			Reason reasonObj = null;
@@ -372,7 +357,7 @@ public class PpapTaskController extends AbstractController {
 			reasonObj.setRemark(reasonRemark);
 			reasonObj.setSource(source);
 
-			boolean flag = infoService.transmit(account, applicat, reasonObj, t_id, i_id, taskType, atlType, atlRemark,
+			boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, atlType, atlRemark,
 					expectDate, lab_org);
 
 			if (!flag) {
@@ -402,7 +387,7 @@ public class PpapTaskController extends AbstractController {
 		model.addAttribute("defaultPageSize", APPROVE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("taskType", taskType);
-		
+
 		// 抽样原因选项
 		Map<String, Object> optionMap = new PageMap(false);
 		optionMap.put("custom_order_sql", "type asc, name desc");
@@ -414,7 +399,7 @@ public class PpapTaskController extends AbstractController {
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		model.addAttribute("optionList", optionList);		
+		model.addAttribute("optionList", optionList);
 		return "task/ppap/approve_list";
 	}
 
@@ -456,7 +441,7 @@ public class PpapTaskController extends AbstractController {
 		if (atlType != null) {
 			map.put("atlType", atlType);
 		}
-		if(labId != null) {
+		if (labId != null) {
 			map.put("labId", labId);
 		}
 
@@ -467,14 +452,14 @@ public class PpapTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
-		
+
 		// 抽样原因
 		List<Long> reasonIdList = reasonService.selectIds(origin, source, reason);
-		if(reasonIdList.size() > 0) {
+		if (reasonIdList.size() > 0) {
 			map.put("reasonIdList", reasonIdList);
 		}
 
@@ -738,7 +723,7 @@ public class PpapTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}

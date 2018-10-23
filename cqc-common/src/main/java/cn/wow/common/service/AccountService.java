@@ -41,4 +41,7 @@ public interface AccountService {
 	 * 批量重置密码
 	 */
 	public void batchResetPwd(String userName, Long[] ids, String defaultPwd);
+	
+	
+	public List<Long> selectIds(String name, String department, Long orgId);
 }

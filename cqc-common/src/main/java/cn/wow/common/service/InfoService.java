@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.wow.common.domain.Account;
-import cn.wow.common.domain.Applicat;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
@@ -29,7 +29,7 @@ public interface InfoService {
 
 	public List<Info> selectAllList(Map<String, Object> map);
 
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat, Reason reason, int type,
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
 			Long taskId, int taskType, int draft, int atlType, String atlRemark, String atlItem);
 
 	/**
@@ -49,7 +49,7 @@ public interface InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material, Applicat applicat, int atlType, String atlRemark);
+			Material material, int atlType, String atlRemark);
 
 	/**
 	 * 更新任务状态
@@ -80,7 +80,7 @@ public interface InfoService {
 	 * @param i_id       信息ID
 	 * @param taskType   任务类型
 	 */
-	public boolean transmit(Account account, Applicat applicat, Reason reason, Long t_id, Long i_id, int taskType, int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException;
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException;
 
 	/**
 	 * 审批（OTS）

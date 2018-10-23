@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.wow.common.dao.ApplicatDao;
+import cn.wow.common.dao.DepartmentDao;
 import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.ExamineRecordDao;
@@ -31,7 +31,7 @@ import cn.wow.common.dao.TaskInfoDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
-import cn.wow.common.domain.Applicat;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
@@ -103,8 +103,6 @@ public class InfoServiceImpl implements InfoService {
 	@Autowired
 	private TaskInfoDao taskInfoDao;
 	@Autowired
-	private ApplicatDao applicatDao;
-	@Autowired
 	private ReasonDao reasonDao;
 
 	public Info selectOne(Long id) {
@@ -145,18 +143,11 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Applicat applicat,
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material,
 			Reason reason, int type, Long taskId, int taskType, int draft, int atlType, String atlRemark,
 			String atlItem) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
-
-		// 申请人信息
-		if (applicat.getId() == null) {
-			applicatDao.insert(applicat);
-		} else {
-			applicatDao.update(applicat);
-		}
 
 		// 抽样原因
 		if (taskType == TaskTypeEnum.GS.getState()) {
@@ -229,7 +220,6 @@ public class InfoServiceImpl implements InfoService {
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
 			task.setAtlItem(atlItem);
-			task.setApplicatId(applicat.getId());
 			if (task.getType() == 4) {
 				task.setReasonId(reason.getId());
 			}
@@ -351,15 +341,12 @@ public class InfoServiceImpl implements InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material, Applicat applicat, int atlType, String atlRemark) {
+			Material material, int atlType, String atlRemark) {
 
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
 		Info info = task.getInfo();
-
-		// 更新申请人信息
-		applicatDao.update(applicat);
 
 		task.setAtlType(atlType);
 		task.setAtlRemark(atlRemark);
@@ -498,18 +485,12 @@ public class InfoServiceImpl implements InfoService {
 	 * @param i_id     信息ID
 	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Applicat applicat, Reason reason, Long t_id, Long i_id, int taskType,
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType,
 			int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException {
 		String taskCode = "";
 		Long taskId = null;
 		boolean flag = true;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		if (applicat.getId() == null) {
-			applicatDao.insert(applicat);
-		} else {
-			applicatDao.update(applicat);
-		}
 
 		if (reason.getId() == null) {
 			reasonDao.insert(reason);
@@ -557,7 +538,6 @@ public class InfoServiceImpl implements InfoService {
 			task.setExpectDate(sdf.parse(expectDate));
 			task.setLabId(lab_org);
 			task.setReasonId(reason.getId());
-			task.setApplicatId(applicat.getId());
 			taskDao.insert(task);
 
 			// 操作记录
@@ -585,7 +565,6 @@ public class InfoServiceImpl implements InfoService {
 			task.setExpectDate(sdf.parse(expectDate));
 			task.setLabId(lab_org);
 			task.setReasonId(reason.getId());
-			task.setApplicatId(applicat.getId());
 			taskDao.update(task);
 
 			// 操作记录

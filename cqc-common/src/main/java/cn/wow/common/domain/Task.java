@@ -15,12 +15,15 @@ public class Task {
     // 信息ID
     private Long iId;
     private Info info;
-    // 填写机构ID
+    
+    // 申请人机构
     private Long orgId;
     private Org org;
-    // 填写人
+    
+    // 申请人
     private Long aId;
-    private Account account;
+    private Account applicat;
+    
     // 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
     private Integer type;
     
@@ -122,10 +125,6 @@ public class Task {
     private Long labId;
     private Org lab;
     
-    // 申请人ID
-    private Long applicatId;
-    private Applicat applicat;
-    
     // 抽样原因
     private Long reasonId;
     private Reason reason;
@@ -224,14 +223,6 @@ public class Task {
 
 	public void setaId(Long aId) {
 		this.aId = aId;
-	}
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
 	}
 
 	public Integer getPartsAtlResult() {
@@ -474,19 +465,11 @@ public class Task {
 		this.atlRemark = atlRemark;
 	}
 
-	public Long getApplicatId() {
-		return applicatId;
-	}
-
-	public void setApplicatId(Long applicatId) {
-		this.applicatId = applicatId;
-	}
-
-	public Applicat getApplicat() {
+	public Account getApplicat() {
 		return applicat;
 	}
 
-	public void setApplicat(Applicat applicat) {
+	public void setApplicat(Account applicat) {
 		this.applicat = applicat;
 	}
 

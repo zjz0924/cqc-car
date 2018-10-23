@@ -35,9 +35,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.Org;
 import cn.wow.common.domain.Role;
 import cn.wow.common.service.AccountService;
+import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.OrgService;
 import cn.wow.common.service.RoleService;
@@ -61,7 +63,7 @@ public class AccountController extends AbstractController {
 	Logger logger = LoggerFactory.getLogger(AccountController.class);
 
 	private final static String DEFAULT_PAGE_SIZE = "10";
-	
+
 	private final static String DEFAULT_PWD = "888888";
 
 	@Value("${account.sign.url}")
@@ -75,6 +77,8 @@ public class AccountController extends AbstractController {
 	private OrgService orgService;
 	@Autowired
 	private OperationLogService operationLogService;
+	@Autowired
+	private DepartmentService departmentService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -83,6 +87,9 @@ public class AccountController extends AbstractController {
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
 		return "sys/account/account_list";
 	}
 
@@ -93,7 +100,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String userName, String nickName,
 			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId,
-			Integer isCharge, String sort, String order) {
+			Integer isCharge, String sort, String order, String department) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -151,7 +158,10 @@ public class AccountController extends AbstractController {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 			queryMap.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-
+		if (StringUtils.isNotBlank(department)) {
+			map.put("department", department);
+			queryMap.put("department", department);
+		}
 		List<Account> dataList = accountService.selectAllList(map);
 
 		// 分页
@@ -187,6 +197,10 @@ public class AccountController extends AbstractController {
 			model.addAttribute("roleVal", roleVal);
 			model.addAttribute("facadeBean", account);
 		}
+		
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
+		
 		model.addAttribute("resUrl", resUrl);
 		return "sys/account/account_detail";
 	}
@@ -219,7 +233,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String userName, String nickName,
 			String mobile, String password, Long roleId, Long orgId, String email, String remark, Integer signType,
-			@RequestParam(value = "pic", required = false) MultipartFile file, Integer isCharge) {
+			@RequestParam(value = "pic", required = false) MultipartFile file, Integer isCharge, String department) {
 		AjaxVO vo = new AjaxVO();
 		Account account = null;
 
@@ -237,6 +251,7 @@ public class AccountController extends AbstractController {
 					account.setRemark(remark);
 					account.setSignType(signType);
 					account.setIsCharge(isCharge);
+					account.setDepartment(department);
 
 					if (signType == 2) {
 						if (file != null && !file.isEmpty()) {
@@ -275,6 +290,7 @@ public class AccountController extends AbstractController {
 					account.setRemark(remark);
 					account.setSignType(signType);
 					account.setIsCharge(isCharge);
+					account.setDepartment(department);
 
 					if (signType == 2) {
 						if (file != null && !file.isEmpty()) {
@@ -286,6 +302,35 @@ public class AccountController extends AbstractController {
 
 					vo.setMsg("新增成功");
 				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+
+			logger.error("用户保存失败", ex);
+			vo.setMsg("保存失败，系统异常");
+			vo.setSuccess(false);
+			return vo;
+		}
+		return vo;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/updateInfo")
+	public AjaxVO updateInfo(HttpServletRequest request, Model model, String id, String nickName, String mobile, String email) {
+		AjaxVO vo = new AjaxVO();
+		Account account = null;
+
+		try {
+			if (StringUtils.isNotBlank(id)) {
+				account = accountService.selectOne(Long.parseLong(id));
+
+				if (account != null) {
+					account.setMobile(mobile);
+					account.setNickName(nickName);
+					account.setEmail(email);
+					accountService.update(getCurrentUserName(), account);
+				}
+				vo.setMsg("编辑成功");
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -422,17 +467,18 @@ public class AccountController extends AbstractController {
 			// 工作簿
 			Sheet sh = wb.createSheet("用户清单");
 			sh.setColumnWidth(0, (short) 4000);
-			sh.setColumnWidth(1, (short) 4000);
+			sh.setColumnWidth(1, (short) 8000);
 			sh.setColumnWidth(2, (short) 4000);
-			sh.setColumnWidth(3, (short) 5000);
-			sh.setColumnWidth(4, (short) 9000);
-			sh.setColumnWidth(5, (short) 6000);
-			sh.setColumnWidth(6, (short) 3000);
-			sh.setColumnWidth(7, (short) 6000);
+			sh.setColumnWidth(3, (short) 8000);
+			sh.setColumnWidth(4, (short) 6000);
+			sh.setColumnWidth(5, (short) 9000);
+			sh.setColumnWidth(6, (short) 6000);
+			sh.setColumnWidth(7, (short) 3000);
+			sh.setColumnWidth(8, (short) 6000);
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "角色", "邮箱", "状态", "创建时间" };
+			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "科室", "角色", "邮箱", "状态", "创建时间" };
 			int r = 0;
 
 			Row titleRow = sh.createRow(0);
@@ -469,29 +515,33 @@ public class AccountController extends AbstractController {
 					cell4.setCellValue(account.getOrg().getName());
 				}
 
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				cell5.setCellValue(account.getDepartment());
+
 				String roleStr = "";
 				if (account.getRole() != null) {
 					roleStr = account.getRole().getName();
 				}
-				Cell cell5 = contentRow.createCell(4);
-				cell5.setCellStyle(styles.get("cell"));
-				cell5.setCellValue(roleStr);
-
 				Cell cell6 = contentRow.createCell(5);
 				cell6.setCellStyle(styles.get("cell"));
-				cell6.setCellValue(account.getEmail());
+				cell6.setCellValue(roleStr);
+
+				Cell cell7 = contentRow.createCell(6);
+				cell7.setCellStyle(styles.get("cell"));
+				cell7.setCellValue(account.getEmail());
 
 				String lock = "正常";
 				if (account.getLock() == "Y") {
 					lock = "锁定";
 				}
-				Cell cell7 = contentRow.createCell(6);
-				cell7.setCellStyle(styles.get("cell"));
-				cell7.setCellValue(lock);
-
 				Cell cell8 = contentRow.createCell(7);
 				cell8.setCellStyle(styles.get("cell"));
-				cell8.setCellValue(sdf.format(account.getCreateTime()));
+				cell8.setCellValue(lock);
+
+				Cell cell9 = contentRow.createCell(8);
+				cell9.setCellStyle(styles.get("cell"));
+				cell9.setCellValue(sdf.format(account.getCreateTime()));
 				r++;
 			}
 
@@ -526,6 +576,7 @@ public class AccountController extends AbstractController {
 		titleList.add("姓名");
 		titleList.add("手机号码");
 		titleList.add("机构编码");
+		titleList.add("科室");
 		titleList.add("角色编码");
 		titleList.add("邮箱");
 
@@ -564,10 +615,13 @@ public class AccountController extends AbstractController {
 					if (flag && !"机构编码".equals(titleObj.get(3).toString())) {
 						flag = false;
 					}
-					if (flag && !"角色编码".equals(titleObj.get(4).toString())) {
+					if (flag && !"科室".equals(titleObj.get(4).toString())) {
 						flag = false;
 					}
-					if (flag && !"邮箱".equals(titleObj.get(5).toString())) {
+					if (flag && !"角色编码".equals(titleObj.get(5).toString())) {
+						flag = false;
+					}
+					if (flag && !"邮箱".equals(titleObj.get(6).toString())) {
 						flag = false;
 					}
 
@@ -581,7 +635,8 @@ public class AccountController extends AbstractController {
 				Map<String, Org> orgMap = new HashMap<String, Org>();
 				Map<String, Role> roleMap = new HashMap<String, Role>();
 				Map<String, Account> accountMap = new HashMap<String, Account>();
-				getMapData(orgMap, roleMap, accountMap);
+				Map<String, Department> departmentMap = new HashMap<String, Department>();
+				getMapData(orgMap, roleMap, accountMap, departmentMap);
 
 				for (int i = 1; i < execelList.size(); i++) {
 					List<Object> obj = execelList.get(i);
@@ -613,14 +668,23 @@ public class AccountController extends AbstractController {
 						orgCode = obj.get(3).toString();
 					}
 
-					String roleCodes = null;
+					String department = null;
 					if (obj.size() >= 5 && obj.get(4) != null) {
-						roleCodes = obj.get(4).toString();
+						department = obj.get(4).toString();
+
+						if (StringUtils.isBlank(department) || departmentMap.get(department) == null) {
+							department = "";
+						}
+					}
+
+					String roleCodes = null;
+					if (obj.size() >= 6 && obj.get(5) != null) {
+						roleCodes = obj.get(5).toString();
 					}
 
 					String email = null;
-					if (obj.size() >= 6 && obj.get(5) != null) {
-						email = obj.get(5).toString();
+					if (obj.size() >= 7 && obj.get(6) != null) {
+						email = obj.get(6).toString();
 
 						if (StringUtils.isNoneBlank(email)) {
 							boolean isMatch = Pattern.matches("^^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",
@@ -645,6 +709,7 @@ public class AccountController extends AbstractController {
 					account.setNickName(nickName);
 					account.setMobile(mobile);
 					account.setEmail(email);
+					account.setDepartment(department);
 					account.setSignType(1);
 					account.setIsCharge(0);
 
@@ -704,7 +769,8 @@ public class AccountController extends AbstractController {
 	/**
 	 * 把list转换成map
 	 */
-	private void getMapData(Map<String, Org> orgMap, Map<String, Role> roleMap, Map<String, Account> accountMap) {
+	private void getMapData(Map<String, Org> orgMap, Map<String, Role> roleMap, Map<String, Account> accountMap,
+			Map<String, Department> departmentMap) {
 		List<Org> orgList = orgService.selectAllList(new PageMap(false));
 		if (orgList != null && orgList.size() > 0) {
 			for (Org org : orgList) {
@@ -723,6 +789,13 @@ public class AccountController extends AbstractController {
 		if (accountList != null && accountList.size() > 0) {
 			for (Account account : accountList) {
 				accountMap.put(account.getUserName(), account);
+			}
+		}
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		if (departmentList != null && departmentList.size() > 0) {
+			for (Department department : departmentList) {
+				departmentMap.put(department.getName(), department);
 			}
 		}
 	}

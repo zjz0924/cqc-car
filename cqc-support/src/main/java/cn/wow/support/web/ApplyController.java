@@ -41,8 +41,9 @@ import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
-import cn.wow.common.service.ApplicatService;
+import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
@@ -100,7 +101,7 @@ public class ApplyController extends AbstractController {
 	@Autowired
 	private CarCodeService carCodeService;
 	@Autowired
-	private ApplicatService applicatService;
+	private AccountService accountService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -179,7 +180,7 @@ public class ApplyController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}

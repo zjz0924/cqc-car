@@ -28,8 +28,8 @@
 	    function accountInfo(url) {
 			$('#accountInfoDialog').dialog({
 				title : '用户信息',
-				width : 450,
-				height : 400,
+				width : 600,
+				height : 350,
 				closed : false,
 				cache : false,
 				href : "${ctx}/account/info",
@@ -151,7 +151,7 @@
 			</div>
 		</div>
 		
-		<div id="accountInfoDialog"></div>
+		<div id="accountInfoDialog" style="overflow-y:hidden!important;"></div>
 		
 	</div>
 </body>

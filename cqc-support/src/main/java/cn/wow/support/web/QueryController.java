@@ -39,11 +39,10 @@ import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
+import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
-import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
-import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
@@ -86,11 +85,11 @@ public class QueryController extends AbstractController {
 	@Autowired
 	private TaskInfoService taskInfoService;
 	@Autowired
-	private ApplicatService applicatService;
-	@Autowired
 	private AddressService addressService;
 	@Autowired
 	private CarCodeService carCodeService;
+	@Autowired
+	private AccountService accountService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -225,7 +224,7 @@ public class QueryController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
@@ -537,8 +536,8 @@ public class QueryController extends AbstractController {
 
 				Cell cell11 = contentRow.createCell(9);
 				cell11.setCellStyle(styles.get("cell"));
-				if (task.getAccount() != null) {
-					cell11.setCellValue(task.getAccount().getUserName());
+				if (task.getApplicat() != null) {
+					cell11.setCellValue(task.getApplicat().getUserName());
 				}
 
 				Cell cell12 = contentRow.createCell(10);

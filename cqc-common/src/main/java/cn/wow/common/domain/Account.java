@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 用户
- * @author zhenjunzhuo 
- * 2016-07-26
+ * 
+ * @author zhenjunzhuo 2016-07-26
  */
-public class Account extends JpaEntity{
-	
+public class Account extends JpaEntity {
+
 	private static final long serialVersionUID = 9009465862519388181L;
-	
+
 	private Long id;
 	// 用户名
 	private String userName;
@@ -35,21 +35,23 @@ public class Account extends JpaEntity{
 	private Long roleId;
 	// 角色
 	private Role role;
-	
+
 	private Long orgId;
-	
+
 	private Org org;
-	
+
 	private String email;
 	// 备注
 	private String remark;
-	// 签名来源（1 - 登录用户姓名   2 - 使用图片签名）
+	// 签名来源（1 - 登录用户姓名 2 - 使用图片签名）
 	private Integer signType;
 	// 签名图片
 	private String pic;
 	// 是否收费
 	private Integer isCharge;
-	
+	// 科室
+	private String department;
+
 	public String getLock() {
 		return lock;
 	}
@@ -65,7 +67,7 @@ public class Account extends JpaEntity{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getUserName() {
 		return userName;
 	}
@@ -129,7 +131,7 @@ public class Account extends JpaEntity{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getRemark() {
 		return remark;
 	}
@@ -176,6 +178,14 @@ public class Account extends JpaEntity{
 
 	public void setIsCharge(Integer isCharge) {
 		this.isCharge = isCharge;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 	@JsonIgnore

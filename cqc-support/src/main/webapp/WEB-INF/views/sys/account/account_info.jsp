@@ -8,11 +8,8 @@
 		<div id="infoDiv">
 			<div class="data-row">
 				<span class="title-span"><span class="req-span">*</span>用户名：</span> 
-				<input id="userName" name="userName" value="${facadeBean.userName}" disabled class="easyui-textbox">
-				<span id="userName_error" class="error-message"></span>
-			</div>
-			
-			<div class="data-row">
+				<input id="userName" name="userName" value="${facadeBean.userName}" disabled class="easyui-textbox">&nbsp;&nbsp;&nbsp;&nbsp;
+				
 				<span class="title-span"><span class="req-span">*</span>姓名：</span> 
 				<input id="nickName" name="nickName" class="easyui-textbox" value="${facadeBean.nickName}">
 				<span id="nickName_error" class="error-message"></span>
@@ -20,49 +17,51 @@
 			
 			<div class="data-row">
 				<span class="title-span"><span class="req-span">*</span>角色：</span> 
-				<input id="role" name="role">
-			</div>
-			
-			<div class="data-row">
+				<input id="orgName" name="orgName" value="${facadeBean.role.name}" disabled class="easyui-textbox">&nbsp;&nbsp;&nbsp;&nbsp;
+				
 				<span class="title-span"><span class="req-span">*</span>机构：</span> 
-				<input id="org" name="org">
+				<input id="orgName" name="orgName" value="${facadeBean.org.name}" disabled class="easyui-textbox">
 			</div>
 			
 			<div class="data-row">
-				<span class="title-span">手机：</span> 
+				<span class="title-span"><span class="req-span">*</span>科室：</span> 
+		      	<input value="${facadeBean.department}" disabled class="easyui-textbox">&nbsp;&nbsp;&nbsp;&nbsp;
+		      	
+		      	<span class="title-span">手机：</span> 
 				<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" data-options="validType:'phone'">
 			</div>
 			
 			<div class="data-row">
-				<span class="title-span">邮箱：</span> 
-				<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'">
+				<span class="title-span">&nbsp;邮箱：</span> 
+				<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'">&nbsp;&nbsp;&nbsp;&nbsp;
+			
+				 <span class="title-span">状态</span>
+                 <c:choose>
+					<c:when test="${facadeBean.lock == 'N'}">
+						<span class="label label-success">正常</span>
+					</c:when>
+					<c:otherwise>
+						<span class="label label-danger">锁定</span>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			
-              <div class="data-row">
-                  <span class="title-span">状态</span>
-                   <c:choose>
-						<c:when test="${facadeBean.lock == 'N'}">
-							<span class="label label-success">正常</span>
-						</c:when>
-						<c:otherwise>
-							<span class="label label-danger">锁定</span>
-						</c:otherwise>
-					</c:choose>
-              </div>
-              
               <div class="data-row">
                   <span class="title-span">创建时间：</span>
        			  <span><fmt:formatDate value='${facadeBean.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss" /></span>
        		  </div>
-       		  
-       		  <a onclick="redo(1)" href="javascript:void(0);" class="easyui-linkbutton c1" style="width:120px">修改密码</a>
 			 
 			 <div style="text-align:center;margin-top:5px;" class="data-row">
+			 	<a onclick="redo(1)" href="javascript:void(0);" class="easyui-linkbutton c1" style="width:120px">修改密码</a>&nbsp;&nbsp;
+			 
 				<a href="javascript:void(0);"  onclick="saveAccount()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
-				<span id="exception_error" class="error-message"></span>
-				<span id="inforesult" style="color:green"></span>
+				
 			</div>
 			
+			<div style="text-align:center;">
+				<span id="exception_error" class="error-message"></span>
+				<span id="inforesult" style="color:green;font-weight:bold;"></span>
+			</div>
 		</div> 
 		
 		<div id="passwordDiv" style="display:none;">
@@ -96,42 +95,8 @@
 	</div>
 	
 	<script type="text/javascript">
-		$(function(){
-			$('#role').combotree({
-				url: '${ctx}/role/tree',
-				multiple: false,
-				animate: true,
-				disabled: true 
-			});
-			
-			
-			$('#org').combotree({
-				url: '${ctx}/org/tree',
-				disabled: true 
-			});
-			
-			var roleVal = "${roleVal}";  
-		 	if(!isNull(roleVal)){
-		 		var roleJson = eval('(' + roleVal + ')');
-		 		$('#role').combotree('setValues', roleJson);
-		 	}
-		 	
-		 	var orgId = "${orgId}"; 
-		 	if(!isNull(orgId)){
-				$('#org').combotree('setValue', {id: orgId, text: '${orgName}'});
-			}
-		});
-	
 		function saveAccount(){
 			$("#inforesult").html("");
-			var userName = $("#userName").textbox("getValue");
-			
-			if(isNull(userName)){
-				errAccount("userName_error", "用户名必填");
-				return false;
-			}else{
-				errAccount("userName_error", "");
-			}
 			
 			var accountId = $("#id").val();
 			
@@ -143,50 +108,13 @@
 				errAccount("nickName_error", "");
 			}
 			
-			var roleId = "";
-			var roleVals = $("#role").combotree('getValues');
-			if(roleVals.length > 0){
-				for(var i = 0; i < roleVals.length; i++){
-					var id = roleVals[i];
-					id = id.split("_")[1];
-					
-					if(i != roleVals.length - 1){
-						roleId += id + ",";
-					}else{
-						roleId += id;
-					}
-				}
-			}
-			if(isNull(roleId)){
-				errAccount("role_error", "请选择角色");
-				return false;
-			}else{
-				errAccount("role_error", "");
-			}
-			
-			var orgId = "";
-			var orgTree = $('#org').combotree('tree');	
-			var selecteNode = orgTree.tree('getSelected');
-			if(!isNull(selecteNode)){
-				orgId = selecteNode.id;
-			}
-			if(isNull(orgId)){
-				errAccount("org_error", "请选择机构");
-				return false;
-			}else{
-				errAccount("org_error", "");
-			}
-			
 			var mobile = $("#mobile").textbox("getValue");
 			var email = $("#email").textbox("getValue");
 			
 			$.ajax({
-				url: "${ctx}/account/save",
+				url: "${ctx}/account/updateInfo",
 				data: {
-					userName: userName,
 					nickName: nickName,
-					roleId: roleId,
-					orgId: orgId,
 					mobile: mobile,
 					email: email,
 					id: accountId

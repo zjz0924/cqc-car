@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wow.common.dao.DepartmentDao" >
+  <resultMap id="BaseResultMap" type="cn.wow.common.domain.Department" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="base_columns" >
+    id, name, remark
+  </sql>
+  
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select <include refid="base_columns" /> from department where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="base_columns" /> from department where name = #{name,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from department where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="cn.wow.common.domain.Department" >
+  	<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+		SELECT @@IDENTITY
+	</selectKey>
+		
+    insert into department (name, remark)
+   	 values (#{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="cn.wow.common.domain.Department" >
+    update department
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <select id="selectAllList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+  	select 
+    <include refid="base_columns" />
+      from department
+      <where>
+     	  <if test="name != null" >
+	        and name = #{name,jdbcType=VARCHAR}
+	      </if>
+	      <if test="qname != null" >
+	        and name like concat('%', #{qname,jdbcType=VARCHAR}, '%')
+	      </if>
+     </where>
+      
+	  <choose>
+  		<when test="custom_order_sql != null">
+  			order by ${custom_order_sql}
+  		</when>
+  		<otherwise>
+  			order by name asc
+  		</otherwise>
+ 	 </choose>
+  </select>
+     
+  	
+
+</mapper>

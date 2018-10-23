@@ -1,9 +1,11 @@
 package cn.wow.common.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.AccountDao;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Reason;
 import cn.wow.common.service.AccountService;
 import cn.wow.common.utils.cookie.MD5;
 import cn.wow.common.utils.pagination.PageHelperExt;
+import cn.wow.common.utils.pagination.PageMap;
 
 @Service
 @Transactional
@@ -99,4 +103,34 @@ public class AccountServiceImpl implements AccountService {
 			}
 		}
 	}
+
+	public List<Long> selectIds(String name, String department, Long orgId) {
+		List<Long> idList = new ArrayList<Long>();
+
+		Map<String, Object> map = new PageMap(false);
+
+		if (StringUtils.isNotBlank(name)) {
+			map.put("nickName", name);
+		}
+		if (StringUtils.isNotBlank(department)) {
+			map.put("department", department);
+		}
+		if (orgId != null) {
+			map.put("orgId", orgId);
+		}
+
+		if (map.size() > 3) {
+			List<Account> dataList = this.selectAllList(map);
+			if (dataList != null && dataList.size() > 0) {
+				for (Account obj : dataList) {
+					idList.add(obj.getId());
+				}
+			} else {
+				idList.add(-1l);
+			}
+		}
+
+		return idList;
+	}
+
 }

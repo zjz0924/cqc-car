@@ -16,20 +16,21 @@
 	<result column="remark" property="remark" jdbcType="VARCHAR" />
 	<result column="sign_type" property="signType" jdbcType="INTEGER" />
 	<result column="is_charge" property="isCharge" jdbcType="INTEGER" />
+	<result column="department" property="department" jdbcType="VARCHAR" />
     <association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
     <association property="role" javaType="cn.wow.common.domain.Role" column="role_id" select="cn.wow.common.dao.RoleDao.selectOne"/>
   </resultMap>
   
   <sql id="base_columns" >
-    id, username, nickname, password, mobile, email, create_time, `lock`, role_id, org_id, pic, remark, sign_type, is_charge
+    id, username, nickname, password, mobile, email, create_time, `lock`, role_id, org_id, pic, remark, sign_type, is_charge, department
   </sql>
   
   <insert id="insert" parameterType="cn.wow.common.domain.Account" >
-    insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id, pic, remark, sign_type, is_charge)
+    insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id, pic, remark, sign_type, is_charge, department)
     	values (#{userName,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
       		#{password,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       		#{createTime,jdbcType=TIMESTAMP}, #{lock,jdbcType=CHAR}, #{roleId,jdbcType=BIGINT}, #{email,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT},
-      		#{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{signType,jdbcType=INTEGER} ,#{isCharge,jdbcType=INTEGER})
+      		#{pic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},#{signType,jdbcType=INTEGER} ,#{isCharge,jdbcType=INTEGER}, #{department,jdbcType=VARCHAR})
   </insert>
   
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -78,6 +79,9 @@
       </if>
 	  <if test="isCharge != null" >	
 		is_charge = #{isCharge,jdbcType=INTEGER},
+	  </if>
+	  <if test="isCharge != null" >	
+	    department = #{department,jdbcType=VARCHAR}, 
 	  </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -150,6 +154,10 @@
 	      <if test="isCharge != null" >	
 			and is_charge = #{isCharge,jdbcType=INTEGER}
 		  </if>
+		  
+		  <if test="department != null" >	
+		    and department = #{department,jdbcType=VARCHAR}
+		  </if>
 	      
 	      <if test="orgs != null">
 			and org_id in
@@ -172,11 +180,11 @@
   
   
   <insert id="batchAdd" parameterType="java.util.List"> 
-		insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id, is_charge) values 
+		insert into account (username, nickname, password, mobile, create_time, `lock`, role_id, email, org_id, is_charge, department) values 
 	<foreach collection="list" item="item" separator=",">  
 	  (#{item.userName,jdbcType=VARCHAR}, #{item.nickName,jdbcType=VARCHAR},  #{item.password,jdbcType=VARCHAR}, #{item.mobile,jdbcType=VARCHAR}, 
        #{item.createTime,jdbcType=TIMESTAMP}, #{item.lock,jdbcType=CHAR}, #{item.roleId,jdbcType=BIGINT}, #{item.email,jdbcType=VARCHAR}, #{item.orgId,jdbcType=BIGINT},
-       #{item.isCharge,jdbcType=INTEGER})
+       #{item.isCharge,jdbcType=INTEGER}, #{item.department,jdbcType=VARCHAR})
 	</foreach>  
   </insert> 
   
@@ -204,6 +212,9 @@
 	      </if>
 	      <if test="item.isCharge != null" >	
 			is_charge = #{item.isCharge,jdbcType=INTEGER},
+		  </if>
+		  <if test="item.department != null" >	
+		  	department = #{item.department,jdbcType=VARCHAR},
 		  </if>
 	    </set>
 		where id = #{item.id,jdbcType=BIGINT}     

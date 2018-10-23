@@ -125,27 +125,56 @@
 			        height: '400px',
 			        title: "用户信息",
 			        idField: 'id',
+			        frozenColumns:[[{
+				        	field: 'ck',
+				        	checkbox: true
+				        }, {
+				            field : 'id', 
+				            hidden: 'true'
+				        }, {
+				            field : 'userName',
+				            title : '用户名',
+				            width : '120',
+				            align : 'center',
+				            sortable: true,
+				            formatter: formatCellTooltip
+				        }, {
+				            field : 'nickName',
+				            title : '姓名',
+				            width : '150',
+				            align : 'center',
+				            sortable: true,
+				            formatter: formatCellTooltip
+				        }, {
+				            field : 'org',
+				            title : '机构名称',
+				            width : '160',
+				            align : 'center',
+				            formatter: function(val){
+				            	if(val){
+				            		return "<span title='" + val.name + "'>" + val.name + "</span>";
+				            	}
+				            }
+				        }, {
+				            field : 'department',
+				            title : '科室',
+				            width : '160',
+				            align : 'center',
+				            sortable: true,
+				            formatter: formatCellTooltip
+				        }, {
+				            field : 'role',
+				            title : '角色',
+				            width : '140',
+				            align : 'center',
+				            formatter: function(val){
+				            	if(val){
+				            		return "<span title='" + val.name + "'>" + val.name + "</span>";
+				            	}
+							}
+						}
+			        ]],
 			        columns : [ [ {
-			        	field: 'ck',
-			        	checkbox: true
-			        }, {
-			            field : 'id', 
-			            hidden: 'true'
-			        }, {
-			            field : 'userName',
-			            title : '用户名',
-			            width : '100',
-			            align : 'center',
-			            sortable: true,
-			            formatter: formatCellTooltip
-			        }, {
-			            field : 'nickName',
-			            title : '姓名',
-			            width : '100',
-			            align : 'center',
-			            sortable: true,
-			            formatter: formatCellTooltip
-			        }, {
 			            field : 'mobile',
 			            title : '手机号码',
 			            width : '100',
@@ -153,26 +182,6 @@
 			            sortable: true,
 			            formatter: formatCellTooltip
 			        }, {
-			            field : 'org',
-			            title : '机构名称',
-			            width : '160',
-			            align : 'center',
-			            formatter: function(val){
-			            	if(val){
-			            		return "<span title='" + val.name + "'>" + val.name + "</span>";
-			            	}
-			            }
-			        }, {
-			            field : 'role',
-			            title : '角色',
-			            width : '140',
-			            align : 'center',
-			            formatter: function(val){
-			            	if(val){
-			            		return "<span title='" + val.name + "'>" + val.name + "</span>";
-			            	}
-						}
-					}, {
 						field : 'email',
 						title : '邮箱',
 						width : '140',
@@ -230,6 +239,7 @@
 							'mobile': $("#q_mobile").textbox("getValue"),
 							'lock': $("#q_lock").val(),
 							'isCharge': $("#q_isCharge").val(),
+							'department': $("#q_department").combobox("getValue"),
 							'orgId': $("#q_org").combotree("getValue"),
 							'roleId': $("#q_role").combotree("getValue"),
 							'pageNum' : pageNumber,
@@ -283,7 +293,8 @@
 					'lock': $("#q_lock").val(),
 					'isCharge': $("#q_isCharge").val(),
 					'orgId': $("#q_org").combotree("getValue"),
-					'roleId': $("#q_role").combotree("getValue")
+					'roleId': $("#q_role").combotree("getValue"),
+					'department': $("#q_department").combobox("getValue")
 				}
 				getData(accountDatagrid, accountGetDataUrl, data);
 			}
@@ -298,6 +309,7 @@
 				$("#q_endCreateTime").val('');
 				$("#q_org").combotree("setValue","");
 				$("#q_role").combotree("setValue","");
+				$("#q_department").combobox("select", ""),
 				getData(accountDatagrid, accountGetDataUrl, {});
 			}
 		
@@ -401,43 +413,50 @@
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
 				<span class="title_span">用户名：</span>
-				<input id="q_account" name="q_account" class="easyui-textbox" style="width: 130px;">
+				<input id="q_account" name="q_account" class="easyui-textbox" style="width: 180px;">
 				
 				<span class="title_span">手机号码：</span>
-				<input id="q_mobile" name="q_mobile" class="easyui-textbox" style="width: 130px;">
+				<input id="q_mobile" name="q_mobile" class="easyui-textbox" style="width: 180px;">
 				
 				<span class="title_span" >姓名：</span>
-				<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 130px;">
+				<input id="q_nickName" name="q_nickName" class="easyui-textbox" style="width: 180px;">
 			
-		      	<span class="title_span" style="margin-left: 50px;">创建时间：</span>
-				<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:120px;display:inline-block"/> - 
-				<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:120px;display:inline-block;"/>
-		      	
+		      	<span class="title_span">角色： </span>
+		      	<input id="q_role" name="q_role" style="width: 230px;">
 			</div>
 		
 			<div style="margin-top:10px;">
 				<span class="title_span">状态：</span> 
-				<select id="q_lock" name="q_lock"  class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'">
+				<select id="q_lock" name="q_lock"  class="easyui-combobox" style="width: 180px;" data-options="panelHeight:'auto'">
 				   <option value="">全部</option>
 		           <option value="N" <c:if test="${lock == 'N'}">selected=selected</c:if>>正常</option>
 		           <option value="Y" <c:if test="${lock == 'Y'}">selected=selected</c:if>>锁定</option>
 		      	</select>
 		      	
 		      	<span class="title_span">是否收费：</span> 
-				<select id="q_isCharge" name="q_isCharge"  class="easyui-combobox" style="width: 130px;" data-options="panelHeight:'auto'">
+				<select id="q_isCharge" name="q_isCharge"  class="easyui-combobox" style="width: 180px;" data-options="panelHeight:'auto'">
 				   <option value="">全部</option>
 		           <option value="0">否</option>
 		           <option value="1">是</option>
 		      	</select>
+		      	
+		      	<span class="title_span">科室：</span> 	
+				<select id="q_department" name="q_department"  class="easyui-combobox" style="width: 180px;" data-options="panelHeight:'200px'">
+		      		<option value="">全部</option>
+		      		<c:forEach items="${departmentList}" var="vo">
+		      			<option value="${vo.name}">${vo.name}</option>
+		      		</c:forEach>
+		      	</select>
 				
 				<span class="title_span">机构：</span>
 		      	<input id="q_org" name="q_org"  class="easyui-combotree" data-options="url:'${ctx}/org/tree'" style="width: 230px;">&nbsp;&nbsp;&nbsp;&nbsp;
-		      	
-		      	<span class="title_span">角色： </span>
-		      	<input id="q_role" name="q_role" style="width: 230px;">
 			</div>
 			
-			<div style="margin-top:10px;margin-left:25px;">
+			<div style="margin-top:10px;">
+			<span class="title_span">创建时间：</span>
+				<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:82px;display:inline-block"/> - 
+				<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:82px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+			
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 				<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 			</div>

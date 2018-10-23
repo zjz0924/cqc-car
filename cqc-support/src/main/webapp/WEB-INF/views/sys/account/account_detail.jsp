@@ -53,6 +53,19 @@
 			
 			<div class="data-row">
 				<div class="data-cell-left">
+					<span class="title-span"><span class="req-span">*</span>科室：</span> 
+					<select id="department" name="department"  class="easyui-combobox" style="width: 220px;" data-options="panelHeight:'200px'">
+			      		<option value="">请选择</option>
+			      		<c:forEach items="${departmentList}" var="vo">
+			      			<option value="${vo.name}" <c:if test="${facadeBean.department == vo.name}">selected="selected"</c:if>>${vo.name}</option>
+			      		</c:forEach>
+			      	</select>
+			      	<span id="department_error" class="error-message"></span>
+				</div>
+			</div>
+			
+			<div class="data-row">
+				<div class="data-cell-left">
 					<span class="title-span">手机：</span> 
 					<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" style="width:220px;">
 					<span id="mobile_error" class="error-message"></span>
@@ -134,36 +147,26 @@
 				url: '${ctx}/role/tree',
 				multiple: false,
 				animate: true,
-				width: '220px'
-			});
-			
-			// 只有角色才能选择
-			var t = $('#role').combotree('tree');	
-			t.tree({
-			   onBeforeSelect: function(node){
+				width: '220px',
+				onBeforeSelect: function(node){
 				   if(node.id.indexOf("r") != -1){
 						return true;
 				   }else{
 					   return false;
 				   }
-			   }
+			    }
 			});
 			
 			$('#org').combotree({
 				url: '${ctx}/org/tree',
-				width: '220px'
-			});
-			
-			// 只能选择最底层机构
-			var orgTree = $('#org').combotree('tree');	
-			orgTree.tree({
-			   onBeforeSelect: function(node){
+				width: '220px',
+				onBeforeSelect: function(node){
 				   if(isNull(node.children)){
 						return true;
 				   }else{
 					   return false;
 				   }
-			   }
+			    }
 			});
 			
 			var roleVal = "${roleVal}";  
@@ -249,6 +252,10 @@
 				$("#mobile_error").html("");
 			}
 
+			if (!isRequire("department", "必选")) {
+				return false;
+			}
+			
 			if (!isRequire("email", "必填")) {
 				return false;
 			}

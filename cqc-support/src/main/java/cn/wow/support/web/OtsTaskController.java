@@ -31,7 +31,6 @@ import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Address;
-import cn.wow.common.domain.Applicat;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CarCode;
@@ -47,11 +46,12 @@ import cn.wow.common.domain.ReasonOption;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
-import cn.wow.common.service.ApplicatService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -133,11 +133,13 @@ public class OtsTaskController extends AbstractController {
 	@Autowired
 	private CarCodeService carCodeService;
 	@Autowired
-	private ApplicatService applicatService;
+	private AccountService accountService;
 	@Autowired
 	private ReasonOptionService reasonOptionService;
 	@Autowired
 	private ReasonService reasonService;
+	@Autowired
+	private DepartmentService departmentService;
 
 	/**
 	 * 首页
@@ -266,7 +268,7 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
@@ -317,7 +319,7 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
-		
+
 		if (taskType == 4) {
 			// 抽样原因选项
 			Map<String, Object> optionMap = new PageMap(false);
@@ -343,29 +345,15 @@ public class OtsTaskController extends AbstractController {
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
 			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int m_num, int draft,
-			String p_producer, String m_producer, String applicatName, String applicatDepart, Long applicatOrg,
-			String applicatContact, String applicatRemark, int atlType, String atlRemark, String atlItem,
-			String p_producerCode, Long applicat_id, Long reason_id, String origin, String reason, String otherRemark,
-			String source, String reasonRemark) {
+			String p_producer, String m_producer, int atlType, String atlRemark, String atlItem, String p_producerCode,
+			Long applicat_id, Long reason_id, String origin, String reason, String otherRemark, String source,
+			String reasonRemark) {
 
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-			// 申请人信息
-			Applicat applicat = null;
-			if (applicat_id == null) {
-				applicat = new Applicat();
-			} else {
-				applicat = applicatService.selectOne(applicat_id);
-			}
-			applicat.setName(applicatName);
-			applicat.setDepart(applicatDepart);
-			applicat.setOrgId(applicatOrg);
-			applicat.setContact(applicatContact);
-			applicat.setRemark(applicatRemark);
 
 			Reason reasonObj = null;
 			if (taskType == TaskTypeEnum.GS.getState()) {
@@ -456,8 +444,8 @@ public class OtsTaskController extends AbstractController {
 				parts.setNum(p_num);
 				parts.setState(Contants.ONDOING_TYPE);
 
-				boolean isExist = partsService
-						.isExist(null, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
+				boolean isExist = partsService.isExist(null, p_name, sdf.parse(p_proTime), p_producer, p_producerCode)
+						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
 					vo.setMsg("零部件信息已存在");
@@ -529,8 +517,8 @@ public class OtsTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, applicat, reasonObj, Contants.STANDARD_TYPE, t_id,
-					taskType, draft, atlType, atlRemark, atlItem);
+			infoService.insert(account, vehicle, parts, material, reasonObj, Contants.STANDARD_TYPE, t_id, taskType,
+					draft, atlType, atlRemark, atlItem);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -559,7 +547,7 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
-		
+
 		if (taskType == 4) {
 			// 抽样原因选项
 			Map<String, Object> optionMap = new PageMap(false);
@@ -568,7 +556,7 @@ public class OtsTaskController extends AbstractController {
 
 			model.addAttribute("optionList", optionList);
 		}
-		
+
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
 
@@ -618,7 +606,7 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
@@ -651,7 +639,7 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
-		
+
 		if (taskType == 4) {
 			// 抽样原因选项
 			Map<String, Object> optionMap = new PageMap(false);
@@ -706,27 +694,18 @@ public class OtsTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/examine")
-	public AjaxVO examine(HttpServletRequest request, Model model, Long applicat_id, String applicatName,
-			String applicatDepart, Long applicatOrg, String applicatContact, String applicatRemark, Long v_id,
-			String v_code, String v_proTime, String v_proAddr, String v_remark, int atlType, String atlRemark,
-			String p_code, String p_name, String p_proTime, String p_place, String p_proNo, Long p_id, int p_num,
-			String p_remark, Long m_id, String m_matName, String m_matColor, String m_proNo, String m_matNo,
-			String m_remark, Long t_id, int taskType, int result, String examine_remark, Long id, String p_producer,
-			String m_producer, String p_producerCode, int m_num) {
+	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
+			String v_proAddr, String v_remark, int atlType, String atlRemark, String p_code, String p_name,
+			String p_proTime, String p_place, String p_proNo, Long p_id, int p_num, String p_remark, Long m_id,
+			String m_matName, String m_matColor, String m_proNo, String m_matNo, String m_remark, Long t_id,
+			int taskType, int result, String examine_remark, Long id, String p_producer, String m_producer,
+			String p_producerCode, int m_num) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
-			// 申请人信息
-			Applicat applicat = applicatService.selectOne(applicat_id);
-			applicat.setName(applicatName);
-			applicat.setDepart(applicatDepart);
-			applicat.setOrgId(applicatOrg);
-			applicat.setContact(applicatContact);
-			applicat.setRemark(applicatRemark);
-
 			// 整车信息
 			Vehicle vehicle = vehicleService.selectOne(v_id);
 			if (vehicleService.isUpdateVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark)) {
@@ -780,8 +759,7 @@ public class OtsTaskController extends AbstractController {
 			material.setProducer(m_producer);
 			material.setNum(m_num);
 
-			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, applicat, atlType,
-					atlRemark);
+			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, atlType, atlRemark);
 
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
@@ -810,7 +788,7 @@ public class OtsTaskController extends AbstractController {
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
-		
+
 		if (taskType == 4) {
 			// 抽样原因选项
 			Map<String, Object> optionMap = new PageMap(false);
@@ -874,7 +852,7 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
@@ -911,12 +889,12 @@ public class OtsTaskController extends AbstractController {
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
 		}
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
-		
+
 		if (taskType == 4) {
 			// 抽样原因选项
 			Map<String, Object> optionMap = new PageMap(false);
@@ -1090,7 +1068,7 @@ public class OtsTaskController extends AbstractController {
 		}
 
 		// 申请人信息
-		List<Long> applicatIdList = applicatService.selectIds(applicat_name, applicat_depart, applicat_org);
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
 		if (applicatIdList.size() > 0) {
 			map.put("applicatIdList", applicatIdList);
 		}
@@ -1232,7 +1210,7 @@ public class OtsTaskController extends AbstractController {
 			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
 			model.addAttribute("labReqList", labReqList);
 		}
-		
+
 		if (taskType == 4) {
 			// 抽样原因选项
 			Map<String, Object> optionMap = new PageMap(false);

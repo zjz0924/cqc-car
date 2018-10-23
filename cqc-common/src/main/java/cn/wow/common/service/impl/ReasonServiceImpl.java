@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.ReasonDao;
-import cn.wow.common.domain.Applicat;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.Reason;
 import cn.wow.common.service.ReasonService;
 import cn.wow.common.utils.pagination.PageHelperExt;
