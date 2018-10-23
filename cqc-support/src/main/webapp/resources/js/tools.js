@@ -461,4 +461,33 @@ function getTaskRecordState(taskType, state){
 	return str;
 }
 
+/**
+ * 获取复选框的值
+ */
+function getCheckboxVal(name){
+	var objs = document.getElementsByName(name);
+    var value = new Array();
+    
+    for(var i = 0; i < objs.length; i++){
+    	if(objs[i].checked){
+    		value.push(objs[i].value);
+    	}
+    }
+	return value;
+}
+
+/**
+ * 判断是否选中
+ */
+function validChoose(source, target){
+	var flag = false;
+	
+	for(var i = 0; i < source.length; i++){
+    	if(source[i] == target){
+    		flag = true;
+    		break;
+    	}
+    }
+	return flag;
+}
 

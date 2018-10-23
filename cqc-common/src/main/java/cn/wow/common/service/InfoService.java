@@ -30,7 +30,7 @@ public interface InfoService {
 	public List<Info> selectAllList(Map<String, Object> map);
 
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
-			Long taskId, int taskType, int draft, int atlType, String atlRemark, String atlItem);
+			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem);
 
 	/**
 	 * 审批审核
@@ -49,7 +49,7 @@ public interface InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material, int atlType, String atlRemark);
+			Material material, String atlType, String atlRemark);
 
 	/**
 	 * 更新任务状态
@@ -66,12 +66,9 @@ public interface InfoService {
 	 * @param id         任务ID
 	 * @param partsAtlId 零部件图谱实验室ID
 	 * @param matAtlId   原材料图谱实验室ID
-	 * @param partsPatId 零部件型式实验室ID
-	 * @param matPatId   原材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
-			List<LabReq> labReqList);
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, List<LabReq> labReqList);
 
 	/**
 	 * 下达任务（PPAP）
@@ -80,7 +77,7 @@ public interface InfoService {
 	 * @param i_id       信息ID
 	 * @param taskType   任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException;
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException;
 
 	/**
 	 * 审批（OTS）
@@ -92,7 +89,7 @@ public interface InfoService {
 	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
-			Long matAtlId, Long partsPatId, Long matPatId);
+			Long matAtlId);
 
 	/**
 	 * 审批（PPAP）

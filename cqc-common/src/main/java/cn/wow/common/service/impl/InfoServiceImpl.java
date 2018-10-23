@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.wow.common.dao.DepartmentDao;
 import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.ExamineRecordDao;
@@ -31,7 +30,6 @@ import cn.wow.common.dao.TaskInfoDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
-import cn.wow.common.domain.Department;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.ExamineRecord;
@@ -144,7 +142,7 @@ public class InfoServiceImpl implements InfoService {
 	 * 添加信息
 	 */
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material,
-			Reason reason, int type, Long taskId, int taskType, int draft, int atlType, String atlRemark,
+			Reason reason, int type, Long taskId, int taskType, int draft, String atlType, String atlRemark,
 			String atlItem) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
@@ -341,7 +339,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material, int atlType, String atlRemark) {
+			Material material, String atlType, String atlRemark) {
 
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
@@ -432,7 +430,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matPatId   原材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId,
 			List<LabReq> labReqList) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
@@ -446,16 +444,6 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatAtlId(matAtlId);
 			task.setMatAtlResult(0);
 			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
-		}
-		if (partsPatId != null) {
-			task.setPartsPatId(partsPatId);
-			task.setPartsPatResult(0);
-			task.setPartsPatCode(generatorCode(date, task.getType(), 3));
-		}
-		if (matPatId != null) {
-			task.setMatPatId(matPatId);
-			task.setMatPatResult(0);
-			task.setMatPatCode(generatorCode(date, task.getType(), 4));
 		}
 		taskDao.update(task);
 
@@ -486,9 +474,8 @@ public class InfoServiceImpl implements InfoService {
 	 * @param taskType 任务类型
 	 */
 	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType,
-			int atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException {
+			String atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException {
 		String taskCode = "";
-		Long taskId = null;
 		boolean flag = true;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -551,7 +538,6 @@ public class InfoServiceImpl implements InfoService {
 			taskRecordDao.insert(record);
 
 			taskCode = task.getCode();
-			taskId = task.getId();
 		} else {
 			Date date = new Date();
 			Task task = taskDao.selectOne(t_id);
@@ -578,7 +564,6 @@ public class InfoServiceImpl implements InfoService {
 			taskRecordDao.insert(record);
 
 			taskCode = task.getCode();
-			taskId = t_id;
 		}
 
 		String logDetail = "下达任务，任务号：" + taskCode;
@@ -597,7 +582,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
-			Long matAtlId, Long partsPatId, Long matPatId) {
+			Long matAtlId) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -738,14 +723,6 @@ public class InfoServiceImpl implements InfoService {
 
 			if (partsAtlId != null) {
 				task.setPartsAtlId(partsAtlId);
-			}
-
-			if (partsPatId != null) {
-				task.setPartsPatId(partsPatId);
-			}
-
-			if (matPatId != null) {
-				task.setMatPatId(matPatId);
 			}
 
 			if (matAtlId != null) {

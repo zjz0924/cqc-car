@@ -110,7 +110,7 @@ public class Task {
     private Integer draft;
     
     // 基准图谱类型（1-零件基准图谱，2-材料基准图谱， 3-材料型式试验，4-零件型式试验）
-    private Integer atlType;
+    private String atlType;
     
     // 测试项目
     private String atlItem;
@@ -449,11 +449,11 @@ public class Task {
 		this.draft = draft;
 	}
 
-	public Integer getAtlType() {
+	public String getAtlType() {
 		return atlType;
 	}
 
-	public void setAtlType(Integer atlType) {
+	public void setAtlType(String atlType) {
 		this.atlType = atlType;
 	}
 

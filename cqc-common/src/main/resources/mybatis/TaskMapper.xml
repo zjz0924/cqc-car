@@ -46,7 +46,7 @@
 		<result column="result_apply" property="resultApply" jdbcType="INTEGER" />
 		
 		<!-- 基准图谱类型 -->
-		<result column="atl_type" property="atlType" jdbcType="INTEGER" />
+		<result column="atl_type" property="atlType" jdbcType="VARCHAR" />
 		<result column="atl_remark" property="atlRemark" jdbcType="VARCHAR" />
 		<result column="expect_date" property="expectDate" jdbcType="DATE" />
 		<result column="lab_id" property="labId" jdbcType="BIGINT" />
@@ -61,8 +61,8 @@
 		<association property="partsPat" javaType="cn.wow.common.domain.Org" column="parts_pat_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="matPat" javaType="cn.wow.common.domain.Org" column="mat_pat_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="info" javaType="cn.wow.common.domain.Info" column="i_id" select="cn.wow.common.dao.InfoDao.selectOne"/> 
-		<association property="account" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
-<!-- 		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/> -->		
+		<association property="applicat" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
+		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/>		
 		<association property="reason" javaType="cn.wow.common.domain.Reason" column="reason_id" select="cn.wow.common.dao.ReasonDao.selectOne"/> 
 		<association property="lab" javaType="cn.wow.common.domain.Org" column="lab_id" select="cn.wow.common.dao.OrgDao.selectOne"/>
 	</resultMap>
@@ -93,7 +93,7 @@
 					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, #{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER}, 
 					#{partsAtlTimes,jdbcType=INTEGER}, #{matAtlTimes,jdbcType=INTEGER}, #{partsPatTimes,jdbcType=INTEGER}, #{matPatTimes,jdbcType=INTEGER}, #{confirmTime,jdbcType=TIMESTAMP},
 					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER}, #{tId,jdbcType=BIGINT}, #{result,jdbcType=INTEGER}, #{isReceive,jdbcType=INTEGER}, #{partsAtlCode,jdbcType=VARCHAR}, #{matAtlCode,jdbcType=VARCHAR}, #{partsPatCode,jdbcType=VARCHAR}, #{matPatCode,jdbcType=VARCHAR}, #{draft,jdbcType=INTEGER},
-					#{atlType,jdbcType=INTEGER},#{atlRemark,jdbcType=VARCHAR}, #{reasonId,jdbcType=BIGINT},
+					#{atlType,jdbcType=VARCHAR},#{atlRemark,jdbcType=VARCHAR}, #{reasonId,jdbcType=BIGINT},
 					#{expectDate,jdbcType=DATE}, #{labId,jdbcType=BIGINT}, #{atlItem,jdbcType=VARCHAR})
 	</insert>
 	
@@ -187,7 +187,7 @@
 				draft = #{draft,jdbcType=INTEGER},
 			</if>
 			<if test="atlType != null">
-				atl_type = #{atlType,jdbcType=INTEGER},
+				atl_type = #{atlType,jdbcType=VARCHAR},
 			</if>	
 			<if test="atlRemark != null">
 				atl_remark = #{atlRemark,jdbcType=VARCHAR},
@@ -478,7 +478,7 @@
 			</if>
 			
 			<if test="atlType != null">
-				and t.atl_type = #{atlType,jdbcType=INTEGER}
+				and t.atl_type = #{atlType,jdbcType=VARCHAR}
 			</if>
 			
 			<if test="reasonId != null">
@@ -743,7 +743,7 @@
 			</if>
 			
 			<if test="atlType != null">
-				and t.atl_type = #{atlType,jdbcType=INTEGER}
+				and t.atl_type = #{atlType,jdbcType=VARCHAR}
 			</if>
 			
 			<if test="reasonId != null">

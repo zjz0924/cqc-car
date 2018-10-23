@@ -71,18 +71,6 @@
 							align : 'center',
 							formatter : formatCellTooltip
 						}, {
-							field : 'atlType',
-							title : '基准图谱类型',
-							width : '90',
-							align : 'center',
-							formatter : function(val){
-								if(val == 1){
-									return "<span title='零件基准图谱'>零件基准图谱</span>";
-								}else{
-									return "<span title='材料基准图谱'>材料基准图谱</span>";
-								}
-							}
-						},{
 							field : 'state',
 							title : '是否已下达',
 							width : '70',
@@ -103,9 +91,6 @@
 						}
 			        ]],
 			        columns : [ [{
-						title:'抽样原因', 
-						colspan: 3
-					}, {
 						title:'车型信息', 
 						colspan:2
 					},{
@@ -119,42 +104,6 @@
 						colspan: 3
 					}],
 					[{
-						field : 'reason.origin',
-						title : '样件来源',
-						width : '120',
-						align : 'center',
-						rowspan: 1,
-						formatter :  function(value, row, index){
-							var reason = row.reason;
-							if(!isNull(reason)){
-								return "<span title='"+ reason.origin +"'>"+ reason.origin +"</span>";
-							}							
-						}
-					},{
-						field : 'reason.reason',
-						title : '抽样原因',
-						width : '120',
-						align : 'center',
-						rowspan: 1,
-						formatter :  function(value, row, index){
-							var reason = row.reason;
-							if(!isNull(reason)){
-								return "<span title='"+ reason.reason +"'>"+ reason.reason +"</span>";
-							}							
-						}
-					},{
-						field : 'reason.source',
-						title : '费用出处',
-						width : '120',
-						align : 'center',
-						rowspan: 1,
-						formatter :  function(value, row, index){
-							var reason = row.reason;
-							if(!isNull(reason)){
-								return "<span title='"+ reason.source +"'>"+ reason.source +"</span>";
-							}							
-						}
-					}, {
 						field : 'info.vehicle.code',
 						title : '车型代码',
 						width : '120',
@@ -257,25 +206,25 @@
 							}							
 						}
 					}, {
-						field : 'applicat.name',
+						field : 'applicat.nickName',
 						title : '申请人',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
-						field : 'applicat.depart',
+						field : 'applicat.department',
 						title : '科室',
 						width : '120',
 						align : 'center',
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {
@@ -307,7 +256,6 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'task_code': $("#task_code").textbox("getValue"),
-							'atlType': $("#q_atlType").combobox('getValue'),
 							'parts_name': $("#parts_name").textbox("getValue"),
 							'parts_producer': $("#parts_producer").val(),
 							'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -466,7 +414,6 @@
 			function doSearch() {
 				var data = {
 					'task_code': $("#task_code").textbox("getValue"),
-					'atlType': $("#q_atlType").combobox('getValue'),
 					'parts_name': $("#parts_name").textbox("getValue"),
 					'parts_producer': $("#parts_producer").val(),
 					'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -495,7 +442,6 @@
 		
 			function doClear() {
 				$("#task_code").textbox("setValue","");
-				$("#q_atlType").combobox('select', "");
 				$("#parts_name").textbox("setValue","");
 				$("#parts_producer").val("");
 				$("#parts_producerCode").textbox("setValue","");
@@ -604,13 +550,6 @@
 				<div style="margin-top: 5px;<c:if test="${taskType == 4}">display:none;</c:if>">
 					<span class="qlabel">任务号：</span>
 					<input id="task_code" name="task_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
-				
-					<span class="qlabel">图谱类型：</span>
-					<select id="q_atlType" name="q_atlType" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
-						<option value="">全部</option>
-						<option value="1">零件基准图谱</option>
-						<option value="2">材料基准图谱</option>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
@@ -623,7 +562,7 @@
 		</div>
 	
 		<div style="margin-top:10px;">
-			<table id="transmitTable" style="height:auto;width:auto"></table>
+			<table id="transmitTable" style="height:auto;width:auto;"></table>
 		</div>
 		
 		<div style="margin-top:10px;">
