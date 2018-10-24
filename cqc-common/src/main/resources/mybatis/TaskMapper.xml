@@ -49,7 +49,6 @@
 		<result column="atl_type" property="atlType" jdbcType="VARCHAR" />
 		<result column="atl_remark" property="atlRemark" jdbcType="VARCHAR" />
 		<result column="expect_date" property="expectDate" jdbcType="DATE" />
-		<result column="lab_id" property="labId" jdbcType="BIGINT" />
 		<result column="atl_item" property="atlItem" jdbcType="VARCHAR" />
 		
 		<!-- 抽样原因 -->
@@ -64,13 +63,12 @@
 		<association property="applicat" javaType="cn.wow.common.domain.Account" column="a_id" select="cn.wow.common.dao.AccountDao.selectOne"/> 
 		<association property="org" javaType="cn.wow.common.domain.Org" column="org_id" select="cn.wow.common.dao.OrgDao.selectOne"/>		
 		<association property="reason" javaType="cn.wow.common.domain.Reason" column="reason_id" select="cn.wow.common.dao.ReasonDao.selectOne"/> 
-		<association property="lab" javaType="cn.wow.common.domain.Org" column="lab_id" select="cn.wow.common.dao.OrgDao.selectOne"/>
 	</resultMap>
 	
 	<sql id="base_columns">
 		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.parts_atl_id, t.mat_atl_id, t.parts_pat_id, t.mat_pat_id ,t.remark, t.create_time, t.fail_num, t.a_id, t.parts_atl_result, t.mat_atl_result,
         t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time, t.info_apply, t.result_apply, t.t_id, t.result, t.is_receive,t.parts_atl_code,t.mat_atl_code,t.parts_pat_code,t.mat_pat_code, t.draft,
-        t.atl_type, t.atl_remark, t.reason_id, t.expect_date, t.lab_id, t.atl_item
+        t.atl_type, t.atl_remark, t.reason_id, t.expect_date, t.atl_item
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -87,14 +85,14 @@
 			SELECT @@IDENTITY
 		</selectKey>
 	
-		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id, result, is_receive, parts_atl_code, mat_atl_code, parts_pat_code, mat_pat_code, draft, atl_type, atl_remark, reason_id, expect_date, lab_id, atl_item)
+		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id, result, is_receive, parts_atl_code, mat_atl_code, parts_pat_code, mat_pat_code, draft, atl_type, atl_remark, reason_id, expect_date, atl_item)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
 					#{partsAtlId,jdbcType=BIGINT}, #{matAtlId,jdbcType=BIGINT}, #{partsPatId,jdbcType=BIGINT}, #{matPatId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
 					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, #{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER}, 
 					#{partsAtlTimes,jdbcType=INTEGER}, #{matAtlTimes,jdbcType=INTEGER}, #{partsPatTimes,jdbcType=INTEGER}, #{matPatTimes,jdbcType=INTEGER}, #{confirmTime,jdbcType=TIMESTAMP},
 					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER}, #{tId,jdbcType=BIGINT}, #{result,jdbcType=INTEGER}, #{isReceive,jdbcType=INTEGER}, #{partsAtlCode,jdbcType=VARCHAR}, #{matAtlCode,jdbcType=VARCHAR}, #{partsPatCode,jdbcType=VARCHAR}, #{matPatCode,jdbcType=VARCHAR}, #{draft,jdbcType=INTEGER},
 					#{atlType,jdbcType=VARCHAR},#{atlRemark,jdbcType=VARCHAR}, #{reasonId,jdbcType=BIGINT},
-					#{expectDate,jdbcType=DATE}, #{labId,jdbcType=BIGINT}, #{atlItem,jdbcType=VARCHAR})
+					#{expectDate,jdbcType=DATE}, #{atlItem,jdbcType=VARCHAR})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -197,9 +195,6 @@
 			</if>
 			<if test="expectDate != null">
 				expect_date = #{expectDate,jdbcType=DATE}, 
-			</if>
-			<if test="labId != null">
-				lab_id = #{labId,jdbcType=BIGINT},
 			</if>
 			<if test="labId != null">
 				atl_item = #{atlItem,jdbcType=VARCHAR},
@@ -463,11 +458,6 @@
 				and t.reason_id in <foreach collection="reasonIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
 			</if>
 			
-			<!-- 实验室ID -->
-			<if test="labOrgId != null">
-				and (t.parts_atl_id = #{labOrgId, jdbcType=BIGINT} or t.mat_atl_id = #{labOrgId, jdbcType=BIGINT} or t.parts_pat_id = #{labOrgId, jdbcType=BIGINT} or t.mat_pat_id = #{labOrgId, jdbcType=BIGINT})
-			</if>
-			
 			<if test="result != null">	
 				and t.result = #{result,jdbcType=INTEGER}
 			</if>
@@ -490,10 +480,6 @@
 
 			<if test="endExpectDate != null and endExpectDate != ''">
 				and t.expect_date &lt;= #{endExpectDate, jdbcType=DATE}
-			</if>
-			
-			<if test="labId != null">
-				and t.lab_id = #{labId,jdbcType=BIGINT}
 			</if>
 			
 		</where>
@@ -755,10 +741,6 @@
 
 			<if test="endExpectDate != null and endExpectDate != ''">
 				and t.expect_date &lt;= #{endExpectDate, jdbcType=DATE}
-			</if>
-			
-			<if test="labId != null">
-				and t.lab_id = #{labId,jdbcType=BIGINT}
 			</if>
 		</where>
 

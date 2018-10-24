@@ -141,9 +141,8 @@ public class InfoServiceImpl implements InfoService {
 	/**
 	 * 添加信息
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material,
-			Reason reason, int type, Long taskId, int taskType, int draft, String atlType, String atlRemark,
-			String atlItem) {
+	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
+			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem) {
 		Date date = material.getCreateTime();
 		String taskCode = generateTaskCode(date);
 
@@ -430,8 +429,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matPatId   原材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId,
-			List<LabReq> labReqList) {
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, List<LabReq> labReqList) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -473,8 +471,8 @@ public class InfoServiceImpl implements InfoService {
 	 * @param i_id     信息ID
 	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType,
-			String atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException {
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlRemark,
+			String expectDate, Long partsAtlId, Long matAtlId) throws ParseException {
 		String taskCode = "";
 		boolean flag = true;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -521,9 +519,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setInfoApply(0);
 			task.setResultApply(0);
 			task.setAtlRemark(atlRemark);
-			task.setAtlType(atlType);
 			task.setExpectDate(sdf.parse(expectDate));
-			task.setLabId(lab_org);
 			task.setReasonId(reason.getId());
 			taskDao.insert(task);
 
@@ -547,9 +543,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setState(SamplingTaskEnum.APPROVE.getState());
 			task.setResultApply(0);
 			task.setAtlRemark(atlRemark);
-			task.setAtlType(atlType);
 			task.setExpectDate(sdf.parse(expectDate));
-			task.setLabId(lab_org);
 			task.setReasonId(reason.getId());
 			taskDao.update(task);
 

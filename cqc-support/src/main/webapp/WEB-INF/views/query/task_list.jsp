@@ -355,7 +355,7 @@
 							'startConfirmTime' : $("#q_startConfirmTime").val(),
 							'endConfirmTime' : $("#q_endConfirmTime").val(),
 							'reason': $("#reason").textbox("getValue"),
-							'provenance': $("#provenance").textbox("getValue"),
+							'source': $("#source").textbox("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -507,7 +507,7 @@
 					'endConfirmTime' : $("#q_endConfirmTime").val(),
 					'taskType': $("#q_taskType").combobox("getValue"),
 					'reason': $("#reason").textbox("getValue"),
-					'provenance': $("#provenance").textbox("getValue")
+					'source': $("#source").textbox("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -541,7 +541,7 @@
 				$("#q_endConfirmTime").val('');
 				$("#q_taskType").combobox("select", "");
 				$("#reason").textbox("clear");
-				$("#provenance").textbox("clear");
+				$("#source").textbox("clear");
 				
 				getData(datagrid, getDataUrl, {});
 			}
@@ -651,10 +651,24 @@
 					</select> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">抽检原因：</span>
-					<input id="reason" name="reason" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<select id="reason" name="reason" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+						<option value="">全部</option>
+						<c:forEach items="${optionList}" var="vo">
+							<c:if test="${vo.type == 2}">
+								<option value="${vo.name}" <c:if test="${facadeBean.reason.reason == vo.name }">selected="selected"</c:if>>${vo.name}</option>
+							</c:if>
+						</c:forEach>
+					</select> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">费用出处：</span>
-					<input id="provenance" name="provenance" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+					<select id="source" name="source" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+						<option value="">请选择</option>
+						<c:forEach items="${optionList}" var="vo">
+							<c:if test="${vo.type == 3}">
+								<option value="${vo.name}" <c:if test="${facadeBean.reason.source == vo.name }">selected="selected"</c:if>>${vo.name}</option>
+							</c:if>
+						</c:forEach>
+					</select>
 				</div>
 				
 				<div style="margin-top: 5px;">

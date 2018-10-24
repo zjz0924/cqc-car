@@ -109,7 +109,7 @@ public class Task {
     // 是否是草稿（0-否，1-是）
     private Integer draft;
     
-    // 基准图谱类型（1-零件基准图谱，2-材料基准图谱， 3-材料型式试验，4-零件型式试验）
+    // 基准图谱类型
     private String atlType;
     
     // 测试项目
@@ -120,10 +120,6 @@ public class Task {
     
     // 期望完成时间
     private Date expectDate;
-    
-    // 委托实验室
-    private Long labId;
-    private Org lab;
     
     // 抽样原因
     private Long reasonId;
@@ -495,22 +491,6 @@ public class Task {
 
 	public void setExpectDate(Date expectDate) {
 		this.expectDate = expectDate;
-	}
-
-	public Org getLab() {
-		return lab;
-	}
-
-	public void setLab(Org lab) {
-		this.lab = lab;
-	}
-
-	public Long getLabId() {
-		return labId;
-	}
-
-	public void setLabId(Long labId) {
-		this.labId = labId;
 	}
 
 	public String getAtlItem() {

@@ -118,26 +118,25 @@
 								return "<span title='" + str + "'>" + str + "</span>";
 							}
 						}, {
-							field : 'atlType',
-							title : '试验类型',
-							width : '90',
-							align : 'center',
-							formatter : function(val){
-								if(val == 1){
-									return "<span title='零件图谱'>零件图谱</span>";
-								}else if(val == 2){
-									return "<span title='材料图谱'>材料图谱</span>";
-								}
-							}
-						}, {
-							field : 'lab.name',
-							title : '委托实验室',
+							field : 'partsAtl.name',
+							title : '零件图谱委托实验室',
 							width : '150',
 							align : 'center',
 							formatter : function(value, row, index){
-								var lab = row.lab;
-								if(lab != null){
-									return "<span title='"+ lab.name +"'>"+ lab.name +"</span>";
+								var org = row.partsAtl;
+								if(org != null){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+								}
+							}
+						}, {
+							field : 'matAtl.name',
+							title : '材料图谱委托实验室',
+							width : '150',
+							align : 'center',
+							formatter : function(value, row, index){
+								var org = row.matAtl;
+								if(org != null){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
 								}
 							}
 						}, {
@@ -310,7 +309,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
@@ -321,7 +320,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {

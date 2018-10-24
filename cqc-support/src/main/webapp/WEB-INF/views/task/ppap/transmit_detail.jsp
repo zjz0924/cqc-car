@@ -9,8 +9,8 @@
 		<input type="hidden" id="m_id" name="m_id" value="${facadeBean.info.material.id }">
 		<input type="hidden" id="i_id" name="i_id">
 		<input type="hidden" id="taskType" name="taskType" value="${taskType }">
-		<input type="hidden" id="applicat_id" name="applicat_id" value="${facadeBean.applicat.id }">
 		<input type="hidden" id="reason_id" name="reason_id" value="${facadeBean.reason.id }">
+		<input type="hidden" id="standardTaskId" name="standardTaskId">
 		
 		<div style="margin-left: 10px;margin-top:20px;">
 			
@@ -33,26 +33,26 @@
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>申请人：</span> 
-							<input id="applicatName" name="applicatName" class="easyui-textbox" value="${facadeBean.applicat.name }" style="width:150px;">
+							<span class="title-span">申请人：</span> 
+							<input class="easyui-textbox" value="${applicat.nickName }" disabled style="width:150px;">
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>科室：</span> 
-							<input id="applicatDepart" name="applicatDepart" class="easyui-textbox" value="${facadeBean.applicat.depart }" style="width:150px;">
+							<span class="title-span">科室：</span> 
+							<input class="easyui-textbox" disabled value="${applicat.department }" style="width:150px;">
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>机构/单位：</span> 
-							<input id="applicatOrg" name="applicatOrg" style="width: 168px;"/>
+							<span class="title-span">机构/单位：</span> 
+							<input class="easyui-textbox" value="${applicat.org.name }" disabled style="width:150px;">
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>联系方式：</span> 
-							<input id="applicatContact" name="applicatContact" class="easyui-textbox" value="${facadeBean.applicat.contact }"  style="width:150px;">
+							<span class="title-span">联系方式：</span> 
+							<input class="easyui-textbox"  disabled value="${applicat.mobile }" disabled style="width:150px;">
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<span class="title-span">备注：</span> 
-							<input id="applicatRemark" name="applicatRemark" class="easyui-textbox" value="${facadeBean.applicat.remark }"  style="width:150px;">
+							<input class="easyui-textbox" value="${applicat.remark }" disabled style="width:150px;">
 						</td>
 					</tr>
 				</table>
@@ -64,24 +64,28 @@
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>试验类型：</span> 
-							<select id="atlType" name="atlType" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
-								<option value="">请选择</option>
-								<option value="1" <c:if test="${facadeBean.atlType == 1 }">selected="selected"</c:if>>零件图谱</option>
-								<option value="2" <c:if test="${facadeBean.atlType == 2 }">selected="selected"</c:if>>材料图谱</option>
-							</select>
+							<input type="checkbox" id="partAtl" name="atlType" value="1">零件图谱&nbsp;&nbsp;&nbsp;&nbsp;
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>委托实验室：</span> 
-							<input id="lab_org" name="lab_org" style="width: 168px;"/>
+							<span class="title-span" style="width:150px">零件图谱委托实验室：</span> 
+							<input id="partsAtl_org" name="partsAtl_org" style="width: 280px;"/>
 						</td>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>期望完成时间：</span> 
-							<input id="expectDate" name="expectDate" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.expectDate }' type="date" pattern="yyyy-MM-dd"/>" style="width:150px;">
+							<span class="title-span" style="width: 120px;"><span class="req-span">*</span>期望完成时间：</span> 
+							<input id="expectDate" name="expectDate" type="text" class="easyui-datebox" data-options="editable:false " value="<fmt:formatDate value='${facadeBean.expectDate }' type="date" pattern="yyyy-MM-dd"/>" style="width:200px;">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="checkbox" id="materialAtl" name="atlType" value="2">材料图谱
 						</td>
 						<td>
-							<span class="title-span">备注：</span> 
-							<input id="atlRemark" name="atlRemark" class="easyui-textbox" value="${facadeBean.atlRemark }" style="width:150px;">	
+							<span class="title-span" style="width:150px">材料图谱委托实验室：</span> 
+							<input id="matAtl_org" name="matAtl_org" style="width: 280px;"/>
+						</td>
+						<td>
+							<span class="title-span" style="width: 120px;">备注：</span> 
+							<input id="atlRemark" name="atlRemark" class="easyui-textbox" value="${facadeBean.atlRemark }" style="width:200px;">	
 						</td>
 					</tr>
 				</table>
@@ -115,9 +119,11 @@
 							</select>
 						</td>
 						<td>
-							<span class="title-span">其他原因描述：</span> 
-							<input id="otherRemark" name="otherRemark" class="easyui-textbox" value="${facadeBean.reason.otherRemark }" style="width:150px;">	
+							<span class="title-span" style="width: 120px;">其他原因描述：</span> 
+							<input id="otherRemark" name="otherRemark" class="easyui-textbox" value="${facadeBean.reason.otherRemark }" style="width:350px;">	
 						</td>
+					</tr>
+					<tr>
 						<td>
 							<span class="title-span"><span class="req-span">*</span>费用出处：</span> 
 							<select id="source" name="source" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
@@ -129,11 +135,9 @@
 								</c:forEach>
 							</select>
 						</td>
-					</tr>
-					<tr>
-						<td>
+						<td colspan="3">
 							<span class="title-span">备注：</span> 
-							<input id="reasonRemark" name="reasonRemark" class="easyui-textbox" value="${facadeBean.reason.remark }" style="width:150px;">	
+							<input id="reasonRemark" name="reasonRemark" class="easyui-textbox" value="${facadeBean.reason.remark }" style="width:280px;">	
 						</td>
 					</tr>
 				</table>
@@ -141,41 +145,27 @@
 			
 		
 			<div style="margin-top: 15px; margin-bottom: 15px;">
-				<div class="title">任务号</div>
+				<div class="title">选择基准</div>
 				<div style="margin-left: 10px;">
-					<input type="text" id="qCode" name="qCode" class="easyui-textbox"> 
-					<a href="javascript:void(0)" onclick="doQuery()" title="检索"><i class="icon icon-search"></i></a>
+					<span class="title-span">任务号：</span><input type="text" id="qCode" name="qCode" disabled class="easyui-textbox">&nbsp;
+					<a href="javascript:void(0)" onclick="taskInfo()" title="选择"><i class="icon icon-tip"></i>选择</a>&nbsp;&nbsp;
+				<!-- 	<a href="javascript:void(0)" onclick="doQuery()" title="检索"><i class="icon icon-search"></i>查询</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+					
+					<!-- <span class="title-span">选择基准图谱：</span><input id="standard" name="standard" style="width: 370px"> -->
 				</div>
 			</div>
 		
-			<div style="margin-top: 15px;margin-bottom: 15px;">
-				<div class="title">选择基准图谱</div>
-				<div style="margin-left: 10px;"><input id="standard" name="standard" style="width: 370px"></div>
-			</div>
-		
-			<div class="title">整车信息&nbsp;&nbsp;
-				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>
-			</div>
+			<div class="title">整车信息</div>
 			
 			<table class="info">
 				<tr>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>车型代码：</span> 
-						<select id="v_code" name="v_code" style="width:160px;" class="easyui-combobox" disabled data-options="panelHeight: '200px'">
-							<option value="">请选择</option>
-							<c:forEach items="${carCodeList}" var="vo">
-								<option value="${vo.code}" <c:if test="${facadeBean.info.vehicle.code == vo.code }">selected="selected"</c:if>>${vo.code}</option>
-							</c:forEach>
-						</select>
+						<input id="v_code" name="v_code" style="width:160px;" class="easyui-textbox" disabled>
 					</td>
 					<td>
 						<span class="title-span"><span class="req-span">*</span>生产基地：</span> 
-						<select id="v_proAddr" name="v_proAddr" style="width:160px;" class="easyui-combobox" disabled data-options="panelHeight: 'auto'">
-							<option value="">请选择</option>
-							<c:forEach items="${addressList}" var="vo">
-								<option value="${vo.name}" <c:if test="${facadeBean.info.vehicle.proAddr == vo.name }">selected="selected"</c:if>>${vo.name}</option>
-							</c:forEach>
-						</select>
+						<input id="v_proAddr" name="v_proAddr" style="width:160px;" class="easyui-textbox" disabled>
 					</td>
 					<td>
 						<span class="title-span">生产日期：</span> 
@@ -183,16 +173,14 @@
 					</td>
 					<td>
 						<span class="title-span">&nbsp;备注：</span> 
-						<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" disabled style="width:150px;">	
+						<input id="v_remark" name="v_remark" class="easyui-textbox" value="${facadeBean.info.vehicle.remark }" style="width:150px;">	
 					</td>
 				</tr>
 			</table>
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">零件信息&nbsp;&nbsp;
-				<a href="javascript:void(0)" onclick="partsInfo()"><i class="icon icon-search"></i></a>
-			</div>
+			<div class="title">零件信息</div>
 			
 			<table class="info">
 				<tr>
@@ -223,12 +211,12 @@
 						<input id="p_num" name="p_num" type="text" class="easyui-textbox" value="${facadeBean.info.parts.num }" style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>样件批号：</span> 
+						<span class="title-span">样件批号：</span> 
 						<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }"  style="width:150px;">
 					</td>
 					
 					<td>
-						<span class="title-span span-long"><span class="req-span">*</span>生产场地：</span> 
+						<span class="title-span span-long">生产场地：</span> 
 						<input id="p_place" name="p_place" class="easyui-textbox" value="${facadeBean.info.parts.place }" style="width:150px;">
 					</td>
 				</tr>
@@ -242,9 +230,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">原材料信息
-				<a href="javascript:void(0)" onclick="materialInfo()"><i class="icon icon-search"></i></a>
-			</div>
+			<div class="title">原材料信息</div>
 			
 			<table class="info">
 				<tr>
@@ -291,6 +277,7 @@
 	<div id="vehicleDialog"></div>
 	<div id="materialDialog"></div>
 	<div id="partsDialog"></div>
+	<div id="taskDialog" style="overflow-y:hidden;"></div>
 	
 		<style type="text/css">
 			.title-span{
@@ -366,8 +353,8 @@
 			var saving = false;
 			
 			$(function(){
-				// 机构单位
-				$('#lab_org').combotree({
+				// 零件图谱委托实验室
+				$('#partsAtl_org').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
 					animate: true,
@@ -380,11 +367,12 @@
 				    }
 				});
 				// 设置值
-				$('#lab_org').combotree('setValue', "${facadeBean.lab.id}");
+				$('#partsAtl_org').combotree('setValue', "${facadeBean.partsAtlId}");
 				
-				// 申请人机构
-				$('#applicatOrg').combotree({
-					url: '${ctx}/org/getTreeByType?type=2',
+				
+				// 材料图谱委托实验室
+				$('#matAtl_org').combotree({
+					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
 					animate: true,
 				    onBeforeSelect: function(node){
@@ -396,34 +384,7 @@
 				    }
 				});
 				// 设置值
-				$('#applicatOrg').combotree('setValue', "${facadeBean.applicat.org.id}");
-				
-				// 基准选择
-				$("#standard").combobox({
-					url : standardUrl,
-					valueField : 'id',
-					textField : 'text',
-					formatter : formatItem,
-					onLoadSuccess:function(){ //默认选中第一条数据
-				        var data= $(this).combobox("getData");
-					    //默认选中第一个
-		                if (data.length > 0) {
-		                	if(!isNull("${facadeBean.iId}")){
-		                		$(this).combobox('select', "${facadeBean.iId}");
-		                	}else{
-		                		$(this).combobox('select', data[0].id);
-		                	}
-		                }else{
-		                	$(this).combobox('select', '');
-		                }
-					}
-				});
-
-				// 编辑的时候
-				var iId = "${facadeBean.iId}";
-				if(!isNull(iId)){
-					$('#standard').combobox('reload', standardUrl + "?v_id=" + $("#v_id").val() + "&p_id=" +  $("#p_id").val() + "&m_id=" + $("#m_id").val());
-				}
+				$('#matAtl_org').combotree('setValue', "${facadeBean.matAtlId}");
 				
 			});
 
@@ -433,52 +394,68 @@
 				}
 				saving = true;
 				
-				// 申请人信息
-				if(!isRequire("applicatName", "申请人必填")){ saving = false; return false; }
-				if(!isRequire("applicatDepart", "申请人科室必填")){ saving = false; return false; }
-				if(!isRequire("applicatOrg", "申请人机构/单位必选")){ saving = false; return false; }
-				if(!isRequire("applicatContact", "申请人联系方式必填")){ saving = false; return false; }
-				
 				//试验类型
-				if(!isRequire("atlType", "试验类型必选")){ saving = false; return false; }
-				if(!isRequire("lab_org", "委托实验室必选")){ saving = false; return false; }
-				if(!isRequire("expectDate", "期望完成时间必选")){ saving = false; return false; }
+				var altType = getCheckboxVal("atlType");
+				if(isNull(altType) || altType.length < 1){
+					errorMsg("系统提示：请选择试验类型");
+					saving = false;
+					return false;
+				}
+				
+				if(validChoose(altType, 1)){
+					if(isNull($('#partsAtl_org').combotree('getValue'))){
+						errorMsg("系统提示：请选择零件图谱委托实验室");
+						$("#partsAtl_org").next('span').find('input').focus();
+						saving = false;
+						return false;
+					}
+				}else {
+					if(isNull($('#matAtl_org').combotree('getValue'))){
+						errorMsg("系统提示：请选择材料图谱委托实验室");
+						$("#matAtl_org").next('span').find('input').focus();
+						saving = false;
+						return false;
+					}
+				}
+				
+				if(!isRequire("expectDate", "系统提示：期望完成时间必选")){ saving = false; return false; }
 				
 				// 抽样原因
-				if(!isRequire("origin", "样件来源必选")){ saving = false; return false; }
-				if(!isRequire("reason", "抽样原因必选")){ saving = false; return false; }
-				if(!isRequire("source", "费用出处必选")){ saving = false; return false; }
+				if(!isRequire("origin", "系统提示：样件来源必选")){ saving = false; return false; }
+				if(!isRequire("reason", "系统提示：抽样原因必选")){ saving = false; return false; }
+				if(!isRequire("source", "系统提示：费用出处必选")){ saving = false; return false; }
 				
-				var t_id = $("#t_id").val();
-				var v_id = $("#v_id").val();
-				var p_id = $("#p_id").val();
-				var m_id = $("#m_id").val();
-
-				if (isNull(v_id)) {
-					errorMsg("请选择整车信息");
-					saving = false;
-					return false;
-				}
-
-				if (isNull(p_id)) {
-					errorMsg("请选择零部件信息");
-					saving = false;
-					return false;
-				}
-
-				if (isNull(m_id)) {
-					errorMsg("请选择原材料信息");
+				if(isNull($("#i_id").val())){
+					errorMsg("系统提示：请选择基准任务");
 					saving = false;
 					return false;
 				}
 				
-				var iId = $("#standard").combobox("getValue");
-				if(isNull(iId)){
-					errorMsg("请选择基准");
+				if(validChoose(altType, 1)){
+					if(!isRequire("p_proTime", "系统提示：样件生产日期必填")){ saving = false; return false; }
+					
+					var pNum = $("#p_num").textbox("getValue");
+					if(!isNull(pNum) && isNaN(pNum)){
+						saving = false;
+						errorMsg("系统提示：提交失败，样件数量必须为整数");
+						$("#p_num").next('span').find('input').focus();
+						$("#p_num").textbox("setValue", "");
+						return false;
+					}
+				}
+				
+				// 原材料信息
+				if(!isRequire("m_proNo", "系统提示：材料批号必填")){ saving = false; return false; }
+				
+				var mNum = $("#m_num").textbox("getValue");
+				if(!isNull(mNum) && isNaN(mNum)){
 					saving = false;
+					errorMsg("系统提示：提交失败，样品数量必须为整数");
+					$("#m_num").next('span').find('input').focus();
+					$("#m_num").textbox("setValue", "");
 					return false;
 				}
-				$("#i_id").val(iId);
+				
 				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/ppap/transmit",
@@ -541,6 +518,26 @@
 					}
 				});
 				$('#partsDialog').window('center');
+			}
+			
+			
+			function taskInfo() {
+				$('#taskDialog').dialog({
+					title : '任务信息',
+					width : 1100,
+					height : 600,
+					closed : false,
+					cache : false,
+					href : "${ctx}/ppap/taskList",
+					modal : true,
+					top:100,
+					onClose: function(){
+						standardChange();
+					}
+				});
+				
+				// 移去滚动条
+				window.parent.scrollY(450);
 			}
 
 			function standardChange() { 

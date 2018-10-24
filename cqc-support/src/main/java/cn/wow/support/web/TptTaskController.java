@@ -695,7 +695,7 @@ public class TptTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/examine")
 	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
-			String v_proAddr, String v_remark, int atlType, String atlRemark, String p_code, String p_name,
+			String v_proAddr, String v_remark, String atlType, String atlRemark, String p_code, String p_name,
 			String p_proTime, String p_place, String p_proNo, Long p_id, int p_num, String p_remark, Long m_id,
 			String m_matName, String m_matColor, String m_proNo, String m_matNo, String m_remark, Long t_id,
 			int taskType, int result, String examine_remark, Long id, String p_producer, String m_producer,
@@ -949,7 +949,7 @@ public class TptTaskController extends AbstractController {
 						matPatReq, id, 4));
 			}
 
-			infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId, labReqList);
+		//	infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId, labReqList);
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
 
@@ -1248,7 +1248,7 @@ public class TptTaskController extends AbstractController {
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.approve(account, id, result, remark, catagory, partsAtlId, matAtlId, partsPatId, matPatId);
+		//	infoService.approve(account, id, result, remark, catagory, partsAtlId, matAtlId, partsPatId, matPatId);
 		} catch (Exception ex) {
 			logger.error("OTS任务审批失败", ex);
 
@@ -1288,7 +1288,7 @@ public class TptTaskController extends AbstractController {
 					} else if (task.getResultApply() == 1) {
 						catagory = 7;
 					}
-					infoService.approve(account, id, result, remark, catagory, null, null, null, null);
+		//			infoService.approve(account, id, result, remark, catagory, null, null, null, null);
 				}
 			}
 		} catch (Exception ex) {

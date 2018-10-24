@@ -2,6 +2,7 @@ package cn.wow.support.web;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +87,8 @@ public class PpapTaskController extends AbstractController {
 	private final static String APPROVE_DEFAULT_PAGE_SIZE = "10";
 	// 结果确认列表
 	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";
+	// 任务选择列表
+	private final static String TASK_DEFAULT_PAGE_SIZE = "10";
 
 	@Autowired
 	private MenuService menuService;
@@ -199,10 +203,10 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmitListData")
 	public Map<String, Object> transmitListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
-			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
-			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
-			Long applicat_org, int taskType, String origin, String reason, String source, Long labId) {
+			String endCreateTime, String task_code, String parts_name, String parts_producer, String parts_producerCode,
+			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
+			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org, int taskType,
+			String origin, String reason, String source, Long partsAtlId, Long matAtlId) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -228,11 +232,11 @@ public class PpapTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (atlType != null) {
-			map.put("atlType", atlType);
+		if (partsAtlId != null) {
+			map.put("partsAtlId", partsAtlId);
 		}
-		if (labId != null) {
-			map.put("labId", labId);
+		if (matAtlId != null) {
+			map.put("matAtlId", matAtlId);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -271,8 +275,14 @@ public class PpapTaskController extends AbstractController {
 	@RequestMapping(value = "/transmitDetail")
 	public String transmitDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id,
 			int taskType) {
+
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
 		if (id != null) {
 			Task task = taskService.selectOne(id);
+
+			// 申请人
+			applicat = task.getApplicat();
 
 			// 审批记录
 			Map<String, Object> rMap = new PageMap(false);
@@ -324,6 +334,7 @@ public class PpapTaskController extends AbstractController {
 		model.addAttribute("optionList", optionList);
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("taskType", taskType);
+		model.addAttribute("applicat", applicat);
 		return "task/ppap/transmit_detail";
 	}
 
@@ -336,34 +347,101 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, int taskType, String atlType,
-			String atlRemark, String expectDate, Long lab_org, Long reason_id, String origin, String reason,
-			String otherRemark, String source, String reasonRemark) {
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long v_id, Long t_id, Long i_id, Long p_id,
+			Long m_id, String v_remark, int taskType, Long partsAtlId, Long matAtlId, String atlType[],
+			String atlRemark, String expectDate, Long reason_id, String origin, String reason, String otherRemark,
+			String source, String reasonRemark, Date p_proTime, Integer p_num, String p_proNo, String p_place,
+			String p_remark, String m_proNo, Integer m_num, String m_remark) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+			Date date = new Date();
 
-			// 抽样原因
-			Reason reasonObj = null;
-			if (reason_id == null) {
-				reasonObj = new Reason();
+			if (i_id != null) {
+				Info info = infoService.selectOne(i_id);
+
+				// 抽样原因
+				Reason reasonObj = null;
+				if (reason_id == null) {
+					reasonObj = new Reason();
+				} else {
+					reasonObj = reasonService.selectOne(reason_id);
+				}
+				reasonObj.setOrigin(origin);
+				reasonObj.setOtherRemark(otherRemark);
+				reasonObj.setReason(reason);
+				reasonObj.setRemark(reasonRemark);
+				reasonObj.setSource(source);
+
+				// 整车信息
+				Vehicle vehicle = null;
+				if (v_id != null) {
+					vehicle = vehicleService.selectOne(v_id);
+					vehicle.setRemark(v_remark);
+				} else {
+					Vehicle temp = info.getVehicle();
+					vehicle = new Vehicle();
+
+					if (temp != null) {
+						BeanUtils.copyProperties(temp, vehicle);
+						vehicle.setState(0);
+						vehicle.setCreateTime(date);
+					}
+				}
+
+				// 零部件信息
+				Parts parts = null;
+				if (p_id != null) {
+					parts = partsService.selectOne(p_id);
+					parts.setProTime(p_proTime);
+					parts.setNum(p_num);
+					parts.setProNo(p_proNo);
+					parts.setPlace(p_place);
+					parts.setRemark(p_remark);
+				} else {
+					Parts temp = info.getParts();
+					parts = new Parts();
+
+					if (temp != null) {
+						BeanUtils.copyProperties(temp, parts);
+					}
+					parts.setCreateTime(date);
+					parts.setState(0);
+					parts.setType(2);
+					parts.setId(null);
+				}
+
+				// 材料信息
+				Material material = null;
+				if (m_id != null) {
+					material = materialService.selectOne(m_id);
+					material.setProNo(m_proNo);
+					material.setNum(m_num);
+					material.setRemark(m_remark);
+				} else {
+					Material temp = info.getMaterial();
+					material = new Material();
+
+					if (temp != null) {
+						BeanUtils.copyProperties(temp, material);
+					}
+					material.setCreateTime(date);
+					material.setId(null);
+					material.setState(0);
+					material.setType(2);
+				}
+
+				boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, atlType, atlRemark,
+						expectDate, partsAtlId, matAtlId);
+
+				if (!flag) {
+					vo.setSuccess(true);
+					vo.setMsg("操作成功，已有进行中抽样");
+					return vo;
+				}
 			} else {
-				reasonObj = reasonService.selectOne(reason_id);
-			}
-			reasonObj.setOrigin(origin);
-			reasonObj.setOtherRemark(otherRemark);
-			reasonObj.setReason(reason);
-			reasonObj.setRemark(reasonRemark);
-			reasonObj.setSource(source);
 
-			boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, atlType, atlRemark,
-					expectDate, lab_org);
-
-			if (!flag) {
-				vo.setSuccess(true);
-				vo.setMsg("操作成功，已有进行中抽样");
-				return vo;
 			}
 		} catch (Exception ex) {
 			logger.error("PPAP/SOP任务下达失败", ex);
@@ -914,4 +992,102 @@ public class PpapTaskController extends AbstractController {
 		return vo;
 	}
 
+	/**
+	 * 选择任务
+	 */
+	@RequestMapping(value = "/taskList")
+	public String taskList(HttpServletRequest httpServletRequest, Model model) {
+
+		// 生产基地
+		List<Address> addressList = addressService.getAddressList();
+		// 车型代码
+		List<CarCode> carCodeList = carCodeService.getCarCodeList();
+		model.addAttribute("addressList", addressList);
+		model.addAttribute("carCodeList", carCodeList);
+
+		// 抽样原因选项
+		Map<String, Object> optionMap = new PageMap(false);
+		optionMap.put("custom_order_sql", "type asc, name desc");
+		List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
+
+		model.addAttribute("optionList", optionList);
+		model.addAttribute("defaultPageSize", TASK_DEFAULT_PAGE_SIZE);
+		model.addAttribute("resUrl", resUrl);
+		return "task/ppap//task_list";
+	}
+
+	/**
+	 * 获取数据
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getListData")
+	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startConfirmTime,
+			String endConfirmTime, String reason, String source, String task_code, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String applicat_depart, Long applicat_org, String startCreateTime, String endCreateTime, String sort,
+			String order) {
+
+		// 设置默认记录数
+		String pageSize = request.getParameter("pageSize");
+		if (!StringUtils.isNotBlank(pageSize)) {
+			request.setAttribute("pageSize", TASK_DEFAULT_PAGE_SIZE);
+		}
+
+		String orderSql = "t.create_time desc";
+		if (StringUtils.isNotBlank(sort)) {
+			orderSql = sort + " " + order;
+		}
+
+		Map<String, Object> map = new PageMap(request);
+		map.put("custom_order_sql", orderSql);
+
+		if (StringUtils.isNotBlank(task_code)) {
+			map.put("code", task_code);
+		}
+		if (StringUtils.isNotBlank(startCreateTime)) {
+			map.put("startCreateTime", startCreateTime + " 00:00:00");
+		}
+		if (StringUtils.isNotBlank(endCreateTime)) {
+			map.put("endCreateTime", endCreateTime + " 23:59:59");
+		}
+		if (StringUtils.isNotBlank(startConfirmTime)) {
+			map.put("startConfirmTime", startConfirmTime + " 00:00:00");
+		}
+		if (StringUtils.isNotBlank(endConfirmTime)) {
+			map.put("endConfirmTime", endConfirmTime + " 23:59:59");
+		}
+		map.put("type", TaskTypeEnum.OTS.getState());
+		map.put("state", 4);
+		map.put("isReceive", 1);
+
+		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
+				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
+		if (iIdList.size() > 0) {
+			map.put("iIdList", iIdList);
+		}
+
+		// 申请人信息
+		List<Long> applicatIdList = accountService.selectIds(applicat_name, applicat_depart, applicat_org);
+		if (applicatIdList.size() > 0) {
+			map.put("applicatIdList", applicatIdList);
+		}
+
+		// 抽样原因
+		List<Long> reasonIdList = reasonService.selectIds(null, source, reason);
+		if (reasonIdList.size() > 0) {
+			map.put("reasonIdList", reasonIdList);
+		}
+
+		List<Task> dataList = taskService.selectAllList(map);
+
+		// 分页
+		Page<Task> pageList = (Page<Task>) dataList;
+
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("total", pageList.getTotal());
+		dataMap.put("rows", pageList.getResult());
+
+		return dataMap;
+	}
 }

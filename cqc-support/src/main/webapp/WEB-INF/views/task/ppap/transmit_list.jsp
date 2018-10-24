@@ -76,26 +76,25 @@
 							align : 'center',
 							formatter : formatCellTooltip
 						}, {
-							field : 'atlType',
-							title : '试验类型',
-							width : '90',
-							align : 'center',
-							formatter : function(val){
-								if(val == 1){
-									return "<span title='零件图谱'>零件图谱</span>";
-								}else if(val == 2){
-									return "<span title='材料图谱'>材料图谱</span>";
-								}
-							}
-						}, {
-							field : 'lab.name',
-							title : '委托实验室',
+							field : 'matAtl.name',
+							title : '材料图谱实验室',
 							width : '150',
 							align : 'center',
 							formatter : function(value, row, index){
-								var lab = row.lab;
-								if(lab != null){
-									return "<span title='"+ lab.name +"'>"+ lab.name +"</span>";
+								var org = row.matAtl;
+								if(org != null){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+								}
+							}
+						}, {
+							field : 'partsAtl.name',
+							title : '零件图谱实验室',
+							width : '150',
+							align : 'center',
+							formatter : function(value, row, index){
+								var org = row.partsAtl;
+								if(org != null){
+									return "<span title='"+ org.name +"'>"+ org.name +"</span>";
 								}
 							}
 						}, {
@@ -280,7 +279,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
@@ -291,7 +290,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {
@@ -318,11 +317,11 @@
 					displayMsg : '当前显示 {from} - {to} 条记录    共  {total} 条记录',
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
-							'labId': $('#q_lab_org').combotree('getValue'),
+							'partsAtlId': $('#q_partsAtl_org').combotree('getValue'),
+							'matAtlId': $('#q_matAtl_org').combotree('getValue'),
 							'origin': $("#q_origin").combobox('getValue'),
 							'reason': $("#q_reason").combobox('getValue'),
 							'source': $("#q_source").combobox('getValue'),
-							'atlType': $("#q_atlType").combobox('getValue'),
 							'task_code': $("#task_code").textbox("getValue"),
 							'parts_name': $("#parts_name").textbox("getValue"),
 							'parts_producer': $("#parts_producer").val(),
@@ -397,7 +396,7 @@
 				});
 				
 				// 委托实验室
-				$('#q_lab_org').combotree({
+				$('#q_partsAtl_org').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
 					animate: true,
@@ -413,11 +412,11 @@
 	
 			function doSearch() {
 				var data = {
-					'labId': $('#q_lab_org').combotree('getValue'),
+					'partsAtlId': $('#q_partsAtl_org').combotree('getValue'),
+					'matAtlId': $('#q_matAtl_org').combotree('getValue'),
 					'origin': $("#q_origin").combobox('getValue'),
 					'reason': $("#q_reason").combobox('getValue'),
 					'source': $("#q_source").combobox('getValue'),
-					'atlType': $("#q_atlType").combobox('getValue'),
 					'task_code': $("#task_code").textbox("getValue"),
 					'parts_name': $("#parts_name").textbox("getValue"),
 					'parts_producer': $("#parts_producer").val(),
@@ -439,11 +438,11 @@
 			}
 			
 			function doClear() {
-				$('#q_lab_org').combotree("setValue","");
+				$('#q_partsAtl_org').combotree("setValue","");
+				$('#q_matAtl_org').combotree("setValue","");
 				$("#q_origin").combobox('select', "");
 				$("#q_reason").combobox('select', "");
 				$("#q_source").combobox('select', "");
-				$("#q_atlType").combobox('select', "");
 				$("#task_code").textbox("clear");
 				$("#parts_name").textbox("clear");
 				$("#parts_producer").val(""),
@@ -477,6 +476,7 @@
 					cache : false,
 					href : url,
 					modal : true,
+					top: 100,
 					onClose: function(){
 						window.location.reload();
 					}
@@ -484,7 +484,7 @@
 				$('#transmitDialog').window('center');
 				
 				// 移去滚动条
-				window.parent.scrollY(470);
+				window.parent.scrollY(495);
 			}
 		</script>
 	</head>
@@ -583,15 +583,11 @@
 				</div>
 				
 				<div style="margin-top: 5px;">
-					<span class="qlabel">委托实验室：</span>
-					<input id="q_lab_org" name="q_lab_org" style="width: 168px;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">零件图谱实验室：</span>
+					<input id="q_partsAtl_org" name="q_partsAtl_org" style="width: 168px;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					
-					<span class="qlabel">试验类型：</span>
-					<select id="q_atlType" name="q_atlType" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
-						<option value="">全部</option>
-						<option value="1">零件图谱</option>
-						<option value="2">材料图谱</option>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="qlabel">材料图谱实验室：</span>
+					<input id="q_matAtl_org" name="q_matAtl_org" style="width: 168px;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 

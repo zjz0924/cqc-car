@@ -48,7 +48,7 @@ import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MenuService;
 import cn.wow.common.service.PfResultService;
-import cn.wow.common.service.TaskInfoService;
+import cn.wow.common.service.ReasonService;
 import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
@@ -83,13 +83,13 @@ public class QueryController extends AbstractController {
 	@Autowired
 	private TaskRecordService taskRecordService;
 	@Autowired
-	private TaskInfoService taskInfoService;
-	@Autowired
 	private AddressService addressService;
 	@Autowired
 	private CarCodeService carCodeService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private ReasonService reasonService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -118,9 +118,9 @@ public class QueryController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
 	public Map<String, Object> getListData(HttpServletRequest request, Model model, String startConfirmTime,
-			String endConfirmTime, String reason, String provenance, String task_code, Integer atlType,
-			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
-			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String endConfirmTime, String reason, String source, String task_code, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Long applicat_org, String startCreateTime, String endCreateTime, String taskType,
 			String sort, String order) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -136,7 +136,7 @@ public class QueryController extends AbstractController {
 		if (StringUtils.isNotBlank(sort)) {
 			orderSql = sort + " " + order;
 		}
-		
+
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", orderSql);
 		queryMap.put("custom_order_sql", orderSql);
@@ -165,12 +165,6 @@ public class QueryController extends AbstractController {
 			map.put("type", taskType);
 			queryMap.put("type", taskType);
 		}
-		if (atlType != null) {
-			map.put("atlType", atlType);
-			queryMap.put("atlType", atlType);
-		}
-
-		List<Long> taskInfoIdList = taskInfoService.getTaskIds(applicat_name, applicat_depart, reason, provenance);
 
 		/**
 		 * 1) SQE审批人全范围 2) 其它审批人只能查看本部门的任务 3) 其它人只能看自己的任务
@@ -186,10 +180,6 @@ public class QueryController extends AbstractController {
 					taskIdList.add(-1l);
 				}
 
-				if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
-					taskIdList.retainAll(taskInfoIdList);
-				}
-
 				map.put("taskIdList", taskIdList);
 				queryMap.put("taskIdList", taskIdList);
 
@@ -197,25 +187,12 @@ public class QueryController extends AbstractController {
 				map.put("type", 1);
 				queryMap.put("type", 1);
 
-				if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
-					map.put("taskIdList", taskInfoIdList);
-					queryMap.put("taskIdList", taskInfoIdList);
-				}
 			} else if ("gs".equals(type)) {
 				map.put("type", 4);
 				queryMap.put("type", 4);
 
-				if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
-					map.put("taskIdList", taskInfoIdList);
-					queryMap.put("taskIdList", taskInfoIdList);
-				}
 			}
-		} else {
-			if (taskInfoIdList != null && taskInfoIdList.size() > 0) {
-				map.put("taskIdList", taskInfoIdList);
-				queryMap.put("taskIdList", taskInfoIdList);
-			}
-		}
+		} 
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
@@ -229,6 +206,12 @@ public class QueryController extends AbstractController {
 			map.put("applicatIdList", applicatIdList);
 		}
 
+		// 抽样原因
+		List<Long> reasonIdList = reasonService.selectIds(null, source, reason);
+		if (reasonIdList.size() > 0) {
+			map.put("reasonIdList", reasonIdList);
+		}
+		
 		List<Task> dataList = taskService.selectAllList(map);
 
 		// 分页

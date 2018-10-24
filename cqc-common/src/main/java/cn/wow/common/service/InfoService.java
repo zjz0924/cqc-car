@@ -77,7 +77,7 @@ public interface InfoService {
 	 * @param i_id       信息ID
 	 * @param taskType   任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType, String atlRemark, String expectDate, Long lab_org) throws ParseException;
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlRemark, String expectDate, Long partsAtlId, Long matAtlId) throws ParseException;
 
 	/**
 	 * 审批（OTS）
