@@ -276,24 +276,24 @@ public class TaskServiceImpl implements TaskService{
 				task.setMatPatResult(4);
 				remark += "原材料型式试验、";
 			} else {
-				if (task.getMatAtlResult() != 4) {
+				if (task.getMatAtlId() != null && task.getMatAtlResult() != 4) {
 					task.setMatAtlResult(4);
+					remark += "原材料图谱试验、";
 				}
 
-				if (task.getMatPatResult() != 4) {
+				if (task.getMatPatId() != null && task.getMatPatResult() != 4) {
 					task.setMatPatResult(4);
+					remark += "原材料型式试验、";
+				}
+				
+				if (task.getPartsAtlId() != null && task.getPartsAtlResult() != 4) {
+					task.setPartsAtlResult(4);
+					remark += "零部件图谱试验、";
 				}
 
-				remark += "原材料图谱试验、原材料型式试验、";
-				if (task.getType() == TaskTypeEnum.OTS.getState()) {
-					if (task.getPartsAtlResult() != 4) {
-						task.setPartsAtlResult(4);
-					}
-
-					if (task.getPartsPatResult() != 4) {
-						task.setPartsPatResult(4);
-					}
-					remark += "零部件图谱试验、零部件型式试验、";
+				if (task.getPartsPatId() != null && task.getPartsPatResult() != 4) {
+					task.setPartsPatResult(4);
+					remark += "零部件型式试验、";
 				}
 				isPass = true;
 			}
@@ -305,11 +305,11 @@ public class TaskServiceImpl implements TaskService{
 
 			// 所有实验已确认
 			if (task.getType() == TaskTypeEnum.OTS.getState()) {
-				if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getPartsAtlResult() == 4 && task.getPartsPatResult() == 4) {
+				if (task.getMatAtlResult() == 4  && task.getPartsAtlResult() == 4) {
 					isPass = true;
 				}
 			}else if(task.getType() == TaskTypeEnum.GS.getState()){
-				if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4) {
+				if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getMatPatResult() == 4 && task.getPartsPatResult() == 4) {
 					isPass = true;
 				}
 			}

@@ -345,7 +345,7 @@ public class TptTaskController extends AbstractController {
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
 			String m_proNo, String m_matNo, String m_remark, Long t_id, int taskType, int m_num, int draft,
-			String p_producer, String m_producer, int atlType, String atlRemark, String atlItem, String p_producerCode,
+			String p_producer, String m_producer, String atlType, String atlRemark, String atlItem, String p_producerCode,
 			Long applicat_id, Long reason_id, String origin, String reason, String otherRemark, String source,
 			String reasonRemark) {
 

@@ -293,7 +293,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
@@ -304,7 +304,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {
@@ -560,13 +560,15 @@
 					title : '任务详情',
 					width : 1200,
 					height : 660,
-					top: "300px",
 					closed : false,
 					cache : false,
+					top: 300,
 					href : "${ctx}/query/detail?id=" + id,
 					modal : true
 				});
-				$('#detailDialog').window('center');
+				//$('#detailDialog').window('center');
+				
+				top.parent.scrollTo(0, 300);
 			}
 			
 		</script>

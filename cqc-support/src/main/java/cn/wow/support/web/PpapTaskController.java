@@ -336,7 +336,7 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
-	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, int taskType, int atlType,
+	public AjaxVO transmit(HttpServletRequest request, Model model, Long t_id, Long i_id, int taskType, String atlType,
 			String atlRemark, String expectDate, Long lab_org, Long reason_id, String origin, String reason,
 			String otherRemark, String source, String reasonRemark) {
 		AjaxVO vo = new AjaxVO();

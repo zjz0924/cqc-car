@@ -158,7 +158,7 @@
 					<input id="partsAtlId" name="partsAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
-						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsAtlCode" name="partsAtlCode" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsAtlCode" name="partsAtlCode" class="easyui-textbox"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
 						商定完成时间：<input id="partsAtlTime" name="partsAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
 						<div style="margin-top:5px;">
 							测试要求：<input id="partsAtlReq" name="partsAtlReq" class="easyui-textbox"  style="width:86%;">
@@ -174,7 +174,7 @@
 					<input id="matAtlId" name="matAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
-						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matAtlCode" name="matAtlCode" class="easyui-textbox"  style="width:145px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matAtlCode" name="matAtlCode" class="easyui-textbox"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
 						商定完成时间：<input id="matAtlTime" name="matAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
 						<div style="margin-top:5px;">
 							测试要求：<input id="matAtlReq" name="matAtlReq" class="easyui-textbox"  style="width:86%;">
@@ -258,7 +258,7 @@
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
 					animate: true,
-					width: '250px',
+					width: '377px',
 					onBeforeSelect: function(node){
 					   if(isNull(node.children)){
 							return true;
@@ -276,7 +276,7 @@
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
 					animate: true,
-					width: '250px',
+					width: '377px',
 					onBeforeSelect: function(node){
 					   if(isNull(node.children)){
 							return true;

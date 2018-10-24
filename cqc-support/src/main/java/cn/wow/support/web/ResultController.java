@@ -110,7 +110,7 @@ public class ResultController extends AbstractController {
 	private AddressService addressService;
 	@Autowired
 	private CarCodeService carCodeService;
-	
+
 	// ----------------------------------- 结果上传
 	// ---------------------------------------------------------------
 
@@ -133,14 +133,14 @@ public class ResultController extends AbstractController {
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("menuName", menu.getName());
 		model.addAttribute("type", type);
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		return "result/upload_list";
 	}
 
@@ -150,10 +150,9 @@ public class ResultController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/uploadListData")
 	public Map<String, Object> uploadListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer atlType, String parts_name,
-			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
-			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
-			String applicat_depart, Long applicat_org, int type) {
+			String endCreateTime, String task_code, String parts_name, String parts_producer, String parts_producerCode,
+			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
+			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org, int type) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		// 设置默认记录数
@@ -189,9 +188,6 @@ public class ResultController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
-		}
-		if (atlType != null) {
-			map.put("atlType", atlType);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -353,9 +349,7 @@ public class ResultController extends AbstractController {
 			}
 
 			ObjectMapper mapper = new ObjectMapper();
-			List<LabConclusion> conclusionDataList = mapper.readValue(conclusionResult,
-					new TypeReference<List<LabConclusion>>() {
-					});
+			List<LabConclusion> conclusionDataList = mapper.readValue(conclusionResult,new TypeReference<List<LabConclusion>>() {});
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			atlasResultService.upload(account, dataList, taskId, date, conclusionDataList);
@@ -422,14 +416,14 @@ public class ResultController extends AbstractController {
 		model.addAttribute("defaultPageSize", SEND_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("menuName", menu.getName());
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		return "result/send_list";
 	}
 
@@ -678,14 +672,14 @@ public class ResultController extends AbstractController {
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("menuName", menu.getName());
 		model.addAttribute("type", type);
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		return "result/confirm_list";
 	}
 
@@ -698,7 +692,7 @@ public class ResultController extends AbstractController {
 	@RequestMapping(value = "/confirmListData")
 	public Map<String, Object> confirmListData(HttpServletRequest request, Model model, int type,
 			String startCreateTime, String endCreateTime, String task_code, Integer state, Integer draft,
-			Integer atlType, String parts_name, String parts_producer, String parts_producerCode, String startProTime,
+			String parts_name, String parts_producer, String parts_producerCode, String startProTime,
 			String endProTime, String matName, String mat_producer, String matNo, String v_code, String v_proAddr,
 			String applicat_name, String applicat_depart, Long applicat_org) {
 
@@ -885,7 +879,8 @@ public class ResultController extends AbstractController {
 		return vo;
 	}
 
-	// ----------------------------------- 结果对比 ---------------------------------------------------------------
+	// ----------------------------------- 结果对比
+	// ---------------------------------------------------------------
 
 	/**
 	 * 结果对比列表
@@ -897,14 +892,14 @@ public class ResultController extends AbstractController {
 		model.addAttribute("defaultPageSize", COMPARE_DEFAULT_PAGE_SIZE);
 		model.addAttribute("recordPageSize", RECORD_DEFAULT_PAGE_SIZE);
 		model.addAttribute("menuName", menu.getName());
-		
+
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		return "result/compare_list";
 	}
 
