@@ -433,7 +433,7 @@ public class ResultController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/sendListData")
 	public Map<String, Object> sendListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer state, Integer draft, Integer atlType, String parts_name,
+			String endCreateTime, String task_code, Integer state, Integer draft, String parts_name,
 			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Long applicat_org) {

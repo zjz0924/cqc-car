@@ -1,5 +1,6 @@
 package cn.wow.support.web;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -299,20 +300,12 @@ public class PpapTaskController extends AbstractController {
 			rMap.put("custom_order_sql", "create_time asc");
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
-			// 试验说明
-			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
-			if (labReqList != null && labReqList.size() > 0) {
-				for (LabReq labReq : labReqList) {
-					if (task.getPartsAtlId() != null && labReq.getType() == 1) {
-						model.addAttribute("partsAtlCode", labReq.getCode());
-						model.addAttribute("partsAtlTime", labReq.getTime());
-						model.addAttribute("partsAtlReq", labReq.getRemark());
-					} else if (task.getMatAtlId() != null && labReq.getType() == 2) {
-						model.addAttribute("matAtlCode", labReq.getCode());
-						model.addAttribute("matAtlTime", labReq.getTime());
-						model.addAttribute("matAtlReq", labReq.getRemark());
-					}
-				}
+			// 图谱类型
+			if (validChoose(task.getAtlType(), "1")) {
+				model.addAttribute("partAtl", "1");
+			}
+			if (validChoose(task.getAtlType(), "2")) {
+				model.addAttribute("materialAtl", "1");
 			}
 
 			model.addAttribute("facadeBean", task);
@@ -348,19 +341,18 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
 	public AjaxVO transmit(HttpServletRequest request, Model model, Long v_id, Long t_id, Long i_id, Long p_id,
-			Long m_id, String v_remark, int taskType, Long partsAtlId, Long matAtlId, String atlType[],
+			Long m_id, String v_remark, int taskType, Long partsAtl_org, Long matAtl_org, String atlType[],
 			String atlRemark, String expectDate, Long reason_id, String origin, String reason, String otherRemark,
-			String source, String reasonRemark, Date p_proTime, Integer p_num, String p_proNo, String p_place,
+			String source, String reasonRemark, String p_proTime, Integer p_num, String p_proNo, String p_place,
 			String p_remark, String m_proNo, Integer m_num, String m_remark) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			Date date = new Date();
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 			if (i_id != null) {
-				Info info = infoService.selectOne(i_id);
-
 				// 抽样原因
 				Reason reasonObj = null;
 				if (reason_id == null) {
@@ -374,74 +366,103 @@ public class PpapTaskController extends AbstractController {
 				reasonObj.setRemark(reasonRemark);
 				reasonObj.setSource(source);
 
-				// 整车信息
 				Vehicle vehicle = null;
-				if (v_id != null) {
-					vehicle = vehicleService.selectOne(v_id);
-					vehicle.setRemark(v_remark);
-				} else {
-					Vehicle temp = info.getVehicle();
-					vehicle = new Vehicle();
-
-					if (temp != null) {
-						BeanUtils.copyProperties(temp, vehicle);
-						vehicle.setState(0);
-						vehicle.setCreateTime(date);
-					}
-				}
-
-				// 零部件信息
 				Parts parts = null;
-				if (p_id != null) {
-					parts = partsService.selectOne(p_id);
-					parts.setProTime(p_proTime);
-					parts.setNum(p_num);
-					parts.setProNo(p_proNo);
-					parts.setPlace(p_place);
-					parts.setRemark(p_remark);
-				} else {
-					Parts temp = info.getParts();
-					parts = new Parts();
 
-					if (temp != null) {
-						BeanUtils.copyProperties(temp, parts);
-					}
-					parts.setCreateTime(date);
-					parts.setState(0);
-					parts.setType(2);
-					parts.setId(null);
-				}
-
-				// 材料信息
 				Material material = null;
-				if (m_id != null) {
-					material = materialService.selectOne(m_id);
-					material.setProNo(m_proNo);
-					material.setNum(m_num);
-					material.setRemark(m_remark);
-				} else {
-					Material temp = info.getMaterial();
-					material = new Material();
 
-					if (temp != null) {
-						BeanUtils.copyProperties(temp, material);
+				if (t_id == null) {
+					// 整车信息
+					vehicle = new Vehicle();
+					if (v_id != null) {
+						Vehicle temp = vehicleService.selectOne(v_id);
+						if (temp != null) {
+							BeanUtils.copyProperties(vehicle, temp);
+							vehicle.setState(0);
+							vehicle.setCreateTime(date);
+							vehicle.setId(null);
+						}
 					}
-					material.setCreateTime(date);
-					material.setId(null);
-					material.setState(0);
-					material.setType(2);
+
+					// 零部件信息
+					parts = new Parts();
+					if (p_id != null) {
+						Parts temp = partsService.selectOne(p_id);
+						if (temp != null) {
+							BeanUtils.copyProperties(parts, temp);
+							parts.setCreateTime(date);
+							parts.setState(0);
+							parts.setType(2);
+							parts.setId(null);
+						}
+					}
+
+					// 材料信息
+					material = new Material();
+					if (m_id != null) {
+						Material temp = materialService.selectOne(m_id);
+						if (temp != null) {
+							BeanUtils.copyProperties(material, temp);
+							material.setCreateTime(date);
+							material.setId(null);
+							material.setState(0);
+							material.setType(2);
+						}
+					}
+
+				} else {
+					Task task = taskService.selectOne(t_id);
+
+					// 整车信息
+					if (task.getInfo().getvId() != null) {
+						Vehicle temp = vehicleService.selectOne(v_id);
+
+						vehicle = vehicleService.selectOne(task.getInfo().getvId());
+						vehicle.setCode(temp.getCode());
+						vehicle.setProAddr(temp.getProAddr());
+						vehicle.setProTime(temp.getProTime());
+						vehicle.setRemark(v_remark);
+					}
+
+					// 零部件信息
+					if (task.getInfo().getpId() != null) {
+						Parts temp = partsService.selectOne(p_id);
+
+						parts = partsService.selectOne(task.getInfo().getpId());
+						parts.setCode(temp.getCode());
+						parts.setProducerCode(temp.getProducerCode());
+						parts.setName(temp.getName());
+						parts.setProducer(temp.getProducer());
+						parts.setProTime(sdf.parse(p_proTime));
+						parts.setNum(p_num);
+						parts.setProNo(p_proNo);
+						parts.setPlace(p_place);
+						parts.setRemark(p_remark);
+					}
+
+					// 材料信息
+					if (task.getInfo().getmId() != null) {
+						Material temp = materialService.selectOne(m_id);
+						
+						material = materialService.selectOne(task.getInfo().getmId());
+						material.setMatName(temp.getMatName());
+						material.setMatNo(temp.getMatNo());
+						material.setProducer(temp.getProducer());
+						material.setMatColor(temp.getMatColor());
+						material.setProNo(m_proNo);
+						material.setNum(m_num);
+						material.setRemark(m_remark);
+					}
+
 				}
 
-				boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, atlType, atlRemark,
-						expectDate, partsAtlId, matAtlId);
-
+				boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, formatAltType(atlType),
+						atlRemark, expectDate, partsAtl_org, matAtl_org, vehicle, parts, material);
 				if (!flag) {
 					vo.setSuccess(true);
 					vo.setMsg("操作成功，已有进行中抽样");
 					return vo;
 				}
-			} else {
-
 			}
 		} catch (Exception ex) {
 			logger.error("PPAP/SOP任务下达失败", ex);
@@ -682,14 +703,13 @@ public class PpapTaskController extends AbstractController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/approve")
-	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, String remark, int catagory,
-			Long partsAtlId, Long matAtlId) {
+	public AjaxVO approve(HttpServletRequest request, Model model, Long id, int result, String remark, int catagory) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
-			infoService.approve(account, id, result, catagory, remark, partsAtlId, matAtlId);
+			infoService.approve(account, id, result, catagory, remark);
 		} catch (Exception ex) {
 			logger.error("PPAP任务审批失败", ex);
 
@@ -730,7 +750,7 @@ public class PpapTaskController extends AbstractController {
 					} else if (task.getResultApply() == 1) {
 						catagory = 2;
 					}
-					infoService.approve(account, id, result, catagory, remark, null, null);
+					infoService.approve(account, id, result, catagory, remark);
 				}
 			}
 		} catch (Exception ex) {

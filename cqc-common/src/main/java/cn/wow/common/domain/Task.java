@@ -12,9 +12,14 @@ public class Task {
     private Long id;
     // 任务号
     private String code;
+  
     // 信息ID
     private Long iId;
     private Info info;
+
+    // 基准信息ID（用于 PPAP任务）
+    private Long standIid;
+    private Info standInfo;
     
     // 申请人机构
     private Long orgId;
@@ -500,4 +505,21 @@ public class Task {
 	public void setAtlItem(String atlItem) {
 		this.atlItem = atlItem;
 	}
+
+	public Long getStandIid() {
+		return standIid;
+	}
+
+	public void setStandIid(Long standIid) {
+		this.standIid = standIid;
+	}
+
+	public Info getStandInfo() {
+		return standInfo;
+	}
+
+	public void setStandInfo(Info standInfo) {
+		this.standInfo = standInfo;
+	}
+	
 }

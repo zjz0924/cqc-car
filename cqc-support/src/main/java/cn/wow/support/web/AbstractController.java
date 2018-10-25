@@ -160,5 +160,60 @@ public class AbstractController {
 		}
 		return permission;
 	}
+	
+	/**
+	 * 格式化图谱类型 零件图谱-材料图谱-零件型式-材料型式（有就改为1，没有则为0）
+	 */
+	public String formatAltType(String[] vals) {
+		String val = "a-b-c-d";
+
+		if (vals != null && vals.length > 0) {
+			for (String obj : vals) {
+				if ("1".equals(obj)) {
+					val = val.replaceFirst("a", "1");
+				} else if ("2".equals(obj)) {
+					val = val.replaceAll("b", "1");
+				} else if ("3".equals(obj)) {
+					val = val.replaceAll("c", "1");
+				} else if ("4".equals(obj)) {
+					val = val.replaceAll("d", "1");
+				}
+			}
+		}
+
+		val = val.replaceAll("a", "0");
+		val = val.replaceAll("b", "0");
+		val = val.replaceAll("c", "0");
+		val = val.replaceAll("d", "0");
+
+		return val;
+	}
+
+	/**
+	 * 判断是否选中
+	 */
+	public boolean validChoose(String atlType, String type) {
+		if (StringUtils.isNotBlank(atlType)) {
+			String result = null;
+
+			if ("1".equals(type)) {
+				result = atlType.substring(0, 1);
+			} else if ("2".equals(type)) {
+				result = atlType.substring(2, 3);
+			} else if ("3".equals(type)) {
+				result = atlType.substring(3, 4);
+			} else if ("4".equals(type)) {
+				result = atlType.substring(4, 5);
+			}
+
+			if (StringUtils.isNotBlank(result) && result.equals("1")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 }
 

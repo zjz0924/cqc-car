@@ -73,11 +73,13 @@ public interface InfoService {
 	/**
 	 * 下达任务（PPAP）
 	 * 
-	 * @param t_id       任务ID
-	 * @param i_id       信息ID
-	 * @param taskType   任务类型
+	 * @param t_id     任务ID
+	 * @param i_id     信息ID
+	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlRemark, String expectDate, Long partsAtlId, Long matAtlId) throws ParseException;
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
+			String atlRemark, String expectDate, Long partsAtlId, Long matAtlId, Vehicle vehicle, Parts parts,
+			Material material) throws ParseException;
 
 	/**
 	 * 审批（OTS）
@@ -100,8 +102,7 @@ public interface InfoService {
 	 * @param remark   备注
 	 * @param catagory 分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
 	 */
-	public void approve(Account account, Long id, int result, int catagory, String remark, Long partsAtlId,
-			Long matAtlId);
+	public void approve(Account account, Long id, int result, int catagory, String remark);
 
 	/**
 	 * 申请信息修改

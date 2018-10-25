@@ -494,15 +494,14 @@
 				var row = rows[index];
 
 				if (!isNull(row)) {
-					$("#standardTaskId").val(row.id);
 					$("#qCode").textbox("setValue", row.code);
-					$("#i_id").val(row.info.id);
 					
 					// 整车信息
 					$("#v_code").textbox("setValue", row.info.vehicle.code);
 					$("#v_proAddr").textbox("setValue", row.info.vehicle.proAddr);
 					$("#v_remark").textbox("setValue", row.info.vehicle.remark);
 					$("#v_proTime").datebox('setValue',formatDate(row.info.vehicle.proTime));
+					$("#v_id").val(row.info.vehicle.id);
 					
 					// 零件信息
 					$("#p_name").textbox("setValue", row.info.parts.name);
@@ -514,6 +513,7 @@
 					$("#p_proNo").textbox("setValue", row.info.parts.proNo);
 					$("#p_place").textbox("setValue", row.info.parts.place);
 					$("#p_remark").textbox("setValue", row.info.parts.remark);
+					$("#p_id").val(row.info.parts.id);
 					
 					// 材料信息
 					$("#m_matName").textbox("setValue", row.info.material.matName);
@@ -523,6 +523,7 @@
 					$("#m_proNo").textbox("setValue", row.info.material.proNo);
 					$("#m_num").textbox("setValue", row.info.material.num);
 					$("#m_remark").textbox("setValue", row.info.material.remark);
+					$("#m_id").val(row.info.material.id);
 				}
 				$('#taskDialog').dialog('close');
 			}

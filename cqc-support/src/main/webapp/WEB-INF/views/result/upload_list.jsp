@@ -443,13 +443,15 @@
 					title : '结果上传信息',
 					width : 1200,
 					height : 700,
-					top: "300px",
+					top: "500px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/result/uploadDetail?id=" + id + "&type=${type}",
 					modal : true
 				});
-				$('#uploadDetailDialog').window('center');
+				
+				// 移动y滚动条
+				top.parent.scrollTo(0, 500);
 			}
 			
 		</script>

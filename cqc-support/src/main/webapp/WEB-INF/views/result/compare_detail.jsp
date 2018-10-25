@@ -13,36 +13,19 @@
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">申请人：</td>
-					<td class="value-td">${facadeBean.applicat.name}</td>
+					<td class="value-td">${facadeBean.applicat.nickName}</td>
 					<td class="title-td">科室：</td>
-					<td class="value-td">${facadeBean.applicat.depart}</td>
+					<td class="value-td">${facadeBean.applicat.department}</td>
 				</tr>
 				<tr class="single-row">
 					<td class="title-td">机构/单位：</td>
 					<td class="value-td">${facadeBean.applicat.org.name}</td>
 					<td class="title-td">联系方式：</td>
-					<td class="value-td">${facadeBean.applicat.contact}</td>
+					<td class="value-td">${facadeBean.applicat.mobile}</td>
 				</tr>
 				<tr class="couple-row">
 					<td class="title-td">备注：</td>
-					<td class="value-td" colspan="3">${facadeBean.info.vehicle.remark}</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-		
-		<div class="title">基准图谱类型</div>
-		<div style="width: 98%;display:none;" id="atlDiv">
-			<table class="info">
-				<tr class="single-row">
-					<td class="title-td">类型：</td>
-					<td class="value-td">
-						<c:if test="${facadeBean.atlType == 1}">零件基准图谱</c:if>
-						<c:if test="${facadeBean.atlType == 2}">材料基准图谱</c:if>	
-					</td>
-					<td class="title-td">备注：</td>
-					<td class="value-td">${facadeBean.atlRemark}</td>
+					<td class="value-td" colspan="3">${facadeBean.applicat.remark}</td>
 				</tr>
 			</table>
 		</div>
@@ -139,76 +122,27 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">任务信息</div>
-		<div style="width: 98%;display: none;" id="taskInfoDiv">
+		<div class="title">抽样原因</div>
+		<div style="width: 98%;">
 			<table class="info">
 				<tr class="single-row">
-					<td class="title-td">申请人：</td>
-					<td class="value-td">${facadeBean.taskInfo.applicant}</td>
-					<td class="title-td">科室：</td>
-					<td class="value-td">${facadeBean.taskInfo.department}</td>
+					<td class="title-td">样件来源：</td>
+					<td class="value-td">${facadeBean.reason.origin }</td>
+					<td class="title-td">抽样原因：</td>
+					<td class="value-td">${facadeBean.reason.reason}</td>
 				</tr>
-				
-				<tr class="couple-row">
-					<td class="title-td">零件图号：</td>
-					<td class="value-td">${facadeBean.taskInfo.figure}</td>
-					<td class="title-td">样品数量：</td>
-					<td class="value-td">${facadeBean.taskInfo.num}</td>
-				</tr>
-				
 				<tr class="single-row">
-					<td class="title-td">样品来源：</td>
-					<td class="value-td">${facadeBean.taskInfo.origin}</td>
-					<td class="title-td">抽检原因：</td>
-					<td class="value-td">${facadeBean.taskInfo.reason}</td>
+					<td class="title-td">其他原因描述：</td>
+					<td class="value-td">${facadeBean.reason.otherRemark }</td>
+					<td class="title-td">费用出处：</td>
+					<td class="value-td">${facadeBean.reason.source}</td>
 				</tr>
-				
-				<tr class="couple-row">
-					<td class="title-td">实验费用出处：</td>
-					<td class="value-td">${facadeBean.taskInfo.provenance}</td>
+				<tr class="single-row">
+					<td class="title-td">备注：</td>
+					<td class="value-td">${facadeBean.reason.remark }</td>
 				</tr>
 			</table>
 		</div>
-		
-		<c:if test="${not empty labReqList}">
-			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-			<div class="title">试验说明</div>
-			<div style="margin-bottom: 20px;">
-				<table class="info">
-					<tr class="single-row">
-						<td class="title-td">试验编号</td>
-						<td class="title-td">试验名称</td>
-						<td class="title-td">任务号</td>
-						<td class="title-td">实验要求</td>
-						<td class="title-td">商定完成时间</td>
-					</tr>
-					
-					<c:forEach items="${labReqList}" var="vo">
-						<tr>
-							<td>
-								<c:choose>
-									<c:when test="${vo.type eq 1}">${facadeBean.partsAtlCode}</c:when>
-									<c:when test="${vo.type eq 2}">${facadeBean.matAtlCode}</c:when>
-									<c:when test="${vo.type eq 3}">${facadeBean.partsPatCode}</c:when>
-									<c:when test="${vo.type eq 4}">${facadeBean.matPatCode}</c:when>
-								</c:choose>
-							</td>
-							<td>
-								<c:choose>
-									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-									<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-									<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-									<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
-								</c:choose>
-							</td>
-							<td>${vo.code}</td>
-							<td style="word-break : break-all;line-height: 20px;">${vo.remark }</td>
-							<td><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/></td>
-						</tr>
-					</c:forEach>
-				</table>
-			</div>	
-		</c:if>
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		<div class="title">结果对比</div>

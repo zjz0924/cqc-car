@@ -587,10 +587,13 @@
 					height : 700,
 					closed : false,
 					cache : false,
+					top: 100,
 					href : "${ctx}/ppap/approveDetail?id=" + id,
 					modal : true
 				});
-				$('#approveDetailDialog').window('center');
+				
+				// 移去滚动条
+				window.parent.scrollY(450);
 			}
 			
 			function getSelectedIds(){

@@ -471,8 +471,9 @@ public class InfoServiceImpl implements InfoService {
 	 * @param i_id     信息ID
 	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlRemark,
-			String expectDate, Long partsAtlId, Long matAtlId) throws ParseException {
+	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
+			String atlRemark, String expectDate, Long partsAtlId, Long matAtlId, Vehicle vehicle, Parts parts,
+			Material material) throws ParseException {
 		String taskCode = "";
 		boolean flag = true;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -483,7 +484,34 @@ public class InfoServiceImpl implements InfoService {
 			reasonDao.update(reason);
 		}
 
+		if (vehicle.getId() == null) {
+			vehicleDao.insert(vehicle);
+		} else {
+			vehicleDao.update(vehicle);
+		}
+
+		if (parts.getId() == null) {
+			partsDao.insert(parts);
+		} else {
+			partsDao.update(parts);
+		}
+
+		if (material.getId() == null) {
+			materialDao.insert(material);
+		} else {
+			materialDao.update(material);
+		}
+
 		if (t_id == null) {
+			Info info = new Info();
+			info.setmId(material.getId());
+			info.setpId(parts.getId());
+			info.setvId(vehicle.getId());
+			info.setType(2);
+			info.setState(0);
+			info.setCreateTime(new Date());
+			infoDao.insert(info);
+
 			Date date = new Date();
 			String code = generateTaskCode(date);
 
@@ -500,27 +528,41 @@ public class InfoServiceImpl implements InfoService {
 			Task task = new Task();
 			task.setCode(code);
 			task.setCreateTime(date);
-			task.setiId(i_id);
+			task.setiId(info.getId());
 			task.setOrgId(account.getOrgId());
 			task.setaId(account.getId());
 			task.setState(SamplingTaskEnum.APPROVE.getState());
 			task.setType(taskType);
 			task.setFailNum(0);
+			task.setStandIid(i_id);
+			
 			task.setMatAtlResult(0);
 			task.setMatPatResult(0);
 			task.setPartsAtlResult(0);
 			task.setPartsPatResult(0);
-			task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
-			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
+
+			if (partsAtlId != null) {
+				task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
+				task.setPartsAtlId(partsAtlId);
+			}
+			if (matAtlId != null) {
+				task.setMatAtlCode(generatorCode(date, task.getType(), 2));
+				task.setMatAtlId(matAtlId);
+			}
+
 			task.setPartsAtlTimes(0);
 			task.setPartsPatTimes(0);
 			task.setMatAtlTimes(0);
 			task.setMatPatTimes(0);
+
 			task.setInfoApply(0);
 			task.setResultApply(0);
 			task.setAtlRemark(atlRemark);
-			task.setExpectDate(sdf.parse(expectDate));
+			if(StringUtils.isNotBlank(expectDate)) {
+				task.setExpectDate(sdf.parse(expectDate));
+			}
 			task.setReasonId(reason.getId());
+			task.setAtlType(atlType);
 			taskDao.insert(task);
 
 			// 操作记录
@@ -537,13 +579,31 @@ public class InfoServiceImpl implements InfoService {
 		} else {
 			Date date = new Date();
 			Task task = taskDao.selectOne(t_id);
-			task.setiId(i_id);
-			task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
-			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
+
+			if (partsAtlId != null) {
+				task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
+				task.setPartsAtlId(partsAtlId);
+			} else {
+				task.setPartsAtlCode(null);
+				task.setPartsAtlId(null);
+			}
+
+			if (matAtlId != null) {
+				task.setMatAtlCode(generatorCode(date, task.getType(), 2));
+				task.setMatAtlId(matAtlId);
+			} else {
+				task.setMatAtlCode(null);
+				task.setMatAtlId(null);
+			}
+
+			task.setStandIid(i_id);
 			task.setState(SamplingTaskEnum.APPROVE.getState());
 			task.setResultApply(0);
 			task.setAtlRemark(atlRemark);
-			task.setExpectDate(sdf.parse(expectDate));
+			task.setAtlType(atlType);
+			if(StringUtils.isNotBlank(expectDate)) {
+				task.setExpectDate(sdf.parse(expectDate));
+			}
 			task.setReasonId(reason.getId());
 			taskDao.update(task);
 
@@ -819,8 +879,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param remark   备注
 	 * @param catagory 分类：1-信息修改申请，2-试验结果修改申请，3-正常流程
 	 */
-	public void approve(Account account, Long id, int result, int catagory, String remark, Long partsAtlId,
-			Long matAtlId) {
+	public void approve(Account account, Long id, int result, int catagory, String remark) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -974,14 +1033,6 @@ public class InfoServiceImpl implements InfoService {
 
 				record.setState(SamplingTaskRecordEnum.APPROVE_DISAGREE.getState());
 				record.setRemark("审批不通过：" + remark);
-			}
-
-			if (partsAtlId != null) {
-				task.setPartsAtlId(partsAtlId);
-			}
-
-			if (matAtlId != null) {
-				task.setMatAtlId(matAtlId);
 			}
 
 			taskDao.update(task);

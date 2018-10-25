@@ -690,10 +690,11 @@
 				height : 550,
 				closed : false,
 				cache : false,
+				top: 600,
 				href : "${ctx}/result/userList?type=" + id,
 				modal : true
 			});
-			$('#userDialog').window('center');
+			top.parent.scrollTo(0, 600);
 		}
 	</script>	
 	

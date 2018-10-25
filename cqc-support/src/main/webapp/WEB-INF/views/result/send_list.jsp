@@ -442,13 +442,15 @@
 					title : '结果信息',
 					width : 1200,
 					height : 660,
-					top: "300px",
+					top: "500px",
 					closed : false,
 					cache : false,
 					href : "${ctx}/result/sendDetail?id=" + id,
 					modal : true
 				});
-				$('#sendDetailDialog').window('center');
+				
+				// 移动y滚动条
+				top.parent.scrollTo(0, 500);
 			}
 			
 		</script>
