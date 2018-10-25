@@ -338,8 +338,14 @@ public class InfoServiceImpl implements InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material, String atlType, String atlRemark) {
+			Material material, String atlType, String atlRemark, Reason reason) {
 
+		if(reason != null) {
+			if(reason.getId() != null) {
+				reasonDao.update(reason);
+			}
+		}
+		
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -348,17 +354,15 @@ public class InfoServiceImpl implements InfoService {
 		task.setAtlType(atlType);
 		task.setAtlRemark(atlRemark);
 
-		if (task.getType().intValue() == TaskTypeEnum.OTS.getState()) {
-			// 先检查有没有在用
-			if (!isUse(info.getId(), info.getpId(), 2)) {
-				partsDao.update(parts);
-			} else {
-				parts.setState(1);
-				parts.setId(null);
-				partsDao.insert(parts);
+		// 先检查有没有在用
+		if (!isUse(info.getId(), info.getpId(), 2)) {
+			partsDao.update(parts);
+		} else {
+			parts.setState(1);
+			parts.setId(null);
+			partsDao.insert(parts);
 
-				info.setpId(parts.getId());
-			}
+			info.setpId(parts.getId());
 		}
 
 		// 先检查有没有在用
@@ -429,7 +433,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matPatId   原材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, List<LabReq> labReqList) {
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, List<LabReq> labReqList) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -443,6 +447,17 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatAtlResult(0);
 			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
 		}
+		if(partsPatId != null) {
+			task.setPartsPatId(partsPatId);
+			task.setPartsPatResult(0);
+			task.setPartsPatCode(generatorCode(date, task.getType(), 3));
+		}
+		if(matPatId != null) {
+			task.setMatPatId(matPatId);
+			task.setMatPatResult(0);
+			task.setMatPatCode(generatorCode(date, task.getType(), 4));
+		}
+		
 		taskDao.update(task);
 
 		labReqDao.deleteByTaskId(id);

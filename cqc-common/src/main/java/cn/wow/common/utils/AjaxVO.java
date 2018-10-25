@@ -2,32 +2,30 @@ package cn.wow.common.utils;
 
 import java.io.Serializable;
 
-
 /**
  * 
- * @author junzzh
- * 2016-06-29
+ * @author junzzh 2016-06-29
  */
-public class AjaxVO implements Serializable{
+public class AjaxVO implements Serializable {
 
 	private static final long serialVersionUID = -6779629759636426487L;
 
 	private boolean success = true;
-	
+
 	private String msg;
-	
+
 	private Object data;
-	
-	public AjaxVO(){
-		
+
+	public AjaxVO() {
+
 	}
-	
-	public AjaxVO(String msg, boolean success){
+
+	public AjaxVO(String msg, boolean success) {
 		this.msg = msg;
 		this.success = success;
 	}
-	
-	public AjaxVO(String msg, boolean success, Object data){
+
+	public AjaxVO(String msg, boolean success, Object data) {
 		this.msg = msg;
 		this.success = success;
 		this.data = data;
@@ -56,8 +54,5 @@ public class AjaxVO implements Serializable{
 	public void setData(Object data) {
 		this.data = data;
 	}
-	
-	
-	
-	
+
 }

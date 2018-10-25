@@ -33,8 +33,8 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/transmitListData?taskType=${taskType}";
-			var getRecordUrl = "${ctx}/ots/taskRecordListData";
+			var getDataUrl = "${ctx}/tpt/transmitListData";
+			var getRecordUrl = "${ctx}/tpt/taskRecordListData";
 			var datagrid = "transmitTable";
 			var recordDatagrid = "taskRecordTable";
 			// 当前选中的任务的任务号
@@ -71,18 +71,6 @@
 							align : 'center',
 							formatter : formatCellTooltip
 						}, {
-							field : 'atlType',
-							title : '基准图谱类型',
-							width : '90',
-							align : 'center',
-							formatter : function(val){
-								if(val == 1){
-									return "<span title='零件基准图谱'>零件基准图谱</span>";
-								}else{
-									return "<span title='材料基准图谱'>材料基准图谱</span>";
-								}
-							}
-						},{
 							field : 'state',
 							title : '是否已下达',
 							width : '70',
@@ -257,25 +245,25 @@
 							}							
 						}
 					}, {
-						field : 'applicat.name',
+						field : 'applicat.nickName',
 						title : '申请人',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
-						field : 'applicat.depart',
+						field : 'applicat.department',
 						title : '科室',
 						width : '120',
 						align : 'center',
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {
@@ -307,7 +295,6 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'task_code': $("#task_code").textbox("getValue"),
-							'atlType': $("#q_atlType").combobox('getValue'),
 							'parts_name': $("#parts_name").textbox("getValue"),
 							'parts_producer': $("#parts_producer").val(),
 							'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -449,24 +436,11 @@
 					   }
 					}
 				});
-				
-				if("${taskType}" == 1){
-                    var dg = $("#" + datagrid);
-                    // 隐藏零件信息
-                    dg.datagrid('hideColumn', 'reason.origin');
-                    dg.datagrid('hideColumn', 'reason.reason');
-                    dg.datagrid('hideColumn', 'reason.source');
-                    dg.datagrid();
-                    
-                    $('#datagrid-td-group1-0-0').hide();
-                 }
-				
 			});
 		
 			function doSearch() {
 				var data = {
 					'task_code': $("#task_code").textbox("getValue"),
-					'atlType': $("#q_atlType").combobox('getValue'),
 					'parts_name': $("#parts_name").textbox("getValue"),
 					'parts_producer': $("#parts_producer").val(),
 					'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -495,7 +469,6 @@
 		
 			function doClear() {
 				$("#task_code").textbox("setValue","");
-				$("#q_atlType").combobox('select', "");
 				$("#parts_name").textbox("setValue","");
 				$("#parts_producer").val("");
 				$("#parts_producerCode").textbox("setValue","");
@@ -528,7 +501,7 @@
 					height : 700,
 					closed : false,
 					cache : false,
-					href : "${ctx}/ots/transmitDetail?taskType=${taskType}&id=" + id,
+					href : "${ctx}/tpt/transmitDetail?id=" + id,
 					modal : true,
 					onClose: function(){
 						window.location.reload();
@@ -548,7 +521,7 @@
 			<p> <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="$('#queryDiv').toggle();">查询条件</a></p>
 			
 			<div id="queryDiv" style="display:none;">
-				<div style="margin-top: 5px;<c:if test="${taskType == 4}">display:none;</c:if>">
+				<div style="margin-top: 5px;">
 					<span class="qlabel">零件名称：</span>
 					<input id="parts_name" name="parts_name" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
@@ -601,17 +574,10 @@
 					<input id="applicat_org" name="applicat_org" style="width: 168px;"/>
 				</div>
 				
-				<div style="margin-top: 5px;<c:if test="${taskType == 4}">display:none;</c:if>">
+				<div style="margin-top: 5px;">
 					<span class="qlabel">任务号：</span>
 					<input id="task_code" name="task_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				
-					<span class="qlabel">图谱类型：</span>
-					<select id="q_atlType" name="q_atlType" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
-						<option value="">全部</option>
-						<option value="1">零件基准图谱</option>
-						<option value="2">材料基准图谱</option>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
-					
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
 					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

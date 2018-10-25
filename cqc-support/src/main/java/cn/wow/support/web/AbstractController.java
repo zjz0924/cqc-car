@@ -201,9 +201,9 @@ public class AbstractController {
 			} else if ("2".equals(type)) {
 				result = atlType.substring(2, 3);
 			} else if ("3".equals(type)) {
-				result = atlType.substring(3, 4);
-			} else if ("4".equals(type)) {
 				result = atlType.substring(4, 5);
+			} else if ("4".equals(type)) {
+				result = atlType.substring(6, 7);
 			}
 
 			if (StringUtils.isNotBlank(result) && result.equals("1")) {

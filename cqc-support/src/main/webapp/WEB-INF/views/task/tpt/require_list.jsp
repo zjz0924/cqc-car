@@ -34,7 +34,7 @@
 		</style>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/ots/requireListData?taskType=${taskType}";
+			var getDataUrl = "${ctx}/tpt/requireListData";
 			var datagrid = "requireTable";
 		
 			var toolbar = [{
@@ -75,18 +75,6 @@
 							width : '120',
 							align : 'center',
 							formatter : formatCellTooltip
-						}, {
-							field : 'atlType',
-							title : '基准图谱类型',
-							width : '90',
-							align : 'center',
-							formatter : function(val){
-								if(val == 1){
-									return "<span title='零件基准图谱'>零件基准图谱</span>";
-								}else{
-									return "<span title='材料基准图谱'>材料基准图谱</span>";
-								}
-							}
 						}, {
 							field : 'state',
 							title : '状态',
@@ -281,7 +269,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
@@ -292,7 +280,7 @@
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {
@@ -322,7 +310,6 @@
 							'task_code': $("#task_code").textbox("getValue"),
 							'state' : $("#q_state").combobox("getValue"), 
 							'draft': $("#q_draft").combobox('getValue'),
-							'atlType': $("#q_atlType").combobox('getValue'),
 							'parts_name': $("#parts_name").textbox("getValue"),
 							'parts_producer': $("#parts_producer").val(),
 							'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -394,18 +381,6 @@
 					   }
 				    }
 				});
-				
-				if("${taskType}" == 1){
-                    var dg = $("#" + datagrid);
-                    // 隐藏零件信息
-                    dg.datagrid('hideColumn', 'reason.origin');
-                    dg.datagrid('hideColumn', 'reason.reason');
-                    dg.datagrid('hideColumn', 'reason.source');
-                    dg.datagrid();
-                    
-                    $('#datagrid-td-group1-0-0').hide();
-                 }
-				
 			});
 	
 			function doSearch() {
@@ -413,7 +388,6 @@
 					'task_code': $("#task_code").textbox("getValue"),
 					'state' : $("#q_state").combobox("getValue"), 
 					'draft': $("#q_draft").combobox('getValue'),
-					'atlType': $("#q_atlType").combobox('getValue'),
 					'parts_name': $("#parts_name").textbox("getValue"),
 					'parts_producer': $("#parts_producer").val(),
 					'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -437,7 +411,6 @@
 				$("#task_code").textbox("setValue","");
 				$("#q_state").combobox('select', "");
 				$("#q_draft").combobox('select', "");
-				$("#q_atlType").combobox('select', "");
 				$("#parts_name").textbox("setValue","");
 				$("#parts_producer").val("");
 				$("#parts_producerCode").textbox("setValue","");
@@ -457,9 +430,9 @@
 			}
 			
 			function detail(id) {
-				var url = "${ctx}/ots/requireDetail?taskType=${taskType}";
+				var url = "${ctx}/tpt/requireDetail";
 				if(!isNull(id)){
-					url += "&id=" + id;
+					url += "?id=" + id;
 				}
 				
 				$('#requireDialog').dialog({
@@ -494,21 +467,6 @@
 					<span class="qlabel">任务号：</span>
 					<input id="task_code" name="task_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				
-					<span class="qlabel">图谱类型：</span>
-					<select id="q_atlType" name="q_atlType" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
-						<option value="">全部</option>
-						<c:if test="${taskType == 1}">
-							<option value="1">零件基准图谱</option>
-							<option value="2">材料基准图谱</option>
-						</c:if>
-						<c:if test="${taskType == 4}">
-							<option value="1">零件图谱试验</option>
-							<option value="2">材料图谱试验</option>
-							<option value="4">零件型式试验</option>
-							<option value="3">材料型式试验</option>
-						</c:if>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
-				
 					<span class="qlabel">状态：</span>
 					<select id="q_state" name="q_state" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
 						<option value="">全部</option>
@@ -521,10 +479,14 @@
 						<option value="">全部</option>
 						<option value="0">否</option>
 						<option value="1">是</option>
-					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					</select> &nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">录入时间：</span>
+					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/>
 				</div>
 				
-				<div style="margin-top: 5px;<c:if test="${taskType == 4}">display:none;</c:if>">
+				<div style="margin-top: 5px;">
 					<span class="qlabel">零件名称：</span>
 					<input id="parts_name" name="parts_name" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 					
@@ -578,10 +540,6 @@
 				</div>
 				
 				<div style="margin-top: 5px;">
-					<span class="qlabel">录入时间：</span>
-					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
-					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>

@@ -8,7 +8,7 @@ package cn.wow.common.utils.taskState;
  */
 public enum TaskTypeEnum {
 
-	OTS(1, "OTS任务"), PPAP(2, "PPAP任务"), SOP(3, "SOP任务"), GS(4, "材料研究所任务");
+	OTS(1, "OTS任务"), PPAP(2, "PPAP任务"), SOP(3, "SOP任务"), GS(4, "第三方试验");
 
 	private int state;
 

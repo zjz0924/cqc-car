@@ -303,7 +303,6 @@ public class OtsTaskController extends AbstractController {
 		// 车型代码
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 
-		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
 		model.addAttribute("applicat", applicat);
@@ -696,7 +695,7 @@ public class OtsTaskController extends AbstractController {
 			material.setNum(m_num);
 
 			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, formatAltType(atlType),
-					atlRemark);
+					atlRemark, null);
 
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
@@ -822,7 +821,6 @@ public class OtsTaskController extends AbstractController {
 
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		model.addAttribute("resUrl", resUrl);
 		return "task/ots/transmit_detail";
 	}
 
@@ -855,7 +853,7 @@ public class OtsTaskController extends AbstractController {
 				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null,
 						matAtlReq, id, 2));
 			}
-			infoService.transmit(account, id, partsAtlId, matAtlId, labReqList);
+			infoService.transmit(account, id, partsAtlId, matAtlId, null, null, labReqList);
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
 

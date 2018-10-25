@@ -49,7 +49,7 @@ public interface InfoService {
 	 * @param remark 备注
 	 */
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
-			Material material, String atlType, String atlRemark);
+			Material material, String atlType, String atlRemark, Reason reason);
 
 	/**
 	 * 更新任务状态
@@ -68,7 +68,7 @@ public interface InfoService {
 	 * @param matAtlId   原材料图谱实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, List<LabReq> labReqList);
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, List<LabReq> labReqList);
 
 	/**
 	 * 下达任务（PPAP）
