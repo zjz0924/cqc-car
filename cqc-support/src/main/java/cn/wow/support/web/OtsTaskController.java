@@ -1125,7 +1125,7 @@ public class OtsTaskController extends AbstractController {
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.approve(account, id, result, remark, catagory, partsAtlId, matAtlId);
+			infoService.approve(account, id, result, remark, catagory, partsAtlId, matAtlId, null, null);
 		} catch (Exception ex) {
 			logger.error("OTS任务审批失败", ex);
 
@@ -1165,7 +1165,7 @@ public class OtsTaskController extends AbstractController {
 					} else if (task.getResultApply() == 1) {
 						catagory = 7;
 					}
-					infoService.approve(account, id, result, remark, catagory, null, null);
+					infoService.approve(account, id, result, remark, catagory, null, null, null, null);
 				}
 			}
 		} catch (Exception ex) {

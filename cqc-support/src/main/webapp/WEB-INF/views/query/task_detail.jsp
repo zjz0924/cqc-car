@@ -11,10 +11,10 @@
 					<td class="value-td">${facadeBean.code}</td>
 					<td class="title-td">任务类型：</td>
 					<td class="value-td">
-						<c:if test="${facadeBean.type == 1}">OTS阶段任务</c:if>
-						<c:if test="${facadeBean.type == 2}">PPAP阶段任务</c:if>
-						<c:if test="${facadeBean.type == 3}">SOP阶段任务</c:if>
-						<c:if test="${facadeBean.type == 4}">材料研究所任务</c:if>
+						<c:if test="${facadeBean.type == 1}">基准图谱建立</c:if>
+						<c:if test="${facadeBean.type == 2}">图谱试验抽查-开发阶段</c:if>
+						<c:if test="${facadeBean.type == 3}">图谱试验抽查-量产阶段</c:if>
+						<c:if test="${facadeBean.type == 4}">第三方委托</c:if>
 					</td>
 				</tr>
 				<tr class="couple-row">

@@ -619,7 +619,7 @@ public class TptTaskController extends AbstractController {
 	@RequestMapping(value = "/examineDetail")
 	public String examineDetail(HttpServletRequest request, HttpServletResponse response, Model model, Long id) {
 		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
@@ -700,10 +700,10 @@ public class TptTaskController extends AbstractController {
 	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
-			String m_proNo, String m_matNo, String m_remark, Long t_id, int m_num, String p_producer,
-			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
-			Long applicat_id, Long reason_id, String origin, String reason, String otherRemark, String source,
-			String reasonRemark, int result, String examine_remark) {
+			String m_proNo, String m_matNo, String m_remark, Long t_id, int m_num, String p_producer, String m_producer,
+			String[] atlType, String atlRemark, String atlItem, String p_producerCode, Long applicat_id, Long reason_id,
+			String origin, String reason, String otherRemark, String source, String reasonRemark, int result,
+			String examine_remark) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -722,7 +722,7 @@ public class TptTaskController extends AbstractController {
 			reasonObj.setReason(reason);
 			reasonObj.setRemark(reasonRemark);
 			reasonObj.setSource(source);
-			
+
 			// 整车信息
 			Vehicle vehicle = vehicleService.selectOne(v_id);
 			if (vehicleService.isUpdateVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark)) {
@@ -887,20 +887,27 @@ public class TptTaskController extends AbstractController {
 			rMap.put("taskType", TaskTypeEnum.GS.getState());
 			List<ExamineRecord> recordList = examineRecordService.selectAllList(rMap);
 
+			// 实验要求
+			List<LabReq> labReqList = labReqService.getLabReqListByTaskId(id);
+
 			// 图谱类型
 			if (validChoose(task.getAtlType(), "1")) {
 				model.addAttribute("partAtl", "1");
+				model.addAttribute("partAtlLab", getLabReqByType(labReqList, 1));
 			}
 			if (validChoose(task.getAtlType(), "2")) {
 				model.addAttribute("materialAtl", "1");
+				model.addAttribute("materialAtlLab", getLabReqByType(labReqList, 2));
 			}
 			if (validChoose(task.getAtlType(), "3")) {
 				model.addAttribute("partsPat", "1");
+				model.addAttribute("partsPatLab", getLabReqByType(labReqList, 3));
 			}
 			if (validChoose(task.getAtlType(), "4")) {
 				model.addAttribute("matPat", "1");
+				model.addAttribute("matPatLab", getLabReqByType(labReqList, 4));
 			}
-			
+
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
 		}
@@ -943,18 +950,26 @@ public class TptTaskController extends AbstractController {
 			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 			List<LabReq> labReqList = new ArrayList<LabReq>();
+
+			// 零件图谱实验
 			if (partsAtlId != null) {
 				labReqList.add(new LabReq(partsAtlCode,
 						StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, id, 1));
 			}
+
+			// 材料图谱实验
 			if (matAtlId != null) {
 				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null,
 						matAtlReq, id, 2));
 			}
+
+			// 零件型式实验
 			if (partsPatId != null) {
 				labReqList.add(new LabReq(partsPatCode,
 						StringUtils.isNotBlank(partsPatTime) ? sdf.parse(partsPatTime) : null, partsPatReq, id, 3));
 			}
+
+			// 材料型式实验
 			if (matPatId != null) {
 				labReqList.add(new LabReq(matPatCode, StringUtils.isNotBlank(matPatTime) ? sdf.parse(matPatTime) : null,
 						matPatReq, id, 4));
@@ -1243,8 +1258,7 @@ public class TptTaskController extends AbstractController {
 
 		try {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			// infoService.approve(account, id, result, remark, catagory, partsAtlId,
-			// matAtlId, partsPatId, matPatId);
+			infoService.approve(account, id, result, remark, catagory, partsAtlId, matAtlId, partsPatId, matPatId);
 		} catch (Exception ex) {
 			logger.error("OTS任务审批失败", ex);
 
@@ -1284,8 +1298,7 @@ public class TptTaskController extends AbstractController {
 					} else if (task.getResultApply() == 1) {
 						catagory = 7;
 					}
-					// infoService.approve(account, id, result, remark, catagory, null, null, null,
-					// null);
+					infoService.approve(account, id, result, remark, catagory, null, null, null, null);
 				}
 			}
 		} catch (Exception ex) {
@@ -1299,6 +1312,23 @@ public class TptTaskController extends AbstractController {
 		vo.setSuccess(true);
 		vo.setMsg("操作成功");
 		return vo;
+	}
+
+	/**
+	 * 获取实验要求 type-类型： 1- 零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式
+	 */
+	private LabReq getLabReqByType(List<LabReq> dataList, int type) {
+		LabReq labReq = null;
+
+		if (dataList != null && dataList.size() > 0) {
+			for (LabReq temp : dataList) {
+				if (temp.getType() == type) {
+					labReq = temp;
+					break;
+				}
+			}
+		}
+		return labReq;
 	}
 
 }

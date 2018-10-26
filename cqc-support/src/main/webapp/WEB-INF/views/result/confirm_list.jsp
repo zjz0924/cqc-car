@@ -52,13 +52,13 @@
 							width : '100',
 							align : 'center',
 							formatter : function(val){
-								var str = "材料研究所任务"
+								var str = "第三方委托"
 								if(val == 1){
-									str = "OTS阶段任务";
+									str = "基准图谱建立";
 								}else if(val == 2){
-									str = "PPAP阶段任务";
+									str = "图谱试验抽查-开发阶段";
 								}else if(val == 3){
-									str = "SOP阶段任务";
+									str = "图谱试验抽查-量产阶段";
 								}
 								return "<span title='" + str + "'>" + str + "</span>";
 							}

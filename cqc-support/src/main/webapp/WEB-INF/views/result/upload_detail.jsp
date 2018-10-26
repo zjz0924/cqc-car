@@ -236,17 +236,14 @@
 						</table>
 					</div>
 					
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<input class="easyui-filebox" id="partsResultAttachFile" name="partsResultAttachFile" style="width: 300px" data-options="buttonText: '选择文件'">
+					</div>
+					
 					<div style="margin-top: 20px;">	
 						<table class="info">
 							<tr class="single-row">
 								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-								<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-								<td class="remark-span"><span class="req-span">*</span>主检</td>
-								<td class="remark-span"><span class="req-span">*</span>审核</td>
-								<td class="remark-span"><span class="req-span">*</span>签发</td>
-								<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-								<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-								<td class="remark-span"><span class="req-span">*</span>签发时间</td>
 								<td class="remark-span">备注</td>
 							</tr>
 							
@@ -332,6 +329,10 @@
 								</tr>
 							</c:forEach>
 						</table>
+					</div>
+					
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<input class="easyui-filebox" id="materialResultAttachFile" name="materialResultAttachFile" style="width: 300px" data-options="buttonText: '选择文件'">
 					</div>
 					
 					<div style="margin-top: 20px;">	
@@ -592,7 +593,6 @@
 			}
 			saving = true;
 			
-			var taskType = "${facadeBean.type}";
 			var m_arTable = $("#m_arTable").length;
 			// 零部件图谱结论
 			var partsAtl_result = [];
@@ -601,86 +601,84 @@
 			// 试验结论结果
 			var conclusionDataArray = [];
 			
-			if(taskType != 4){
-				var p_arTable =  $("#p_arTable").length;
+			var p_arTable =  $("#p_arTable").length;
+			
+			// 零部件结果
+			if(p_arTable > 0){
+				// 样品图谱
+				var p_tempLabDir = $("#p_tempLab_pic").filebox("getValue");
+				if (!isNull(p_tempLabDir)) {
+					var suffix = p_tempLabDir.substr(p_tempLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
+						$("#p_temp_error").html("图片格式");
+						$("#p_tempLab_pic").focus();
+						saving = false;
+						return false;
+					}
+				}else{
+					$("#p_temp_error").html("必选");
+					saving = false;
+					return false;
+				}
+				$("#p_temp_error").html("");
 				
-				// 零部件结果
-				if(p_arTable > 0){
-					// 样品图谱
-					var p_tempLabDir = $("#p_tempLab_pic").filebox("getValue");
-					if (!isNull(p_tempLabDir)) {
-						var suffix = p_tempLabDir.substr(p_tempLabDir.lastIndexOf("."));
-						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
-							$("#p_temp_error").html("图片格式");
-							$("#p_tempLab_pic").focus();
-							saving = false;
-							return false;
-						}
-					}else{
-						$("#p_temp_error").html("必选");
+				// 红外光分析图谱
+				var p_infLabDir = $("#p_infLab_pic").filebox("getValue");
+				if (!isNull(p_infLabDir)) {
+					var suffix = p_infLabDir.substr(p_infLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
+						$("#p_inf_error").html("图片格式");
+						$("#p_infLab_pic").focus();
 						saving = false;
 						return false;
 					}
-					$("#p_temp_error").html("");
-					
-					// 红外光分析图谱
-					var p_infLabDir = $("#p_infLab_pic").filebox("getValue");
-					if (!isNull(p_infLabDir)) {
-						var suffix = p_infLabDir.substr(p_infLabDir.lastIndexOf("."));
-						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
-							$("#p_inf_error").html("图片格式");
-							$("#p_infLab_pic").focus();
-							saving = false;
-							return false;
-						}
-					}else{
-						$("#p_inf_error").html("必选");
+				}else{
+					$("#p_inf_error").html("必选");
+					saving = false;
+					return false;
+				}
+				$("#p_inf_error").html("");
+				
+				// 差热扫描图谱
+				var p_dtLabDir = $("#p_dtLab_pic").filebox("getValue");
+				if (!isNull(p_dtLabDir)) {
+					var suffix = p_dtLabDir.substr(p_dtLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
+						$("#p_dt_error").html("图片格式");
+						$("#p_dtLab_pic").focus();
 						saving = false;
 						return false;
 					}
-					$("#p_inf_error").html("");
-					
-					// 差热扫描图谱
-					var p_dtLabDir = $("#p_dtLab_pic").filebox("getValue");
-					if (!isNull(p_dtLabDir)) {
-						var suffix = p_dtLabDir.substr(p_dtLabDir.lastIndexOf("."));
-						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
-							$("#p_dt_error").html("图片格式");
-							$("#p_dtLab_pic").focus();
-							saving = false;
-							return false;
-						}
-					}else{
-						$("#p_dt_error").html("必选");
+				}else{
+					$("#p_dt_error").html("必选");
+					saving = false;
+					return false;
+				}
+				$("#p_dt_error").html("");
+				
+				// 热重分析图谱
+				var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
+				if (!isNull(p_tgLabDir)) {
+					var suffix = p_tgLabDir.substr(p_tgLabDir.lastIndexOf("."));
+					if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
+						$("#p_tg_error").html("图片格式");
+						$("#p_tgLab_pic").focus();
 						saving = false;
 						return false;
 					}
-					$("#p_dt_error").html("");
-					
-					// 热重分析图谱
-					var p_tgLabDir = $("#p_tgLab_pic").filebox("getValue");
-					if (!isNull(p_tgLabDir)) {
-						var suffix = p_tgLabDir.substr(p_tgLabDir.lastIndexOf("."));
-						if (".jpg" != suffix && ".png" != suffix && ".jpeg" != suffix && ".gif" != suffix && ".JPG" != suffix && ".PNG" != suffix && ".JPEG" != suffix && ".GIF" != suffix) {
-							$("#p_tg_error").html("图片格式");
-							$("#p_tgLab_pic").focus();
-							saving = false;
-							return false;
-						}
-					}else{
-						$("#p_tg_error").html("必选");
-						saving = false;
-						return false;
-					}
-					$("#p_tg_error").html("");
-					
-					
-					// 结论结果
-					partsAtl_result = assembleConclusion("partsAtl");
-					if(partsAtl_result == false){
-						saving = false;
-						return false;
-					}
+				}else{
+					$("#p_tg_error").html("必选");
+					saving = false;
+					return false;
+				}
+				$("#p_tg_error").html("");
+				
+				
+				// 结论结果
+				partsAtl_result = assembleConclusion("partsAtl");
+				if(partsAtl_result == false){
+					saving = false;
+					return false;
 				}
 			}
 			
@@ -808,29 +806,27 @@
 			var m_pfTable = $("#m_pfTable").length;
 			var taskType = "${facadeBean.type}";
 			
-			if(taskType != 4){
-				// 零部件试验结果
-				if(p_pfTable > 0){
-					if($("tr[p_num]").length < 1){
-						$("#patternError").html("请添加零部件试验结果");
-						saving = false;
-						return false;
-					}
-					$("#patternError").html("");
-					
-					// 试验结果
-					p_result = assemble("p", date);
-					if(p_result == false){
-						saving = false;
-						return false;
-					}
-					
-					// 结论结果
-					partsPat_result = assembleConclusion("partsPat");
-					if(partsPat_result == false){
-						saving = false;
-						return false;
-					}
+			// 零部件试验结果
+			if(p_pfTable > 0){
+				if($("tr[p_num]").length < 1){
+					$("#patternError").html("请添加零部件试验结果");
+					saving = false;
+					return false;
+				}
+				$("#patternError").html("");
+				
+				// 试验结果
+				p_result = assemble("p", date);
+				if(p_result == false){
+					saving = false;
+					return false;
+				}
+				
+				// 结论结果
+				partsPat_result = assembleConclusion("partsPat");
+				if(partsPat_result == false){
+					saving = false;
+					return false;
 				}
 			}
 			
@@ -1155,9 +1151,7 @@
 								
 							}	
 						}
-						
 					}
-					
 				}
 			});
 		}

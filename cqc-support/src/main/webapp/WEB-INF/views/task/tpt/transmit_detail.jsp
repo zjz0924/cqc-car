@@ -176,64 +176,64 @@
 
 		<div id="dlg" class="easyui-dialog" title="任务下达" style="width: 550px; height: 550px; padding: 10px; overflow-y: hidden;" closed="true" data-options="modal:true">
 			
-			<c:if test="${empty facadeBean.partsAtlId and not empty partAtl}">
+			<c:if test="${not empty partAtl}">
 				<div>
 					<span class="title-span">零部件图谱试验：</span>
 					<input id="partsAtlId" name="partsAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
-						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsAtlCode" name="partsAtlCode" class="easyui-textbox"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
-						商定完成时间：<input id="partsAtlTime" name="partsAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsAtlCode" name="partsAtlCode" class="easyui-textbox"  style="width:195px;" value="${partAtlLab.code}">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="partsAtlTime" name="partsAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false" value="<fmt:formatDate value='${partAtlLab.time}' type="date" pattern="yyyy-MM-dd"/>">
 						<div style="margin-top:5px;">
-							测试要求：<input id="partsAtlReq" name="partsAtlReq" class="easyui-textbox"  style="width:86%;">
+							测试要求：<input id="partsAtlReq" name="partsAtlReq" class="easyui-textbox"  style="width:86%;" value="${ partAtlLab.remark}">
 						</div>
 					</div>
 					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				</div>
 			</c:if>
 			
-			<c:if test="${empty facadeBean.matAtlId and not empty materialAtl}">
+			<c:if test="${not empty materialAtl}">
 				<div style="margin-top:5px;">
 					<span class="title-span">原材料图谱试验： </span>
 					<input id="matAtlId" name="matAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
-						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matAtlCode" name="matAtlCode" class="easyui-textbox"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
-						商定完成时间：<input id="matAtlTime" name="matAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matAtlCode" name="matAtlCode" class="easyui-textbox"  style="width:195px;" value="${materialAtlLab.code}">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="matAtlTime" name="matAtlTime" class="easyui-datebox" style="width:140px;" data-options="editable:false" value="<fmt:formatDate value='${materialAtlLab.time}' type="date" pattern="yyyy-MM-dd"/>">
 						<div style="margin-top:5px;">
-							测试要求：<input id="matAtlReq" name="matAtlReq" class="easyui-textbox"  style="width:86%;">
+							测试要求：<input id="matAtlReq" name="matAtlReq" class="easyui-textbox"  style="width:86%;" value="${ materialAtlLab.remark}">
 						</div>
 					</div>
 					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				</div>
 			</c:if>
 			
-			<c:if test="${empty facadeBean.partsPatId}">
+			<c:if test="${not empty partsPat}">
 				<div style="margin-top:5px;">
 					<span class="title-span">零部件型式试验： </span>
 					<input id="partsPatId" name="partsPatId">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<div style="margin-top:5px;">
-						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsPatCode" name="partsPatCode" class="easyui-textbox"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
-						商定完成时间：<input id="partsPatTime" name="partsPatTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="partsPatCode" name="partsPatCode" class="easyui-textbox" value="${partsPatLab.code}"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="partsPatTime" name="partsPatTime" class="easyui-datebox" style="width:140px;" data-options="editable:false" value="<fmt:formatDate value='${partsPatLab.time}' type="date" pattern="yyyy-MM-dd"/>">
 						<div style="margin-top:5px;">
-							测试要求：<input id="partsPatReq" name="partsPatReq" class="easyui-textbox"  style="width:86%;">
+							测试要求：<input id="partsPatReq" name="partsPatReq" class="easyui-textbox"  style="width:86%;" value="${ partsPatLab.remark}">
 						</div>
 					</div>
 					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 20px;"></div>
 				</div>
 			</c:if>
 			
-			<c:if test="${empty facadeBean.matPatId}">
+			<c:if test="${not empty matPat}">
 				<div style="margin-top:5px;">
 					<span class="title-span">原材料型式试验： </span>
 					<input id="matPatId" name="matPatId">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<div style="margin-top:5px;">
-						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matPatCode" name="matPatCode" class="easyui-textbox"  style="width:195px;">&nbsp;&nbsp;&nbsp;&nbsp;
-						商定完成时间：<input id="matPatTime" name="matPatTime" class="easyui-datebox" style="width:140px;" data-options="editable:false">
+						任务号：&nbsp;&nbsp;&nbsp;&nbsp;<input id="matPatCode" name="matPatCode" class="easyui-textbox"  style="width:195px;" value="${matPatLab.code}">&nbsp;&nbsp;&nbsp;&nbsp;
+						商定完成时间：<input id="matPatTime" name="matPatTime" class="easyui-datebox" style="width:140px;" data-options="editable:false" value="<fmt:formatDate value='${matPatLab.time}' type="date" pattern="yyyy-MM-dd"/>">
 						<div style="margin-top:5px;">
-							测试要求：<input id="matPatReq" name="matPatReq" class="easyui-textbox"  style="width:86%;">
+							测试要求：<input id="matPatReq" name="matPatReq" class="easyui-textbox"  style="width:86%;" value="${ matPatLab.remark}">
 						</div>
 					</div>
 					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
@@ -307,8 +307,7 @@
 		var saving = false;
 		
 		$(function(){	
-			partsAtlId = "${facadeBean.partsAtlId}";
-			if(isNull(partsAtlId)){
+			if(!isNull("${partAtl}")){
 				// 零部件图谱
 				$('#partsAtlId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
@@ -325,8 +324,7 @@
 				});
 			}
 			
-			partsPatId = "${facadeBean.partsPatId}";
-			if(isNull(partsPatId)){
+			if(!isNull("${partsPat}")){
 				// 零部件型式
 				$('#partsPatId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
@@ -343,8 +341,7 @@
 				});
 			}
 			
-			matAtlId = "${facadeBean.matAtlId}";
-			if(isNull(matAtlId)){
+			if(!isNull("${materialAtl}")){
 				// 原材料图谱
 				$('#matAtlId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
@@ -361,8 +358,7 @@
 				});
 			}
 			
-			matPatId = "${facadeBean.matPatId}";
-			if(isNull(matPatId)){
+			if(!isNull("${matPat}")){
 				// 原材料型式
 				$('#matPatId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
@@ -382,41 +378,55 @@
 		
 		
 		function doTransmit(){
-			// 默认选中CQC实验室
 			
-			$("#matAtlId").combotree({ disabled: false });
-			$("#matPatId").combotree({ disabled: false });
-			$("#matAtlId").combotree("setValue", "20");
-			$("#matPatId").combotree("setValue", "20");
-			$("#matAtlCheck").prop("checked",false);
-			$("#matPatCheck").prop("checked",false);
+			// 零件图谱
+			partsAtlId = "${facadeBean.partsAtlId}";
+			if(isNull(partsAtlId)){
+				// 默认选中CQC实验室
+				$("#partsAtlId").combotree("setValue", "20");
+				// 清空原来输入的值
+				$("#partsAtlCode").textbox("setValue", "");
+				$("#partsAtlTime").datebox("setValue", "");
+				$("#partsAtlReq").textbox("setValue", "");
+			}else{
+				$("#partsAtlId").combotree("setValue", partsAtlId);
+			}
 			
-			$("#partsAtlId").combotree({ disabled: false });
-			$("#partsPatId").combotree({ disabled: false });
-			$("#partsAtlId").combotree("setValue", "20");
-			$("#partsPatId").combotree("setValue", "20");
-			$("#partsAtlCheck").prop("checked",false);
-			$("#partsPatCheck").prop("checked",false);
+			// 零件型式
+			partsPatId = "${facadeBean.partsPatId}";
+			if(isNull(partsPatId)){
+				$("#partsPatId").combotree("setValue", "20");
+				// 清空原来输入的值
+				$("#partsPatCode").textbox("setValue", "");
+				$("#partsPatTime").datebox("setValue", "");
+				$("#partsPatReq").textbox("setValue", "");
+			}else{
+				$("#partsPatId").combotree("setValue", partsPatId);
+			}
 			
-			// 清空原来输入的值
-			$("#partsAtlCode").textbox("setValue", "");
-			$("#partsAtlTime").datebox("setValue", "");
-			$("#partsAtlReq").textbox("setValue", "");
+			// 材料图谱
+			matAtlId = "${facadeBean.matAtlId}";
+			if(isNull(matAtlId)){
+				$("#matAtlId").combotree("setValue", "20");
+				// 清空原来输入的值
+				$("#matAtlCode").textbox("setValue", "");
+				$("#matAtlTime").datebox("setValue", "");
+				$("#matAtlReq").textbox("setValue", "");
+			}else{
+				$("#matAtlId").combotree("setValue", matAtlId);
+			}
 			
-			// 清空原来输入的值
-			$("#matAtlCode").textbox("setValue", "");
-			$("#matAtlTime").datebox("setValue", "");
-			$("#matAtlReq").textbox("setValue", "");
-			
-			// 清空原来输入的值
-			$("#partsPatCode").textbox("setValue", "");
-			$("#partsPatTime").datebox("setValue", "");
-			$("#partsPatReq").textbox("setValue", "");
-			
-			// 清空原来输入的值
-			$("#matPatCode").textbox("setValue", "");
-			$("#matPatTime").datebox("setValue", "");
-			$("#matPatReq").textbox("setValue", "");
+			// 材料型式
+			matPatId = "${facadeBean.matPatId}";
+			if(isNull(matPatId)){
+				$("#matPatId").combotree("setValue", "20");
+				// 清空原来输入的值
+				$("#matPatCode").textbox("setValue", "");
+				$("#matPatTime").datebox("setValue", "");
+				$("#matPatReq").textbox("setValue", "");
+			}else {
+				$("#matPatId").combotree("setValue", matPatId);
+			}
 			
 			$("#dlg").dialog("open");
 			
@@ -451,69 +461,53 @@
 			}
 			saving = true;
 			
-			if(!$("#partsAtlCheck").is(':checked')){
-				if(isNull(partsAtlId)){
-					partsAtlId_val = $("#partsAtlId").combotree("getValue");
-					if(isNull(partsAtlId_val)){
-						errorMsg("请为零部件图谱试验选择实验室");
-						saving = false;
-						return false;
-					}
+			if(!isNull("${partAtl}")){
+				partsAtlId_val = $("#partsAtlId").combotree("getValue");
+				if(isNull(partsAtlId_val)){
+					errorMsg("请为零部件图谱试验选择实验室");
+					saving = false;
+					return false;
 				}
-			}
-			
-			if(!$("#partsPatCheck").is(':checked')){
-				if(isNull(partsPatId)){
-					partsPatId_val = $("#partsPatId").combotree("getValue");
-					if(isNull(partsPatId_val)){
-						errorMsg("请为零部件型式试验选择实验室");
-						saving = false;
-						return false;
-					}
-				}	
-			}
-			
-			if(!$("#matAtlCheck").is(':checked')){
-				if(isNull(matAtlId)){
-					matAtlId_val = $("#matAtlId").combotree("getValue");
-					if(isNull(matAtlId_val)){
-						errorMsg("请为原材料图谱试验选择实验室");
-						saving = false;
-						return false;
-					}
-				}
-			}
-			
-			if(!$("#matPatCheck").is(':checked')){
-				if(isNull(matPatId)){
-					matPatId_val = $("#matPatId").combotree("getValue");
-					if(isNull(matPatId_val)){
-						errorMsg("请为原材料型式试验选择实验室");
-						saving = false;
-						return false;
-					}
-				}
-			}
-			
-			if(!isNull(partsAtlId_val)){
+				
 				partsAtlCode = $("#partsAtlCode").textbox("getValue");
 				partsAtlTime = $("#partsAtlTime").datebox("getValue");
 				partsAtlReq = $("#partsAtlReq").textbox("getValue");
 			}
 			
-			if(!isNull(matAtlId_val)){
-				matAtlCode = $("#matAtlCode").textbox("getValue");
-				matAtlTime = $("#matAtlTime").datebox("getValue");
-				matAtlReq = $("#matAtlReq").textbox("getValue");
-			}
-
-			if(!isNull(partsPatId_val)){
+			if(!isNull("${partsPat}")){
+				partsPatId_val = $("#partsPatId").combotree("getValue");
+				if(isNull(partsPatId_val)){
+					errorMsg("请为零部件型式试验选择实验室");
+					saving = false;
+					return false;
+				}
+				
 				partsPatCode = $("#partsPatCode").textbox("getValue");
 				partsPatTime = $("#partsPatTime").datebox("getValue");
 				partsPatReq = $("#partsPatReq").textbox("getValue");
 			}
 			
-			if(!isNull(matPatId_val)){
+			if(!isNull("${materialAtl}")){
+				matAtlId_val = $("#matAtlId").combotree("getValue");
+				if(isNull(matAtlId_val)){
+					errorMsg("请为原材料型式试验选择实验室");
+					saving = false;
+					return false;
+				}
+				
+				matAtlCode = $("#matAtlCode").textbox("getValue");
+				matAtlTime = $("#matAtlTime").datebox("getValue");
+				matAtlReq = $("#matAtlReq").textbox("getValue");
+			}
+			
+			if(!isNull("${matPat}")){
+				matPatId_val = $("#matPatId").combotree("getValue");
+				if(isNull(matPatId_val)){
+					errorMsg("请为原材料型式试验选择实验室");
+					saving = false;
+					return false;
+				}
+				
 				matPatCode = $("#matPatCode").textbox("getValue");
 				matPatTime = $("#matPatTime").datebox("getValue");
 				matPatReq = $("#matPatReq").textbox("getValue");

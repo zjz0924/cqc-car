@@ -91,7 +91,7 @@ public interface InfoService {
 	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
-			Long matAtlId);
+			Long matAtlId, Long partsPatId, Long matPatId);
 
 	/**
 	 * 审批（PPAP）

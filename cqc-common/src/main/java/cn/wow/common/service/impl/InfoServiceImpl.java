@@ -143,7 +143,7 @@ public class InfoServiceImpl implements InfoService {
 	 */
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
 			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem) {
-		Date date = material.getCreateTime();
+		Date date = new Date();
 		String taskCode = generateTaskCode(date);
 
 		// 抽样原因
@@ -237,6 +237,7 @@ public class InfoServiceImpl implements InfoService {
 			Task task = taskDao.selectOne(taskId);
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
+			task.setAtlItem(atlItem);
 			if (task.getType() == 4) {
 				task.setReasonId(reason.getId());
 			}
@@ -340,12 +341,12 @@ public class InfoServiceImpl implements InfoService {
 	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
 			Material material, String atlType, String atlRemark, Reason reason) {
 
-		if(reason != null) {
-			if(reason.getId() != null) {
+		if (reason != null) {
+			if (reason.getId() != null) {
 				reasonDao.update(reason);
 			}
 		}
-		
+
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -433,7 +434,8 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matPatId   原材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, List<LabReq> labReqList) {
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
+			List<LabReq> labReqList) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -447,17 +449,17 @@ public class InfoServiceImpl implements InfoService {
 			task.setMatAtlResult(0);
 			task.setMatAtlCode(generatorCode(date, task.getType(), 2));
 		}
-		if(partsPatId != null) {
+		if (partsPatId != null) {
 			task.setPartsPatId(partsPatId);
 			task.setPartsPatResult(0);
 			task.setPartsPatCode(generatorCode(date, task.getType(), 3));
 		}
-		if(matPatId != null) {
+		if (matPatId != null) {
 			task.setMatPatId(matPatId);
 			task.setMatPatResult(0);
 			task.setMatPatCode(generatorCode(date, task.getType(), 4));
 		}
-		
+
 		taskDao.update(task);
 
 		labReqDao.deleteByTaskId(id);
@@ -550,7 +552,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setType(taskType);
 			task.setFailNum(0);
 			task.setStandIid(i_id);
-			
+
 			task.setMatAtlResult(0);
 			task.setMatPatResult(0);
 			task.setPartsAtlResult(0);
@@ -573,7 +575,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setInfoApply(0);
 			task.setResultApply(0);
 			task.setAtlRemark(atlRemark);
-			if(StringUtils.isNotBlank(expectDate)) {
+			if (StringUtils.isNotBlank(expectDate)) {
 				task.setExpectDate(sdf.parse(expectDate));
 			}
 			task.setReasonId(reason.getId());
@@ -616,7 +618,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setResultApply(0);
 			task.setAtlRemark(atlRemark);
 			task.setAtlType(atlType);
-			if(StringUtils.isNotBlank(expectDate)) {
+			if (StringUtils.isNotBlank(expectDate)) {
 				task.setExpectDate(sdf.parse(expectDate));
 			}
 			task.setReasonId(reason.getId());
@@ -651,7 +653,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
-			Long matAtlId) {
+			Long matAtlId, Long partsPatId, Long matPatId) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
 
@@ -798,6 +800,14 @@ public class InfoServiceImpl implements InfoService {
 				task.setMatAtlId(matAtlId);
 			}
 
+			if (partsPatId != null) {
+				task.setPartsPatId(partsPatId);
+			}
+
+			if (matPatId != null) {
+				task.setMatPatId(matPatId);
+			}
+
 			// 同意
 			if (result == 1) {
 				if (catagory == 1) {
@@ -821,13 +831,11 @@ public class InfoServiceImpl implements InfoService {
 						task.setMatPatResult(1);
 					}
 
-					if (task.getType() == TaskTypeEnum.OTS.getState()) {
-						if (task.getPartsAtlId() != null) {
-							task.setPartsAtlResult(1);
-						}
-						if (task.getPartsPatId() != null) {
-							task.setPartsPatResult(1);
-						}
+					if (task.getPartsAtlId() != null) {
+						task.setPartsAtlResult(1);
+					}
+					if (task.getPartsPatId() != null) {
+						task.setPartsPatResult(1);
 					}
 					remark = "图谱和型式试验全部审批通过";
 				}
@@ -860,15 +868,13 @@ public class InfoServiceImpl implements InfoService {
 						task.setMatPatId(null);
 					}
 
-					if (task.getType() == TaskTypeEnum.OTS.getState()) {
-						if (task.getPartsAtlId() != null) {
-							task.setPartsAtlResult(6);
-							task.setPartsAtlId(null);
-						}
-						if (task.getPartsPatId() != null) {
-							task.setPartsPatResult(6);
-							task.setPartsPatId(null);
-						}
+					if (task.getPartsAtlId() != null) {
+						task.setPartsAtlResult(6);
+						task.setPartsAtlId(null);
+					}
+					if (task.getPartsPatId() != null) {
+						task.setPartsPatResult(6);
+						task.setPartsPatId(null);
 					}
 					remark = "图谱和型式试验全部审批不通过：" + remark;
 				}

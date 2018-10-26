@@ -70,13 +70,13 @@
 								var val = row.task.type;
 								
 								if(val == 1){
-									str = "OTS阶段任务";
+									str = "基准图谱建立";
 								}else if(val == 2){
-									str = "PPAP阶段任务";
+									str = "图谱试验抽查-开发阶段";
 								}else if(val == 3){
-									str = "SOP阶段任务";
+									str = "图谱试验抽查-量产阶段";
 								}else{
-									str = "材料研究所任务";
+									str = "第三方委托";
 								}
 							}
 							return "<span title='" + str+ "'>" + str + "</span>"; 
@@ -213,10 +213,10 @@
 					<span class="qlabel">任务类型：</span>
 					<select id="taskType" name="taskType" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">全部</option>	
-						<option value="1">OTS阶段任务</option>
-						<option value="2">PPAP阶段任务</option>
-						<option value="3">SOP阶段任务</option>
-						<option value="4">材料研究所任务</option>
+						<option value="1">基准图谱建立</option>
+						<option value="2">图谱试验抽查-开发阶段</option>
+						<option value="3">图谱试验抽查-量产阶段</option>
+						<option value="4">第三方委托</option>
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 
 					
