@@ -3,6 +3,7 @@ package cn.wow.common.service;
 import java.util.List;
 import java.util.Map;
 import cn.wow.common.domain.Account;
+import cn.wow.common.domain.Attach;
 import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.PfResult;
 
@@ -25,7 +26,7 @@ public interface PfResultService {
      * @param dataList   试验结果
      * @param conclusionDataList  结论结果
      */
-    public void upload(Account account, List<PfResult> dataList, Long taskId, List<LabConclusion> conclusionDataList);
+    public void upload(Account account, List<PfResult> dataList, Long taskId, List<LabConclusion> conclusionDataList, Attach attachFile);
     
     
     /**

@@ -130,6 +130,15 @@ public class Task {
     private Long reasonId;
     private Reason reason;
     
+    // 试验结论 - 冗余字段，用于显示
+    private String partsAtlConclusion;
+    private String matAtlConclusion;
+    private String partsPatConclusion;
+    private String matPatConclusion;
+    
+    // 接收实验室 - 冗余字段，用于显示
+    private String receiveLabOrg;
+    
     public Long getId() {
         return id;
     }
@@ -521,5 +530,44 @@ public class Task {
 	public void setStandInfo(Info standInfo) {
 		this.standInfo = standInfo;
 	}
-	
+
+	public String getPartsAtlConclusion() {
+		return partsAtlConclusion;
+	}
+
+	public void setPartsAtlConclusion(String partsAtlConclusion) {
+		this.partsAtlConclusion = partsAtlConclusion;
+	}
+
+	public String getMatAtlConclusion() {
+		return matAtlConclusion;
+	}
+
+	public void setMatAtlConclusion(String matAtlConclusion) {
+		this.matAtlConclusion = matAtlConclusion;
+	}
+
+	public String getPartsPatConclusion() {
+		return partsPatConclusion;
+	}
+
+	public void setPartsPatConclusion(String partsPatConclusion) {
+		this.partsPatConclusion = partsPatConclusion;
+	}
+
+	public String getMatPatConclusion() {
+		return matPatConclusion;
+	}
+
+	public void setMatPatConclusion(String matPatConclusion) {
+		this.matPatConclusion = matPatConclusion;
+	}
+
+	public String getReceiveLabOrg() {
+		return receiveLabOrg;
+	}
+
+	public void setReceiveLabOrg(String receiveLabOrg) {
+		this.receiveLabOrg = receiveLabOrg;
+	}
 }

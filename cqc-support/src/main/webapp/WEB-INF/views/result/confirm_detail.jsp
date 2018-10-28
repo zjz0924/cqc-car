@@ -200,7 +200,13 @@
 					</c:forEach>
 				</c:if>
 				
-				<c:if test="${empty pPfResult}">
+				<c:if test="${not empty attach.partsFile}">
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<a target="_blank" href="${resUrl}/${attach.partsFileName}">${attach.partsFileName}</a>
+					</div>
+				</c:if>
+				
+				<c:if test="${empty pPfResult and empty attach.partsFile}">
 					<div style="margin-left:20px;color:red;font-weight:bold;">暂无</div>
 				</c:if>
 				
@@ -269,7 +275,13 @@
 					</c:forEach>
 				</c:if>
 				
-				<c:if test="${empty mPfResult}">
+				<c:if test="${not empty attach.materialFile}">
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<a target="_blank" href="${resUrl}/${attach.materialFileName}">${attach.materialFileName}</a>
+					</div>
+				</c:if>
+				
+				<c:if test="${empty mPfResult and  empty attach.materialFile}">
 					<div style="margin-left:20px;color:red;font-weight:bold;">暂无</div>
 				</c:if>
 				
@@ -815,13 +827,8 @@
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
 					animate: true,
-					width: '250px'				
-				});
-				
-				// 只有最底层才能选择
-				var labIdTree = $('#labId').combotree('tree');	
-				labIdTree.tree({
-				   onBeforeSelect: function(node){
+					width: '250px',
+					onBeforeSelect: function(node){
 					   if(isNull(node.children)){
 							return true;
 					   }else{

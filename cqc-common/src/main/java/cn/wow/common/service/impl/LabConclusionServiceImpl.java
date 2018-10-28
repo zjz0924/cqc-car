@@ -15,42 +15,46 @@ import cn.wow.common.service.LabConclusionService;
 
 @Service
 @Transactional
-public class LabConclusionServiceImpl implements LabConclusionService{
+public class LabConclusionServiceImpl implements LabConclusionService {
 
-    private static Logger logger = LoggerFactory.getLogger(LabConclusionServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(LabConclusionServiceImpl.class);
 
-    @Autowired
-    private LabConclusionDao labConclusionDao;
+	@Autowired
+	private LabConclusionDao labConclusionDao;
 
-    public LabConclusion selectOne(Long id){
-    	return labConclusionDao.selectOne(id);
-    }
+	public LabConclusion selectOne(Long id) {
+		return labConclusionDao.selectOne(id);
+	}
 
-    public int save(String userName, LabConclusion labConclusion){
-    	return labConclusionDao.insert(labConclusion);
-    }
+	public int save(String userName, LabConclusion labConclusion) {
+		return labConclusionDao.insert(labConclusion);
+	}
 
-    public int update(String userName, LabConclusion labConclusion){
-    	return labConclusionDao.update(labConclusion);
-    }
+	public int update(String userName, LabConclusion labConclusion) {
+		return labConclusionDao.update(labConclusion);
+	}
 
-    public int deleteByPrimaryKey(String userName, LabConclusion labConclusion){
-    	return labConclusionDao.deleteByPrimaryKey(labConclusion.getId());
-    }
+	public int deleteByPrimaryKey(String userName, LabConclusion labConclusion) {
+		return labConclusionDao.deleteByPrimaryKey(labConclusion.getId());
+	}
 
-    public List<LabConclusion> selectAllList(Map<String, Object> map){
-    	PageHelperExt.startPage(map);
-    	return labConclusionDao.selectAllList(map);
-    }
-    
-    public void batchAdd(List<LabConclusion> conclusionDataList) {
-    	labConclusionDao.batchAdd(conclusionDataList);
-    }
-    
+	public List<LabConclusion> selectAllList(Map<String, Object> map) {
+		PageHelperExt.startPage(map);
+		return labConclusionDao.selectAllList(map);
+	}
+
+	public void batchAdd(List<LabConclusion> conclusionDataList) {
+		labConclusionDao.batchAdd(conclusionDataList);
+	}
+
 	public List<LabConclusion> selectByTaskId(Long taskId) {
 		Map<String, Object> map = new PageMap(false);
 		map.put("taskId", taskId);
 		return labConclusionDao.selectAllList(map);
+	}
+
+	public List<LabConclusion> batchQuery(Map<String, Object> map) {
+		return labConclusionDao.batchQuery(map);
 	}
 
 }

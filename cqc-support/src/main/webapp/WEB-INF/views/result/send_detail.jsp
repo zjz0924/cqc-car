@@ -201,6 +201,12 @@
 				</table>
 			</c:forEach>
 			
+			<c:if test="${not empty attach.partsFile}">
+				<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+					试验结果附件：<a target="_blank" href="${resUrl}/${attach.partsFileName}">${attach.partsFileName}</a>
+				</div>
+			</c:if>
+			
 			<div style="margin-top: 30px;">	
 				<table class="info">
 					<tr class="single-row">
@@ -333,6 +339,13 @@
 					</c:forEach>
 				</table>
 			</c:forEach>
+			
+			
+			<c:if test="${not empty attach.materialFile}">
+				<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+					试验结果附件：<a target="_blank" href="${resUrl}/${attach.materialFileName}">${attach.materialFileName}</a>
+				</div>
+			</c:if>
 			
 			<div style="margin-top: 30px;">	
 				<table class="info">

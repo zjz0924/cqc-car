@@ -91,7 +91,31 @@
 				</tr>
 			</table>
 		</div>
-	
+		
+		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
+		
+		<div class="title">抽样原因</div>
+		<div style="width: 98%;">
+			<table class="info">
+				<tr class="single-row">
+					<td class="title-td">样件来源：</td>
+					<td class="value-td">${facadeBean.reason.origin }</td>
+					<td class="title-td">抽样原因：</td>
+					<td class="value-td">${facadeBean.reason.reason}</td>
+				</tr>
+				<tr class="single-row">
+					<td class="title-td">其他原因描述：</td>
+					<td class="value-td">${facadeBean.reason.otherRemark }</td>
+					<td class="title-td">费用出处：</td>
+					<td class="value-td">${facadeBean.reason.source}</td>
+				</tr>
+				<tr class="single-row">
+					<td class="title-td">备注：</td>
+					<td class="value-td">${facadeBean.reason.remark }</td>
+				</tr>
+			</table>
+		</div>
+		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 	
 		<div class="title">整车信息
@@ -119,43 +143,41 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<c:if test="${facadeBean.type != 4 }">
-			<div class="title">零部件信息</div>
-			<div style="width: 98%; display: none;" id="partsDiv">
-				<table class="info">
-					<tr class="single-row">
-						<td class="title-td">零件名称：</td>
-						<td class="value-td">${facadeBean.info.parts.name}</td>
-						<td class="title-td">零件图号：</td>
-						<td class="value-td">${facadeBean.info.parts.code}</td>
-					</tr>
-					<tr class="couple-row">
-						<td class="title-td">供应商：</td>
-						<td class="value-td">${facadeBean.info.parts.producer}</td>
-						<td class="title-td">供应商代码：</td>
-						<td class="value-td">${facadeBean.info.parts.producerCode}</td>
-					</tr>
-					<tr class="single-row">
-						<td class="title-td">生产日期：</td>
-						<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
-						<td class="title-td">样件数量：</td>
-						<td class="value-td">${facadeBean.info.parts.num}</td>
-					</tr>
-					<tr class="single-row">
-						<td class="title-td">样件批号：</td>
-						<td class="value-td">${facadeBean.info.parts.proNo}</td>
-						<td class="title-td">生产场地：</td>
-						<td class="value-td">${facadeBean.info.parts.place}</td>
-					</tr>
-					<tr class="couple-row">
-						<td class="title-td">备注：</td>
-						<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
-					</tr>
-				</table>
-			</div>
-			
-			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-		</c:if>
+		<div class="title">零部件信息</div>
+		<div style="width: 98%; display: none;" id="partsDiv">
+			<table class="info">
+				<tr class="single-row">
+					<td class="title-td">零件名称：</td>
+					<td class="value-td">${facadeBean.info.parts.name}</td>
+					<td class="title-td">零件图号：</td>
+					<td class="value-td">${facadeBean.info.parts.code}</td>
+				</tr>
+				<tr class="couple-row">
+					<td class="title-td">供应商：</td>
+					<td class="value-td">${facadeBean.info.parts.producer}</td>
+					<td class="title-td">供应商代码：</td>
+					<td class="value-td">${facadeBean.info.parts.producerCode}</td>
+				</tr>
+				<tr class="single-row">
+					<td class="title-td">生产日期：</td>
+					<td class="value-td"><fmt:formatDate value='${facadeBean.info.parts.proTime}' type="date" pattern="yyyy-MM-dd"/></td>
+					<td class="title-td">样件数量：</td>
+					<td class="value-td">${facadeBean.info.parts.num}</td>
+				</tr>
+				<tr class="single-row">
+					<td class="title-td">样件批号：</td>
+					<td class="value-td">${facadeBean.info.parts.proNo}</td>
+					<td class="title-td">生产场地：</td>
+					<td class="value-td">${facadeBean.info.parts.place}</td>
+				</tr>
+				<tr class="couple-row">
+					<td class="title-td">备注：</td>
+					<td class="value-td" colspan="3">${facadeBean.info.parts.remark}</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
 		<div class="title">原材料信息</div>
 		<div style="width: 98%;display: none;" id="materialDiv">
@@ -189,40 +211,6 @@
 			</table>
 		</div>
 		
-		
-		<c:if test="${facadeBean.type == 2 || facadeBean.type == 3 }">
-			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-			<div class="title">任务信息</div>
-			<div style="width: 98%;display: none;" id="taskInfoDiv">
-				<table class="info">
-					<tr class="single-row">
-						<td class="title-td">申请人：</td>
-						<td class="value-td">${facadeBean.taskInfo.applicant}</td>
-						<td class="title-td">科室：</td>
-						<td class="value-td">${facadeBean.taskInfo.department}</td>
-					</tr>
-					
-					<tr class="couple-row">
-						<td class="title-td">零件图号：</td>
-						<td class="value-td">${facadeBean.taskInfo.figure}</td>
-						<td class="title-td">样品数量：</td>
-						<td class="value-td">${facadeBean.taskInfo.num}</td>
-					</tr>
-					
-					<tr class="single-row">
-						<td class="title-td">样品来源：</td>
-						<td class="value-td">${facadeBean.taskInfo.origin}</td>
-						<td class="title-td">抽检原因：</td>
-						<td class="value-td">${facadeBean.taskInfo.reason}</td>
-					</tr>
-					
-					<tr class="couple-row">
-						<td class="title-td">实验费用出处：</td>
-						<td class="value-td">${facadeBean.taskInfo.provenance}</td>
-					</tr>
-				</table>
-			</div>
-		</c:if>
 		
 		<c:if test="${not empty labReqList}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
@@ -328,7 +316,13 @@
 						</div>
 					</c:if>
 					
-					<c:if test="${empty pPfResult}">
+					<c:if test="${not empty attach.partsFile}">
+						<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+							试验结果附件：<a target="_blank" href="${resUrl}/${attach.partsFileName}">${attach.partsFileName}</a>
+						</div>
+					</c:if>
+					
+					<c:if test="${empty pPfResult and empty attach.partsFile}">
 						<div style="margin-left:20px;color:red;font-weight:bold;">暂无</div>
 					</c:if>
 				</c:if>
@@ -458,7 +452,13 @@
 						</div>
 					</c:if>
 					
-					<c:if test="${empty mPfResult}">
+					<c:if test="${not empty attach.materialFile}">
+						<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+							试验结果附件：<a target="_blank" href="${resUrl}/${attach.materialFileName}">${attach.materialFileName}</a>
+						</div>
+					</c:if>
+					
+					<c:if test="${empty mPfResult and empty attach.materialFile}">
 						<div style="margin-left:20px;color:red;font-weight:bold;">暂无</div>
 					</c:if>
 				</c:if>

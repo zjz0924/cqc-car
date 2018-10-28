@@ -15,6 +15,13 @@
 		<collection property="subList" javaType="java.util.ArrayList" column="id" ofType="cn.wow.common.domain.Org" select="selectSubList"></collection>
 	</resultMap>
 	
+	<resultMap id="QueryResultMap" type="cn.wow.common.domain.ReceiveOrg">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="task_id" property="taskId" jdbcType="BIGINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
 	<sql id="base_columns">
 		id, name, code, areaid, `desc`, parentid, type, addr
 	</sql>
@@ -110,6 +117,13 @@
 				open="(" close=")">
 				#{item, jdbcType=BIGINT}
 			</foreach>
+		</select>
+
+
+		<!-- 获取接收机构的名称 -->
+		<select id="getReciveOrgName" resultMap="QueryResultMap" parameterType="java.util.Map">
+			select r.t_id task_id, o.name, max(r.create_time) create_time from examine_record r LEFT JOIN account a on r.a_id = a.id Left join org o on o.id = a.org_id where r.type = 3 and r.t_id in  
+			<foreach collection="list" item="item" index="index" separator="," open="(" close=")"> #{item, jdbcType=BIGINT}</foreach> group by t_id 
 		</select>
 
 </mapper>

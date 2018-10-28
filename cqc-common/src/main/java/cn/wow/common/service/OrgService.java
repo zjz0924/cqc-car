@@ -3,6 +3,7 @@ package cn.wow.common.service;
 import java.util.List;
 import java.util.Map;
 import cn.wow.common.domain.Org;
+import cn.wow.common.domain.ReceiveOrg;
 import cn.wow.common.domain.TreeNode;
 
 public interface OrgService {
@@ -36,5 +37,12 @@ public interface OrgService {
     public void delete(String userName, Org org);
     
     public void batchUpdate(Map<String, Object> map);
+    
+    /**
+	     *  获取接收机构名称
+      * @param map
+      * @return
+      */
+    public List<ReceiveOrg> getReciveOrgName(Map<String, Object> map);
 
 }

@@ -40,7 +40,7 @@
 			        frozenColumns:[[{
 						field : '_operation',
 						title : '操作',
-						width : '80',
+						width : '60',
 						align : 'center',
 						formatter : function(value,row,index){
 							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">详情</a>';  	
@@ -51,14 +51,14 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '150',
+						width : '120',
 						align : 'center',
 						sortable: true,
 						formatter : formatCellTooltip
 					}, {
 						field : 'type',
 						title : '任务类型',
-						width : '110',
+						width : '150',
 						align : 'center',
 						sortable: true,
 						formatter : function(val){
@@ -155,22 +155,31 @@
 							}
 							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
 						}
-					},{
+					}]],
+			        columns : [ [ {
+						field : 'receiveLabOrg',
+						title : '接收实验室',
+						width : '130',
+						align : 'center',
+						rowspan: 2,
+						formatter : formatCellTooltip
+					}, {
 						field : 'createTime',
 						title : '录入时间',
 						width : '130',
 						align : 'center',
 						sortable: true,
+						rowspan: 2,
 						formatter : DateTimeFormatter
-					},{
+					}, {
 						field : 'confirmTime',
 						title : '完成时间',
 						width : '130',
 						align : 'center',
 						sortable: true,
+						rowspan: 2,
 						formatter : DateTimeFormatter
-					} ]],
-			        columns : [ [{
+					},{
 						title:'车型信息', 
 						colspan:2
 					},{

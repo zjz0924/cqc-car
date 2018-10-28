@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.OrgDao;
 import cn.wow.common.domain.Org;
+import cn.wow.common.domain.ReceiveOrg;
 import cn.wow.common.domain.TreeNode;
 import cn.wow.common.service.OrgService;
 import cn.wow.common.utils.operationlog.annotation.OperationLogIgnore;
@@ -25,36 +26,36 @@ import cn.wow.common.utils.pagination.PageHelperExt;
 
 @Service
 @Transactional
-public class OrgServiceImpl implements OrgService{
+public class OrgServiceImpl implements OrgService {
 
-    private static Logger logger = LoggerFactory.getLogger(OrgServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(OrgServiceImpl.class);
 
-    @Autowired
-    private OrgDao orgDao;
-    @Autowired
-    private AccountDao accountDao;
+	@Autowired
+	private OrgDao orgDao;
+	@Autowired
+	private AccountDao accountDao;
 
-    public Org selectOne(Long id){
-    	return orgDao.selectOne(id);
-    }
-    
-    public Org getByCode(String code){
+	public Org selectOne(Long id) {
+		return orgDao.selectOne(id);
+	}
+
+	public Org getByCode(String code) {
 		return orgDao.getByCode(code);
 	}
 
-    public int save(String userName, Org org){
-    	return orgDao.insert(org);
-    }
-    
-    public int move(Org org, boolean update) {
+	public int save(String userName, Org org) {
+		return orgDao.insert(org);
+	}
+
+	public int move(Org org, boolean update) {
 		int num = orgDao.update(org);
-		
+
 		// 如果类型改变了，把所有子机构都修改成当前类型
 		if (update) {
 			List<Long> idList = new ArrayList<Long>();
 			getAllSonId(org, idList);
 
-			if(idList.size() > 0){
+			if (idList.size() > 0) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("type", org.getType());
 				map.put("list", idList);
@@ -64,55 +65,52 @@ public class OrgServiceImpl implements OrgService{
 		return num;
 	}
 
-    public int update(String userName, Org org, boolean update){
-    	int num = orgDao.update(org);
-    	
+	public int update(String userName, Org org, boolean update) {
+		int num = orgDao.update(org);
+
 		// 如果类型改变了，把所有子机构都修改成当前类型
 		if (update) {
 			List<Long> idList = new ArrayList<Long>();
 			getAllSonId(org, idList);
 
-			if(idList.size() > 0){
+			if (idList.size() > 0) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("type", org.getType());
 				map.put("list", idList);
 				orgDao.batchUpdate(map);
 			}
 		}
-    	return num;
-    }
-    
-    public void batchUpdate(Map<String, Object> map){
-    	orgDao.batchUpdate(map);
-    }
+		return num;
+	}
 
-    public int deleteByPrimaryKey(String userName, Org org){
-    	return orgDao.deleteByPrimaryKey(org.getId());
-    }
-    
-    public void delete(String userName, Org org){
-    	//删除机构时，把用户所属机构也清空
-    	orgDao.deleteByPrimaryKey(org.getId());
-    	accountDao.clearOrg(org.getId());
-    }
+	public void batchUpdate(Map<String, Object> map) {
+		orgDao.batchUpdate(map);
+	}
 
-    public List<Org> selectAllList(Map<String, Object> map){
-    	PageHelperExt.startPage(map);
-    	return orgDao.selectAllList(map);
-    }
-    
-    /**
+	public int deleteByPrimaryKey(String userName, Org org) {
+		return orgDao.deleteByPrimaryKey(org.getId());
+	}
+
+	public void delete(String userName, Org org) {
+		// 删除机构时，把用户所属机构也清空
+		orgDao.deleteByPrimaryKey(org.getId());
+		accountDao.clearOrg(org.getId());
+	}
+
+	public List<Org> selectAllList(Map<String, Object> map) {
+		PageHelperExt.startPage(map);
+		return orgDao.selectAllList(map);
+	}
+
+	/**
 	 * 获取区域树
 	 */
 	public List<TreeNode> getTree(String svalue, String stype) {
 		Org rootOrg = orgDao.selectOne(1l);
 		TreeNode rootNode = new TreeNode();
-		
+
 		/**
-		 * 搜索思路：
-		 * 1. 先搜索有哪些节点匹配
-		 * 2. 获取它们的次上级父节点
-		 * 3. 再添加子节点的时候过滤掉父节点是当前节点的节点
+		 * 搜索思路： 1. 先搜索有哪些节点匹配 2. 获取它们的次上级父节点 3. 再添加子节点的时候过滤掉父节点是当前节点的节点
 		 */
 		// 搜索的节点ID
 		Set<Long> targetId = new HashSet<Long>();
@@ -120,7 +118,7 @@ public class OrgServiceImpl implements OrgService{
 		Set<Long> legalId = new HashSet<Long>();
 		// 搜索的节点的父ID
 		Set<Long> parentId = new HashSet<Long>();
-		
+
 		if (isSearch(svalue)) {
 			Map<String, Object> qMap = new HashMap<String, Object>();
 			qMap.put(stype, svalue);
@@ -129,12 +127,12 @@ public class OrgServiceImpl implements OrgService{
 			Set<Org> parentSet = new HashSet<Org>();
 			if (dataList != null && dataList.size() > 0) {
 				for (Org org : dataList) {
-					//不处理根节点
-					if(org.getParent() != null){
+					// 不处理根节点
+					if (org.getParent() != null) {
 						targetId.add(org.getId());
 						legalId.add(org.getId());
 					}
-					
+
 					// 获取搜索节点的二级父节点
 					Org parentOrg = getSecondOrg(org, legalId, parentId);
 					if (!parentSet.contains(parentOrg)) {
@@ -143,16 +141,16 @@ public class OrgServiceImpl implements OrgService{
 					// 去掉重复的对象
 					removeDuplicate(parentSet);
 				}
-				
-				//防止父节点与子节点名称相同
+
+				// 防止父节点与子节点名称相同
 				targetId.removeAll(parentId);
 			}
-			
+
 			List<Org> parentList = new ArrayList<Org>();
 			parentList.addAll(parentSet);
 			rootOrg.setSubList(parentList);
 		}
-		
+
 		List<TreeNode> tree = new ArrayList<TreeNode>();
 		if (rootOrg != null) {
 			rootNode.setId(rootOrg.getId().toString());
@@ -203,7 +201,7 @@ public class OrgServiceImpl implements OrgService{
 					TreeNode sonNode = new TreeNode();
 					sonNode.setId(subOrg.getId().toString());
 					sonNode.setText(subOrg.getName());
-					
+
 					if ((isSearch && !targetId.contains(subOrg.getId())) || !isSearch) {
 						// 遍历子节点
 						addSonNode(sonNode, subOrg, legalId, targetId, isSearch);
@@ -214,7 +212,7 @@ public class OrgServiceImpl implements OrgService{
 			subOrgNode.setChildren(subNodeList);
 		}
 	}
-	
+
 	// 获取二级节点
 	private Org getSecondOrg(Org org, Set<Long> legalId, Set<Long> parentId) {
 		if (org.getParent() != null && org.getParent().getId() != 1l) {
@@ -224,8 +222,7 @@ public class OrgServiceImpl implements OrgService{
 		}
 		return org;
 	}
-	
-	
+
 	private boolean isSearch(String svalue) {
 		if (StringUtils.isNotBlank(svalue)) {
 			return true;
@@ -249,8 +246,7 @@ public class OrgServiceImpl implements OrgService{
 		set.removeAll(tempSet);
 		return set;
 	}
-	
-	
+
 	// 递归获取指定机构下的所有子机构的ID
 	public void getAllSonId(Org org, List<Long> idList) {
 		if (org != null) {
@@ -263,10 +259,11 @@ public class OrgServiceImpl implements OrgService{
 			}
 		}
 	}
-	
+
 	/**
 	 * 获取类型来获取机构树
-	 * @param type   1-通用五菱, 2-供应商, 3-实验室, 4-其它
+	 * 
+	 * @param type 1-通用五菱, 2-供应商, 3-实验室, 4-其它
 	 */
 	public List<TreeNode> getTreeByType(int type) {
 		Org rootOrg = orgDao.selectOne(1l);
@@ -285,8 +282,8 @@ public class OrgServiceImpl implements OrgService{
 				// 遍历子节点
 				while (subList.hasNext()) {
 					Org subOrg = subList.next();
-					
-					if(subOrg.getType().intValue() == type){
+
+					if (subOrg.getType().intValue() == type) {
 						TreeNode subOrgNode = new TreeNode();
 						subOrgNode.setId(subOrg.getId().toString());
 						subOrgNode.setText(subOrg.getName());
@@ -303,7 +300,7 @@ public class OrgServiceImpl implements OrgService{
 
 		return tree;
 	}
-	
+
 	private void addSonNode(TreeNode subOrgNode, Org org, int type) {
 		// 获取子集合
 		Iterator<Org> subList = org.getSubList().iterator();
@@ -315,7 +312,7 @@ public class OrgServiceImpl implements OrgService{
 			while (subList.hasNext()) {
 				Org subOrg = subList.next();
 
-				if(subOrg.getType().intValue() == type){
+				if (subOrg.getType().intValue() == type) {
 					TreeNode sonNode = new TreeNode();
 					sonNode.setId(subOrg.getId().toString());
 					sonNode.setText(subOrg.getName());
@@ -324,10 +321,14 @@ public class OrgServiceImpl implements OrgService{
 					addSonNode(sonNode, subOrg, type);
 					subNodeList.add(sonNode);
 				}
-				
+
 			}
 			subOrgNode.setChildren(subNodeList);
 		}
 	}
-	
+
+	public List<ReceiveOrg> getReciveOrgName(Map<String, Object> map) {
+		return orgDao.getReciveOrgName(map);
+	}
+
 }

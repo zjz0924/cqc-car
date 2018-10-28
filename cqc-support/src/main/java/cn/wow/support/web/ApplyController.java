@@ -46,6 +46,7 @@ import cn.wow.common.service.AddressService;
 import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -102,6 +103,8 @@ public class ApplyController extends AbstractController {
 	private CarCodeService carCodeService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private AttachService attachService;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -504,6 +507,9 @@ public class ApplyController extends AbstractController {
 				model.addAttribute("compareResult_old", compareResult_old);
 				model.addAttribute("compareResult_new", compareResult_new);
 				model.addAttribute("labReqList", labReqList);
+				
+				// 型式结果附件
+				model.addAttribute("attach", attachService.getFileName(id));
 			}
 
 			// 试验结论

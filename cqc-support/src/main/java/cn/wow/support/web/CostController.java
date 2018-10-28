@@ -42,6 +42,7 @@ import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CostRecordService;
 import cn.wow.common.service.ExpItemService;
 import cn.wow.common.service.LabConclusionService;
@@ -86,6 +87,8 @@ public class CostController extends AbstractController {
 	private LabReqService labReqService;
 	@Autowired
 	private LabConclusionService labConclusionService;
+	@Autowired
+	private AttachService attachService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -232,6 +235,8 @@ public class CostController extends AbstractController {
 				model.addAttribute("mPfResult", mPfResult);
 				// 零部件型式结果
 				model.addAttribute("pPfResult", pPfResult);
+				// 型式结果附件
+				model.addAttribute("attach", attachService.getFileName(costRecord.getTask().getId()));
 
 				// 试验结论
 				if (conclusionList != null && conclusionList.size() > 0) {

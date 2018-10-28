@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.dao.EmailRecordDao;
+import cn.wow.common.domain.Account;
 import cn.wow.common.domain.EmailRecord;
+import cn.wow.common.domain.Task;
 import cn.wow.common.service.EmailRecordService;
 
 @Service
@@ -42,4 +44,9 @@ public class EmailRecordServiceImpl implements EmailRecordService{
     	return emailRecordDao.selectAllList(map);
     }
 
+    
+    public void sendEmail(String addr, Task task, Account account){
+    	
+    }
+    
 }

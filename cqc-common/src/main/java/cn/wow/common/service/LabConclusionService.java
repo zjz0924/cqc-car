@@ -18,4 +18,6 @@ public interface LabConclusionService {
     public void batchAdd(List<LabConclusion> conclusionDataList);
 
     public List<LabConclusion> selectByTaskId(Long taskId);
+    
+    public List<LabConclusion> batchQuery(Map<String, Object> map);
 }

@@ -16,19 +16,50 @@
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
 			
+			var toolbar = [{
+				text : '接收',
+				iconCls : 'icon-ok',
+				handler : function() {
+					var result = getSelectedIds();
+					if(!result){
+						return false;
+					}
+					batchConfirm(result, 5, "");
+				}
+			},{
+				text : '不接收',
+				iconCls : 'icon-cancel',
+				handler : function() {
+					var result = getSelectedIds();
+					if(!result){
+						return false;
+					}
+					$("#batchRemark").textbox("setValue", "");
+					$("#seasonDialog").dialog("open");
+					
+					// 移动y滚动条
+					top.parent.scrollTo(0, 300);
+				}
+			}];
+			
 			$(function(){
 				 // 任务列表
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
-			        singleSelect : true, /*是否选中一行*/
+			        singleSelect : false, /*是否选中一行*/
+			        checkOnSelect: false, // 只有点击checkbox才会选中
 			        width:'auto', 	
 			        height: "380px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
+			        toolbar : toolbar,
 			        idField: 'id',
-			        frozenColumns: [[
+			        frozenColumns: [[{
+				        	field:'ck',
+				        	checkbox:true 
+				        },  
 			        	{
 							field : '_operation',
 							title : '操作',
@@ -46,10 +77,10 @@
 							width : '150',
 							align : 'center',
 							formatter : formatCellTooltip
-						}, {
+						}, {	
 							field : 'type',
 							title : '任务类型',
-							width : '100',
+							width : '150',
 							align : 'center',
 							formatter : function(val){
 								var str = "第三方委托"
@@ -71,6 +102,12 @@
 						}
 			        ]],
 			        columns : [ [{
+						title:'零件试验结果', 
+						colspan:2
+					},{
+						title:'材料试验结果', 
+						colspan:2
+					},{
 						title:'车型信息', 
 						colspan:2
 					},{
@@ -84,6 +121,34 @@
 						colspan: 3
 					}],
 					[{
+						field : 'partsAtlConclusion',
+						title : '图谱',
+						width : '80',
+						align : 'center',
+						rowspan: 1,
+						formatter : formatCellTooltip
+					}, {
+						field : 'partsPatConclusion',
+						title : '型式',
+						width : '80',
+						align : 'center',
+						rowspan: 1,
+						formatter : formatCellTooltip
+					},{
+						field : 'matAtlConclusion',
+						title : '图谱',
+						width : '80',
+						align : 'center',
+						rowspan: 1,
+						formatter : formatCellTooltip
+					}, {
+						field : 'matPatConclusion',
+						title : '型式',
+						width : '80',
+						align : 'center',
+						rowspan: 1,
+						formatter : formatCellTooltip
+					}, {
 						field : 'info.vehicle.code',
 						title : '车型代码',
 						width : '120',
@@ -453,6 +518,53 @@
 				top.parent.scrollTo(0, 500);
 			}
 			
+			function getSelectedIds(){
+				var rows =  $("#" + datagrid).datagrid('getChecked');
+				if(!isNull(rows)){
+					var ids = [];
+					for(var i = 0; i < rows.length; i++){
+						ids.push(rows[i].id);
+					}
+					return ids;
+				}else{
+					errorMsg("请选择要操作的任务");
+					return false;
+				}
+			}
+			
+			function batchConfirm(ids, type, remark){
+				$.ajax({
+					url: "${ctx}/result/batchConfirm",
+					data:{
+						"ids": ids,
+						"type": type,
+						"remark": remark
+					},
+					success: function(data){
+						if(data.success){
+							tipMsg(data.msg, function(){
+								$('#' + datagrid).datagrid('reload');
+								$('#' + recordDatagrid).datagrid('reload');
+							});
+						}else{
+							errorMsg(data.msg);
+						}
+						saving = false;
+					}
+				});
+			}
+			
+			function doBatchSubmit(){
+				var remark = $("#batchRemark").textbox("getValue");
+				if(isNull(remark)){
+					errorMsg("请输入原因");
+					$("#batchRemark").next('span').find('input').focus();
+					return false;
+				}
+				
+				batchConfirm(getSelectedIds(), 5, remark);
+				$("#seasonDialog").dialog("close");
+			}
 		</script>
 	</head>
 	
@@ -541,6 +653,15 @@
 			</div>
 			
 			<div id="confirmDetailDialog"></div>
+			
+			<div id="seasonDialog" class="easyui-dialog" title="不接收" style="width: 400px; height: 200px; padding: 10px;top:500px;" closed="true" data-options="modal:true">
+				<input id="batchRemark" class="easyui-textbox" label="不接收原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
+				
+				<div align=center style="margin-top: 15px;">
+					<a href="javascript:void(0);"  onclick="doBatchSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
+					<a href="javascript:void(0);"  onclick="$('#seasonDialog').dialog('close')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+				</div>
+			</div>
 		
 		</div>
 

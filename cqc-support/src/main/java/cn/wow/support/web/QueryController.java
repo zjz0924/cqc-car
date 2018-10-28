@@ -38,16 +38,21 @@ import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.PfResult;
+import cn.wow.common.domain.ReasonOption;
+import cn.wow.common.domain.ReceiveOrg;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MenuService;
+import cn.wow.common.service.OrgService;
 import cn.wow.common.service.PfResultService;
+import cn.wow.common.service.ReasonOptionService;
 import cn.wow.common.service.ReasonService;
 import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
@@ -90,6 +95,12 @@ public class QueryController extends AbstractController {
 	private AccountService accountService;
 	@Autowired
 	private ReasonService reasonService;
+	@Autowired
+	private AttachService attachService;
+	@Autowired
+	private OrgService orgService;
+	@Autowired
+	private ReasonOptionService reasonOptionService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -105,6 +116,11 @@ public class QueryController extends AbstractController {
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
+		
+		// 抽样原因选项
+		Map<String, Object> optionMap = new PageMap(false);
+		optionMap.put("custom_order_sql", "type asc, name desc");
+		List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
 
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
@@ -134,6 +150,15 @@ public class QueryController extends AbstractController {
 
 		String orderSql = "t.create_time desc";
 		if (StringUtils.isNotBlank(sort)) {
+			if ("isReceive".equals(sort)) {
+				sort = "is_receive";
+			}
+			if ("createTime".equals(sort)) {
+				sort = "create_time";
+			}
+			if ("confirmTime".equals(sort)) {
+				sort = "confirm_time";
+			}
 			orderSql = sort + " " + order;
 		}
 
@@ -192,7 +217,7 @@ public class QueryController extends AbstractController {
 				queryMap.put("type", 4);
 
 			}
-		} 
+		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
@@ -211,8 +236,28 @@ public class QueryController extends AbstractController {
 		if (reasonIdList.size() > 0) {
 			map.put("reasonIdList", reasonIdList);
 		}
-		
+
 		List<Task> dataList = taskService.selectAllList(map);
+
+		// 接收机构名称
+		if (dataList != null && dataList.size() > 0) {
+			List<Long> idList = new ArrayList<Long>();
+
+			for (Task task : dataList) {
+				idList.add(task.getId());
+			}
+			Map<String, Object> labMap = new HashMap<String, Object>();
+			labMap.put("list", idList);
+			List<ReceiveOrg> orgList = orgService.getReciveOrgName(labMap);
+
+			if (orgList != null && orgList.size() > 0) {
+				for (Task task : dataList) {
+					for(ReceiveOrg org: orgList) {
+						task.setReceiveLabOrg(org.getName());
+					}
+				}
+			}
+		}
 
 		// 分页
 		Page<Task> pageList = (Page<Task>) dataList;
@@ -266,6 +311,8 @@ public class QueryController extends AbstractController {
 					model.addAttribute("mPfResult", mPfResult);
 					// 零部件型式结果
 					model.addAttribute("pPfResult", pPfResult);
+					// 型式结果附件
+					model.addAttribute("attach", attachService.getFileName(task.getId()));
 
 					// 试验结论
 					if (conclusionList != null && conclusionList.size() > 0) {
