@@ -144,7 +144,7 @@ public class IndexController {
 				qMap.put("type", 1);
 				// 除了超级管理员，其它用户只能查看自己录入的申请记录
 				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-					qMap.put("aId", account.getId());
+					qMap.put("applicatId", account.getId());
 				}
 				examineNum = taskService.getTaskNum(qMap);
 

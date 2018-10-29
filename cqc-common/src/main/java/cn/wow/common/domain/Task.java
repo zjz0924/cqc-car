@@ -139,6 +139,13 @@ public class Task {
     // 接收实验室 - 冗余字段，用于显示
     private String receiveLabOrg;
     
+    // 审核人员（ots 和  第三方）
+    private Long examineAccountId;
+    // 下达人员（ots 和  第三方）
+    private Long trainsmitAccountId;
+    // 审批人员
+    private Long approveAccountId;
+    
     public Long getId() {
         return id;
     }
@@ -569,5 +576,29 @@ public class Task {
 
 	public void setReceiveLabOrg(String receiveLabOrg) {
 		this.receiveLabOrg = receiveLabOrg;
+	}
+
+	public Long getExamineAccountId() {
+		return examineAccountId;
+	}
+
+	public void setExamineAccountId(Long examineAccountId) {
+		this.examineAccountId = examineAccountId;
+	}
+
+	public Long getTrainsmitAccountId() {
+		return trainsmitAccountId;
+	}
+
+	public void setTrainsmitAccountId(Long trainsmitAccountId) {
+		this.trainsmitAccountId = trainsmitAccountId;
+	}
+
+	public Long getApproveAccountId() {
+		return approveAccountId;
+	}
+
+	public void setApproveAccountId(Long approveAccountId) {
+		this.approveAccountId = approveAccountId;
 	}
 }

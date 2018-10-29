@@ -44,15 +44,26 @@
 					<input id="role" name="role">
 					<span id="role_error" class="error-message"></span>
 				</div>
+				
 				<div class="data-cell-right">
-					<span class="title-span"><span class="req-span">*</span>机构：</span> 
-					<input id="org" name="org">
-					<span id="org_error" class="error-message"></span>
+					<span class="title-span"><span class="req-span">*</span>上级：</span> 
+					<input id="pId" name="pId" type="hidden" value="${facadeBean.parent.id }">
+					<input id="pName" class="easyui-textbox" style="width: 140px" disabled value="${facadeBean.parent.nickName}">&nbsp;&nbsp;&nbsp;
+					
+					<a href="javascript:void(0)" onclick="chooseParent('${facadeBean.userName}')" title="选择"><i class="icon icon-search"></i>选择</a>&nbsp;&nbsp;
+					<a href="javascript:void(0)" onclick="clearParent()" title="清空"><i class="icon icon-edit"></i>清除</a>
+					<span id="pName_error" class="error-message"></span>
 				</div>
 			</div>
 			
 			<div class="data-row">
 				<div class="data-cell-left">
+					<span class="title-span"><span class="req-span">*</span>机构：</span> 
+					<input id="org" name="org">
+					<span id="org_error" class="error-message"></span>
+				</div>
+				
+				<div class="data-cell-right">
 					<span class="title-span"><span class="req-span">*</span>科室：</span> 
 					<select id="department" name="department"  class="easyui-combobox" style="width: 220px;" data-options="panelHeight:'200px'">
 			      		<option value="">请选择</option>
@@ -141,6 +152,8 @@
 		</form>
 	</div>
 	
+	<div id="parentDialog"></div>
+	
 	<script type="text/javascript">
 		$(function(){
 			$('#role').combotree({
@@ -226,6 +239,14 @@
 			}
 			$("#roleId").val(roleId);
 			
+			var pId = $("#pId").val();
+			if(isNull(pId)){
+				errAccount("pName_error", "必选");
+				return false;
+			}else{
+				errAccount("pName_error", "");
+			}
+			
 			var orgId = "";
 			var orgTree = $('#org').combotree('tree');	
 			var selecteNode = orgTree.tree('getSelected');
@@ -298,7 +319,27 @@
 				}
 			});
 		}
-
+		
+		function chooseParent(currentUserName){
+			$('#parentDialog').dialog({
+				title : '上级信息',
+				width : 1050,
+				height : 550,
+				closed : false,
+				cache : false,
+				top: 50,
+				href : "${ctx}/account/parentChoose?currentUserName=" + currentUserName,
+				modal : true
+			});
+			top.parent.scrollTo(0, 370);
+		}
+		
+		function clearParent(){
+			$("#pId").val("");
+			$("#pName").textbox("setValue", "");
+		}
+		
+		
 		function errAccount(id, message) {
 			$("#" + id).html(message);
 		}

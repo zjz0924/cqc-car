@@ -88,7 +88,6 @@
 				      return false;
 				   }else{
 					   var type = "${type}";
-					   console.log(type);
 					   $("#" + type + "Text").val(users[1]);
 					   $("#" + type + "Value").val(users[0]);
 					   

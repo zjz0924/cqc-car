@@ -57,6 +57,13 @@
 		<!-- 基准信息ID -->
 		<result column="stand_i_id" property="standIid" jdbcType="BIGINT" />
 		
+		<!-- 审核人员（ots 和  第三方） -->
+		<result column="examine_account_id" property="examineAccountId" jdbcType="BIGINT" />
+		<!-- 下达人员（ots 和  第三方） -->
+		<result column="trainsmit_account_id" property="trainsmitAccountId" jdbcType="BIGINT" />
+		<!-- 审批人员 -->
+		<result column="approve_account_id" property="approveAccountId" jdbcType="BIGINT" />
+		
 		<association property="taskInfo" javaType="cn.wow.common.domain.TaskInfo" column="id" select="cn.wow.common.dao.TaskInfoDao.selectOne"/> 
 		<association property="partsAtl" javaType="cn.wow.common.domain.Org" column="parts_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="matAtl" javaType="cn.wow.common.domain.Org" column="mat_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
@@ -72,7 +79,7 @@
 	<sql id="base_columns">
 		t.id, t.code, t.i_id, t.org_id, t.type, t.state, t.parts_atl_id, t.mat_atl_id, t.parts_pat_id, t.mat_pat_id ,t.remark, t.create_time, t.fail_num, t.a_id, t.parts_atl_result, t.mat_atl_result,
         t.parts_pat_result, t.mat_pat_result, t.parts_atl_times, t.mat_atl_times, t.parts_pat_times, t.mat_pat_times, t.confirm_time, t.info_apply, t.result_apply, t.t_id, t.result, t.is_receive,t.parts_atl_code,t.mat_atl_code,t.parts_pat_code,t.mat_pat_code, t.draft,
-        t.atl_type, t.atl_remark, t.reason_id, t.expect_date, t.atl_item, t.stand_i_id
+        t.atl_type, t.atl_remark, t.reason_id, t.expect_date, t.atl_item, t.stand_i_id, t.approve_account_id, t.trainsmit_account_id, t.examine_account_id
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -89,14 +96,15 @@
 			SELECT @@IDENTITY
 		</selectKey>
 	
-		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id, result, is_receive, parts_atl_code, mat_atl_code, parts_pat_code, mat_pat_code, draft, atl_type, atl_remark, reason_id, expect_date, atl_item, stand_i_id)
+		insert into task (code, i_id, org_id, type, state, parts_atl_id, mat_atl_id, parts_pat_id, mat_pat_id, remark, create_time, fail_num, a_id, parts_atl_result, mat_atl_result, parts_pat_result, mat_pat_result, parts_atl_times, mat_atl_times, parts_pat_times, mat_pat_times, confirm_time, info_apply, result_apply, t_id, result, is_receive, parts_atl_code, mat_atl_code, parts_pat_code, mat_pat_code, draft, atl_type, atl_remark, reason_id, expect_date, atl_item, stand_i_id, approve_account_id, trainsmit_account_id, examine_account_id)
 			values (#{code,jdbcType=VARCHAR}, #{iId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
 					#{partsAtlId,jdbcType=BIGINT}, #{matAtlId,jdbcType=BIGINT}, #{partsPatId,jdbcType=BIGINT}, #{matPatId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
 					#{failNum,jdbcType=INTEGER}, #{aId,jdbcType=BIGINT}, #{partsAtlResult,jdbcType=INTEGER}, #{matAtlResult,jdbcType=INTEGER}, #{partsPatResult,jdbcType=INTEGER}, #{matPatResult,jdbcType=INTEGER}, 
 					#{partsAtlTimes,jdbcType=INTEGER}, #{matAtlTimes,jdbcType=INTEGER}, #{partsPatTimes,jdbcType=INTEGER}, #{matPatTimes,jdbcType=INTEGER}, #{confirmTime,jdbcType=TIMESTAMP},
 					#{infoApply,jdbcType=INTEGER},#{resultApply,jdbcType=INTEGER}, #{tId,jdbcType=BIGINT}, #{result,jdbcType=INTEGER}, #{isReceive,jdbcType=INTEGER}, #{partsAtlCode,jdbcType=VARCHAR}, #{matAtlCode,jdbcType=VARCHAR}, #{partsPatCode,jdbcType=VARCHAR}, #{matPatCode,jdbcType=VARCHAR}, #{draft,jdbcType=INTEGER},
 					#{atlType,jdbcType=VARCHAR},#{atlRemark,jdbcType=VARCHAR}, #{reasonId,jdbcType=BIGINT},
-					#{expectDate,jdbcType=DATE}, #{atlItem,jdbcType=VARCHAR}, #{standIid,jdbcType=BIGINT})
+					#{expectDate,jdbcType=DATE}, #{atlItem,jdbcType=VARCHAR}, #{standIid,jdbcType=BIGINT},
+					#{approveAccountId,jdbcType=BIGINT}, #{trainsmitAccountId,jdbcType=BIGINT}, #{examineAccountId,jdbcType=BIGINT})
 	</insert>
 	
 	<update id="update" parameterType="cn.wow.common.domain.Task">
@@ -206,6 +214,17 @@
 			<if test="atlItem != null">
 				atl_item = #{atlItem,jdbcType=VARCHAR},
 			</if>
+			<if test="approveAccountId != null">
+				approve_account_id = #{approveAccountId,jdbcType=BIGINT}, 
+			</if>
+			
+			<if test="trainsmitAccountId != null">
+				trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}, 
+			</if>
+			
+			<if test="examineAccountId != null">
+				examine_account_id = #{examineAccountId,jdbcType=BIGINT},
+			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}
 	</update>
@@ -251,8 +270,8 @@
 				and t.i_id = #{iId,jdbcType=BIGINT}
 			</if>
 
-			<if test="aId != null">
-				and t.a_id = #{aId,jdbcType=BIGINT}
+			<if test="applicatId != null">
+				and t.a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<if test="tId != null">
@@ -493,6 +512,17 @@
 				and stand_i_id = #{standIid,jdbcType=BIGINT}
 			</if>
 			
+			<if test="approveAccountId != null">
+				and approve_account_id = #{approveAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="trainsmitAccountId != null">
+				and trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="examineAccountId != null">
+				and examine_account_id = #{examineAccountId,jdbcType=BIGINT}
+			</if>
 		</where>
 
 		<choose>
@@ -755,7 +785,19 @@
 			</if>
 			
 			<if test="standIid != null">
-				and stand_i_id = #{standIid,jdbcType=BIGINT}
+				and t.stand_i_id = #{standIid,jdbcType=BIGINT}
+			</if>
+			
+			<if test="approveAccountId != null">
+				and t.approve_account_id = #{approveAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="trainsmitAccountId != null">
+				and t.trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="examineAccountId != null">
+				and t.examine_account_id = #{examineAccountId,jdbcType=BIGINT}
 			</if>
 		</where>
 

@@ -142,7 +142,8 @@ public class InfoServiceImpl implements InfoService {
 	 * 添加信息
 	 */
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
-			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem) {
+			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem,
+			Long examineAccountId, Long trainsmitAccountId, Long approveAccountId) {
 		Date date = new Date();
 		String taskCode = generateTaskCode(date);
 
@@ -217,6 +218,9 @@ public class InfoServiceImpl implements InfoService {
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
 			task.setAtlItem(atlItem);
+			task.setApproveAccountId(approveAccountId);
+			task.setExamineAccountId(examineAccountId);
+			task.setTrainsmitAccountId(trainsmitAccountId);
 			if (task.getType() == 4) {
 				task.setReasonId(reason.getId());
 			}
@@ -238,6 +242,9 @@ public class InfoServiceImpl implements InfoService {
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
 			task.setAtlItem(atlItem);
+			task.setApproveAccountId(approveAccountId);
+			task.setExamineAccountId(examineAccountId);
+			task.setTrainsmitAccountId(trainsmitAccountId);
 			if (task.getType() == 4) {
 				task.setReasonId(reason.getId());
 			}
@@ -490,7 +497,7 @@ public class InfoServiceImpl implements InfoService {
 	 */
 	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
 			String atlRemark, String expectDate, Long partsAtlId, Long matAtlId, Vehicle vehicle, Parts parts,
-			Material material) throws ParseException {
+			Material material, Long approveAccountId) throws ParseException {
 		String taskCode = "";
 		boolean flag = true;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -552,7 +559,7 @@ public class InfoServiceImpl implements InfoService {
 			task.setType(taskType);
 			task.setFailNum(0);
 			task.setStandIid(i_id);
-
+			task.setApproveAccountId(approveAccountId);
 			task.setMatAtlResult(0);
 			task.setMatPatResult(0);
 			task.setPartsAtlResult(0);
@@ -622,6 +629,7 @@ public class InfoServiceImpl implements InfoService {
 				task.setExpectDate(sdf.parse(expectDate));
 			}
 			task.setReasonId(reason.getId());
+			task.setApproveAccountId(approveAccountId);
 			taskDao.update(task);
 
 			// 操作记录

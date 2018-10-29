@@ -100,7 +100,7 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/getList")
 	public Map<String, Object> getList(HttpServletRequest request, Model model, String userName, String nickName,
 			String mobile, String startCreateTime, String endCreateTime, String lock, String orgId, String roleId,
-			Integer isCharge, String sort, String order, String department) {
+			Integer isCharge, String sort, String order, String department, String parentUserName) {
 
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
@@ -162,6 +162,23 @@ public class AccountController extends AbstractController {
 			map.put("department", department);
 			queryMap.put("department", department);
 		}
+		if (StringUtils.isNotBlank(parentUserName)) {
+			Map<String, Object> pMap = new PageMap(false);
+			pMap.put("qUserName", parentUserName);
+			List<Account> parentList = accountService.selectAllList(pMap);
+
+			List<Long> idList = new ArrayList<Long>();
+			if (parentList != null && parentList.size() > 0) {
+				for (Account obj : parentList) {
+					idList.add(obj.getId());
+				}
+			} else {
+				idList.add(-1l);
+			}
+
+			map.put("pIds", idList);
+			queryMap.put("pIds", idList);
+		}
 		List<Account> dataList = accountService.selectAllList(map);
 
 		// 分页
@@ -197,10 +214,10 @@ public class AccountController extends AbstractController {
 			model.addAttribute("roleVal", roleVal);
 			model.addAttribute("facadeBean", account);
 		}
-		
+
 		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
 		model.addAttribute("departmentList", departmentList);
-		
+
 		model.addAttribute("resUrl", resUrl);
 		return "sys/account/account_detail";
 	}
@@ -233,7 +250,8 @@ public class AccountController extends AbstractController {
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, String id, String userName, String nickName,
 			String mobile, String password, Long roleId, Long orgId, String email, String remark, Integer signType,
-			@RequestParam(value = "pic", required = false) MultipartFile file, Integer isCharge, String department) {
+			@RequestParam(value = "pic", required = false) MultipartFile file, Integer isCharge, String department,
+			Long pId) {
 		AjaxVO vo = new AjaxVO();
 		Account account = null;
 
@@ -252,6 +270,7 @@ public class AccountController extends AbstractController {
 					account.setSignType(signType);
 					account.setIsCharge(isCharge);
 					account.setDepartment(department);
+					account.setpId(pId);
 
 					if (signType == 2) {
 						if (file != null && !file.isEmpty()) {
@@ -291,6 +310,7 @@ public class AccountController extends AbstractController {
 					account.setSignType(signType);
 					account.setIsCharge(isCharge);
 					account.setDepartment(department);
+					account.setpId(pId);
 
 					if (signType == 2) {
 						if (file != null && !file.isEmpty()) {
@@ -316,7 +336,8 @@ public class AccountController extends AbstractController {
 
 	@ResponseBody
 	@RequestMapping(value = "/updateInfo")
-	public AjaxVO updateInfo(HttpServletRequest request, Model model, String id, String nickName, String mobile, String email) {
+	public AjaxVO updateInfo(HttpServletRequest request, Model model, String id, String nickName, String mobile,
+			String email) {
 		AjaxVO vo = new AjaxVO();
 		Account account = null;
 
@@ -471,14 +492,15 @@ public class AccountController extends AbstractController {
 			sh.setColumnWidth(2, (short) 4000);
 			sh.setColumnWidth(3, (short) 8000);
 			sh.setColumnWidth(4, (short) 6000);
-			sh.setColumnWidth(5, (short) 9000);
-			sh.setColumnWidth(6, (short) 6000);
-			sh.setColumnWidth(7, (short) 3000);
-			sh.setColumnWidth(8, (short) 6000);
+			sh.setColumnWidth(5, (short) 6000);
+			sh.setColumnWidth(6, (short) 9000);
+			sh.setColumnWidth(7, (short) 6000);
+			sh.setColumnWidth(8, (short) 3000);
+			sh.setColumnWidth(9, (short) 6000);
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "科室", "角色", "邮箱", "状态", "创建时间" };
+			String[] titles = { "用户名", "姓名", "手机号码", "机构名称", "科室", "上级用户名", "角色", "邮箱", "状态", "创建时间" };
 			int r = 0;
 
 			Row titleRow = sh.createRow(0);
@@ -519,29 +541,35 @@ public class AccountController extends AbstractController {
 				cell5.setCellStyle(styles.get("cell"));
 				cell5.setCellValue(account.getDepartment());
 
+				Cell cell6 = contentRow.createCell(5);
+				cell6.setCellStyle(styles.get("cell"));
+				if (account.getParent() != null) {
+					cell6.setCellValue(account.getParent().getUserName());
+				}
+
 				String roleStr = "";
 				if (account.getRole() != null) {
 					roleStr = account.getRole().getName();
 				}
-				Cell cell6 = contentRow.createCell(5);
-				cell6.setCellStyle(styles.get("cell"));
-				cell6.setCellValue(roleStr);
-
 				Cell cell7 = contentRow.createCell(6);
 				cell7.setCellStyle(styles.get("cell"));
-				cell7.setCellValue(account.getEmail());
+				cell7.setCellValue(roleStr);
+
+				Cell cell8 = contentRow.createCell(7);
+				cell8.setCellStyle(styles.get("cell"));
+				cell8.setCellValue(account.getEmail());
 
 				String lock = "正常";
 				if (account.getLock() == "Y") {
 					lock = "锁定";
 				}
-				Cell cell8 = contentRow.createCell(7);
-				cell8.setCellStyle(styles.get("cell"));
-				cell8.setCellValue(lock);
-
 				Cell cell9 = contentRow.createCell(8);
 				cell9.setCellStyle(styles.get("cell"));
-				cell9.setCellValue(sdf.format(account.getCreateTime()));
+				cell9.setCellValue(lock);
+
+				Cell cell10 = contentRow.createCell(9);
+				cell10.setCellStyle(styles.get("cell"));
+				cell10.setCellValue(sdf.format(account.getCreateTime()));
 				r++;
 			}
 
@@ -579,6 +607,7 @@ public class AccountController extends AbstractController {
 		titleList.add("科室");
 		titleList.add("角色编码");
 		titleList.add("邮箱");
+		titleList.add("上级用户名");
 
 		MultipartFile file = multipartRequest.getFile("upfile");
 		if (file.isEmpty()) {
@@ -622,6 +651,9 @@ public class AccountController extends AbstractController {
 						flag = false;
 					}
 					if (flag && !"邮箱".equals(titleObj.get(6).toString())) {
+						flag = false;
+					}
+					if (flag && !"上级用户名".equals(titleObj.get(7).toString())) {
 						flag = false;
 					}
 
@@ -695,6 +727,11 @@ public class AccountController extends AbstractController {
 						}
 					}
 
+					String parentUserName = null;
+					if (obj.size() >= 8 && obj.get(7) != null) {
+						parentUserName = obj.get(7).toString();
+					}
+
 					if (StringUtils.isBlank(userName)) {
 						continue;
 					}
@@ -712,6 +749,13 @@ public class AccountController extends AbstractController {
 					account.setDepartment(department);
 					account.setSignType(1);
 					account.setIsCharge(0);
+
+					if (StringUtils.isNotBlank(parentUserName)) {
+						Account parent = accountMap.get(parentUserName);
+						if (parent != null) {
+							account.setpId(parent.getId());
+						}
+					}
 
 					if (dbAccount == null) { // 修改
 						account.setUserName(userName);
@@ -800,4 +844,17 @@ public class AccountController extends AbstractController {
 		}
 	}
 
+	/**
+	 * 上级选择
+	 */
+	@RequestMapping(value = "/parentChoose")
+	public String parentChoose(HttpServletRequest httpServletRequest, Model model, String currentUserName) {
+		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
+
+		model.addAttribute("currentUserName", currentUserName);
+		return "sys/account/parent_list";
+	}
 }

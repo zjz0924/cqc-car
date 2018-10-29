@@ -156,25 +156,35 @@
 				            	}
 				            }
 				        }, {
-				            field : 'department',
-				            title : '科室',
+				            field : 'parent',
+				            title : '上级用户名',
 				            width : '160',
-				            align : 'center',
-				            sortable: true,
-				            formatter: formatCellTooltip
-				        }, {
-				            field : 'role',
-				            title : '角色',
-				            width : '140',
 				            align : 'center',
 				            formatter: function(val){
 				            	if(val){
-				            		return "<span title='" + val.name + "'>" + val.name + "</span>";
+				            		return "<span title='" + val.userName + "'>" + val.userName + "</span>";
 				            	}
-							}
-						}
+				            }
+				        }
 			        ]],
-			        columns : [ [ {
+			        columns : [ [{
+			            field : 'department',
+			            title : '科室',
+			            width : '160',
+			            align : 'center',
+			            sortable: true,
+			            formatter: formatCellTooltip
+			        }, {
+			            field : 'role',
+			            title : '角色',
+			            width : '140',
+			            align : 'center',
+			            formatter: function(val){
+			            	if(val){
+			            		return "<span title='" + val.name + "'>" + val.name + "</span>";
+			            	}
+						}
+					}, {
 			            field : 'mobile',
 			            title : '手机号码',
 			            width : '100',
@@ -242,6 +252,7 @@
 							'department': $("#q_department").combobox("getValue"),
 							'orgId': $("#q_org").combotree("getValue"),
 							'roleId': $("#q_role").combotree("getValue"),
+							'parentUserName': $("#q_parentUserName").textbox("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -253,19 +264,14 @@
 				$('#q_role').combotree({
 					url: '${ctx}/role/tree',
 					multiple: false,
-					animate: true	
-				});
-				
-				// 只有角色才能选择
-				var t = $('#q_role').combotree('tree');	
-				t.tree({
-				   onBeforeSelect: function(node){
+					animate: true,
+					onBeforeSelect: function(node){
 					   if(node.id.indexOf("r") != -1){
 							return true;
 					   }else{
 						   return false;
 					   }
-				   }
+				    }
 				});
 			});
 			
@@ -294,7 +300,8 @@
 					'isCharge': $("#q_isCharge").val(),
 					'orgId': $("#q_org").combotree("getValue"),
 					'roleId': $("#q_role").combotree("getValue"),
-					'department': $("#q_department").combobox("getValue")
+					'department': $("#q_department").combobox("getValue"),
+					'parentUserName': $("#q_parentUserName").textbox("getValue")
 				}
 				getData(accountDatagrid, accountGetDataUrl, data);
 			}
@@ -310,6 +317,7 @@
 				$("#q_org").combotree("setValue","");
 				$("#q_role").combotree("setValue","");
 				$("#q_department").combobox("select", ""),
+				$("#q_parentUserName").textbox("setValue", "")
 				getData(accountDatagrid, accountGetDataUrl, {});
 			}
 		
@@ -320,10 +328,14 @@
 					height : 450,
 					closed : false,
 					cache : false,
+					top:100,
 					href : url,
-					modal : true
+					modal : true,
+					onClose: function(){
+						window.location.reload();
+					}
 				});
-				$('#accountDialog').window('center');
+				top.parent.scrollTo(0, 350);
 			}
 			
 			function lockOrUnlock(id, type){
@@ -356,9 +368,8 @@
 			
 			// 关掉对话时回调
 			function closeAccountDialog(msg) {
-				$('#accountDialog').dialog('close');
 				tipMsg(msg, function(){
-					$('#' + accountDatagrid).datagrid('reload');
+					$('#accountDialog').dialog('close');
 				});
 			}
 			
@@ -453,7 +464,10 @@
 			</div>
 			
 			<div style="margin-top:10px;">
-			<span class="title_span">创建时间：</span>
+				<span class="title_span" >上级用户名：</span>
+				<input id="q_parentUserName" name="q_parentUserName" class="easyui-textbox" style="width: 180px;">
+				
+				<span class="title_span">创建时间：</span>
 				<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:82px;display:inline-block"/> - 
 				<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:82px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
 			
@@ -466,7 +480,7 @@
 			<table id="accountTable" style="height:auto;width:auto"></table>
 		</div>
 		
-		<div id="accountDialog"></div>
+		<div id="accountDialog" style="overflow-y: hidden;"></div>
 		
 		<!-- Excel 导入 -->
 		<div id="excelDialog" class="easyui-dialog" title="用户导入" style="width: 300px; height: 200px; padding: 10px;" data-options="modal: true" closed="true">

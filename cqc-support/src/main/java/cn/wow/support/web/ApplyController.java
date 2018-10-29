@@ -375,7 +375,7 @@ public class ApplyController extends AbstractController {
 
 		// 除了超级管理员，其它用户只能查看自己录入的申请记录
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-			map.put("aId", account.getId());
+			map.put("applicatId", account.getId());
 		}
 
 		if (StringUtils.isNotBlank(startCreateTime)) {

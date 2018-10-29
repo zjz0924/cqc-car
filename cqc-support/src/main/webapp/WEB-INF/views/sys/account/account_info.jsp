@@ -24,17 +24,22 @@
 			</div>
 			
 			<div class="data-row">
-				<span class="title-span"><span class="req-span">*</span>科室：</span> 
-		      	<input value="${facadeBean.department}" disabled class="easyui-textbox">&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="title-span"><span class="req-span">*</span>上级用户名：</span> 
+		      	<input value="${facadeBean.parent.userName}" disabled class="easyui-textbox">&nbsp;&nbsp;&nbsp;&nbsp;
 		      	
-		      	<span class="title-span">手机：</span> 
-				<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" data-options="validType:'phone'">
+		      	<span class="title-span"><span class="req-span">*</span>科室：</span> 
+		      	<input value="${facadeBean.department}" disabled class="easyui-textbox">&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 			
 			<div class="data-row">
+				<span class="title-span">手机：</span> 
+				<input id="mobile" name="mobile" class="easyui-textbox" value="${facadeBean.mobile}" data-options="validType:'phone'">&nbsp;&nbsp;&nbsp;&nbsp;
+				
 				<span class="title-span">&nbsp;邮箱：</span> 
 				<input id="email" name="email" class="easyui-textbox" value="${facadeBean.email}" data-options="validType:'email'">&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
 			
+			<div class="data-row">
 				 <span class="title-span">状态</span>
                  <c:choose>
 					<c:when test="${facadeBean.lock == 'N'}">

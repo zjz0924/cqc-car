@@ -2,10 +2,6 @@ package cn.wow.common.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -51,6 +47,10 @@ public class Account extends JpaEntity {
 	private Integer isCharge;
 	// 科室
 	private String department;
+	// 上级用户
+	private Long pId;
+
+	private Account parent;
 
 	public String getLock() {
 		return lock;
@@ -186,6 +186,22 @@ public class Account extends JpaEntity {
 
 	public void setDepartment(String department) {
 		this.department = department;
+	}
+
+	public Long getpId() {
+		return pId;
+	}
+
+	public void setpId(Long pId) {
+		this.pId = pId;
+	}
+
+	public Account getParent() {
+		return parent;
+	}
+
+	public void setParent(Account parent) {
+		this.parent = parent;
 	}
 
 	@JsonIgnore

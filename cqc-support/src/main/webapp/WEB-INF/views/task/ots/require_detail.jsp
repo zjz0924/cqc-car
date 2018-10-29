@@ -216,6 +216,37 @@
 			</table>
 		</div>
 	
+		<div style="margin-left: 10px;margin-top:20px;">
+			<div class="title">权限信息</div>
+			
+			<div class="permission">
+				<span class="permissionSpan">审核人员：</span>
+				<input id="examineAccountName" class="inputxt" readonly="readonly" value="${examineAccount.nickName}">
+				<input id="examineAccountId" name="examineAccountId" class="inputxt" type="hidden" value="${examineAccount.id}">
+				
+				<a onclick="chooseUser('examine')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+				<a onclick="clearValue('examine')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>
+			</div>
+			
+			<div class="permission">
+				<span class="permissionSpan">下达任务人员：</span>
+				<input id="trainsmitAccountName" class="inputxt" readonly="readonly" value="${trainsmitAccount.nickName }">
+				<input id="trainsmitAccountId" name="trainsmitAccountId" class="inputxt" type="hidden" value="${trainsmitAccount.id}">
+				
+				<a onclick="chooseUser('trainsmit')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+				<a onclick="clearValue('trainsmit')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>	
+			</div>
+			
+			<div class="permission">
+				<span class="permissionSpan">审批人员：</span>
+				<input id="approveAccountName" class="inputxt" readonly="readonly" value="${approveAccount.nickName }">
+				<input id="approveAccountId" name="approveAccountId" class="inputxt" type="hidden" value="${approveAccount.id}">
+				
+				<a onclick="chooseUser('approve')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
+				<a onclick="clearValue('approve')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-redo">清空</a>
+			</div>
+		</div>
+	
 		 <div style="text-align:center;margin-top:35px;" class="data-row">
 			<a href="javascript:void(0);"  onclick="save(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);"  onclick="save(1)" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'">暂存</a>
@@ -226,6 +257,7 @@
 	<div id="vehicleDialog"></div>
 	<div id="materialDialog"></div>
 	<div id="partsDialog"></div>
+	<div id="userDialog"></div>
 	
 		<style type="text/css">
 			.title-span{
@@ -283,6 +315,28 @@
 				height: 22px;
 			    line-height: 22px;
 			    font-size: 12px;
+			}
+			
+			.inputxt{
+				border: 1px solid #D7D7D7;
+			    border-radius: 3PX;
+			    height: 25px;
+			    padding: 7px 0 7px 5px!important;
+			    line-height: 14PX;
+			    font-size: 12px;
+			    display: inline-block;
+			    width: 150px;
+			}
+			
+			.permission{
+				margin-left: 20px;
+    			margin-bottom: 15px;
+			}
+			
+			.permissionSpan{
+				width: 100px;
+			    display: inline-block;
+			    font-weight: bold;
 			}
 		</style>
 		
@@ -386,6 +440,28 @@
 					return false;
 				}
 				
+				// 权限信息
+				var examineAccountId = $("#examineAccountId").val();
+				if(isNull(examineAccountId)){
+					errorMsg("系统提示：请选择审核人员");
+					saving = false;
+					return false;
+				}
+				
+				var trainsmitAccountId = $("#trainsmitAccountId").val();
+				if(isNull(trainsmitAccountId)){
+					errorMsg("系统提示：请选择下达人员");
+					saving = false;
+					return false;
+				}
+				
+				var approveAccountId = $("#approveAccountId").val();
+				if(isNull(approveAccountId)){
+					errorMsg("系统提示：请选择审批人员");
+					saving = false;
+					return false;
+				}
+			
 				$("#draft").val(isDraft);
 				
 				$('#uploadForm').ajaxSubmit({
@@ -501,6 +577,30 @@
 				$("#m_remark").textbox("setValue", "");
 				$("#m_num").textbox("clear");
 			}
+			
+			
+			function clearValue(type){
+				$("#" + type + "AccountName").val("");
+				$("#" + type + "approveAccountId").val("");
+			}
+			
+			
+			function chooseUser(type){
+				$('#userDialog').dialog({
+					title : '用户信息',
+					width : 1100,
+					height : 550,
+					closed : false,
+					cache : false,
+					top: 100,
+					href : "${ctx}/ots/userList?type=" + type,
+					modal : true
+				});
+				
+				// 移去滚动条
+				window.parent.parent.scrollY(430);
+			}
+			
 		</script>
 	
 </body>

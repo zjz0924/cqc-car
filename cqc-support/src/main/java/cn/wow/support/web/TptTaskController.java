@@ -34,6 +34,7 @@ import cn.wow.common.domain.Address;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CarCode;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
@@ -138,6 +139,8 @@ public class TptTaskController extends AbstractController {
 	private ReasonOptionService reasonOptionService;
 	@Autowired
 	private ReasonService reasonService;
+	@Autowired
+	private DepartmentService departmentService;
 
 	/**
 	 * 首页
@@ -314,9 +317,36 @@ public class TptTaskController extends AbstractController {
 			if (validChoose(task.getAtlType(), "4")) {
 				model.addAttribute("matPat", "1");
 			}
+			
+			// 权限信息
+			if (task.getExamineAccountId() != null) {
+				model.addAttribute("examineAccount", accountService.selectOne(task.getExamineAccountId()));
+			}
+			if (task.getTrainsmitAccountId() != null) {
+				model.addAttribute("trainsmitAccount", accountService.selectOne(task.getTrainsmitAccountId()));
+			}
+			if (task.getApproveAccountId() != null) {
+				model.addAttribute("approveAccount", accountService.selectOne(task.getApproveAccountId()));
+			}
 
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
+		} else {
+			// 权限信息
+			Account examineAccount = applicat.getParent();
+			if (examineAccount != null) {
+				model.addAttribute("examineAccount", examineAccount);
+
+				Account trainsmitAccount = examineAccount.getParent();
+				if (trainsmitAccount != null) {
+					model.addAttribute("trainsmitAccount", examineAccount);
+
+					Account approveAccount = trainsmitAccount.getParent();
+					if (approveAccount != null) {
+						model.addAttribute("approveAccount", approveAccount);
+					}
+				}
+			}
 		}
 
 		// 生产基地
@@ -347,7 +377,7 @@ public class TptTaskController extends AbstractController {
 			String m_proNo, String m_matNo, String m_remark, Long t_id, int m_num, int draft, String p_producer,
 			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
 			Long applicat_id, Long reason_id, String origin, String reason, String otherRemark, String source,
-			String reasonRemark) {
+			String reasonRemark, Long examineAccountId, Long trainsmitAccountId, Long approveAccountId) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -516,7 +546,8 @@ public class TptTaskController extends AbstractController {
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			infoService.insert(account, vehicle, parts, material, reasonObj, Contants.SAMPLE_TYPE, t_id,
-					TaskTypeEnum.GS.getState(), draft, formatAltType(atlType), atlRemark, atlItem);
+					TaskTypeEnum.GS.getState(), draft, formatAltType(atlType), atlRemark, atlItem, examineAccountId,
+					trainsmitAccountId, approveAccountId);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -567,6 +598,8 @@ public class TptTaskController extends AbstractController {
 			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -578,7 +611,8 @@ public class TptTaskController extends AbstractController {
 		map.put("state", StandardTaskEnum.EXAMINE.getState());
 		map.put("type", TaskTypeEnum.GS.getState());
 		map.put("neDraft", "1");
-
+		map.put("examineAccountId", applicat.getId());
+		
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
 		}
@@ -824,6 +858,8 @@ public class TptTaskController extends AbstractController {
 			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -833,10 +869,10 @@ public class TptTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("transimtTask_gs", true);
-
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", TaskTypeEnum.GS.getState());
-
+		map.put("trainsmitAccountId", applicat.getId());
+		
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
 		}
@@ -1055,7 +1091,9 @@ public class TptTaskController extends AbstractController {
 			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
 			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
 			Long applicat_org) {
-
+		
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -1066,6 +1104,7 @@ public class TptTaskController extends AbstractController {
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("approveTask_gs", true);
 		map.put("type", TaskTypeEnum.GS.getState());
+		map.put("approveAccountId", applicat.getId());
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -1331,4 +1370,22 @@ public class TptTaskController extends AbstractController {
 		return labReq;
 	}
 
+	
+	/**
+	 * 用户选择
+	 * 
+	 * @param model
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "/userList")
+	public String userList(HttpServletRequest httpServletRequest, Model model, String type) {
+		model.addAttribute("defaultPageSize", REQUIRE_DEFAULT_PAGE_SIZE);
+		model.addAttribute("type", type);
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
+
+		return "task/tpt/account_list";
+	}
 }

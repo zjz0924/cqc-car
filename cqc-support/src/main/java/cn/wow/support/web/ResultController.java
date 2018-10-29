@@ -41,6 +41,7 @@ import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.Attach;
 import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.CompareVO;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
@@ -52,6 +53,7 @@ import cn.wow.common.service.AddressService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
@@ -118,6 +120,8 @@ public class ResultController extends AbstractController {
 	private CarCodeService carCodeService;
 	@Autowired
 	private AttachService attachService;
+	@Autowired
+	private DepartmentService departmentService;
 
 	// ----------------------------------- 结果上传
 	// ---------------------------------------------------------------
@@ -571,40 +575,10 @@ public class ResultController extends AbstractController {
 			}
 
 			// 获取操作的用户（任务阶段）
-			Integer state = null;
-			if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
-				state = 4;
-			} else {
-				state = 2;
-			}
-
-			List<Account> accountList = null;
-			if (task.gettId() == null) {
-				accountList = accountService.getOperationUser(task.getId(), state);
-			} else {
-				accountList = accountService.getOperationUser(task.gettId(), state);
-			}
-
-			if (accountList != null && accountList.size() > 0) {
-				StringBuffer emails = new StringBuffer();
-				StringBuffer names = new StringBuffer();
-
-				for (int i = 0; i < accountList.size(); i++) {
-					Account account = accountList.get(i);
-
-					if (StringUtils.isNotBlank(account.getEmail())) {
-						if (i != accountList.size() - 1) {
-							emails.append(account.getEmail() + ";");
-							names.append(account.getUserName() + ",");
-						} else {
-							emails.append(account.getEmail());
-							names.append(account.getUserName());
-						}
-					}
-				}
-				model.addAttribute("sendEmails", emails.toString());
-				model.addAttribute("sendNames", names.toString());
-			}
+			Map<String, String> data = new HashMap<String, String>();
+			this.getOperatorNameAndEmail(task, data);
+			model.addAttribute("sendEmails", data.get("email"));
+			model.addAttribute("sendNames",  data.get("name"));
 
 			model.addAttribute("facadeBean", task);
 
@@ -678,6 +652,10 @@ public class ResultController extends AbstractController {
 		model.addAttribute("defaultPageSize", SEND_DEFAULT_PAGE_SIZE);
 		model.addAttribute("resUrl", resUrl);
 		model.addAttribute("type", type);
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
+
 		return "result/account_list";
 	}
 
@@ -944,7 +922,7 @@ public class ResultController extends AbstractController {
 	}
 
 	/**
-	   *    批量审批接收结果
+	 * 批量审批接收结果
 	 * 
 	 * @param ids    任务ID
 	 * @param type   结果： 1-通过， 2-不通过
@@ -1459,6 +1437,61 @@ public class ResultController extends AbstractController {
 				mAtlasResult.add(ar);
 			}
 		}
+	}
+
+	/**
+	 * 获取操作的名称和邮件
+	 */
+	private void getOperatorNameAndEmail(Task task, Map<String, String> data) {
+		StringBuffer emails = new StringBuffer();
+		StringBuffer names = new StringBuffer();
+
+		// 申请人员
+		if (task.getApplicat() != null) {
+			Account applicat = task.getApplicat();
+			emails.append(applicat.getEmail() + ";");
+			names.append(applicat.getUserName() + ",");
+		}
+
+		// 审批人员
+		if (task.getApproveAccountId() != null) {
+			Account approveAccount = accountService.selectOne(task.getApproveAccountId());
+			emails.append(approveAccount.getEmail() + ";");
+			names.append(approveAccount.getUserName() + ",");
+		}
+
+		// 审核人员
+		if (task.getExamineAccountId() != null) {
+			Account examineAccount = accountService.selectOne(task.getExamineAccountId());
+			emails.append(examineAccount.getEmail() + ";");
+			names.append(examineAccount.getUserName() + ",");
+		}
+
+		// 下达人员
+		if (task.getTrainsmitAccountId() != null) {
+			Account trainsmitAccount = accountService.selectOne(task.getTrainsmitAccountId());
+			emails.append(trainsmitAccount.getEmail() + ";");
+			names.append(trainsmitAccount.getUserName() + ",");
+		}
+
+		String emailStr = emails.toString();
+		if (StringUtils.isNotBlank(emailStr)) {
+			if (emailStr.indexOf(";") != -1) {
+				data.put("email", emailStr.substring(0, emailStr.length() - 1));
+			} else {
+				data.put("email", emailStr);
+			}
+		}
+
+		String namesStr = names.toString();
+		if (StringUtils.isNotBlank(namesStr)) {
+			if (namesStr.indexOf(",") != -1) {
+				data.put("name", namesStr.substring(0, namesStr.length() - 1));
+			} else {
+				data.put("name", namesStr);
+			}
+		}
+
 	}
 
 }

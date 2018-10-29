@@ -34,6 +34,7 @@ import cn.wow.common.domain.Address;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CarCode;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
@@ -49,6 +50,7 @@ import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -129,6 +131,8 @@ public class OtsTaskController extends AbstractController {
 	private CarCodeService carCodeService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private DepartmentService departmentService;
 
 	/**
 	 * 首页
@@ -294,8 +298,35 @@ public class OtsTaskController extends AbstractController {
 				model.addAttribute("materialAtl", "1");
 			}
 
+			// 权限信息
+			if (task.getExamineAccountId() != null) {
+				model.addAttribute("examineAccount", accountService.selectOne(task.getExamineAccountId()));
+			}
+			if (task.getTrainsmitAccountId() != null) {
+				model.addAttribute("trainsmitAccount", accountService.selectOne(task.getTrainsmitAccountId()));
+			}
+			if (task.getApproveAccountId() != null) {
+				model.addAttribute("approveAccount", accountService.selectOne(task.getApproveAccountId()));
+			}
+
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
+		} else {
+			// 权限信息
+			Account examineAccount = applicat.getParent();
+			if (examineAccount != null) {
+				model.addAttribute("examineAccount", examineAccount);
+
+				Account trainsmitAccount = examineAccount.getParent();
+				if (trainsmitAccount != null) {
+					model.addAttribute("trainsmitAccount", examineAccount);
+
+					Account approveAccount = trainsmitAccount.getParent();
+					if (approveAccount != null) {
+						model.addAttribute("approveAccount", approveAccount);
+					}
+				}
+			}
 		}
 
 		// 生产基地
@@ -318,7 +349,8 @@ public class OtsTaskController extends AbstractController {
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
 			String m_proNo, String m_matNo, String m_remark, Long t_id, int m_num, int draft, String p_producer,
-			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode) {
+			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
+			Long examineAccountId, Long trainsmitAccountId, Long approveAccountId) {
 
 		AjaxVO vo = new AjaxVO();
 
@@ -474,7 +506,8 @@ public class OtsTaskController extends AbstractController {
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			infoService.insert(account, vehicle, parts, material, null, Contants.STANDARD_TYPE, t_id,
-					TaskTypeEnum.OTS.getState(), draft, formatAltType(atlType), atlRemark, atlItem);
+					TaskTypeEnum.OTS.getState(), draft, formatAltType(atlType), atlRemark, atlItem, examineAccountId,
+					trainsmitAccountId, approveAccountId);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -519,6 +552,8 @@ public class OtsTaskController extends AbstractController {
 			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -530,6 +565,7 @@ public class OtsTaskController extends AbstractController {
 		map.put("state", StandardTaskEnum.EXAMINE.getState());
 		map.put("type", TaskTypeEnum.OTS.getState());
 		map.put("neDraft", "1");
+		map.put("examineAccountId", applicat.getId());
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -740,6 +776,8 @@ public class OtsTaskController extends AbstractController {
 			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -751,6 +789,7 @@ public class OtsTaskController extends AbstractController {
 		map.put("transimtTask_ots", true);
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", TaskTypeEnum.OTS.getState());
+		map.put("trainsmitAccountId", applicat.getId());
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -933,6 +972,8 @@ public class OtsTaskController extends AbstractController {
 			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -943,6 +984,7 @@ public class OtsTaskController extends AbstractController {
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("approveTask_ots", true);
 		map.put("type", TaskTypeEnum.OTS.getState());
+		map.put("approveAccountId", applicat.getId());
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -1207,5 +1249,23 @@ public class OtsTaskController extends AbstractController {
 			}
 		}
 		return jsonString;
+	}
+
+	/**
+	 * 用户选择
+	 * 
+	 * @param model
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "/userList")
+	public String userList(HttpServletRequest httpServletRequest, Model model, String type) {
+		model.addAttribute("defaultPageSize", REQUIRE_DEFAULT_PAGE_SIZE);
+		model.addAttribute("type", type);
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
+
+		return "task/ots/account_list";
 	}
 }

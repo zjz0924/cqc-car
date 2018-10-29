@@ -30,7 +30,8 @@ public interface InfoService {
 	public List<Info> selectAllList(Map<String, Object> map);
 
 	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
-			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem);
+			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem,
+			Long examineAccountId, Long trainsmitAccountId, Long approveAccountId);
 
 	/**
 	 * 审批审核
@@ -68,7 +69,8 @@ public interface InfoService {
 	 * @param matAtlId   原材料图谱实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId, List<LabReq> labReqList);
+	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
+			List<LabReq> labReqList);
 
 	/**
 	 * 下达任务（PPAP）
@@ -79,7 +81,7 @@ public interface InfoService {
 	 */
 	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
 			String atlRemark, String expectDate, Long partsAtlId, Long matAtlId, Vehicle vehicle, Parts parts,
-			Material material) throws ParseException;
+			Material material, Long approveAccountId) throws ParseException;
 
 	/**
 	 * 审批（OTS）

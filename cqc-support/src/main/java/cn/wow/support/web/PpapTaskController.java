@@ -35,6 +35,7 @@ import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
 import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.CompareVO;
+import cn.wow.common.domain.Department;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.LabConclusion;
@@ -52,6 +53,7 @@ import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
@@ -123,6 +125,8 @@ public class PpapTaskController extends AbstractController {
 	private ReasonService reasonService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private DepartmentService departmentService;
 
 	/**
 	 * 首页
@@ -308,8 +312,16 @@ public class PpapTaskController extends AbstractController {
 				model.addAttribute("materialAtl", "1");
 			}
 
+			// 权限信息
+			if (task.getApproveAccountId() != null) {
+				model.addAttribute("approveAccount", accountService.selectOne(task.getApproveAccountId()));
+			}
+
 			model.addAttribute("facadeBean", task);
 			model.addAttribute("recordList", recordList);
+		} else {
+			// 权限信息
+			model.addAttribute("approveAccount", getLastestAccount(applicat));
 		}
 
 		// 抽样原因选项
@@ -344,7 +356,7 @@ public class PpapTaskController extends AbstractController {
 			Long m_id, String v_remark, int taskType, Long partsAtl_org, Long matAtl_org, String atlType[],
 			String atlRemark, String expectDate, Long reason_id, String origin, String reason, String otherRemark,
 			String source, String reasonRemark, String p_proTime, Integer p_num, String p_proNo, String p_place,
-			String p_remark, String m_proNo, Integer m_num, String m_remark) {
+			String p_remark, String m_proNo, Integer m_num, String m_remark, Long approveAccountId) {
 		AjaxVO vo = new AjaxVO();
 
 		try {
@@ -443,7 +455,7 @@ public class PpapTaskController extends AbstractController {
 					// 材料信息
 					if (task.getInfo().getmId() != null) {
 						Material temp = materialService.selectOne(m_id);
-						
+
 						material = materialService.selectOne(task.getInfo().getmId());
 						material.setMatName(temp.getMatName());
 						material.setMatNo(temp.getMatNo());
@@ -457,7 +469,7 @@ public class PpapTaskController extends AbstractController {
 				}
 
 				boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, formatAltType(atlType),
-						atlRemark, expectDate, partsAtl_org, matAtl_org, vehicle, parts, material);
+						atlRemark, expectDate, partsAtl_org, matAtl_org, vehicle, parts, material, approveAccountId);
 				if (!flag) {
 					vo.setSuccess(true);
 					vo.setMsg("操作成功，已有进行中抽样");
@@ -513,6 +525,8 @@ public class PpapTaskController extends AbstractController {
 			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
 			Long applicat_org, int taskType, String origin, String reason, String source, Long labId) {
 
+		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -522,6 +536,8 @@ public class PpapTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("ppap_approveTask", true);
+		map.put("approveAccountId", applicat.getId());
+
 		if (taskType == 2) {
 			map.put("type", TaskTypeEnum.PPAP.getState());
 		} else if (taskType == 3) {
@@ -1109,5 +1125,44 @@ public class PpapTaskController extends AbstractController {
 		dataMap.put("rows", pageList.getResult());
 
 		return dataMap;
+	}
+
+	/**
+	 * 用户选择
+	 * 
+	 * @param model
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value = "/userList")
+	public String userList(HttpServletRequest httpServletRequest, Model model, String type) {
+		model.addAttribute("defaultPageSize", TRANSMIT_DEFAULT_PAGE_SIZE);
+		model.addAttribute("type", type);
+
+		List<Department> departmentList = departmentService.selectAllList(new PageMap(false));
+		model.addAttribute("departmentList", departmentList);
+
+		return "task/tpt/account_list";
+	}
+
+	/**
+	 * 获取最上级的用户
+	 */
+	private Account getLastestAccount(Account account) {
+		Account parent = account.getParent();
+		if (parent != null) {
+			return getParentAccount(parent);
+		} else {
+			return null;
+		}
+	}
+
+	private Account getParentAccount(Account account) {
+		Account parent = account.getParent();
+		if (parent != null) {
+			return getParentAccount(parent);
+		} else {
+			return account;
+		}
 	}
 }
