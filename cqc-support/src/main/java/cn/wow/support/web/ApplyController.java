@@ -143,9 +143,9 @@ public class ApplyController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/taskListData")
 	public Map<String, Object> taskListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String startConfirmTime, String endConfirmTime, String task_code, Integer atlType,
-			String parts_name, String parts_producer, String parts_producerCode, String startProTime, String endProTime,
-			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
+			String endCreateTime, String startConfirmTime, String endConfirmTime, String task_code, String parts_name,
+			String parts_producer, String parts_producerCode, String startProTime, String endProTime, String matName,
+			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Long applicat_org) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
@@ -172,9 +172,6 @@ public class ApplyController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
-		}
-		if (atlType != null) {
-			map.put("atlType", atlType);
 		}
 
 		// 非超级管理员，只能看到分配到自己实验室的任务
@@ -507,7 +504,7 @@ public class ApplyController extends AbstractController {
 				model.addAttribute("compareResult_old", compareResult_old);
 				model.addAttribute("compareResult_new", compareResult_new);
 				model.addAttribute("labReqList", labReqList);
-				
+
 				// 型式结果附件
 				model.addAttribute("attach", attachService.getFileName(id));
 			}
@@ -571,8 +568,8 @@ public class ApplyController extends AbstractController {
 	@RequestMapping(value = "/applyInfoSave")
 	public AjaxVO applyInfoSave(HttpServletRequest request, Model model, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, int p_num, String p_producer, String p_producerCode, String p_remark, String m_matName,
-			String m_matColor, String m_proNo, String m_matNo, String m_remark, int m_num, String m_producer,
+			String p_proNo, Integer p_num, String p_producer, String p_producerCode, String p_remark, String m_matName,
+			String m_matColor, String m_proNo, String m_matNo, String m_remark, Integer m_num, String m_producer,
 			Long t_id) {
 
 		AjaxVO vo = new AjaxVO();
@@ -597,25 +594,23 @@ public class ApplyController extends AbstractController {
 				}
 			}
 
+			// 零部件信息
 			Parts parts = null;
-			if (task.getType() != TaskTypeEnum.GS.getState()) {
-				// 零部件信息
+			if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
+					p_producer, p_producerCode)) {
 				parts = partsService.selectOne(task.getInfo().getpId());
-				if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
-						p_producer, p_producerCode)) {
-					assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date,
-							p_num, p_producerCode);
+				assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date,
+						p_num, p_producerCode);
 
-					boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getName(), parts.getProTime(),
-							p_producer, p_producerCode).getFlag();
-					if (isExist) {
-						vo.setSuccess(false);
-						vo.setMsg("零部件信息已存在");
-						return vo;
-					}
-				} else {
-					parts = null;
+				boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getName(), parts.getProTime(),
+						p_producer, p_producerCode).getFlag();
+				if (isExist) {
+					vo.setSuccess(false);
+					vo.setMsg("零部件信息已存在");
+					return vo;
 				}
+			} else {
+				parts = null;
 			}
 
 			// 原材料信息
@@ -626,18 +621,10 @@ public class ApplyController extends AbstractController {
 						m_num);
 			}
 
-			if (task.getType() == TaskTypeEnum.GS.getState()) {
-				if (vehicle == null && material == null) {
-					vo.setSuccess(false);
-					vo.setMsg("请输入要修改的信息");
-					return vo;
-				}
-			} else {
-				if (vehicle == null && parts == null && material == null) {
-					vo.setSuccess(false);
-					vo.setMsg("请输入要修改的信息");
-					return vo;
-				}
+			if (vehicle == null && parts == null && material == null) {
+				vo.setSuccess(false);
+				vo.setMsg("请输入要修改的信息");
+				return vo;
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -784,10 +771,10 @@ public class ApplyController extends AbstractController {
 	 * @return
 	 */
 	boolean isUpdateMetailInfo(String m_matName, String m_matColor, String m_proNo, String m_producer, String m_matNo,
-			String m_remark, int m_num) {
+			String m_remark, Integer m_num) {
 		if (StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_matColor) && StringUtils.isBlank(m_proNo)
 				&& StringUtils.isBlank(m_matNo) && StringUtils.isBlank(m_matName) && StringUtils.isBlank(m_remark)
-				&& StringUtils.isBlank(m_producer) && m_num == 0) {
+				&& StringUtils.isBlank(m_producer) && m_num == null) {
 			return false;
 		} else {
 			return true;

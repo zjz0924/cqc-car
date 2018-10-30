@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,17 +104,28 @@ public class PartsServiceImpl implements PartsService {
 	 * 是否更新零部件信息
 	 */
 	public boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, String p_remark, int p_num, String p_producer, String p_producerCode) {
+			String p_proNo, String p_remark, Integer p_num, String p_producer, String p_producerCode) {
 
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
-				&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
-				&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark()) && p_num == parts.getNum()
-				&& parts.getProducer().equals(p_producer) && parts.getProducerCode().equals(p_producerCode)) {
-			return false;
+		if (parts == null) {
+			if (StringUtils.isNotBlank(p_code) || StringUtils.isNotBlank(p_name) || StringUtils.isNotBlank(p_proTime)
+					|| StringUtils.isNotBlank(p_place) || StringUtils.isNotBlank(p_proNo)
+					|| StringUtils.isNotBlank(p_remark) || p_num != null || StringUtils.isNotBlank(p_producer)
+					|| StringUtils.isNotBlank(p_producerCode)) {
+				return true;
+			}else {
+				return false;
+			}
 		} else {
-			return true;
+			if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
+					&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
+					&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark()) && p_num.intValue() == parts.getNum()
+					&& parts.getProducer().equals(p_producer) && parts.getProducerCode().equals(p_producerCode)) {
+				return false;
+			} else {
+				return true;
+			}
 		}
+
 	}
 }

@@ -107,9 +107,14 @@ public class LoginController {
 			}
 			model.addAttribute("error", error);
 		}
-		return "common/login";
+		return "common/login/login";
 	}
 	
+	@RequestMapping(value = "/form")
+	public String form(HttpServletRequest httpServletRequest, Model model, String error) {
+		model.addAttribute("error", error);
+		return "common/login/form";
+	}
 	
 	/**
 	 * 生成验证码 

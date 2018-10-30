@@ -59,96 +59,94 @@
 			</table>
 		</div>
 	
-		<c:if test="${facadeBean.type != 4}">
-			<div style="margin-left: 10px;margin-top:20px;">
-				<div class="title">零部件信息</div>
-				
-				<table class="info">
-					<tr>
-						<td>
-							<span class="title-span">零件名称：</span>
-							<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
-						</td>
-						<td class="input-td">
-							<input id="p_name" name="p_name" class="easyui-textbox" />
-						</td>
-						
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>零件图号：</span> 
-							<span class="val" title="${facadeBean.info.parts.code}">${facadeBean.info.parts.code}</span>
-						</td>
-						<td class="input-td">
-							<input id="p_code" name="p_code" class="easyui-textbox" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>供应商：</span> 
-							<span class="val" title="${facadeBean.info.parts.producer}">${facadeBean.info.parts.producer}</span>
-						</td>
-						<td class="input-td">
-							<input id="p_producer" name="p_producer" type="text" class="inputAutocomple" >
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
-							<span class="val" title="${facadeBean.info.parts.producerCode}">${facadeBean.info.parts.producerCode}</span>
-						</td>
-						<td class="input-td">
-							<input id="p_producerCode" name="p_producerCode" class="easyui-textbox">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span">样件批号：</span> 
-							<span class="val" title="${facadeBean.info.parts.proNo }">${facadeBean.info.parts.proNo }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_proNo" name="p_proNo" class="easyui-textbox" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
-							<span class="val" title="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
-						</td>
-						<td class="input-td">
-							<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span">生产场地：</span> 
-							<span class="val" title="${facadeBean.info.parts.place }">${facadeBean.info.parts.place }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_place" name="p_place" class="easyui-textbox" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span">样件数量：</span> 
-							<span class="val" title="${facadeBean.info.parts.num }">${facadeBean.info.parts.num }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_num" name="p_num" class="easyui-textbox" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="title-span">&nbsp;备注：</span> 
-							<span class="val" title="${facadeBean.info.parts.remark }">${facadeBean.info.parts.remark }</span>
-						</td>
-						<td class="input-td">
-							<input id="p_remark" name="p_remark" class="easyui-textbox">	
-						</td>
-					</tr>
-				</table>
-			</div>
-		</c:if>
+		<div style="margin-left: 10px;margin-top:20px;">
+			<div class="title">零部件信息</div>
+			
+			<table class="info">
+				<tr>
+					<td>
+						<span class="title-span">零件名称：</span>
+						<span class="val" title="${facadeBean.info.parts.name}">${facadeBean.info.parts.name}</span>
+					</td>
+					<td class="input-td">
+						<input id="p_name" name="p_name" class="easyui-textbox" />
+					</td>
+					
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>零件图号：</span> 
+						<span class="val" title="${facadeBean.info.parts.code}">${facadeBean.info.parts.code}</span>
+					</td>
+					<td class="input-td">
+						<input id="p_code" name="p_code" class="easyui-textbox" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>供应商：</span> 
+						<span class="val" title="${facadeBean.info.parts.producer}">${facadeBean.info.parts.producer}</span>
+					</td>
+					<td class="input-td">
+						<input id="p_producer" name="p_producer" type="text" class="inputAutocomple" >
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
+						<span class="val" title="${facadeBean.info.parts.producerCode}">${facadeBean.info.parts.producerCode}</span>
+					</td>
+					<td class="input-td">
+						<input id="p_producerCode" name="p_producerCode" class="easyui-textbox">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span">样件批号：</span> 
+						<span class="val" title="${facadeBean.info.parts.proNo }">${facadeBean.info.parts.proNo }</span>
+					</td>
+					<td class="input-td">
+						<input id="p_proNo" name="p_proNo" class="easyui-textbox" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span"><span class="req-span">*</span>生产日期：</span> 
+						<span class="val" title="<fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd"/>"><fmt:formatDate value='${facadeBean.info.parts.proTime }' type="date" pattern="yyyy-MM-dd"/></span>
+					</td>
+					<td class="input-td">
+						<input id="p_proTime" name="p_proTime" type="text" class="easyui-datebox" data-options="editable:false" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span">生产场地：</span> 
+						<span class="val" title="${facadeBean.info.parts.place }">${facadeBean.info.parts.place }</span>
+					</td>
+					<td class="input-td">
+						<input id="p_place" name="p_place" class="easyui-textbox" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span">样件数量：</span> 
+						<span class="val" title="${facadeBean.info.parts.num }">${facadeBean.info.parts.num }</span>
+					</td>
+					<td class="input-td">
+						<input id="p_num" name="p_num" class="easyui-textbox" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="title-span">&nbsp;备注：</span> 
+						<span class="val" title="${facadeBean.info.parts.remark }">${facadeBean.info.parts.remark }</span>
+					</td>
+					<td class="input-td">
+						<input id="p_remark" name="p_remark" class="easyui-textbox">	
+					</td>
+				</tr>
+			</table>
+		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
 			<div class="title">原材料信息</div>
@@ -325,25 +323,22 @@
 			var saving = false;
 		
 			$(function(){
-				var taskType = "${facadeBean.type}";
-				if(taskType != 4){
-					$("#p_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
-						formatItem: function(row,i,max) {
-							var obj =eval("(" + row + ")");//转换成js对象
-							return obj.text;
-						},
-						formatResult: function(row) {
-							var obj =eval("(" + row + ")");
-							return obj.text;
-						}
-					});
-					
-					//选择后处理方法
-					$("#p_producer").result(function(event, data, formatted){ 
-						var obj = eval("(" + data + ")"); //转换成js对象 
-						$("#p_producer").val(obj.text);
-					});
-				}
+				$("#p_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
+					formatItem: function(row,i,max) {
+						var obj =eval("(" + row + ")");//转换成js对象
+						return obj.text;
+					},
+					formatResult: function(row) {
+						var obj =eval("(" + row + ")");
+						return obj.text;
+					}
+				});
+				
+				//选择后处理方法
+				$("#p_producer").result(function(event, data, formatted){ 
+					var obj = eval("(" + data + ")"); //转换成js对象 
+					$("#p_producer").val(obj.text);
+				});
 				
 				$("#m_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {

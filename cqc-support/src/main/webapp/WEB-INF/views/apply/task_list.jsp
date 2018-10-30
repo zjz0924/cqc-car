@@ -54,7 +54,7 @@
 					}, {
 						field : 'type',
 						title : '任务类型',
-						width : '100',
+						width : '150',
 						align : 'center',
 						formatter : function(val){
 							var str = "第三方委托";
@@ -66,18 +66,6 @@
 								str = "图谱试验抽查-量产阶段";
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
-						}
-					}, {
-						field : 'atlType',
-						title : '基准图谱类型',
-						width : '90',
-						align : 'center',
-						formatter : function(val){
-							if(val == 1){
-								return "<span title='零件基准图谱'>零件基准图谱</span>";
-							}else{
-								return "<span title='材料基准图谱'>材料基准图谱</span>";
-							}
 						}
 					}, {
 						field : 'createTime',
@@ -208,25 +196,25 @@
 							}							
 						}
 					}, {
-						field : 'applicat.name',
+						field : 'applicat.nickName',
 						title : '申请人',
 						width : '100',
 						align : 'center',
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.name +"'>"+ applicat.name +"</span>";
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
 							}							
 						}
 					}, {
-						field : 'applicat.depart',
+						field : 'applicat.department',
 						title : '科室',
 						width : '120',
 						align : 'center',
 						formatter : function(value, row, index){
 							var applicat = row.applicat;
 							if(!isNull(applicat)){
-								return "<span title='"+ applicat.depart +"'>"+ applicat.depart +"</span>";
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
 							}							
 						}
 					}, {
@@ -255,7 +243,6 @@
 					onSelectPage : function(pageNumber, pageSize) {//分页触发  
 						var data = {
 							'task_code': $("#task_code").textbox("getValue"),
-							'atlType': $("#q_atlType").combobox('getValue'),
 							'parts_name': $("#parts_name").textbox("getValue"),
 							'parts_producer': $("#parts_producer").val(),
 							'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -405,7 +392,6 @@
 			function doSearch() {
 				var data = {
 					'task_code': $("#task_code").textbox("getValue"),
-					'atlType': $("#q_atlType").combobox('getValue'),
 					'parts_name': $("#parts_name").textbox("getValue"),
 					'parts_producer': $("#parts_producer").val(),
 					'parts_producerCode': $("#parts_producerCode").textbox("getValue"),
@@ -436,7 +422,6 @@
 		
 			function doClear() {
 				$("#task_code").textbox("setValue","");
-				$("#q_atlType").combobox('select', "");
 				$("#parts_name").textbox("setValue","");
 				$("#parts_producer").val("");
 				$("#parts_producerCode").textbox("setValue","");
@@ -474,10 +459,12 @@
 					height : 660,
 					closed : false,
 					cache : false,
+					top:300,
 					href : "${ctx}/apply/infoDetail?id=" + id,
 					modal : true
 				});
-				$('#infoDetailDialog').window('center');
+				
+				top.parent.scrollTo(0, 300);
 			}
 			
 			function labDetail(id) {
@@ -485,12 +472,14 @@
 					title : '试验结果信息',
 					width : 1200,
 					height : 660,
+					top:300,
 					closed : false,
 					cache : false,
 					href : "${ctx}/apply/labDetail?id=" + id,
 					modal : true
 				});
-				$('#labDetailDialog').window('center');
+				
+				top.parent.scrollTo(0, 300);
 			}
 			
 		</script>
@@ -563,23 +552,14 @@
 					<span class="qlabel">任务号：</span>
 					<input id="task_code" name="task_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
 				
-					<span class="qlabel">图谱类型：</span>
-					<select id="q_atlType" name="q_atlType" class="easyui-combobox" data-options="panelHeight: 'auto'" style="width:168px;">
-						<option value="">全部</option>
-						<option value="1">零件基准图谱</option>
-						<option value="2">材料基准图谱</option>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
-					
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
-					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" id="q_endCreateTime" name="q_endCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startCreateTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/>&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">确认时间：</span>
 					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
 					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;margin-right: 10px;"/>
-				</div>
 				
-				<div style="margin-top: 5px;">
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px;" onclick="doSearch()">查询</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear'" style="width:80px;" onclick="doClear()">清空</a>
 				</div>
