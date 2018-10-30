@@ -530,7 +530,6 @@
 		
 			function doClear() {
 				$("#task_code").textbox("setValue","");
-				$("#q_atlType").combobox('select', "");
 				$("#parts_name").textbox("setValue","");
 				$("#parts_producer").val("");
 				$("#parts_producerCode").textbox("setValue","");

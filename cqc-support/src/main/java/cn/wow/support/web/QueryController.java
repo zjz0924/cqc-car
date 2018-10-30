@@ -123,7 +123,7 @@ public class QueryController extends AbstractController {
 		List<ReasonOption> optionList = reasonOptionService.selectAllList(optionMap);
 
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
-		model.addAttribute("resUrl", resUrl);
+		model.addAttribute("optionList", optionList);
 		model.addAttribute("menuName", menu.getName());
 		return "query/task_list";
 	}
