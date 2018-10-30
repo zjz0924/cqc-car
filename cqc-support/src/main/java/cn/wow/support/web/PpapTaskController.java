@@ -520,7 +520,7 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, Integer atlType, String parts_name, String parts_producer,
+			String endCreateTime, String task_code, String parts_name, String parts_producer,
 			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
 			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
 			Long applicat_org, int taskType, String origin, String reason, String source, Long labId) {
@@ -536,7 +536,11 @@ public class PpapTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("ppap_approveTask", true);
-		map.put("approveAccountId", applicat.getId());
+		
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("approveAccountId", applicat.getId());
+		}
 
 		if (taskType == 2) {
 			map.put("type", TaskTypeEnum.PPAP.getState());
@@ -552,9 +556,6 @@ public class PpapTaskController extends AbstractController {
 		}
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
-		}
-		if (atlType != null) {
-			map.put("atlType", atlType);
 		}
 		if (labId != null) {
 			map.put("labId", labId);

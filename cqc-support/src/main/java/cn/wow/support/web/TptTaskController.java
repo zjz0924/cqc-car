@@ -317,7 +317,7 @@ public class TptTaskController extends AbstractController {
 			if (validChoose(task.getAtlType(), "4")) {
 				model.addAttribute("matPat", "1");
 			}
-			
+
 			// 权限信息
 			if (task.getExamineAccountId() != null) {
 				model.addAttribute("examineAccount", accountService.selectOne(task.getExamineAccountId()));
@@ -599,7 +599,7 @@ public class TptTaskController extends AbstractController {
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
 		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -611,8 +611,12 @@ public class TptTaskController extends AbstractController {
 		map.put("state", StandardTaskEnum.EXAMINE.getState());
 		map.put("type", TaskTypeEnum.GS.getState());
 		map.put("neDraft", "1");
-		map.put("examineAccountId", applicat.getId());
-		
+
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("examineAccountId", applicat.getId());
+		}
+
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
 		}
@@ -859,7 +863,7 @@ public class TptTaskController extends AbstractController {
 			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org) {
 
 		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -871,8 +875,12 @@ public class TptTaskController extends AbstractController {
 		map.put("transimtTask_gs", true);
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", TaskTypeEnum.GS.getState());
-		map.put("trainsmitAccountId", applicat.getId());
-		
+
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("trainsmitAccountId", applicat.getId());
+		}
+
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
 		}
@@ -1091,9 +1099,9 @@ public class TptTaskController extends AbstractController {
 			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
 			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
 			Long applicat_org) {
-		
+
 		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -1104,7 +1112,11 @@ public class TptTaskController extends AbstractController {
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("approveTask_gs", true);
 		map.put("type", TaskTypeEnum.GS.getState());
-		map.put("approveAccountId", applicat.getId());
+
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("approveAccountId", applicat.getId());
+		}
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -1370,7 +1382,6 @@ public class TptTaskController extends AbstractController {
 		return labReq;
 	}
 
-	
 	/**
 	 * 用户选择
 	 * 

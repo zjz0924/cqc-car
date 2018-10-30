@@ -221,177 +221,7 @@
 			<c:when test="${approveType == 2}">  
 				<div class="title">试验结果</div>
 				
-				<div class="title">零部件试验结果</div>
-				<table class="info">
-					<tr class="single-row">
-						<td class="table-title" style="width: 5%;">序号</td>
-						<td class="table-title"><span class="req-span">*</span>试验项目</td>
-						<td class="table-title"><span class="req-span">*</span>参考标准</td>
-						<td class="table-title"><span class="req-span">*</span>试验要求</td>
-						<td class="table-title"><span class="req-span">*</span>试验结果</td>
-						<td class="table-title"><span class="req-span">*</span>结果评价</td>
-						<td class="table-title">备注</td>
-					</tr>
-				
-					<c:forEach items="${pPfResult_old}" var="vo" varStatus="status">
-						<tr>
-							<td>${vst.index + 1 }</td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.project}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.standard}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.require}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.result}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.evaluate}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.remark}"></td>
-						</tr>
-					</c:forEach>
-				</table>
-				
-				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
-				<table class="info">
-					<tr class="single-row">
-						<td class="table-title" style="width: 5%;">序号</td>
-						<td class="table-title"><span class="req-span">*</span>试验项目</td>
-						<td class="table-title"><span class="req-span">*</span>参考标准</td>
-						<td class="table-title"><span class="req-span">*</span>试验要求</td>
-						<td class="table-title"><span class="req-span">*</span>试验结果</td>
-						<td class="table-title"><span class="req-span">*</span>结果评价</td>
-						<td class="table-title">备注</td>
-					</tr>
-				
-					<c:forEach items="${pPfResult_new}" var="vo" varStatus="status">
-						<tr>
-							<td>${vst.index + 1 }</td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.project}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.standard}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.require}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.result}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.evaluate}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.remark}"></td>
-						</tr>
-					</c:forEach>
-				</table>
-				
-				
-				<div style="margin-top: 30px;">	
-					<table class="info">
-						<tr class="single-row">
-							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
-							<td class="remark-span">备注</td>
-						</tr>
-						
-						<tr>
-							<td class="value-td1">
-								<select id="partsPat_conclusion" name="partsPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-									<option value="">请选择</option>
-									<option value="合格" <c:if test="${partsPatConclusion_old.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-									<option value="不合格" <c:if test="${partsPatConclusion_old.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-									<option value="其它" <c:if test="${partsPatConclusion_old.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-								</select>
-								<span id="partsPat_conclusion_error" class="req-span"></span>
-							</td>
-							<td class="value-td1">
-								<input id="partsPat_repNum" name="partsPat_repNum" value="${partsPatConclusion_old.repNum }" class="easyui-textbox" style="width:115px" >
-							</td>
-							<td class="value-td1">
-								<input id="partsPat_mainInspe" name="partsPat_mainInspe" value="${partsPatConclusion_old.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_examine" name="partsPat_examine" value="${partsPatConclusion_old.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_issue" name="partsPat_issue" value="${partsPatConclusion_old.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_receiveDate" name="partsPat_receiveDate" value="${partsPatConclusion_old.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_examineDate" name="partsPat_examineDate" value="${partsPatConclusion_old.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_issueDate" name="partsPat_issueDate" value="${partsPatConclusion_old.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_remark" name="partsPat_remark" value="${partsPatConclusion_old.remark }" class="easyui-textbox" style="width:115px" >
-							</td>
-						</tr>
-					</table>
-				</div>
-				
-				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
-				
-				<div style="margin-top: 5px;">	
-					<table class="info">
-						<tr class="single-row">
-							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
-							<td class="remark-span">备注</td>
-						</tr>
-						
-						<tr>
-							<td class="value-td1">
-								<select id="partsPat_conclusion" name="partsPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-									<option value="">请选择</option>
-									<option value="合格" <c:if test="${partsPatConclusion_new.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-									<option value="不合格" <c:if test="${partsPatConclusion_new.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-									<option value="其它" <c:if test="${partsPatConclusion_new.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-								</select>
-								<span id="partsPat_conclusion_error" class="req-span"></span>
-							</td>
-							<td class="value-td1">
-								<input id="partsPat_repNum" name="partsPat_repNum" value="${partsPatConclusion_new.repNum }" class="easyui-textbox" style="width:115px" >
-							</td>
-							<td class="value-td1">
-								<input id="partsPat_mainInspe" name="partsPat_mainInspe" value="${partsPatConclusion_new.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_examine" name="partsPat_examine" value="${partsPatConclusion_new.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_issue" name="partsPat_issue" value="${partsPatConclusion_new.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_receiveDate" name="partsPat_receiveDate" value="${partsPatConclusion_new.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_examineDate" name="partsPat_examineDate" value="${partsPatConclusion_new.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_issueDate" name="partsPat_issueDate" value="${partsPatConclusion_new.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsPat_remark" name="partsPat_remark" value="${partsPatConclusion_new.remark }" class="easyui-textbox" style="width:115px" >
-							</td>
-						</tr>
-					</table>
-				</div>
-				
-				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-				
+				<div class="title" style="margin-top: 10px;">零件图谱结果</div>
 				<table class="info">
 					<tr class="single-row">
 						<td class="title-td">图谱类型</td>
@@ -451,13 +281,6 @@
 					<table class="info">
 						<tr class="single-row">
 							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
 							<td class="remark-span">备注</td>
 						</tr>
 						
@@ -472,34 +295,7 @@
 								<span id="partsAtl_conclusion_error" class="req-span"></span>
 							</td>
 							<td class="value-td1">
-								<input id="partsAtl_repNum" name="partsAtl_repNum" value="${partsAtlConclusion_old.repNum }" class="easyui-textbox" style="width:115px" >
-							</td>
-							<td class="value-td1">
-								<input id="partsAtl_mainInspe" name="partsAtl_mainInspe" value="${partsAtlConclusion_old.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_examine" name="partsAtl_examine" value="${partsAtlConclusion_old.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_issue" name="partsAtl_issue" value="${partsAtlConclusion_old.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_receiveDate" name="partsAtl_receiveDate" value="${partsAtlConclusion_old.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_examineDate" name="partsAtl_examineDate" value="${partsAtlConclusion_old.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_issueDate" name="partsAtl_issueDate" value="${partsAtlConclusion_old.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_remark" name="partsAtl_remark" value="${partsAtlConclusion_old.remark }" class="easyui-textbox" style="width:115px" >
+								<input id="partsAtl_remark" name="partsAtl_remark" value="${partsAtlConclusion_old.remark }" class="easyui-textbox" style="width:950px" >
 							</td>
 						</tr>
 					</table>
@@ -511,13 +307,6 @@
 					<table class="info">
 						<tr class="single-row">
 							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
 							<td class="remark-span">备注</td>
 						</tr>
 						
@@ -532,211 +321,15 @@
 								<span id="partsAtl_conclusion_error" class="req-span"></span>
 							</td>
 							<td class="value-td1">
-								<input id="partsAtl_repNum" name="partsAtl_repNum" value="${partsAtlConclusion_new.repNum }" class="easyui-textbox" style="width:115px" >
-							</td>
-							<td class="value-td1">
-								<input id="partsAtl_mainInspe" name="partsAtl_mainInspe" value="${partsAtlConclusion_new.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_examine" name="partsAtl_examine" value="${partsAtlConclusion_new.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_issue" name="partsAtl_issue" value="${partsAtlConclusion_new.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_receiveDate" name="partsAtl_receiveDate" value="${partsAtlConclusion_new.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_examineDate" name="partsAtl_examineDate" value="${partsAtlConclusion_new.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_issueDate" name="partsAtl_issueDate" value="${partsAtlConclusion_new.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="partsAtl_remark" name="partsAtl_remark" value="${partsAtlConclusion_new.remark }" class="easyui-textbox" style="width:115px" >
+								<input id="partsAtl_remark" name="partsAtl_remark" value="${partsAtlConclusion_new.remark }" class="easyui-textbox" style="width:950px" >
 							</td>
 						</tr>
 					</table>
 				</div>
-					
-				
-				<div class="title" style="margin-top: 10px;">原材料试验结果</div>
-				<table class="info">
-					<tr class="single-row">
-						<td class="table-title" style="width: 5%;">序号</td>
-						<td class="table-title"><span class="req-span">*</span>试验项目</td>
-						<td class="table-title"><span class="req-span">*</span>参考标准</td>
-						<td class="table-title"><span class="req-span">*</span>试验要求</td>
-						<td class="table-title"><span class="req-span">*</span>试验结果</td>
-						<td class="table-title"><span class="req-span">*</span>结果评价</td>
-						<td class="table-title">备注</td>
-					</tr>
-				
-					<c:forEach items="${mPfResult_old}" var="vo" varStatus="status">
-						<tr>
-							<td>${vst.index + 1 }</td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.project}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.standard}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.require}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.result}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.evaluate}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.remark}"></td>
-						</tr>
-					</c:forEach>
-				</table>
-				
-				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
-				<table class="info">
-					<tr class="single-row">
-						<td class="table-title" style="width: 5%;">序号</td>
-						<td class="table-title"><span class="req-span">*</span>试验项目</td>
-						<td class="table-title"><span class="req-span">*</span>参考标准</td>
-						<td class="table-title"><span class="req-span">*</span>试验要求</td>
-						<td class="table-title"><span class="req-span">*</span>试验结果</td>
-						<td class="table-title"><span class="req-span">*</span>结果评价</td>
-						<td class="table-title">备注</td>
-					</tr>
-				
-					<c:forEach items="${mPfResult_new}" var="vo" varStatus="status">
-						<tr>
-							<td>${vst.index + 1 }</td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.project}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.standard}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.require}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.result}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.evaluate}"></td>
-							<td><input class="easyui-textbox" style="width:170px" value="${vo.remark}"></td>
-						</tr>
-					</c:forEach>
-				</table>
-				
-				<div style="margin-top: 30px;">	
-					<table class="info">
-						<tr class="single-row">
-							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
-							<td class="remark-span">备注</td>
-						</tr>
-						
-						<tr>
-							<td class="value-td1">
-								<select id="matPat_conclusion" name="matPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
-									<option value="">请选择</option>
-									<option value="合格" <c:if test="${matPatConclusion_old.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-									<option value="不合格" <c:if test="${matPatConclusion_old.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-									<option value="其它" <c:if test="${matPatConclusion_old.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-								</select>
-								<span id="matPat_conclusion_error" class="req-span"></span>
-							</td>
-							<td class="value-td1">
-								<input id="matPat_repNum" name="matPat_repNum" value="${matPatConclusion_old.repNum }" class="easyui-textbox" style="width:115px">
-							</td>
-							<td class="value-td1">
-								<input id="matPat_mainInspe" name="matPat_mainInspe" value="${matPatConclusion_old.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_examine" name="matPat_examine" value="${matPatConclusion_old.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_issue" name="matPat_issue" value="${matPatConclusion_old.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_receiveDate" name="matPat_receiveDate" value="${matPatConclusion_old.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_examineDate" name="matPat_examineDate" value="${matPatConclusion_old.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_issueDate" name="matPat_issueDate" value="${matPatConclusion_old.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_remark" name="matPat_remark" value="${matPatConclusion_old.remark }" class="easyui-textbox" style="width:115px" >
-							</td>
-						</tr>
-					</table>
-				</div>
-				
-				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
-				
-				<div style="margin-top: 5px;">	
-					<table class="info">
-						<tr class="single-row">
-							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
-							<td class="remark-span">备注</td>
-						</tr>
-						
-						<tr>
-							<td class="value-td1">
-								<select id="matPat_conclusion" name="matPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
-									<option value="">请选择</option>
-									<option value="合格" <c:if test="${matPatConclusion_new.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-									<option value="不合格" <c:if test="${matPatConclusion_new.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-									<option value="其它" <c:if test="${matPatConclusion_new.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-								</select>
-								<span id="matPat_conclusion_error" class="req-span"></span>
-							</td>
-							<td class="value-td1">
-								<input id="matPat_repNum" name="matPat_repNum" value="${matPatConclusion_new.repNum }" class="easyui-textbox" style="width:115px">
-							</td>
-							<td class="value-td1">
-								<input id="matPat_mainInspe" name="matPat_mainInspe" value="${matPatConclusion_new.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_examine" name="matPat_examine" value="${matPatConclusion_new.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_issue" name="matPat_issue" value="${matPatConclusion_new.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_receiveDate" name="matPat_receiveDate" value="${matPatConclusion_new.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_examineDate" name="matPat_examineDate" value="${matPatConclusion_new.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_issueDate" name="matPat_issueDate" value="${matPatConclusion_new.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matPat_remark" name="matPat_remark" value="${matPatConclusion_new.remark }" class="easyui-textbox" style="width:115px" >
-							</td>
-						</tr>
-					</table>
-				</div>
-				
 				
 				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				
+				<div class="title" style="margin-top: 10px;">材料图谱结果</div>
 				<table class="info">
 					<tr class="single-row">
 						<td class="title-td">图谱类型</td>
@@ -796,13 +389,6 @@
 					<table class="info">
 						<tr class="single-row">
 							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
 							<td class="remark-span">备注</td>
 						</tr>
 						
@@ -817,34 +403,7 @@
 								<span id="matAtl_conclusion_error" class="req-span"></span>
 							</td>
 							<td class="value-td1">
-								<input id="matAtl_repNum" name="matAtl_repNum" value="${matAtlConclusion_old.repNum }" class="easyui-textbox" style="width:115px" >
-							</td>
-							<td class="value-td1">
-								<input id="matAtl_mainInspe" name="matAtl_mainInspe" value="${matAtlConclusion_old.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_examine" name="matAtl_examine" value="${matAtlConclusion_old.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_issue" name="matAtl_issue" value="${matAtlConclusion_old.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_receiveDate" name="matAtl_receiveDate" value="${matAtlConclusion_old.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_examineDate" name="matAtl_examineDate" value="${matAtlConclusion_old.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_issueDate" name="matAtl_issueDate" value="${matAtlConclusion_old.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion_old.remark }" class="easyui-textbox" style="width:115px" >
+								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion_old.remark }" class="easyui-textbox" style="width:950px" >
 							</td>
 						</tr>
 					</table>
@@ -856,13 +415,6 @@
 					<table class="info">
 						<tr class="single-row">
 							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
 							<td class="remark-span">备注</td>
 						</tr>
 						
@@ -877,34 +429,7 @@
 								<span id="matAtl_conclusion_error" class="req-span"></span>
 							</td>
 							<td class="value-td1">
-								<input id="matAtl_repNum" name="matAtl_repNum" value="${matAtlConclusion_new.repNum }" class="easyui-textbox" style="width:115px" >
-							</td>
-							<td class="value-td1">
-								<input id="matAtl_mainInspe" name="matAtl_mainInspe" value="${matAtlConclusion_new.mainInspe }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_examine" name="matAtl_examine" value="${matAtlConclusion_new.examine }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_issue" name="matAtl_issue" value="${matAtlConclusion_new.issue }" class="easyui-textbox" style="width:115px" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_receiveDate" name="matAtl_receiveDate" value="${matAtlConclusion_new.receiveDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_examineDate" name="matAtl_examineDate" value="${matAtlConclusion_new.examineDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_issueDate" name="matAtl_issueDate" value="${matAtlConclusion_new.issueDate }" class="easyui-datebox" style="width:115px" data-options="editable:false" >
-							</td>
-							
-							<td class="value-td1">
-								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion_new.remark }" class="easyui-textbox" style="width:115px" >
+								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion_new.remark }" class="easyui-textbox" style="width:950px" >
 							</td>
 						</tr>
 					</table>

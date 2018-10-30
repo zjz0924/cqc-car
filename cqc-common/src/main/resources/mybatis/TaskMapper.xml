@@ -492,10 +492,6 @@
 				and t.is_receive = #{isReceive,jdbcType=INTEGER}
 			</if>
 			
-			<if test="atlType != null">
-				and t.atl_type = #{atlType,jdbcType=VARCHAR}
-			</if>
-			
 			<if test="reasonId != null">
 				and t.reason_id = #{reasonId,jdbcType=BIGINT}
 			</if>
@@ -509,19 +505,29 @@
 			</if>
 			
 			<if test="standIid != null">
-				and stand_i_id = #{standIid,jdbcType=BIGINT}
+				and t.stand_i_id = #{standIid,jdbcType=BIGINT}
 			</if>
 			
 			<if test="approveAccountId != null">
-				and approve_account_id = #{approveAccountId,jdbcType=BIGINT}
+				and t.approve_account_id = #{approveAccountId,jdbcType=BIGINT}
 			</if>
 			
 			<if test="trainsmitAccountId != null">
-				and trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}
+				and t.trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}
 			</if>
 			
 			<if test="examineAccountId != null">
-				and examine_account_id = #{examineAccountId,jdbcType=BIGINT}
+				and t.examine_account_id = #{examineAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<!-- OTS 和 Tpt 任务 -->
+			<if test="otsAndtPtTask != null">
+				and (t.type = 1 or type = 4)
+			</if>
+			
+			<!-- PPAP 和 SOP 任务 -->
+			<if test="ppapAndSopTask != null">
+				and (t.type = 2 or type = 3)
 			</if>
 		</where>
 
@@ -766,10 +772,6 @@
 			
 			<if test="isReceive != null">	
 				and t.is_receive = #{isReceive,jdbcType=INTEGER}
-			</if>
-			
-			<if test="atlType != null">
-				and t.atl_type = #{atlType,jdbcType=VARCHAR}
 			</if>
 			
 			<if test="reasonId != null">

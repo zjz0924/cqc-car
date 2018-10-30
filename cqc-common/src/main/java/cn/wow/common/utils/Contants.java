@@ -13,6 +13,8 @@ public class Contants {
 	// 当前用户没有权限的菜单
 	public static final String CURRENT_ILLEGAL_MENU = "currentIllegalMenu";
 	
+	public static final String SHOW_BACKLOG = "showBacklog";
+	
 	// 超级管理员
 	public static final String SUPER_ROLE_CODE = "admin";
 	public static final String SUPER_ROLE_ID = "1";

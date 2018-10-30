@@ -363,7 +363,7 @@
 								<span id="matAtl_conclusion_error" class="req-span"></span>
 							</td>
 							<td class="value-td1">
-								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion_old.remark }" class="easyui-textbox" style="width:115px" >
+								<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion_old.remark }" class="easyui-textbox" style="width:950px" >
 							</td>
 						</tr>
 					</table>

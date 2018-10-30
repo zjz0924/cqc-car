@@ -565,8 +565,12 @@ public class OtsTaskController extends AbstractController {
 		map.put("state", StandardTaskEnum.EXAMINE.getState());
 		map.put("type", TaskTypeEnum.OTS.getState());
 		map.put("neDraft", "1");
-		map.put("examineAccountId", applicat.getId());
-
+		
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("examineAccountId", applicat.getId());
+		}
+		
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
 		}
@@ -789,7 +793,11 @@ public class OtsTaskController extends AbstractController {
 		map.put("transimtTask_ots", true);
 		map.put("state", StandardTaskEnum.TESTING.getState());
 		map.put("type", TaskTypeEnum.OTS.getState());
-		map.put("trainsmitAccountId", applicat.getId());
+		
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("trainsmitAccountId", applicat.getId());
+		}
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -984,7 +992,11 @@ public class OtsTaskController extends AbstractController {
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("approveTask_ots", true);
 		map.put("type", TaskTypeEnum.OTS.getState());
-		map.put("approveAccountId", applicat.getId());
+		
+		// 超级管理员拥有所有权限
+		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
+			map.put("approveAccountId", applicat.getId());
+		}
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);

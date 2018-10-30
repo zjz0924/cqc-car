@@ -81,6 +81,14 @@ public class IndexController {
 			}
 			model.addAttribute("unread", unread);
 		}
+
+		// 弹出待办信息
+		String isShow = (String) request.getSession().getAttribute(Contants.SHOW_BACKLOG);
+		if (StringUtils.isBlank(isShow)) {
+			model.addAttribute("showBacklog", 1);
+		    request.getSession().setAttribute(Contants.SHOW_BACKLOG, "0");
+		}
+
 		return "index/index";
 	}
 
@@ -97,13 +105,13 @@ public class IndexController {
 		comparePermission = false;
 		waitConfirmPermission = false;
 		finishConfirmPermission = false;
-		
+
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		List<Menu> menuList = (List<Menu>) request.getSession().getAttribute(Contants.CURRENT_PERMISSION_MENU);
 		Map<String, Object> qMap = new PageMap(false);
-		
+
 		AjaxVO vo = new AjaxVO();
-		
+
 		// 任务数
 		int examineNum = 0;
 		int approveNum = 0;
