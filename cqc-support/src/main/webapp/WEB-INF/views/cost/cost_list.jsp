@@ -26,65 +26,89 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "380px",
+			        height: "450px",
 					title: '费用清单',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
 			        toolbar : toolbar,
 			        idField: 'id',
-			        columns : [ [ {
-						field : '_operation',
-						title : '操作',
-						width : '120',
-						align : 'center',
-						formatter : function(value,row,index){
-							var str = "发送"
-							if("${type}" == 2){
-								str = "查看";
+			        frozenColumns: [[{
+							field : '_operation',
+							title : '操作',
+							width : '45',
+							align : 'center',
+							formatter : function(value,row,index){
+								var str = "发送"
+								if("${type}" == 2){
+									str = "查看";
+								}
+								return '<a href="javascript:void(0)" onclick="costDetail('+ row.id +')">'+ str +'</a>';  	
 							}
-							return '<a href="javascript:void(0)" onclick="costDetail('+ row.id +')">'+ str +'</a>';  	
-						}
-					}, {
-			            field : 'id', 
-			            hidden: 'true'
-			        }, {
-						field : 'task',
-						title : '任务号',
-						width : '180',
-						align : 'center',
-						formatter : function(val){
-							if(val){
-								return "<span title='" + val.code + "'>" + val.code + "</span>";
-							}
-						}
-					}, {
-						field : 'taskType',
-						title : '任务类型',
-						width : '150',
-						align : 'center',
-						formatter:function(value,row,index){
-							var str = "";
-							
-							if(!isNull(row.task)){
-								var val = row.task.type;
-								
-								if(val == 1){
-									str = "基准图谱建立";
-								}else if(val == 2){
-									str = "图谱试验抽查-开发阶段";
-								}else if(val == 3){
-									str = "图谱试验抽查-量产阶段";
-								}else{
-									str = "第三方委托";
+						}, {
+				            field : 'id', 
+				            hidden: 'true'
+				        }, {
+							field : 'task',
+							title : '任务号',
+							width : '115',
+							align : 'center',
+							formatter : function(val){
+								if(val){
+									return "<span title='" + val.code + "'>" + val.code + "</span>";
 								}
 							}
-							return "<span title='" + str+ "'>" + str + "</span>"; 
-						}
-					}, {
+						}, {
+							field : 'taskType',
+							title : '任务类型',
+							width : '150',
+							align : 'center',
+							formatter:function(value,row,index){
+								var str = "";
+								
+								if(!isNull(row.task)){
+									var val = row.task.type;
+									
+									if(val == 1){
+										str = "基准图谱建立";
+									}else if(val == 2){
+										str = "图谱试验抽查-开发阶段";
+									}else if(val == 3){
+										str = "图谱试验抽查-量产阶段";
+									}else{
+										str = "第三方委托";
+									}
+								}
+								return "<span title='" + str+ "'>" + str + "</span>"; 
+							}
+						}, {
+							field : 'createTime',
+							title : '创建时间',
+							width : '125',
+							align : 'center',
+							formatter : DateTimeFormatter
+						} 
+			        ]],
+			        columns : [ [{
+						title:'实验信息', 
+						colspan:5
+					},{
+						title:'车型信息', 
+						colspan:2
+					},{
+						title:'零件信息', 
+						colspan: 4
+					},{
+						title:'材料信息', 
+						colspan: 3
+					},{
+						title:'申请人信息', 
+						colspan: 3
+					}],
+					[{
 						field : 'labType',
 						title : '实验类型',
-						width : '150',
+						width : '90',
 						align : 'center',
 						formatter : function(val){
 							var str = "原材料型式"
@@ -97,10 +121,72 @@
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
+					},{
+						field : 'labCode',
+						title : '试验编号',
+						width : '140',
+						align : 'center',
+						formatter : function(value,row,index){
+							var str = "";
+							var task = row.task;
+							
+							if(!isNull(task)){
+								var taskType = task.type;
+								
+								if(taskType == 1){
+									str = task.partsAtlCode;
+								}else if(taskType == 2){
+									str = task.matAtlCode;
+								}else if(taskType == 3){
+									str = task.partsPatCode;
+								}else{
+									str = task.matPatCode;
+								}
+							}
+							
+							if(!isNull(str)){
+								return "<span title='"+ str +"'>"+ str +"</span>";
+							}
+						}
+					},{
+						field : 'labOrg',
+						title : '实验室',
+						width : '150',
+						align : 'center',
+						formatter : function(value,row,index){
+							var str = "";
+							var task = row.task;
+							
+							if(!isNull(task)){
+								var taskType = task.type;
+								
+								if(taskType == 1){
+									if(!isNull(task.partsAtl)){
+										str = task.partsAtl.name;
+									}
+								}else if(taskType == 2){
+									if(!isNull(task.matAtl)){
+										str = task.matAtl.name;
+									}
+								}else if(taskType == 3){
+									if(!isNull(task.partsPat)){
+										str = task.partsPat.name;
+									}
+								}else{
+									if(!isNull(task.matPat)){
+										str = task.matPat.name;
+									}
+								}
+							}
+							
+							if(!isNull(str)){
+								return "<span title='"+ str +"'>"+ str +"</span>";
+							}
+						}
 					}, {
 						field : 'labResult',
 						title : '实验结果',
-						width : '120',
+						width : '70',
 						align : 'center',
 						formatter : function(val){
 							if(val == 1){
@@ -110,12 +196,162 @@
 							}
 						}
 					},{
-						field : 'createTime',
-						title : '创建时间',
-						width : '150',
+						field : 'reason.source',
+						title : '费用出处',
+						width : '130',
 						align : 'center',
-						formatter : DateTimeFormatter
-					}  ] ],
+						formatter :  function(value, row, index){
+							var reason = row.task.reason;
+							if(!isNull(reason)){
+								return "<span title='"+ reason.source +"'>"+ reason.source +"</span>";
+							}							
+						}
+					},{
+						field : 'total',
+						title : '总费用',
+						width : '80',
+						align : 'center',
+						formatter :  function(val){
+							if(!isNull(val)){
+								return "<span title='"+ val +"'>"+val+"</span>";
+							}
+						}
+					},{
+						field : 'task.info.vehicle.code',
+						title : '车型代码',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var vehicle = row.task.info.vehicle;
+							if(!isNull(vehicle)){
+								return "<span title='"+ vehicle.code +"'>"+ vehicle.code +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.vehicle.proAddr',
+						title : '生产基地',
+						width : '120',
+						align : 'center',
+						rowspan: 1,
+						formatter :  function(value, row, index){
+							var vehicle = row.task.info.vehicle;
+							if(!isNull(vehicle)){
+								return "<span title='"+ vehicle.proAddr +"'>"+ vehicle.proAddr +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.parts.name',
+						title : '零件名称',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.task.info.parts;
+							if(!isNull(parts)){
+								return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.parts.producer',
+						title : '供应商',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.task.info.parts;
+							if(!isNull(parts)){
+								return "<span title='"+ parts.producer +"'>"+ parts.producer +"</span>";
+							}
+						}
+					}, {
+						field : 'task.info.parts.producerCode',
+						title : '供应商代码',
+						width : '80',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.task.info.parts;
+							if(!isNull(parts)){
+								return "<span title='"+ parts.producerCode +"'>"+ parts.producerCode +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.parts.proTime',
+						title : '样件生产日期',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var parts = row.task.info.parts;
+							if(!isNull(parts)){
+								var date = formatDate(parts.proTime);
+								return "<span title='"+ date +"'>"+ date +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.material.name',
+						title : '材料名称',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var material = row.task.info.material;
+							if(!isNull(material)){
+								return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.material.matNo',
+						title : '材料牌号',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var material = row.task.info.material;
+							if(!isNull(material)){
+								return "<span title='"+ material.matNo +"'>"+ material.matNo +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.info.material.producer',
+						title : '供应商',
+						width : '120',
+						align : 'center',
+						formatter : function(value, row, index){
+							var material = row.task.info.material;
+							if(!isNull(material)){
+								return "<span title='"+ material.producer +"'>"+ material.producer +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.applicat.nickName',
+						title : '申请人',
+						width : '100',
+						align : 'center',
+						formatter : function(value, row, index){
+							var applicat = row.task.applicat;
+							if(!isNull(applicat)){
+								return "<span title='"+ applicat.nickName +"'>"+ applicat.nickName +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.applicat.depart',
+						title : '科室',
+						width : '120',
+						align : 'center',
+						formatter : function(value, row, index){
+							var applicat = row.task.applicat;
+							if(!isNull(applicat)){
+								return "<span title='"+ applicat.department +"'>"+ applicat.department +"</span>";
+							}							
+						}
+					}, {
+						field : 'task.applicat.org',
+						title : '单位/机构',
+						width : '180',
+						align : 'center',
+						formatter : function(value, row, index){
+							var org = row.task.applicat.org;
+							if(!isNull(org)){
+								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+							}							
+						}
+					} ] ],
 					onDblClickRow : function(rowIndex, rowData) {
 						costDetail(rowData.id);
 					}
@@ -184,13 +420,15 @@
 				$('#costDetailDialog').dialog({
 					title : '结果信息',
 					width : 1200,
-					height : 650,
+					height : 500,
+					top: 300,
 					closed : false,
 					cache : false,
 					href : "${ctx}/cost/detail?id=" + id + "&type=${type}",
 					modal : true
 				});
-				$('#costDetailDialog').window('center');
+				
+				top.parent.scrollTo(0, 250);
 			}
 			
 		</script>

@@ -228,6 +228,11 @@
 						</c:forEach>
 					</table>
 					
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件： <c:if test="${not empty attach.partsFileName}"><a style="margin-right: 30px;" target="_blank" href="${resUrl}/${attach.partsFileName}">${attach.partsFileName}</a></c:if>
+						<input class="easyui-filebox" id="partsResultAttachFile" name="partsResultAttachFile" style="width: 300px;margin-left: 20px;" data-options="buttonText: '选择文件'">
+					</div>
+					
 					<div style="color:red;margin-top: 10px;margin-left: 10px;font-weight: bold;" id="p_pfTable_error"></div>
 					
 					<div style="margin-top: 20px;">	
@@ -436,6 +441,12 @@
 							</tr>
 						</c:forEach>
 					</table>
+					
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<c:if test="${not empty attach.materialFileName}"><a style="margin-right: 30px;" target="_blank" href="${resUrl}/${attach.materialFileName}">${attach.materialFileName}</a></c:if>
+						<input class="easyui-filebox" id="materialResultAttachFile" name="materialResultAttachFile" style="width: 300px;" data-options="buttonText: '选择文件'">
+					</div>
+					
 					<div style="color:red;margin-top: 10px;margin-left: 10px;font-weight: bold;" id="m_pfTable_error"></div>
 					
 					<div style="margin-top: 20px;">	
@@ -724,7 +735,7 @@
 		// 是否提交中
 		var saving = false;
 		
-		// 发送结果保存
+		// 结果保存
 		function doSubmit(type){
 			if(saving){
 				return false;
@@ -932,7 +943,10 @@
 			
 			// 零部件试验结果
 			if(p_pfTable > 0){
-				if($("tr[p_num]").length < 1){
+				// 附件
+				var partsResultAttachFile = $("#partsResultAttachFile").filebox("getValue");
+				
+				if($("tr[p_num]").length < 1 && isNull(partsResultAttachFile)){
 					$("#p_pfTable_error").html("请添加零部件型试结果");
 					saving = false;
 					return false;
@@ -956,6 +970,9 @@
 			
 			// 原材料试验结果
 			if(m_pfTable > 0){
+				// 附件
+				var materialResultAttachFile = $("#materialResultAttachFile").filebox("getValue");
+				
 				if($("tr[m_num]").length < 1){
 					$("#m_pfTable_error").html("请添加原材料型试结果");
 					saving = false;

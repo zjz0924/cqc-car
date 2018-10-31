@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.wow.common.dao.ApplyRecordDao;
 import cn.wow.common.dao.AtlasResultDao;
+import cn.wow.common.dao.AttachDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
 import cn.wow.common.dao.LabReqDao;
@@ -32,6 +33,7 @@ import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.Attach;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.LabConclusion;
@@ -99,9 +101,9 @@ public class InfoServiceImpl implements InfoService {
 	@Autowired
 	private LabConclusionService labConclusionService;
 	@Autowired
-	private TaskInfoDao taskInfoDao;
-	@Autowired
 	private ReasonDao reasonDao;
+	@Autowired
+	private AttachDao attachDao;
 
 	public Info selectOne(Long id) {
 		return infoDao.selectOne(id);
@@ -1142,9 +1144,15 @@ public class InfoServiceImpl implements InfoService {
 	 * @param isPass             是否合格（1-合格，2-不合格）
 	 */
 	public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList,
-			List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass) {
+			List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass, Attach attachFile) {
 		Date date = new Date();
 
+		// 附件
+		if (StringUtils.isNotBlank(attachFile.getPartsFile()) || StringUtils.isNotBlank(attachFile.getMaterialFile())) {
+			attachDao.deleteByPrimaryKey(taskId);
+			attachDao.insert(attachFile);
+		}
+		
 		Task task = taskDao.selectOne(taskId);
 		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 			task.setState(StandardTaskEnum.APPLYING.getState());

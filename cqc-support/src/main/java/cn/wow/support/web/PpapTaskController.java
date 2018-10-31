@@ -520,10 +520,10 @@ public class PpapTaskController extends AbstractController {
 	@ResponseBody
 	@RequestMapping(value = "/approveListData")
 	public Map<String, Object> approveListData(HttpServletRequest request, Model model, String startCreateTime,
-			String endCreateTime, String task_code, String parts_name, String parts_producer,
-			String parts_producerCode, String startProTime, String endProTime, String matName, String mat_producer,
-			String matNo, String v_code, String v_proAddr, String applicat_name, String applicat_depart,
-			Long applicat_org, int taskType, String origin, String reason, String source, Long labId) {
+			String endCreateTime, String task_code, String parts_name, String parts_producer, String parts_producerCode,
+			String startProTime, String endProTime, String matName, String mat_producer, String matNo, String v_code,
+			String v_proAddr, String applicat_name, String applicat_depart, Long applicat_org, int taskType,
+			String origin, String reason, String source, Long labId) {
 
 		Account applicat = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
@@ -536,7 +536,7 @@ public class PpapTaskController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("ppap_approveTask", true);
-		
+
 		// 超级管理员拥有所有权限
 		if (applicat.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(applicat.getRole().getCode())) {
 			map.put("approveAccountId", applicat.getId());
@@ -989,6 +989,20 @@ public class PpapTaskController extends AbstractController {
 					vo.setId(task.getiId());
 					vo.setTaskCode(task.getCode());
 					vo.setText("基准" + (i + 1));
+
+					if (StringUtils.isNotBlank(task.getAtlType())) {
+						String firstVal = task.getAtlType().substring(0, 1);
+						String secondVal = task.getAtlType().substring(2, 3);
+
+						String str = "";
+						if ("1".equals(firstVal)) {
+							str = "【零件图谱】";
+						}
+						if ("1".equals(secondVal)) {
+							str += "【材料图谱】";
+						}
+						vo.setAltType(str);
+					}
 					dataList.add(vo);
 				}
 			}

@@ -652,10 +652,10 @@
 					<span class="qlabel">任务类型：</span>
 					<select id="q_taskType" name="q_taskType" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">全部</option>
-						<option value="1">车型OTS阶段任务</option>
-						<option value="2">车型PPAP阶段任务</option>
-						<option value="3">车型SOP阶段任务</option>
-						<option value="4">非车型材料任务</option>
+						<option value="1">基准图谱建立</option>
+						<option value="2">图谱试验抽查-开发阶段</option>
+						<option value="3">图谱试验抽查-量产阶段</option>
+						<option value="4">第三方委托</option>
 					</select> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">抽检原因：</span>

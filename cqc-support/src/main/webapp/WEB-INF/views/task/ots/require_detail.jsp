@@ -141,7 +141,7 @@
 						<input id="p_producer" name="p_producer" type="text" value="${facadeBean.info.parts.producer }" class="inputAutocomple" style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
+						<span class="title-span" style="width: 105px;"><span class="req-span">*</span>供应商代码：</span> 
 						<input id="p_producerCode" name="p_producerCode" class="easyui-textbox" value="${facadeBean.info.parts.producerCode }" style="width:150px;">
 					</td>
 				</tr>
@@ -159,7 +159,7 @@
 						<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }"  style="width:150px;">
 					</td>
 					<td>
-						<span class="title-span">生产场地：</span> 
+						<span class="title-span" style="width: 105px;">生产场地：</span> 
 						<input id="p_place" name="p_place" class="easyui-textbox" value="${facadeBean.info.parts.place }"  style="width:150px;">
 					</td>
 				</tr>
@@ -248,7 +248,7 @@
 		</div>
 	
 		 <div style="text-align:center;margin-top:35px;" class="data-row">
-			<a href="javascript:void(0);"  onclick="save(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);"  onclick="save(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'">提交</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);"  onclick="save(1)" class="easyui-linkbutton" data-options="iconCls:'icon-large-smartart'">暂存</a>
 			<span id="exception_error" class="error-message"></span>
 		</div>

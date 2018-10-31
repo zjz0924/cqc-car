@@ -3,6 +3,8 @@ package cn.wow.support.web;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +131,8 @@ public class StatisticController {
 			qMap.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(taskType)) {
-			qMap.put("type", taskType);
+			List<String> typeList = Arrays.asList(taskType.split(","));	
+			qMap.put("typeList", typeList);
 		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
@@ -337,13 +340,13 @@ public class StatisticController {
 				cell2.setCellStyle(styles.get("cell"));
 				String taskType = "";
 				if (task.getType() == TaskTypeEnum.OTS.getState()) {
-					taskType = "车型OTS阶段任务";
+					taskType = "基准图谱建立";
 				} else if (task.getType() == TaskTypeEnum.PPAP.getState()) {
-					taskType = "车型PPAP阶段任务";
+					taskType = "图谱试验抽查-开发阶段";
 				} else if (task.getType() == TaskTypeEnum.SOP.getState()) {
-					taskType = "车型SOP阶段任务";
+					taskType = "图谱试验抽查-量产阶段";
 				} else {
-					taskType = "非车型材料任务";
+					taskType = "第三方委托";
 				}
 				cell2.setCellValue(taskType);
 

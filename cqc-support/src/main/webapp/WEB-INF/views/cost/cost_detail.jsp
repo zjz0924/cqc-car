@@ -9,7 +9,7 @@
 	
 	<div style="margin-left: 10px;margin-top:20px;">
 		<div class="title">任务详情</div>
-		<div style="width: 98%;">
+		<div style="width: 98%;display:none;" id="taskDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">任务号：</td>
@@ -84,7 +84,7 @@
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
 		<div class="title">申请人信息</div>
-		<div style="width: 98%;">
+		<div style="width: 98%;display:none;" id="applicatDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">申请人：</td>
@@ -108,7 +108,7 @@
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
 		<div class="title">抽样原因</div>
-		<div style="width: 98%;">
+		<div style="width: 98%;display:none;" id="reasonDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">样件来源：</td>
@@ -261,511 +261,103 @@
 			</div>	
 		</c:if>
 		
-		<c:if test="${type == 1 }">
-			<!-- OTS 结果确认  -->
-			<c:if test="${facadeBean.task.type == 1 || facadeBean.task.type == 4}">
-				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-				<div class="title">试验结果</div>
-				
-				<c:if test="${facadeBean.labType == 2}">
-					<div class="title" style="margin-top:15px;">零部件型式试验结果</div>
-					<div style="margin-left:10px;margin-bottom: 10px;">
-						<c:forEach items="${labReqList}" var="vo">
-							<c:if test="${vo.type eq 3}">
-								<span class="remark-span">试验编号：</span> ${facadeBean.task.partsPatCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
-							</c:if>
-						</c:forEach>
-					</div>
-		
-					<c:forEach items="${pPfResult}" var="m">
-						<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
-							第${m.key}次试验
-							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
-						</div>
-						<table class="info">
-							<tr class="single-row">
-								<td class="table-title" style="width: 5%;">序号</td>
-								<td class="table-title"><span class="req-span">*</span>试验项目</td>
-								<td class="table-title"><span class="req-span">*</span>参考标准</td>
-								<td class="table-title"><span class="req-span">*</span>试验要求</td>
-								<td class="table-title"><span class="req-span">*</span>试验结果</td>
-								<td class="table-title"><span class="req-span">*</span>结果评价</td>
-								<td class="table-title">备注</td>
-							</tr>
-							<c:forEach items="${m.value}" var="vo" varStatus="vst">
-								<tr>
-									<td>${vst.index + 1 }</td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.project}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.standard}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.require}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.result}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.evaluate}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.remark}"></td>
-								</tr>
-							</c:forEach>
-						</table>
-					</c:forEach>
-					
-					<div style="margin-top: 30px;">	
-						<table class="info">
-							<tr class="single-row">
-								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-								<td class="remark-span">备注</td>
-							</tr>
-							
-							<tr>
-								<td class="value-td1">
-									<select id="partsPat_conclusion" name="partsPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-										<option value="">请选择</option>
-										<option value="合格" <c:if test="${partsPatConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-										<option value="不合格" <c:if test="${partsPatConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-										<option value="其它" <c:if test="${partsPatConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-									</select>
-									<span id="partsPat_conclusion_error" class="req-span"></span>
-								</td>
-								<td class="value-td1">
-									<input id="partsPat_remark" name="partsPat_remark" value="${partsPatConclusion.remark }" class="easyui-textbox" style="width:950px" >
-								</td>
-							</tr>
-						</table>
-					</div>
-				</c:if>
-				
-				<c:if test="${facadeBean.labType == 1}">
-					<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
-					<div style="margin-left:10px;margin-bottom: 10px;">
-						<c:forEach items="${labReqList}" var="vo">
-							<c:if test="${vo.type eq 1}">
-								<span class="remark-span">试验编号：</span> ${facadeBean.task.partsAtlCode}<span class="remark-span"  style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
-							</c:if>
-						</c:forEach>
-					</div>
-					
-					<c:forEach items="${pAtlasResult}" var="m">
-						<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
-							第${m.key}次试验
-							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
-						</div>
-						<table class="info">
-							<tr class="single-row">
-								<td class="title-td">图谱类型</td>
-								<td class="title-td">图谱描述</td>
-								<td class="title-td">选择图谱</td>
-							</tr>
-						
-							<c:forEach items="${m.value}" var="vo" varStatus="vst">
-								<tr style="line-height: 60px;">
-									<td class="value-td">
-										<c:if test="${vo.type == 1}">红外光分析</c:if>
-										<c:if test="${vo.type == 2}">差热扫描</c:if>
-										<c:if test="${vo.type == 3}">热重分析</c:if>
-										<c:if test="${vo.type == 4}">样品照片</c:if>
-									</td>
-									<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
-									<td class="value-td">
-										<c:if test="${not empty vo.pic}">
-											<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
-										<c:if test="${empty vo.pic}">
-											<span class="img-span1">暂无</span>
-										</c:if>
-									</td>
-								</tr>
-							</c:forEach>
-						</table>
-					</c:forEach>
-					
-					<div style="margin-top: 30px;">	
-						<table class="info">
-							<tr class="single-row">
-								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-								<td class="remark-span">备注</td>
-							</tr>
-							
-							<tr>
-								<td class="value-td1">
-									<select id="partsAtl_conclusion" name="partsAtl_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-										<option value="">请选择</option>
-										<option value="合格" <c:if test="${partsAtlConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-										<option value="不合格" <c:if test="${partsAtlConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-										<option value="其它" <c:if test="${partsAtlConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-									</select>
-									<span id="partsAtl_conclusion_error" class="req-span"></span>
-								</td>
-								<td class="value-td1">
-									<input id="partsAtl_remark" name="partsAtl_remark" value="${partsAtlConclusion.remark }" class="easyui-textbox" style="width:950px" >
-								</td>
-							</tr>
-						</table>
-					</div>
-				</c:if>
-				
-				<c:if test="${facadeBean.labType == 4}">
-					<div class="title" style="margin-top:15px;">原材料型式试验结果</div>
-					<div style="margin-left:10px;margin-bottom: 10px;">
-						<c:forEach items="${labReqList}" var="vo">
-							<c:if test="${vo.type eq 4}">
-								<span class="remark-span">试验编号：</span> ${facadeBean.task.matPatCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
-							</c:if>
-						</c:forEach>
-					</div>
-			
-					<c:forEach items="${mPfResult}" var="m">
-						<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
-							第${m.key}次试验
-							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
-						</div>
-						<table class="info">
-							<tr class="single-row">
-								<td class="table-title" style="width: 5%;">序号</td>
-								<td class="table-title"><span class="req-span">*</span>试验项目</td>
-								<td class="table-title"><span class="req-span">*</span>参考标准</td>
-								<td class="table-title"><span class="req-span">*</span>试验要求</td>
-								<td class="table-title"><span class="req-span">*</span>试验结果</td>
-								<td class="table-title"><span class="req-span">*</span>结果评价</td>
-								<td class="table-title">备注</td>
-							</tr>
-							<c:forEach items="${m.value}" var="vo" varStatus="vst">
-								<tr>
-									<td>${vst.index + 1 }</td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.project}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.standard}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.require}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.result}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.evaluate}"></td>
-									<td><input class="easyui-textbox" style="width:170px" value="${vo.remark}"></td>
-								</tr>
-							</c:forEach>
-						</table>
-					</c:forEach>
-					
-					<c:if test="${not empty attach.materialFile}">
-						<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
-							试验结果附件：<a target="_blank" href="${resUrl}/${attach.materialFileName}">${attach.materialFileName}</a>
-						</div>
-					</c:if>
-					
-					<div style="margin-top: 30px;">	
-						<table class="info">
-							<tr class="single-row">
-								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-								<td class="remark-span">备注</td>
-							</tr>
-							
-							<tr>
-								<td class="value-td1">
-									<select id="matPat_conclusion" name="matPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-										<option value="">请选择</option>
-										<option value="合格" <c:if test="${matPatConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-										<option value="不合格" <c:if test="${matPatConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-										<option value="其它" <c:if test="${matPatConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-									</select>
-									<span id="matPat_conclusion_error" class="req-span"></span>
-								</td>
-								<td class="value-td1">
-									<input id="matPat_remark" name="matPat_remark" value="${matPatConclusion.remark }" class="easyui-textbox" style="width:950px" >
-								</td>
-							</tr>
-						</table>
-					</div>
-					
-				</c:if>
-				
-				<c:if test="${facadeBean.labType == 3}">
-					<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
-					<div style="margin-left:10px;margin-bottom: 10px;">
-						<c:forEach items="${labReqList}" var="vo">
-							<c:if test="${vo.type eq 2}">
-								<span class="remark-span">试验编号：</span> ${facadeBean.task.partsAtlCode}<span class="remark-span" style="margin-left: 20px;">任务号：</span> ${vo.code}<span class="remark-span" style="margin-left: 20px;">商定完成时间：</span><fmt:formatDate value='${vo.time}' type="date" pattern="yyyy-MM-dd"/>&nbsp;&nbsp;<span class="remark-span" style="margin-left: 20px;">试验要求</span>：${vo.remark }
-							</c:if>
-						</c:forEach>
-					</div>
-			
-					<c:forEach items="${mAtlasResult}" var="m">
-						<div style="margin-left: 10px; margin-bottom: 5px; font-weight: bold;color: red;">
-							第${m.key}次试验
-							<span style="float:right;margin-right: 25px;">报告上传时间：<fmt:formatDate value='${m.value[0].createTime }' type="date" pattern="yyyy-MM-dd HH:mm:ss"/></span>
-						</div>
-						<table class="info">
-							<tr class="single-row">
-								<td class="title-td">图谱类型</td>
-								<td class="title-td">图谱描述</td>
-								<td class="title-td">选择图谱</td>
-							</tr>
-						
-							<c:forEach items="${m.value}" var="vo" varStatus="vst">
-								<tr style="line-height: 60px;">
-									<td class="value-td">
-										<c:if test="${vo.type == 1}">红外光分析</c:if>
-										<c:if test="${vo.type == 2}">差热扫描</c:if>
-										<c:if test="${vo.type == 3}">热重分析</c:if>
-										<c:if test="${vo.type == 4}">样品照片</c:if>
-									</td>
-									<td class="value-td" title="${vo.remark}" style="word-break : break-all;line-height: 20px;">${vo.remark}</td>
-									<td class="value-td">
-										<c:if test="${not empty vo.pic}">
-											<a href="${resUrl}/${vo.pic}" target="_blank"><img src="${resUrl}/${vo.pic}" style="width: 100px;height: 50px;"></a>									</c:if>
-										<c:if test="${empty vo.pic}">
-											<span class="img-span1">暂无</span>
-										</c:if>
-									</td>
-								</tr>
-							</c:forEach>
-						</table>
-					</c:forEach>
-					
-					<div style="margin-top: 30px;">	
-						<table class="info">
-							<tr class="single-row">
-								<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-								<td class="remark-span">备注</td>
-							</tr>
-							
-							<tr>
-								<td class="value-td1">
-									<select id="matAtl_conclusion" name="matAtl_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-										<option value="">请选择</option>
-										<option value="合格" <c:if test="${matAtlConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-										<option value="不合格" <c:if test="${matAtlConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-										<option value="其它" <c:if test="${matAtlConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-									</select>
-									<span id="matAtl_conclusion_error" class="req-span"></span>
-								</td>
-								<td class="value-td1">
-									<input id="matAtl_remark" name="matAtl_remark" value="${matAtlConclusion.remark }" class="easyui-textbox" style="width:950px" >
-								</td>
-							</tr>
-						</table>
-					</div>
-					
-				</c:if>
-			</c:if>
-			
-			<!-- PPAP 对比结果确认 -->
-			<c:if test="${facadeBean.task.type == 2 || facadeBean.task.type == 3}">
-				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-				<div class="title">对比结果</div>
-				
-				<div style="margin-left: 15px;">
-					<c:if test="${facadeBean.labType == 1 }">
-						<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
-						
-						<c:forEach items="${pAtlasResult}" var="m">
-							<div style="margin-bottom: 10px;">
-								<c:choose>
-									<c:when test="${m.key == 1}">
-										<div class="title1">红外光分析图谱</div>
-									</c:when>
-									<c:when test="${m.key == 2}">
-										<div class="title1">差热分析图谱</div>
-									</c:when>
-									<c:when test="${m.key == 4}">
-										<div class="title1">样品照片图谱</div>
-									</c:when>
-									<c:otherwise>
-										<div class="title1">热重分析图谱</div>
-									</c:otherwise>
-								</c:choose>
-								
-								<table>
-									<tr>
-										<td style="padding-left: 15px;">
-											<c:if test="${not empty m.value.standard_pic }">
-												<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px;height: 250px;"></a>
-											</c:if>
-											<c:if test="${empty m.value.standard_pic }">
-												<span class="img-span">基准图谱为空</span>
-											</c:if>
-										</td>
-										<td style="padding-left: 35px;">
-											<c:if test="${not empty m.value.sampling_pic }">
-												<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px;height: 250px;"></a>
-											</c:if>
-											<c:if test="${empty m.value.sampling_pic }">
-												<span class="img-span">抽样图谱为空</span>
-											</c:if>
-										</td>
-									</tr>
-								</table>
-							</div>
-						</c:forEach>
-					</c:if>
-						
-					<c:if test="${facadeBean.labType == 3 }">
-						<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
-						<c:forEach items="${mAtlasResult}" var="m">
-							<div style="margin-bottom: 10px;">
-								<c:choose>
-									<c:when test="${m.key == 1}">
-										<div class="title1">红外光分析图谱</div>
-									</c:when>
-									<c:when test="${m.key == 2}">
-										<div class="title1">差热分析图谱</div>
-									</c:when>
-									<c:when test="${m.key == 4}">
-										<div class="title1">样品照片图谱</div>
-									</c:when>
-									<c:otherwise>
-										<div class="title1">热重分析图谱</div>
-									</c:otherwise>
-								</c:choose>
-								
-								<table>
-									<tr>
-										<td style="padding-left: 15px;">
-											<c:if test="${not empty m.value.standard_pic }">
-												<a href="${resUrl}/${m.value.standard_pic}" target= _blank><img src="${resUrl}/${m.value.standard_pic}" style="width: 400px; height: 250px;"></a>
-											</c:if>
-											<c:if test="${empty m.value.standard_pic }">
-												<span class="img-span">基准图谱为空</span>
-											</c:if>
-										</td>
-										<td style="padding-left: 35px;">
-											<c:if test="${not empty m.value.sampling_pic }">
-												<a href="${resUrl}/${m.value.sampling_pic}" target= _blank><img src="${resUrl}/${m.value.sampling_pic}" style="width: 400px; height: 250px;"></a>
-											</c:if>
-											<c:if test="${empty m.value.sampling_pic }">
-												<span class="img-span">抽样图谱为空</span>
-											</c:if>
-										</td>
-									</tr>
-								</table>
-							</div>
-					   </c:forEach>
-					</c:if>
-				</div>
-				
-				<div class="title">实验结论</div> 
-				<div>	
-					<table class="info">
-						<tr class="single-row">
-							<td class="remark-span">试验类型</td>
-							<td class="remark-span"><span class="req-span">*</span>试验结论</td>
-							<td class="remark-span"><span class="req-span">*</span>报告编号</td>
-							<td class="remark-span"><span class="req-span">*</span>主检</td>
-							<td class="remark-span"><span class="req-span">*</span>审核</td>
-							<td class="remark-span"><span class="req-span">*</span>签发</td>
-							<td class="remark-span"><span class="req-span">*</span>收样时间</td>
-							<td class="remark-span"><span class="req-span">*</span>试验时间</td>
-							<td class="remark-span"><span class="req-span">*</span>签发时间</td>
-							<td class="remark-span">备注</td>
-						</tr>
-						
-						<c:forEach items="${conclusionList}" var="vo">
-							<c:if test="${(facadeBean.labType eq 1 and vo.type eq 1) or (facadeBean.labType eq 3 and vo.type eq 2) }">
-								<tr>
-									<td class="value-td1">
-										<c:choose>
-											<c:when test="${vo.type == 1}">
-												零部件图谱
-											</c:when>
-											<c:when test="${vo.type == 2}">
-												原材料图谱
-											</c:when>
-											<c:when test="${vo.type == 3}">
-												零部件型式
-											</c:when>
-											<c:otherwise>
-												原材料型式
-											</c:otherwise>
-										</c:choose>
-									</td>
-									<td class="value-td1">
-										<select style="width:100px;" class="easyui-combobox" data-options="panelHeight: 'auto'" >
-											<option value="">请选择</option>
-											<option value="合格" <c:if test="${vo.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-											<option value="不合格" <c:if test="${vo.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-											<option value="其它" <c:if test="${vo.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
-										</select>
-										<span id="matPat_conclusion_error" class="req-span"></span>
-									</td>
-									<td class="value-td1">
-										<input value="${vo.repNum }" class="easyui-textbox" style="width:115px" >
-									</td>
-									<td class="value-td1">
-										<input value="${vo.mainInspe }" class="easyui-textbox" style="width:115px" >
-									</td>
-									
-									<td class="value-td1">
-										<input value="${vo.examine }" class="easyui-textbox" style="width:115px" >
-									</td>
-									
-									<td class="value-td1">
-										<input value="${vo.issue }" class="easyui-textbox" style="width:115px" >
-									</td>
-									
-									<td class="value-td1">
-										<input value="${vo.receiveDate }" class="easyui-datebox" style="width:110px" data-options="editable:false" >
-									</td>
-									
-									<td class="value-td1">
-										<input value="${vo.examineDate }" class="easyui-datebox" style="width:110px" data-options="editable:false" >
-									</td>
-									
-									<td class="value-td1">
-										<input value="${vo.issueDate }" class="easyui-datebox" style="width:110px" data-options="editable:false" >
-									</td>
-									
-									<td class="value-td1">
-										<input value="${vo.remark }" class="easyui-textbox" style="width:115px" >
-									</td>
-								</tr>
-							</c:if>
-						</c:forEach>
-					</table>
-				</div>   
-	
-				<div style="border: 0.5px dashed #C9C9C9; width: 98%; margin-top: 15px; margin-bottom: 15px;"></div>
-				<div class="title">结论</div>
-				<div>
-					<table style="width: 98%; font-size: 14px;">
-						<tr style="background: #F0F0F0; height: 30px; font-weight: bold; text-align: center;">
-							<td>类型</td>
-							<td>样品照片</td>
-							<td>红外光分析</td>
-							<td>差热分析</td>
-							<td>热重分析</td>
-							<td>结论</td>
-						</tr>
-						
-						<c:forEach items="${compareResult}" var="m">
-							<c:if test="${(facadeBean.labType == 1 and m.key == '零部件') or (facadeBean.labType == 3 and m.key == '原材料')}">
-								<tr>
-									<td style="font-weight:bold;">${m.key}</td>
-									<c:forEach items="${m.value}" var="vo" varStatus="vst">
-										<td align="center">
-											<div style="margin-top:5px;">
-												<label><input name="${m.key}_radio_${vst.index}" type="radio" value="1" <c:if test="${vo.state == 1}">checked</c:if> disabled/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-												<label><input name="${m.key}_radio_${vst.index}" type="radio" value="2" <c:if test="${vo.state == 2}">checked</c:if> disabled/>不一致 </label> 
-											</div>
-											<div style="margin-top:5px;">
-												<textarea rows="1" cols="25" disabled>${vo.remark}</textarea>
-											</div>
-										</td>
-									</c:forEach>
-								</tr>
-							</c:if>
-						</c:forEach>
-					</table>
-				</div>
-			</c:if>
-		</c:if>
-		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		<div class="title" style="margin-top:15px;">结果确认</div>
-	
-		<div style="margin-left: 15px;">
-			第 <span style="color:red;font-weight:bold;">${facadeBean.times}</span> 次实验，结果确认：<c:if test="${ facadeBean.labResult == 1}"><span style="color:green;font-weight:bold;">合格</span></c:if><c:if test="${ facadeBean.labResult == 2}"><span style="color:red;font-weight:bold;">不合格</span></c:if>
+		<div style="margin-left: 10px; margin-bottom: 15px;">
+			<c:choose>
+				<c:when test="${facadeBean.task.type == 1}">
+					基准图谱建立
+				</c:when>
+				<c:when test="${facadeBean.task.type == 2}">
+					图谱试验抽查-开发阶段
+				</c:when>
+				<c:when test="${facadeBean.task.type == 3}">
+					图谱试验抽查-量产阶段
+				</c:when>
+				<c:otherwise>
+					第三方委托
+				</c:otherwise>
+			</c:choose>
+			
+			<c:choose>
+				<c:when test="${facadeBean.labType == 1}">
+					-- 零部件图谱实验
+				</c:when>
+				<c:when test="${facadeBean.labType == 2}">
+					-- 零部件型式实验
+				</c:when>
+				<c:when test="${facadeBean.labType == 3}">
+					-- 原材料图谱实验
+				</c:when>
+				<c:otherwise>
+					-- 原材料型式实验
+				</c:otherwise>
+			</c:choose>
+			
+			&nbsp;&nbsp;&nbsp;&nbsp;第 <span style="color:red;font-weight:bold;">${facadeBean.times}</span> 次实验，结果确认：<c:if test="${ facadeBean.labResult == 1}"><span style="color:green;font-weight:bold;">合格</span></c:if><c:if test="${ facadeBean.labResult == 2}"><span style="color:red;font-weight:bold;">不合格</span></c:if>
 		</div>
-		
 		
 		<c:choose>
 			<c:when test="${type == 1}">
+				<div class="title" style="margin-top: 30px;">收费清单&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addItem()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a></div>
+				<div>
+					<table class="info" id="expItemTable" style="width: 70%;">
+						<tr>
+							<td style="background: #F0F0F0;font-weight:bold;">序号</td>
+							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>试验项目</td>
+							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>参考标准</td>
+							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>单价</td>
+							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>数量</td>
+							<td style="background: #F0F0F0;font-weight:bold;">备注</td>
+							<td style="background: #F0F0F0;font-weight:bold;">操作</td>
+						</tr>
+						
+						<c:forEach var="i" begin="1" end="1" varStatus="status">
+							<tr num="${status.index}">
+								<td style="background: #f5f5f5;padding-left:5px;">${status.index}</td>
+								<td class="value-td1">
+									<input id="project_${status.index}" name="project_${status.index}" class="easyui-textbox"/>
+									<span id="project_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="standard_${status.index}" name="standard_${status.index}" class="easyui-textbox"/>
+									<span id="standard_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="price_${status.index}" name="price_${status.index}" class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:2"/>
+									<span id="price_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="num_${status.index}" name="num_${status.index}" class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:0"/>
+									<span id="num_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="remark_${status.index}" name="remark_${status.index}" class="easyui-textbox"/>
+									<span id="remark_${status.index}_error" class="req-span"></span>
+								</td>
+								<td style="background: #f5f5f5;padding-left:5px;">
+									<a href="javascript:void(0);"  onclick="deleteItem(${status.index})"><i class="icon icon-cancel"></i></a>
+								</td>
+							</tr>
+						</c:forEach>
+					</table>
+				</div>
+			
 				<!-- 待发送 -->
-				<div align="center" style="margin-top:10px;margin-bottom: 20px;">
-					<a href="javascript:void(0);"  onclick="toSend()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送</a>
+				<div style="margin-top: 25px;">
+					<div class="title">发送机构</div>
+					<div style="margin-left: 10px;">
+						<input id="org" name="org"/>
+						<span id="org_error" style="color:red;margin-left: 20px;"></span>
+					</div>
 				</div>
 				
-				<div id="expItemDialog"></div>
+				<div id="tips" style="color:red;font-weight:bold;margin-bottom: 10px;" align="center"></div>
+				<div id="saveBtn" align=center style="margin-top: 15px;margin-bottom: 30px;">
+					<a href="javascript:void(0);"  onclick="save()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">发送</a>&nbsp;&nbsp;
+					<a href="javascript:void(0);"  onclick="doCancel()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
+				</div>
+				
 			</c:when>
 			<c:otherwise>
 				<!-- 已发送 -->
@@ -801,23 +393,24 @@
 	</div>
 			
 	<script type="text/javascript">
-	
-		function toSend(){
-			$('#expItemDialog').dialog({
-				title : '费用清单',
-				width : 800,
-				height : 400,
-				closed : false,
-				cache : false,
-				href : "${ctx}/cost/expItemDetail?id=${facadeBean.id}",
-				modal : true
-			});
-			$('#expItemDialog').window('center');
-		}
-		
-		function doCancel(){
-			$("#expItemDialog").dialog("close");
-		}
+		$(function(){
+			if("${type == 1}"){
+				$('#org').combotree({
+					url: '${ctx}/org/tree',
+					multiple: true,
+					animate: true,
+					width: '350px',
+					panelHeight: '150px',
+					checkbox: function(node){
+					   if(isNull(node.children)){
+							return true;
+					   }else{
+						   return false;
+					   }
+				   }
+				});
+			}
+		});
 		
 		function expand(){
 			$("#vehicleDiv").toggle();
@@ -826,6 +419,177 @@
 			$("#showBtn").toggle();
 			$("#hideBtn").toggle();
 			$("#taskInfoDiv").toggle();
+			$("#taskDiv").toggle();
+			$("#applicatDiv").toggle();
+			$("#reasonDiv").toggle();
+		}
+		
+		function save(){
+			$("#saveBtn").hide();
+			
+			var dataArray = [];
+			var flag = true;
+			var date = new Date();
+			
+			var expItemTable = $("#expItemTable").length;
+			if(expItemTable > 0){
+				if($("tr[num]").length < 1){
+					$("#tips").html("请添加试验项目");
+					$("#tips").html("");
+					$("#saveBtn").show();
+					return false;
+				}
+				$("#result_error").html("");
+			}
+			
+			$("tr[num]").each(function(){
+				var num = $(this).attr("num");
+				
+				// 实验项目
+				var project = $("#project_" + num).textbox("getValue");
+				if(isNull(project)){
+					$("#project_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#project_"+ num +"_error").html("");
+				}
+				
+				// 参考标准
+				var standard = $("#standard_" + num).textbox("getValue");
+				if(isNull(standard)){
+					$("#standard_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#standard_"+ num +"_error").html("");
+				}
+				
+				// 单价
+				var price = $("#price_" + num).numberbox("getValue");
+				if(isNull(price)){
+					$("#price_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#price_"+ num +"_error").html("");
+				}
+				
+				// 数量
+				var num_val = $("#num_" + num).numberbox("getValue");
+				if(isNull(num_val)){
+					$("#num_"+ num +"_error").html("必填");
+					flag = false;
+					return false;
+				}else{
+					$("#num_"+ num +"_error").html("");
+				}
+				var remark = $("#remark_" + num).textbox("getValue");
+				
+				var obj = new Object();
+				obj.aId = "${currentAccount.id}"
+				obj.project = project;
+				obj.standard = standard;
+				obj.cId = "${facadeBean.id}";
+				obj.price = price;
+				obj.num = num_val;
+				obj.total = price * num_val;
+				obj.remark = remark
+				obj.createTime = date;
+				dataArray.push(obj);
+			});
+			
+			if(flag == false){
+				$("#saveBtn").show();
+				return false;
+			}
+			
+			var orgs = $("#org").combotree("getValues");
+			if(isNull(orgs)){
+				$("#org_error").html("请选择要发送的机构");
+				$("#saveBtn").show();
+				return false;
+			}
+			$("#org_error").html("");
+			
+			$("#tips").html("正在发送中，请稍等");
+			$.ajax({
+				url: "${ctx}/cost/costSend",
+				data: {
+					"costId": "${facadeBean.id}",
+					"result": JSON.stringify(dataArray),
+					"orgs": orgs.toString()
+				},
+				success: function(data){
+					if(data.success){
+						$("#tips").html(data.msg);
+						$("#tips").css("color", "green");
+						
+						tipMsg(data.msg, function(){
+							window.location.reload();
+						});
+					}else{
+						$("#saveBtn").show();
+						$("#tips").html(data.msg);
+					}
+				}
+			})
+		}
+		
+		/**
+		 *  添加项目
+		 */
+		function addItem(){
+			$("#tips").html("");
+			
+			var num;
+			for(var i = 1; i >= 1 ; i++){
+				var len = $("tr[num="+ i + "]").length;
+				if(len < 1){
+					num = i;
+					break;
+				}
+			}
+			
+			var str = "<tr num='"+ num + "'>"
+					+	 "<td style='background: #f5f5f5;padding-left:5px;'>"+ num +"</td>"
+					+	 "<td class='value-td1'>"
+					+		"<input id='project_"+ num +"' name='project_"+ num +"' class='easyui-textbox'/>"
+					+		"<span id='project_"+ num +"_error' class='req-span'></span>"
+					+	 "</td>"
+					+	 "<td class='value-td1'>"
+					+		"<input id='standard_"+ num +"' name='standard_"+ num +"' class='easyui-textbox'/>"
+					+		"<span id='standard_"+ num +"_error' class='req-span'></span>"
+					+	 "</td>"
+					+	 "<td class='value-td1'>"
+					+		"<input id='price_"+ num +"' name='price__"+ num +"' class='easyui-numberbox' style='width: 100px;' data-options='min:0,precision:2'/>"
+					+		"<span id='price_"+ num +"_error' class='req-span'></span>"
+					+	 "</td>"
+					+	 "<td class='value-td1'>"
+					+		"<input id='num_"+ num +"' name='num_"+ num +"' class='easyui-numberbox' style='width: 100px;' data-options='min:0,precision:0'/>"
+					+		"<span id='num_"+ num +"_error' class='req-span'></span>"
+					+	 "</td>"
+					+	 "<td class='value-td1'>"
+					+		"<input id='remark_"+ num +"' name='remark_"+ num +"' class='easyui-textbox'/>"
+					+		"<span id='remark_"+ num +"_error' class='req-span'></span>"
+					+	 "</td>"
+					+	 "<td style='background: #f5f5f5;padding-left:5px;'>"
+					+	    "<a href='javascript:void(0);'  onclick='deleteItem("+num+")'><i class='icon icon-cancel'></i></a>"
+					+	 "</td>"
+					+"</tr>";
+			
+			$("#expItemTable").append(str);
+			
+			// 渲染输入框
+			$.parser.parse($("#project_"+ num).parent());
+			$.parser.parse($("#standard_"+ num).parent());
+			$.parser.parse($("#price_"+ num).parent());
+			$.parser.parse($("#num_"+ num).parent());
+			$.parser.parse($("#remark_"+ num).parent());
+		}
+		
+		function deleteItem(num){
+			$("tr[num='"+ num + "']").remove();
 		}
 	</script>	
 	

@@ -325,7 +325,6 @@
 						}
 					}] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						detail(rowData.id);
 						window.location.href = "${ctx}/ppap/index?taskType=2&choose=1";
 					}
 				});

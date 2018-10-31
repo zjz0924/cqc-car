@@ -529,6 +529,16 @@
 			<if test="ppapAndSopTask != null">
 				and (t.type = 2 or type = 3)
 			</if>
+			
+			<!-- 流程上的用户 -->
+			<if test="currentAccountId != null">
+				and (t.approve_account_id = #{currentAccountId,jdbcType=BIGINT} or t.trainsmit_account_id = #{currentAccountId,jdbcType=BIGINT} or t.examine_account_id = #{currentAccountId,jdbcType=BIGINT} or t.a_id = #{currentAccountId,jdbcType=BIGINT})
+			</if>
+			
+			<!-- 任务类型多选 -->
+			<if test="typeList != null">
+				and t.type in <foreach collection="typeList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
 		</where>
 
 		<choose>

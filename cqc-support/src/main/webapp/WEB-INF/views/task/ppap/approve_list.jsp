@@ -63,7 +63,7 @@
 					}
 					$("#batchRemark").textbox("setValue", "");
 					$("#seasonDialog").dialog("open");
-					$('#seasonDialog').window('center');
+					top.parent.scrollTo(0, 300);
 				}
 			}];
 			
@@ -776,7 +776,7 @@
 		
 		<div id="approveDetailDialog"></div>
 		
-		<div id="seasonDialog" class="easyui-dialog" title="审批" style="width: 400px; height: 200px; padding: 10px" closed="true" data-options="modal:true">
+		<div id="seasonDialog" class="easyui-dialog" title="审批" style="width: 400px; height: 200px; padding: 10px; top: 100px;" closed="true" data-options="modal:true">
 			<input id="batchRemark" class="easyui-textbox" label="不同意原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
 			
 			<div align=center style="margin-top: 15px;">

@@ -19,6 +19,8 @@ public class StandardVO implements Serializable{
 	
 	private String date;
 	
+	private String altType;
+	
 	public Long getId() {
 		return id;
 	}
@@ -49,6 +51,14 @@ public class StandardVO implements Serializable{
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+
+	public String getAltType() {
+		return altType;
+	}
+
+	public void setAltType(String altType) {
+		this.altType = altType;
 	}
 	
 }

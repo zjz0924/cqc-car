@@ -49,7 +49,7 @@
 		
 		<script type="text/javascript">
 			$(function() {
-				$.ajax({
+				/* $.ajax({
 					url : "${ctx}/getTaskNum",
 					success : function(data) {
 						$("#examineNum").html(data.data[0]);
@@ -60,7 +60,7 @@
 						$("#waitConfirmNum").html(data.data[5]);
 						$("#finishConfirmNum").html(data.data[6]);
 					}
-				});
+				}); */
 				
 				if("${showBacklog}" == 1){
 					backlog();
@@ -74,10 +74,11 @@
 					height : 300,
 					closed : false,
 					cache : false,
-					top: 200,
 					href : "${ctx}/backlog/detail",
 					modal : true
 				});
+				
+				$(".window-mask").css("height", "");
 			}
 			
 		</script>
@@ -105,6 +106,7 @@
 		</div>
 		<!--banner结束-->
 		
+		<!-- 
 		<div class="main" style="margin-top:30px;">
 			<div style="background-color:white;margin-left: 20px;margin-right:20px;margin-top: 20px;height:650px;">
 				<div style="padding-top:30px;padding-left:35px;font-size: 20px;">欢迎进入上汽通用五菱材料管理平台！</div>
@@ -137,7 +139,8 @@
 				</div>
 			</div>
 		</div>
-		
+		 -->
+		 
 		<div id="backlogDialog"></div>
 		
 		<!-- footer -->

@@ -165,6 +165,12 @@ public class QueryController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", orderSql);
 		queryMap.put("custom_order_sql", orderSql);
+		
+		// 除了超级管理员， 流程上的用户都可以查看
+		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+			map.put("currentAccountId", account.getId());
+			queryMap.put("currentAccountId", account.getId());
+		}
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
@@ -190,35 +196,7 @@ public class QueryController extends AbstractController {
 			map.put("type", taskType);
 			queryMap.put("type", taskType);
 		}
-
-		/**
-		 * 1) SQE审批人全范围 2) 其它审批人只能查看本部门的任务 3) 其它人只能看自己的任务
-		 */
-		if (!Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-			// 可查看权限
-			String type = judgeAccountRole(request);
-
-			if ("self".equals(type)) {
-				List<Long> taskIdList = taskRecordService.selectTaskIdList(account.getId());
-
-				if (taskIdList == null || taskIdList.size() < 1) {
-					taskIdList.add(-1l);
-				}
-
-				map.put("taskIdList", taskIdList);
-				queryMap.put("taskIdList", taskIdList);
-
-			} else if ("ots".equals(type)) {
-				map.put("type", 1);
-				queryMap.put("type", 1);
-
-			} else if ("gs".equals(type)) {
-				map.put("type", 4);
-				queryMap.put("type", 4);
-
-			}
-		}
-
+		
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
@@ -444,13 +422,13 @@ public class QueryController extends AbstractController {
 				cell2.setCellStyle(styles.get("cell"));
 				String taskType = "";
 				if (task.getType() == TaskTypeEnum.OTS.getState()) {
-					taskType = "车型OTS阶段任务";
+					taskType = "基准图谱建立";
 				} else if (task.getType() == TaskTypeEnum.PPAP.getState()) {
-					taskType = "车型PPAP阶段任务";
+					taskType = "图谱试验抽查-开发阶段";
 				} else if (task.getType() == TaskTypeEnum.SOP.getState()) {
-					taskType = "车型SOP阶段任务";
+					taskType = "图谱试验抽查-量产阶段";
 				} else {
-					taskType = "非车型材料任务";
+					taskType = "第三方委托";
 				}
 				cell2.setCellValue(taskType);
 

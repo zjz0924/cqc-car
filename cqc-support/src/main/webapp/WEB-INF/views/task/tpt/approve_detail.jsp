@@ -286,6 +286,10 @@
 						</c:forEach>
 					</table>
 					
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<a style="margin-right: 30px;" target="_blank" href="${resUrl}/${old_attach.partsFileName}">${old_attach.partsFileName}</a>
+					</div>
+					
 					<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
 					<table class="info">
 						<tr class="single-row">
@@ -311,6 +315,9 @@
 						</c:forEach>
 					</table>
 					
+					<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+						试验结果附件：<a style="margin-right: 30px;" target="_blank" href="${resUrl}/${new_attach.partsFileName}">${new_attach.partsFileName}</a>
+					</div>
 					
 					<div style="margin-top: 30px;">	
 						<table class="info">
@@ -497,6 +504,10 @@
 					</c:forEach>
 				</table>
 				
+				<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+					试验结果附件：<a style="margin-right: 30px;" target="_blank" href="${resUrl}/${old_attach.materialFileName}">${old_attach.materialFileName}</a>
+				</div>
+				
 				<div style="margin-left: 10px;color:red;margin-top: 20px;">修改后结果：</div>
 				<table class="info">
 					<tr class="single-row">
@@ -521,6 +532,10 @@
 						</tr>
 					</c:forEach>
 				</table>
+				
+				<div style="margin-top: 10px;margin-left: 10px;font-weight: bold;">
+					试验结果附件：<a style="margin-right: 30px;" target="_blank" href="${resUrl}/${new_attach.materialFileName}">${new_attach.materialFileName}</a>
+				</div>	
 				
 				<div style="margin-top: 30px;">	
 					<table class="info">
@@ -559,19 +574,18 @@
 							<td class="value-td1">
 								<select id="matPat_conclusion" name="matPat_conclusion" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 									<option value="">请选择</option>
-									<option value="合格" <c:if test="${matPatConclusion_new.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
-									<option value="不合格" <c:if test="${matPatConclusion_new.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
-									<option value="其它" <c:if test="${matPatConclusion_new.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									<option value="合格" <c:if test="${new_attach.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
+									<option value="不合格" <c:if test="${new_attach.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
+									<option value="其它" <c:if test="${new_attach.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
 								</select>
 								<span id="matPat_conclusion_error" class="req-span"></span>
 							</td>
 							<td class="value-td1">
-								<input id="matPat_remark" name="matPat_remark" value="${matPatConclusion_new.remark }" class="easyui-textbox" style="width:195px" >
+								<input id="matPat_remark" name="matPat_remark" value="${new_attach.remark }" class="easyui-textbox" style="width:195px" >
 							</td>
 						</tr>
 					</table>
 				</div>
-				
 				
 				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 				

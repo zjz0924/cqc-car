@@ -35,6 +35,8 @@ public class CostRecord {
     private Integer labType;
     // 实验结果（1-合格，2-不合格）
     private Integer labResult;
+    // 总费用
+    private Double total;
 
     public Long getId() {
         return id;
@@ -139,5 +141,13 @@ public class CostRecord {
 	public void setSendTime(Date sendTime) {
 		this.sendTime = sendTime;
 	}
-    
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+	
 }

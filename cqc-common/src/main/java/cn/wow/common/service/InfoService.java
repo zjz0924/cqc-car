@@ -7,6 +7,7 @@ import java.util.Map;
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Department;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.Attach;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.LabConclusion;
@@ -129,7 +130,7 @@ public interface InfoService {
 	 * @param isPass             是否合格（1-合格，2-不合格）
 	 */
 	public void applyResult(Account account, Long taskId, List<PfResult> pfResultList, List<AtlasResult> atlResultList,
-			List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass);
+			List<ExamineRecord> compareList, List<LabConclusion> conclusionDataList, int isPass, Attach attach);
 
 	/**
 	 * 获取信息ID列表

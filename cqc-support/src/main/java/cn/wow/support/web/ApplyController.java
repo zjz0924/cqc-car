@@ -31,6 +31,7 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Address;
 import cn.wow.common.domain.ApplyRecord;
 import cn.wow.common.domain.AtlasResult;
+import cn.wow.common.domain.Attach;
 import cn.wow.common.domain.CarCode;
 import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.LabConclusion;
@@ -43,7 +44,6 @@ import cn.wow.common.domain.Task;
 import cn.wow.common.domain.Vehicle;
 import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
-import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.AttachService;
@@ -115,6 +115,10 @@ public class ApplyController extends AbstractController {
 	// 图谱图片上传路径
 	@Value("${result.atlas.url}")
 	protected String atlasUrl;
+
+	// 附件上传路径
+	@Value("${result.attach.url}")
+	protected String attachUrl;
 
 	/**
 	 * 任务列表
@@ -287,6 +291,11 @@ public class ApplyController extends AbstractController {
 						model.addAttribute("matPatConclusion", conclusion);
 					}
 				}
+			}
+
+			if (task.getType() == TaskTypeEnum.GS.getState()) {
+				// 型式结果附件
+				model.addAttribute("attach", attachService.getFileName(id));
 			}
 
 			if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
@@ -599,8 +608,8 @@ public class ApplyController extends AbstractController {
 			if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
 					p_producer, p_producerCode)) {
 				parts = partsService.selectOne(task.getInfo().getpId());
-				assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date,
-						p_num, p_producerCode);
+				assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date, p_num,
+						p_producerCode);
 
 				boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getName(), parts.getProTime(),
 						p_producer, p_producerCode).getFlag();
@@ -669,7 +678,9 @@ public class ApplyController extends AbstractController {
 			String p_inf_remark, Integer p_dt, String p_dt_remark, Integer p_tg, String p_tg_remark, Integer p_result,
 			String p_result_remark, Integer m_inf, String m_inf_remark, Integer m_dt, String m_dt_remark, Integer m_tg,
 			String m_tg_remark, Integer m_result, String m_result_remark, Integer p_temp, String p_temp_remark,
-			Integer m_temp, String m_temp_remark, String conclusionResult) {
+			Integer m_temp, String m_temp_remark, String conclusionResult,
+			@RequestParam(value = "partsResultAttachFile", required = false) MultipartFile partsResultAttachFile,
+			@RequestParam(value = "materialResultAttachFile", required = false) MultipartFile materialResultAttachFile) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -680,6 +691,23 @@ public class ApplyController extends AbstractController {
 			ObjectMapper mapper = new ObjectMapper();
 			List<PfResult> pfResultList = mapper.readValue(result, new TypeReference<List<PfResult>>() {
 			});
+
+			// 附件
+			Attach attach = new Attach();
+			attach.setTaskId(taskId);
+
+			String fileName = null;
+			// 零件型式附件
+			if (partsResultAttachFile != null && !partsResultAttachFile.isEmpty()) {
+				fileName = uploadImg(partsResultAttachFile, attachUrl + taskId + "/parts/", false);
+				attach.setPartsFile(fileName);
+			}
+
+			// 材料型式附件
+			if (materialResultAttachFile != null && !materialResultAttachFile.isEmpty()) {
+				fileName = uploadImg(materialResultAttachFile, attachUrl + taskId + "/material/", false);
+				attach.setMaterialFile(fileName);
+			}
 
 			// 试验结论
 			List<LabConclusion> conclusionDataList = mapper.readValue(conclusionResult,
@@ -738,7 +766,7 @@ public class ApplyController extends AbstractController {
 			}
 
 			infoService.applyResult(account, taskId, pfResultList, atlResultList, compareList, conclusionDataList,
-					is_pass);
+					is_pass, attach);
 
 		} catch (Exception ex) {
 			logger.error("试验结果修改申请保存失败", ex);

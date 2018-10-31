@@ -51,6 +51,7 @@ import cn.wow.common.service.AccountService;
 import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
+import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
@@ -141,6 +142,8 @@ public class TptTaskController extends AbstractController {
 	private ReasonService reasonService;
 	@Autowired
 	private DepartmentService departmentService;
+	@Autowired
+	private AttachService attachService;
 
 	/**
 	 * 首页
@@ -339,7 +342,7 @@ public class TptTaskController extends AbstractController {
 
 				Account trainsmitAccount = examineAccount.getParent();
 				if (trainsmitAccount != null) {
-					model.addAttribute("trainsmitAccount", examineAccount);
+					model.addAttribute("trainsmitAccount", trainsmitAccount);
 
 					Account approveAccount = trainsmitAccount.getParent();
 					if (approveAccount != null) {
@@ -1260,6 +1263,10 @@ public class TptTaskController extends AbstractController {
 					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
 					model.addAttribute("mPfResult_new", mPfResult_new);
 					model.addAttribute("mAtlasResult_new", mAtlasResult_new);
+					
+					// 型式结果附件
+					model.addAttribute("old_attach", attachService.getFileName(task.gettId()));
+					model.addAttribute("new_attach", attachService.getFileName(task.getId()));
 				}
 			}
 

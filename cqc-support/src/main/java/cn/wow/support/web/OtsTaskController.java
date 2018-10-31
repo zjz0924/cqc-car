@@ -319,7 +319,7 @@ public class OtsTaskController extends AbstractController {
 
 				Account trainsmitAccount = examineAccount.getParent();
 				if (trainsmitAccount != null) {
-					model.addAttribute("trainsmitAccount", examineAccount);
+					model.addAttribute("trainsmitAccount", trainsmitAccount);
 
 					Account approveAccount = trainsmitAccount.getParent();
 					if (approveAccount != null) {

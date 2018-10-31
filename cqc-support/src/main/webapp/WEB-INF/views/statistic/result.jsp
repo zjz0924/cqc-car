@@ -142,7 +142,7 @@
 						'endCreateTime' : $("#q_endCreateTime").val(),
 						'startConfirmTime' : $("#q_startConfirmTime").val(),
 						'endConfirmTime' : $("#q_endConfirmTime").val(),
-						'taskType': $("#q_taskType").combobox("getValue"),
+						'taskType': getSelectTaskType(),
 						'reason': $("#reason").textbox("getValue"),
 						'source': $("#source").textbox("getValue")
 					},
@@ -164,6 +164,22 @@
 						}
 					}
 				});
+			}
+			
+			function getSelectTaskType(){
+				var types =  $("#q_taskType").combobox('getValues');
+				var val = ""
+				
+				if(!isNull(types)){
+					for(var i = 0; i < types.length; i++){
+						if(i != types.length - 1){
+							val += types[i] + ",";
+						}else{
+							val += types[i];
+						}
+					}
+				}
+				return val;
 			}
 			
 			function percentNum(num, num2) { 
@@ -191,7 +207,7 @@
 				$("#q_endCreateTime").val('');
 				$("#q_startConfirmTime").val('');
 				$("#q_endConfirmTime").val('');
-				$("#q_taskType").combobox("select", "");
+				$("#q_taskType").combobox("clear");
 				$("#reason").textbox("clear");
 				$("#source").textbox("clear");
 				
@@ -270,13 +286,8 @@
 				
 				<div style="margin-top: 5px;">
 					<span class="qlabel">任务类型：</span>
-					<select id="q_taskType" name="q_taskType" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
-						<option value="">全部</option>
-						<option value="1">车型OTS阶段任务</option>
-						<option value="2">车型PPAP阶段任务</option>
-						<option value="3">车型SOP阶段任务</option>
-						<option value="4">非车型材料任务</option>
-					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="easyui-combobox" id="q_taskType" name="q_taskType" style="width:168px;" data-options="multiple:true,panelHeight: 'auto', valueField: 'value', textField: 'label',data: [{ label: '准图谱建立'    ,value: '1'},{label:'图谱试验抽查-开发阶段'   ,value: '2'},{label: '图谱试验抽查-量产阶段'   ,value: '3'},{label: '第三方委托'   ,value: '4'}]" />
+					 &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">抽检原因：</span>
 					<select id="reason" name="reason" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">

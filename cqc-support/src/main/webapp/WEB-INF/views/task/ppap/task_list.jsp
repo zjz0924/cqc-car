@@ -320,10 +320,7 @@
 						}
 					}] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						detail(rowData.id);
-					},
-					onClickRow: function(rowIndex, rowData) {
-						currentTaskCode = rowData.code;
+						closeDialog(rowIndex);
 					}
 				});
 		

@@ -14,13 +14,14 @@
 		<result column="times" property="times" jdbcType="INTEGER" />
 		<result column="lab_type" property="labType" jdbcType="INTEGER" />
 		<result column="lab_result" property="labResult" jdbcType="INTEGER" />
+		<result column="total" property="total" jdbcType="DOUBLE" />
 		
 		<association property="task" javaType="cn.wow.common.domain.Task" column="t_id" select="cn.wow.common.dao.TaskDao.selectOne"/> 
 	</resultMap>
 	
 	<sql id="base_columns">
 		c.id, c.t_id, c.a_id, c.lab_id, c.orgs, c.state, c.remark, c.create_time, c.times,
-		c.lab_type, c.lab_result, c.send_time
+		c.lab_type, c.lab_result, c.send_time, c.total
 	</sql>
 	
 	<select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -32,18 +33,18 @@
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.CostRecord">
-		insert into cost_record (t_id, a_id, lab_id, orgs, state, remark, create_time, times, lab_type, lab_result, send_time)
+		insert into cost_record (t_id, a_id, lab_id, orgs, state, remark, create_time, times, lab_type, lab_result, send_time, total)
 		values (#{tId,jdbcType=BIGINT}, #{aId,jdbcType=BIGINT}, #{labId,jdbcType=BIGINT}, #{orgs,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER},
 		#{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{times,jdbcType=INTEGER}, #{labType,jdbcType=INTEGER}, 
-		#{labResult,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
+		#{labResult,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, #{total,jdbcType=DOUBLE})
 	</insert>
 	
 	<insert id="batchAdd" parameterType="java.util.List">
-		insert into cost_record (t_id, a_id, lab_id, orgs, state, remark, create_time, times, lab_type, lab_result, send_time) values
+		insert into cost_record (t_id, a_id, lab_id, orgs, state, remark, create_time, times, lab_type, lab_result, send_time, total) values
 		<foreach collection="list" item="item" separator=",">
 			(#{item.tId,jdbcType=BIGINT}, #{item.aId,jdbcType=BIGINT}, #{item.labId,jdbcType=BIGINT}, #{item.orgs,jdbcType=VARCHAR}, #{item.state,jdbcType=INTEGER},
 			 #{item.remark,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.times,jdbcType=INTEGER}, #{item.labType,jdbcType=INTEGER}, 
-			 #{item.labResult,jdbcType=INTEGER}, #{item.sendTime,jdbcType=TIMESTAMP})
+			 #{item.labResult,jdbcType=INTEGER}, #{item.sendTime,jdbcType=TIMESTAMP}, #{item.total,jdbcType=DOUBLE})
 		</foreach>
 	</insert> 
 	
@@ -81,7 +82,10 @@
 			 	lab_result = #{labResult,jdbcType=INTEGER},
 			</if>
 			<if test="sendTime != null">
-				send_time = #{sendTime,jdbcType=TIMESTAMP}
+				send_time = #{sendTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="total != null">
+				total = #{total,jdbcType=DOUBLE},
 			</if>
 		</set>
 		where id = #{id,jdbcType=BIGINT}

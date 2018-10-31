@@ -87,6 +87,9 @@
 							<input id="atlRemark" name="atlRemark" class="easyui-textbox" value="${facadeBean.atlRemark }" style="width:200px;">	
 						</td>
 					</tr>
+					<tr style="display: none;" id="labTips">
+						<td colspan="3" style="font-weight: bold; color: red;"><span style="margin-left: 10px;">注意：该基准选择&nbsp;</span><span id="labs"></span></td>
+					</tr>
 				</table>
 			</div>
 			
@@ -155,7 +158,7 @@
 			</div>
 		
 			<div class="title">整车信息&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="javascript:void(0)" onclick="vehicleInfo()" title="妫€绱¢"><i class="icon icon-search"></i></a>
+				<a href="javascript:void(0)" onclick="vehicleInfo()" title="选择"><i class="icon icon-search"></i></a>
 			</div>
 			
 			<table class="info">
@@ -437,13 +440,28 @@
 					onLoadSuccess:function() {
 						var data= $(this).combobox("getData");
 						if (data.length > 0) {
+							$("#labTips").show();
+							
 		                	if(!isNull("${facadeBean.standIid}")){
 		                		$(this).combobox('select', "${facadeBean.standIid}");
+		                		
+		                		for(var i = 0; i < data.length; i++){
+		                			var obj = data[i];
+		                			
+		                			if(obj.id == "${facadeBean.standIid}"){
+		                				$("#labs").html(obj.altType);
+		                				break;
+		                			}
+		                		}
 		                	}else{
 		                		$(this).combobox('select', data[0].id);
+								$("#labs").html(data[0].altType);
 		                	}
 		                }else{
 		                	$(this).combobox('select', '');
+		                	
+		                	$("#labTips").hide();
+							$("#labs").html("");
 		                }
 					}
 				});

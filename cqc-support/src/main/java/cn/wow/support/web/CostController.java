@@ -2,7 +2,6 @@ package cn.wow.support.web;
 
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,15 +31,10 @@ import com.github.pagehelper.Page;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.AtlasResult;
-import cn.wow.common.domain.CompareVO;
 import cn.wow.common.domain.CostRecord;
-import cn.wow.common.domain.ExamineRecord;
 import cn.wow.common.domain.ExpItem;
-import cn.wow.common.domain.LabConclusion;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
-import cn.wow.common.domain.PfResult;
-import cn.wow.common.domain.Task;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CostRecordService;
@@ -54,8 +48,6 @@ import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.pagination.PageMap;
-import cn.wow.common.utils.taskState.SamplingTaskEnum;
-import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 /**
@@ -76,19 +68,9 @@ public class CostController extends AbstractController {
 	@Autowired
 	private MenuService menuService;
 	@Autowired
-	private AtlasResultService atlasResultService;
-	@Autowired
-	private PfResultService pfResultService;
-	@Autowired
 	private ExpItemService expItemService;
 	@Autowired
-	private TaskService taskService;
-	@Autowired
 	private LabReqService labReqService;
-	@Autowired
-	private LabConclusionService labConclusionService;
-	@Autowired
-	private AttachService attachService;
 
 	// 查询的条件，用于导出
 	private Map<String, Object> queryMap = new PageMap(false);
@@ -111,20 +93,13 @@ public class CostController extends AbstractController {
 	/**
 	 * 获取数据
 	 * 
-	 * @param startCreateTime
-	 *            创建时间
-	 * @param endCreateTime
-	 *            创建时间
-	 * @param code
-	 *            任务编码
-	 * @param type
-	 *            类型：0-未发送列表 ，1-已发送列表
-	 * @param taskType
-	 *            任务类型
-	 * @param labType
-	 *            实验类型
-	 * @param labResult
-	 *            实验结果
+	 * @param startCreateTime 创建时间
+	 * @param endCreateTime   创建时间
+	 * @param code            任务编码
+	 * @param type            类型：0-未发送列表 ，1-已发送列表
+	 * @param taskType        任务类型
+	 * @param labType         实验类型
+	 * @param labResult       实验结果
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getListData")
@@ -203,99 +178,6 @@ public class CostController extends AbstractController {
 	public String detail(HttpServletRequest request, Model model, String id, int type) {
 		if (StringUtils.isNotBlank(id)) {
 			CostRecord costRecord = costRecordService.selectOne(Long.parseLong(id));
-			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(costRecord.getTask().getId());
-
-			if (costRecord.getTask().getType() == TaskTypeEnum.OTS.getState()
-					|| costRecord.getTask().getType() == TaskTypeEnum.GS.getState()) { // OTS 结果确认
-				// 性能结果
-				Map<String, Object> pfMap = new HashMap<String, Object>();
-				pfMap.put("tId", costRecord.getTask().getId());
-				pfMap.put("custom_order_sql", "exp_no asc");
-				List<PfResult> pfDataList = pfResultService.selectAllList(pfMap);
-
-				Map<Integer, List<PfResult>> pPfResult = new HashMap<Integer, List<PfResult>>();
-				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
-				pfResultService.assemblePfResult(pfDataList, pPfResult, mPfResult);
-
-				// 图谱结果
-				Map<String, Object> atMap = new HashMap<String, Object>();
-				atMap.put("tId", costRecord.getTask().getId());
-				atMap.put("custom_order_sql", "exp_no asc");
-				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
-
-				Map<Integer, List<AtlasResult>> pAtlasResult = new HashMap<Integer, List<AtlasResult>>();
-				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
-				atlasResultService.assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
-
-				// 原材料图谱结果
-				model.addAttribute("mAtlasResult", mAtlasResult);
-				// 零部件图谱结果
-				model.addAttribute("pAtlasResult", pAtlasResult);
-				// 原材料型式结果
-				model.addAttribute("mPfResult", mPfResult);
-				// 零部件型式结果
-				model.addAttribute("pPfResult", pPfResult);
-				// 型式结果附件
-				model.addAttribute("attach", attachService.getFileName(costRecord.getTask().getId()));
-
-				// 试验结论
-				if (conclusionList != null && conclusionList.size() > 0) {
-					for (LabConclusion conclusion : conclusionList) {
-						if (conclusion.getType().intValue() == 1) {
-							model.addAttribute("partsAtlConclusion", conclusion);
-						} else if (conclusion.getType().intValue() == 2) {
-							model.addAttribute("matAtlConclusion", conclusion);
-						} else if (conclusion.getType().intValue() == 3) {
-							model.addAttribute("partsPatConclusion", conclusion);
-						} else {
-							model.addAttribute("matPatConclusion", conclusion);
-						}
-					}
-				}
-
-			} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState()
-					|| costRecord.getTask().getType() == TaskTypeEnum.SOP.getState()) {
-				Long iId = costRecord.getTask().getiId();
-
-				// 如果是修改生成的记录，基准图谱要取父任务的iID的基准
-				if (costRecord.getTask().gettId() != null) {
-					Task pTask = taskService.selectOne(costRecord.getTask().gettId());
-					iId = pTask.getiId();
-				}
-
-				// 基准图谱结果
-				List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(iId, 1);
-				List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(iId, 2);
-
-				// 抽样图谱结果
-				Map<String, Object> atMap = new HashMap<String, Object>();
-				atMap.put("tId", costRecord.gettId());
-				atMap.put("custom_order_sql", "exp_no desc limit 8");
-				List<AtlasResult> atDataList = atlasResultService.selectAllList(atMap);
-
-				List<AtlasResult> sl_pAtlasResult = new ArrayList<AtlasResult>();
-				List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
-				groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
-
-				// 零部件图谱结果
-				Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult,
-						sl_pAtlasResult);
-				// 原材料图谱结果
-				Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult,
-						sl_mAtlasResult);
-				// 对比结果
-				Map<String, List<ExamineRecord>> compareResult = atlasResultService
-						.assembleCompareResult(costRecord.gettId());
-
-				model.addAttribute("mAtlasResult", mAtlasResult);
-				model.addAttribute("pAtlasResult", pAtlasResult);
-				model.addAttribute("compareResult", compareResult);
-
-				// 试验结论
-				if (conclusionList != null && conclusionList.size() > 0) {
-					model.addAttribute("conclusionList", conclusionList);
-				}
-			}
 
 			// 费用详情
 			if (type == 2) {
@@ -317,27 +199,13 @@ public class CostController extends AbstractController {
 		return "cost/cost_detail";
 	}
 
-	/**
-	 * 费用清单
-	 */
-	@RequestMapping(value = "/expItemDetail")
-	public String expItemDetail(HttpServletRequest request, Model model, String id) {
-		if (StringUtils.isNotBlank(id)) {
-			CostRecord costRecord = costRecordService.selectOne(Long.parseLong(id));
-			model.addAttribute("facadeBean", costRecord);
-		}
-		return "cost/item_detail";
-	}
 
 	/**
 	 * 费用清单发送
 	 * 
-	 * @param costId
-	 *            费用清单ID
-	 * @param result
-	 *            试验项目
-	 * @param orgs
-	 *            发送机构
+	 * @param costId 费用清单ID
+	 * @param result 试验项目
+	 * @param orgs   发送机构
 	 * @return
 	 */
 	@ResponseBody
@@ -417,20 +285,24 @@ public class CostController extends AbstractController {
 				// 任务号
 				Cell cell1 = contentRow.createCell(0);
 				cell1.setCellStyle(styles.get("cell"));
-				cell1.setCellValue(costRecord.getTask().getCode());
+				if (costRecord.getTask() != null) {
+					cell1.setCellValue(costRecord.getTask().getCode());
+				}
 
 				// 任务类型
 				Cell cell2 = contentRow.createCell(1);
 				cell2.setCellStyle(styles.get("cell"));
 				String taskType = "";
-				if (costRecord.getTask().getType() == TaskTypeEnum.OTS.getState()) {
-					taskType = "车型OTS阶段任务";
-				} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState()) {
-					taskType = "车型PPAP阶段任务";
-				} else if (costRecord.getTask().getType() == TaskTypeEnum.SOP.getState()) {
-					taskType = "车型SOP阶段任务";
-				} else {
-					taskType = "非车型材料任务";
+				if (costRecord.getTask() != null) {
+					if (costRecord.getTask().getType() == TaskTypeEnum.OTS.getState()) {
+						taskType = "基准图谱建立";
+					} else if (costRecord.getTask().getType() == TaskTypeEnum.PPAP.getState()) {
+						taskType = "图谱试验抽查-开发阶段";
+					} else if (costRecord.getTask().getType() == TaskTypeEnum.SOP.getState()) {
+						taskType = "图谱试验抽查-量产阶段";
+					} else {
+						taskType = "第三方委托";
+					}
 				}
 				cell2.setCellValue(taskType);
 

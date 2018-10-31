@@ -116,7 +116,7 @@
 					<input id="p_producer" name="p_producer" type="text" value="${facadeBean.info.parts.producer }" class="inputAutocomple" style="width:150px;">
 				</td>
 				<td>
-					<span class="title-span"><span class="req-span">*</span>供应商代码：</span> 
+					<span class="title-span" style="width: 105px;"><span class="req-span">*</span>供应商代码：</span> 
 					<input id="p_producerCode" name="p_producerCode" class="easyui-textbox" value="${facadeBean.info.parts.producerCode }" style="width:150px;">
 				</td>
 			</tr>
@@ -134,7 +134,7 @@
 					<input id="p_proNo" name="p_proNo" class="easyui-textbox" value="${facadeBean.info.parts.proNo }"  style="width:150px;">
 				</td>
 				<td>
-					<span class="title-span">生产场地：</span> 
+					<span class="title-span" style="width: 105px;">生产场地：</span> 
 					<input id="p_place" name="p_place" class="easyui-textbox" value="${facadeBean.info.parts.place }"  style="width:150px;">
 				</td>
 			</tr>

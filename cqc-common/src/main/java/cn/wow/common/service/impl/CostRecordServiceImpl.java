@@ -30,84 +30,91 @@ import cn.wow.common.utils.pagination.PageMap;
 
 @Service
 @Transactional
-public class CostRecordServiceImpl implements CostRecordService{
+public class CostRecordServiceImpl implements CostRecordService {
 
-    private static Logger logger = LoggerFactory.getLogger(CostRecordServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(CostRecordServiceImpl.class);
 
-    @Autowired
-    private CostRecordDao costRecordDao;
-    @Autowired
-    private ExpItemDao expItemDao;
-    @Autowired
-    private AccountDao accountDao;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
+	@Autowired
+	private CostRecordDao costRecordDao;
+	@Autowired
+	private ExpItemDao expItemDao;
+	@Autowired
+	private AccountDao accountDao;
+	@Autowired
+	private TaskService taskService;
+	@Autowired
 	private OperationLogService operationLogService;
 
-    public CostRecord selectOne(Long id){
-    	return costRecordDao.selectOne(id);
-    }
+	public CostRecord selectOne(Long id) {
+		return costRecordDao.selectOne(id);
+	}
 
-    public int save(String userName, CostRecord costRecord){
-    	return costRecordDao.insert(costRecord);
-    }
+	public int save(String userName, CostRecord costRecord) {
+		return costRecordDao.insert(costRecord);
+	}
 
-    public int update(String userName, CostRecord costRecord){
-    	return costRecordDao.update(costRecord);
-    }
+	public int update(String userName, CostRecord costRecord) {
+		return costRecordDao.update(costRecord);
+	}
 
-    public int deleteByPrimaryKey(String userName, CostRecord costRecord){
-    	return costRecordDao.deleteByPrimaryKey(costRecord.getId());
-    }
+	public int deleteByPrimaryKey(String userName, CostRecord costRecord) {
+		return costRecordDao.deleteByPrimaryKey(costRecord.getId());
+	}
 
-    public List<CostRecord> selectAllList(Map<String, Object> map){
-    	PageHelperExt.startPage(map);
-    	return costRecordDao.selectAllList(map);
-    }
-    
-    
-    /**
-     * 费用清单发送
-     * @param account  
-     * @param costId   清单ID
-     * @param orgs	        发送机构
-     * @param list     试验项目
-     */
-	public void costSend(Account account, Long costId, String orgs, List<ExpItem> itemList) throws Exception{
+	public List<CostRecord> selectAllList(Map<String, Object> map) {
+		PageHelperExt.startPage(map);
+		return costRecordDao.selectAllList(map);
+	}
+
+	/**
+	 * 费用清单发送
+	 * 
+	 * @param account
+	 * @param costId  清单ID
+	 * @param orgs    发送机构
+	 * @param list    试验项目
+	 */
+	public void costSend(Account account, Long costId, String orgs, List<ExpItem> itemList) throws Exception {
 		// 添加试验项目
 		expItemDao.batchAdd(itemList);
 		Date date = new Date();
-		
+
+		Double total = 0d;
+		if (itemList != null && itemList.size() > 0) {
+			for (ExpItem item : itemList) {
+				total += item.getTotal();
+			}
+		}
+
 		// 修改清单信息
 		CostRecord costRecord = costRecordDao.selectOne(costId);
 		costRecord.setaId(account.getId());
 		costRecord.setOrgs(orgs);
 		costRecord.setSendTime(date);
 		costRecord.setState(1);
+		costRecord.setTotal(total);
 		costRecordDao.update(costRecord);
-		
+
 		// 发送邮件
 		taskService.sendCost(account, orgs, costRecord, itemList);
-		
+
 		// 操作日志
 		String lab = "";
-		if(costRecord.getLabType() == 1) {
+		if (costRecord.getLabType() == 1) {
 			lab = "零部件图谱试验费用单";
-		}else if(costRecord.getLabType() == 2) {
+		} else if (costRecord.getLabType() == 2) {
 			lab = "零部件型式试验费用单";
-		}else if(costRecord.getLabType() == 3) {
+		} else if (costRecord.getLabType() == 3) {
 			lab = "原材料图谱试验费用单";
-		}else {
+		} else {
 			lab = "原材料型式试验费用单";
 		}
 		String logDetail = "任务：" + costRecord.getTask().getCode() + "," + lab;
 		addLog(account.getUserName(), OperationType.SEND_COST, ServiceType.COST, logDetail);
 	}
 
-	
 	/**
-	 *  添加日志
+	 * 添加日志
 	 */
 	void addLog(String userName, OperationType operationType, ServiceType serviceType, String logDetail) {
 		operationLogService.save(userName, operationType, serviceType, logDetail);
