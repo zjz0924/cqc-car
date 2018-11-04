@@ -86,8 +86,6 @@ public class QueryController extends AbstractController {
 	@Autowired
 	private LabConclusionService labConclusionService;
 	@Autowired
-	private TaskRecordService taskRecordService;
-	@Autowired
 	private AddressService addressService;
 	@Autowired
 	private CarCodeService carCodeService;

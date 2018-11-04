@@ -113,14 +113,15 @@ public class PartsServiceImpl implements PartsService {
 					|| StringUtils.isNotBlank(p_remark) || p_num != null || StringUtils.isNotBlank(p_producer)
 					|| StringUtils.isNotBlank(p_producerCode)) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
 		} else {
 			if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
-					&& p_proTime.equals(sdf.format(parts.getProTime())) && p_place.equals(parts.getPlace())
-					&& p_proNo.equals(parts.getProNo()) && p_remark.equals(parts.getRemark()) && p_num.intValue() == parts.getNum()
-					&& parts.getProducer().equals(p_producer) && parts.getProducerCode().equals(p_producerCode)) {
+					&& ((parts.getProTime() != null && p_proTime.equals(sdf.format(parts.getProTime()))) || (parts.getProTime() == null && StringUtils.isBlank(p_proTime)))
+					&& p_place.equals(parts.getPlace()) && p_proNo.equals(parts.getProNo())
+					&& p_remark.equals(parts.getRemark()) && ((p_num != null && p_num.intValue() == parts.getNum()) || p_num == null)
+					&& p_producer.equals(parts.getProducer()) && p_producerCode.equals(parts.getProducerCode())) {
 				return false;
 			} else {
 				return true;

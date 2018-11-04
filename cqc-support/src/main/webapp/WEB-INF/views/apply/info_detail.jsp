@@ -365,6 +365,28 @@
 				saving = true;
 				$("#exception_error").html("");
 				
+				var pNum = $("#p_num").textbox("getValue");
+				if(!isNull(pNum) && isNaN(pNum)){
+					saving = false;
+					$("#p_num").next('span').find('input').focus();
+					$("#p_num").textbox("setValue", "");
+					$("#exception_error").html("提交失败，样件数量必须为整数");
+					return false;
+				}else{
+					$("#exception_error").html("");
+				}
+				
+				var mNum = $("#m_num").textbox("getValue");
+				if(!isNull(mNum) && isNaN(mNum)){
+					saving = false;
+					$("#m_num").next('span').find('input').focus();
+					$("#m_num").textbox("setValue", "");
+					$("#exception_error").html("提交失败，样品数量必须为整数");
+					return false;
+				}else{
+					$("#exception_error").html("");
+				}
+				
 				$('#uploadForm').ajaxSubmit({
 					url: "${ctx}/apply/applyInfoSave",
 					dataType : 'json',

@@ -867,6 +867,15 @@ public class TaskServiceImpl implements TaskService {
 	public List<Task> batchQueryByInfoId(List<Long> list) {
 		return taskDao.batchQueryByInfoId(list);
 	}
+	
+	
+	/**
+	 * 获取待办任务
+	 */
+	public List<Task> getBacklogTask(Map<String, Object> map){
+		PageHelperExt.startPage(map);
+		return taskDao.getBacklogTask(map);
+	}
 
 	/**
 	 * 获取子任务的数量

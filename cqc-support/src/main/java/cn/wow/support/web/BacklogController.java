@@ -1,6 +1,5 @@
 package cn.wow.support.web;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,20 +14,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.github.pagehelper.Page;
+
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.domain.Task;
 import cn.wow.common.service.AccountService;
 import cn.wow.common.service.EmailRecordService;
 import cn.wow.common.service.InfoService;
+import cn.wow.common.service.MenuService;
 import cn.wow.common.service.ReasonService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
-import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Controller
 @RequestMapping(value = "backlog")
@@ -48,9 +49,14 @@ public class BacklogController {
 	private AccountService accountService;
 	@Autowired
 	private ReasonService reasonService;
+	@Autowired
+	private MenuService menuService;
 
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model) {
+
+		Menu menu = menuService.selectByAlias("backlog");
+		model.addAttribute("menuName", menu.getName());
 		return "backlog/backlog_list";
 	}
 
@@ -86,7 +92,85 @@ public class BacklogController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", orderSql);
 
-		List<Task> dataList = taskService.selectAllList(map);
+		// 获取有权限的菜单
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> permissionMap = (Map<String, Menu>) request.getSession()
+				.getAttribute(Contants.PERMISSION_MENU_MAP);
+
+		if (isHasPermission(permissionMap, "otsRequire")) {
+			map.put("otsRequire", true);
+		}
+
+		if (isHasPermission(permissionMap, "otsExamine")) {
+			map.put("otsExamine", true);
+		}
+
+		if (isHasPermission(permissionMap, "otsOrder")) {
+			map.put("otsTransmit", true);
+		}
+
+		if (isHasPermission(permissionMap, "otsApprove")) {
+			map.put("otsApprove", true);
+		}
+
+		if (isHasPermission(permissionMap, "ppapOrder")) {
+			map.put("ppapTransmit", true);
+		}
+
+		if (isHasPermission(permissionMap, "ppapApprove")) {
+			map.put("ppapApprove", true);
+		}
+
+		if (isHasPermission(permissionMap, "sopOrder")) {
+			map.put("sopTransmit", true);
+		}
+
+		if (isHasPermission(permissionMap, "sopApprove")) {
+			map.put("sopApprove", true);
+		}
+
+		if (isHasPermission(permissionMap, "tptRequire")) {
+			map.put("tptRequire", true);
+		}
+
+		if (isHasPermission(permissionMap, "tptExamine")) {
+			map.put("tptExamine", true);
+		}
+
+		if (isHasPermission(permissionMap, "tptOrder")) {
+			map.put("tptTransmit", true);
+		}
+
+		if (isHasPermission(permissionMap, "tptApprove")) {
+			map.put("tptApprove", true);
+		}
+
+		if (isHasPermission(permissionMap, "patternUpload")) {
+			map.put("patternTask", true);
+		}
+
+		if (isHasPermission(permissionMap, "atlasUpload")) {
+			map.put("atlasTask", true);
+		}
+
+		if (isHasPermission(permissionMap, "compare")) {
+			map.put("patternTask", true);
+		}
+
+		if (isHasPermission(permissionMap, "send")) {
+			map.put("sendTask", true);
+		}
+
+		if (isHasPermission(permissionMap, "waitConfirm")) {
+			map.put("confirmTask_wait", true);
+		}
+
+		if (isHasPermission(permissionMap, "finishConfirm")) {
+			map.put("confirmTask_finish", true);
+		}
+
+		map.put("applicatId", applicat.getId());
+		List<Task> dataList = taskService.getBacklogTask(map);
 
 		// 分页
 		Page<Task> pageList = (Page<Task>) dataList;
@@ -100,6 +184,16 @@ public class BacklogController {
 
 	@RequestMapping(value = "/detail")
 	public String detail(HttpServletRequest request, Model model) {
+
+		// 获取有权限的菜单
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> permissionMap = (Map<String, Menu>) request.getSession()
+				.getAttribute(Contants.PERMISSION_MENU_MAP);
+
+		Menu menu = permissionMap.get("backlog");
+		if (menu != null) {
+			model.addAttribute("backlogPermission", true);
+		}
 		return "backlog/backlog_detail";
 	}
 
@@ -150,6 +244,15 @@ public class BacklogController {
 			map.put("confirmTask_wait", true);
 		} else {
 			map.put("confirmTask_finish", true);
+		}
+	}
+
+	public boolean isHasPermission(Map<String, Menu> permissionMap, String alias) {
+		Menu menu = permissionMap.get(alias);
+		if (menu != null) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

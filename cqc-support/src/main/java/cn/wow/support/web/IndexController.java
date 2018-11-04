@@ -1,5 +1,6 @@
 package cn.wow.support.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wow.common.domain.Account;
-import cn.wow.common.domain.EmailRecord;
 import cn.wow.common.domain.Menu;
 import cn.wow.common.service.EmailRecordService;
 import cn.wow.common.service.TaskService;
@@ -38,130 +38,62 @@ public class IndexController {
 	private static Logger logger = LoggerFactory.getLogger(IndexController.class);
 
 	@Autowired
-	private EmailRecordService emailRecordService;
-	@Autowired
 	private TaskService taskService;
-
-	// 审核权限
-	private boolean examinePermission = false;
-	// PPAP 任务审批权限
-	private boolean ppapApprovePermission = false;
-	// OTS 任务审批权限
-	private boolean otsApprovePermission = false;
-	// SOP 任务审批权限
-	private boolean sopApprovePermission = false;
-	// GS 任务审批权限
-	private boolean gsApprovePermission = false;
-	// 型式结果上传权限
-	private boolean patternUploadPermission = false;
-	// 图谱上传权限
-	private boolean atlasUploadPermission = false;
-	// 对比权限
-	private boolean comparePermission = false;
-	// 待上传结果确认权限
-	private boolean waitConfirmPermission = false;
-	// 已上传结果确认权限
-	private boolean finishConfirmPermission = false;
 
 	@RequestMapping(value = "/index")
 	public String index(HttpServletRequest request, Model model) {
-
-		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-
-		if (account != null) {
-			// 未读消息
-			Map<String, Object> map = new PageMap(false);
-			map.put("addr", account.getEmail());
-			map.put("state", 1);
-			List<EmailRecord> dataList = emailRecordService.selectAllList(map);
-
-			int unread = 0;
-			if (dataList != null && dataList.size() > 0) {
-				unread = dataList.size();
-			}
-			model.addAttribute("unread", unread);
-		}
 
 		// 弹出待办信息
 		String isShow = (String) request.getSession().getAttribute(Contants.SHOW_BACKLOG);
 		if (StringUtils.isBlank(isShow)) {
 			model.addAttribute("showBacklog", 1);
-		    request.getSession().setAttribute(Contants.SHOW_BACKLOG, "0");
+			request.getSession().setAttribute(Contants.SHOW_BACKLOG, "0");
 		}
-
+		
 		return "index/index";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/getTaskNum")
 	public AjaxVO getTaskNum(HttpServletRequest request, Model model) {
-		examinePermission = false;
-		ppapApprovePermission = false;
-		otsApprovePermission = false;
-		sopApprovePermission = false;
-		gsApprovePermission = false;
-		patternUploadPermission = false;
-		atlasUploadPermission = false;
-		comparePermission = false;
-		waitConfirmPermission = false;
-		finishConfirmPermission = false;
 
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		List<Menu> menuList = (List<Menu>) request.getSession().getAttribute(Contants.CURRENT_PERMISSION_MENU);
 		Map<String, Object> qMap = new PageMap(false);
+
+		// 获取有权限的菜单
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> permissionMap = (Map<String, Menu>) request.getSession()
+				.getAttribute(Contants.PERMISSION_MENU_MAP);
 
 		AjaxVO vo = new AjaxVO();
 
 		// 任务数
-		int examineNum = 0;
-		int approveNum = 0;
-		int patternUploadNum = 0;
-		int atlasUploadNum = 0;
-		int compareNum = 0;
-		int waitConfirmNum = 0;
-		int finishConfirmNum = 0;
+		int examineNum = -1;
+		int approveNum = -1;
+		int patternUploadNum = -1;
+		int atlasUploadNum = -1;
+		int compareNum = -1;
+		int waitConfirmNum = -1;
+		int finishConfirmNum = -1;
 
 		try {
-			// 查看当前是否有审核、审批、上传结果、比对、结果确认权限
-			for (Menu menu : menuList) {
-				if (menu.getSubList() != null && menu.getSubList().size() > 0) {
-					for (Menu subMenu : menu.getSubList()) {
-						if (subMenu.getSubList() != null && subMenu.getSubList().size() > 0) {
-							for (Menu sMenu : subMenu.getSubList()) {
-								if (StringUtils.isNotBlank(sMenu.getAlias())) {
-									isHasPermission(sMenu.getAlias());
-								}
-							}
-						} else {
-							if (StringUtils.isNotBlank(subMenu.getAlias())) {
-								isHasPermission(subMenu.getAlias());
-							}
-						}
-					}
-				} else {
-					if (StringUtils.isNotBlank(menu.getAlias())) {
-						isHasPermission(menu.getAlias());
-					}
-				}
-			}
 
 			// 审核数
-			if (examinePermission) {
+			if (isHasPermission(permissionMap, "otsExamine")) {
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.EXAMINE.getState());
-				qMap.put("type", 1);
-				// 除了超级管理员，其它用户只能查看自己录入的申请记录
-				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-					qMap.put("applicatId", account.getId());
-				}
-				examineNum = taskService.getTaskNum(qMap);
+				qMap.put("otsAndtPtTask", 1);
 
-				qMap.put("type", 4);
-				examineNum += taskService.getTaskNum(qMap);
+				// 除了超级管理员，其它用户只能查看自己需要审核的任务
+				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+					qMap.put("examineAccountId", account.getId());
+				}
+
+				examineNum = taskService.getTaskNum(qMap);
 			}
 
 			// OTS 审批数
-			if (otsApprovePermission) {
+			if (isHasPermission(permissionMap, "otsApprove")) {
 				qMap.clear();
 				qMap.put("approveTask_ots", true);
 				qMap.put("type", 1);
@@ -169,7 +101,7 @@ public class IndexController {
 			}
 
 			// GS审批数
-			if (gsApprovePermission) {
+			if (isHasPermission(permissionMap, "gsApprove")) {
 				qMap.clear();
 				qMap.put("approveTask_gs", true);
 				qMap.put("type", 4);
@@ -177,7 +109,7 @@ public class IndexController {
 			}
 
 			// SOP 审批数
-			if (sopApprovePermission) {
+			if (isHasPermission(permissionMap, "sopApprove")) {
 				qMap.clear();
 				qMap.put("ppap_approveTask", true);
 				qMap.put("type", TaskTypeEnum.SOP.getState());
@@ -185,7 +117,7 @@ public class IndexController {
 			}
 
 			// PPAP 审批数
-			if (ppapApprovePermission) {
+			if (isHasPermission(permissionMap, "ppapApprove")) {
 				qMap.clear();
 				qMap.put("ppap_approveTask", true);
 				qMap.put("type", TaskTypeEnum.PPAP.getState());
@@ -193,7 +125,7 @@ public class IndexController {
 			}
 
 			// 型式结果上传数
-			if (patternUploadPermission) {
+			if (isHasPermission(permissionMap, "patternUpload")) {
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.TESTING.getState());
 				// 超级管理员具有所有的权限
@@ -206,7 +138,7 @@ public class IndexController {
 			}
 
 			// 图谱结果上传数
-			if (atlasUploadPermission) {
+			if (isHasPermission(permissionMap, "atlasUpload")) {
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.TESTING.getState());
 				// 超级管理员具有所有的权限
@@ -218,20 +150,23 @@ public class IndexController {
 				atlasUploadNum = taskService.getTaskNum(qMap);
 			}
 
-			if (comparePermission) {
+			// 结果对比
+			if (isHasPermission(permissionMap, "compare")) {
 				qMap.clear();
 				qMap.put("state", SamplingTaskEnum.COMPARE.getState());
 				qMap.put("compareTask", true);
 				compareNum = taskService.getTaskNum(qMap);
 			}
 
-			if (waitConfirmPermission) {
+			// 结果确认-待上传
+			if (isHasPermission(permissionMap, "waitConfirm")) {
 				qMap.clear();
 				qMap.put("confirmTask_wait", true);
 				waitConfirmNum = taskService.getTaskNum(qMap);
 			}
 
-			if (finishConfirmPermission) {
+			// 结果确认已上传
+			if (isHasPermission(permissionMap, "finishConfirm")) {
 				qMap.clear();
 				qMap.put("confirmTask_finish", true);
 
@@ -247,27 +182,12 @@ public class IndexController {
 		return vo;
 	}
 
-	public void isHasPermission(String alias) {
-		if ("otsExamine".equals(alias)) {
-			examinePermission = true;
-		} else if ("ppapApprove".equals(alias)) {
-			ppapApprovePermission = true;
-		} else if ("otsApprove".equals(alias)) {
-			otsApprovePermission = true;
-		} else if ("sopApprove".equals(alias)) {
-			sopApprovePermission = true;
-		} else if ("gsApprove".equals(alias)) {
-			gsApprovePermission = true;
-		} else if ("patternUpload".equals(alias)) {
-			patternUploadPermission = true;
-		} else if ("atlasUpload".equals(alias)) {
-			atlasUploadPermission = true;
-		} else if ("compare".equals(alias)) {
-			comparePermission = true;
-		} else if ("waitConfirm".equals(alias)) {
-			waitConfirmPermission = true;
-		} else if ("finishConfirm".equals(alias)) {
-			finishConfirmPermission = true;
+	public boolean isHasPermission(Map<String, Menu> permissionMap, String alias) {
+		Menu menu = permissionMap.get(alias);
+		if (menu != null) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

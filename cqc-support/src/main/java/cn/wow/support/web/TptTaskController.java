@@ -376,8 +376,8 @@ public class TptTaskController extends AbstractController {
 	@RequestMapping(value = "/save")
 	public AjaxVO save(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
-			String m_proNo, String m_matNo, String m_remark, Long t_id, int m_num, int draft, String p_producer,
+			String p_proNo, Long p_id, Integer p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
+			String m_proNo, String m_matNo, String m_remark, Long t_id, Integer m_num, Integer draft, String p_producer,
 			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
 			Long applicat_id, Long reason_id, String origin, String reason, String otherRemark, String source,
 			String reasonRemark, Long examineAccountId, Long trainsmitAccountId, Long approveAccountId) {
@@ -463,7 +463,9 @@ public class TptTaskController extends AbstractController {
 			if (p_id == null) {
 				parts = new Parts();
 				parts.setType(Contants.STANDARD_TYPE);
-				parts.setProTime(sdf.parse(p_proTime));
+				if (StringUtils.isNotBlank(p_proTime)) {
+					parts.setProTime(sdf.parse(p_proTime));
+				}
 				parts.setRemark(p_remark);
 				parts.setPlace(p_place);
 				parts.setProNo(p_proNo);
@@ -472,10 +474,13 @@ public class TptTaskController extends AbstractController {
 				parts.setProducer(p_producer);
 				parts.setProducerCode(p_producerCode);
 				parts.setCreateTime(date);
-				parts.setNum(p_num);
+				if (p_num != null) {
+					parts.setNum(p_num.intValue());
+				}
 				parts.setState(Contants.ONDOING_TYPE);
 
-				boolean isExist = partsService.isExist(null, p_name, sdf.parse(p_proTime), p_producer, p_producerCode)
+				boolean isExist = partsService.isExist(null, p_name,
+						StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer, p_producerCode)
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
@@ -488,7 +493,9 @@ public class TptTaskController extends AbstractController {
 				// 编辑时
 				if (parts.getState().intValue() == 0) {
 					boolean isExist = partsService
-							.isExist(p_id, p_name, sdf.parse(p_proTime), p_producer, p_producerCode).getFlag();
+							.isExist(p_id, p_name, StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null,
+									p_producer, p_producerCode)
+							.getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
 						vo.setMsg("零部件信息已存在");
@@ -496,7 +503,8 @@ public class TptTaskController extends AbstractController {
 					}
 				} else {
 					// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
-					ResultFlagVO isExist = partsService.isExist(null, p_name, sdf.parse(p_proTime), p_producer,
+					ResultFlagVO isExist = partsService.isExist(null, p_name,
+							StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer,
 							p_producerCode);
 
 					if (!isExist.getFlag()) {
@@ -511,14 +519,18 @@ public class TptTaskController extends AbstractController {
 					}
 				}
 
-				parts.setProTime(sdf.parse(p_proTime));
+				if (StringUtils.isNotBlank(p_proTime)) {
+					parts.setProTime(sdf.parse(p_proTime));
+				}
 				parts.setRemark(p_remark);
 				parts.setPlace(p_place);
 				parts.setProNo(p_proNo);
 				parts.setName(p_name);
 				parts.setProducer(p_producer);
 				parts.setCode(p_code);
-				parts.setNum(p_num);
+				if (p_num != null) {
+					parts.setNum(p_num.intValue());
+				}
 				parts.setProducerCode(p_producerCode);
 			}
 
@@ -534,7 +546,9 @@ public class TptTaskController extends AbstractController {
 				material.setMatColor(m_matColor);
 				material.setProducer(m_producer);
 				material.setCreateTime(date);
-				material.setNum(m_num);
+				if (m_num != null) {
+					material.setNum(m_num.intValue());
+				}
 				material.setState(Contants.ONDOING_TYPE);
 			} else {
 				material = materialService.selectOne(m_id);
@@ -544,13 +558,15 @@ public class TptTaskController extends AbstractController {
 				material.setMatNo(m_matNo);
 				material.setMatColor(m_matColor);
 				material.setProducer(m_producer);
-				material.setNum(m_num);
+				if (m_num != null) {
+					material.setNum(m_num.intValue());
+				}
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			infoService.insert(account, vehicle, parts, material, reasonObj, Contants.SAMPLE_TYPE, t_id,
-					TaskTypeEnum.GS.getState(), draft, formatAltType(atlType), atlRemark, atlItem, examineAccountId,
-					trainsmitAccountId, approveAccountId);
+					TaskTypeEnum.GS.getState(), draft.intValue(), formatAltType(atlType), atlRemark, atlItem,
+					examineAccountId, trainsmitAccountId, approveAccountId);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -740,11 +756,11 @@ public class TptTaskController extends AbstractController {
 	@RequestMapping(value = "/examine")
 	public AjaxVO examine(HttpServletRequest request, Model model, Long v_id, String v_code, String v_proTime,
 			String v_proAddr, String v_remark, String p_code, String p_name, String p_proTime, String p_place,
-			String p_proNo, Long p_id, int p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
-			String m_proNo, String m_matNo, String m_remark, Long t_id, int m_num, String p_producer, String m_producer,
-			String[] atlType, String atlRemark, String atlItem, String p_producerCode, Long applicat_id, Long reason_id,
-			String origin, String reason, String otherRemark, String source, String reasonRemark, int result,
-			String examine_remark) {
+			String p_proNo, Long p_id, Integer p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
+			String m_proNo, String m_matNo, String m_remark, Long t_id, Integer m_num, String p_producer,
+			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
+			Long reason_id, String origin, String reason, String otherRemark, String source,
+			String reasonRemark, int result, String examine_remark) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -785,16 +801,22 @@ public class TptTaskController extends AbstractController {
 			Parts parts = partsService.selectOne(p_id);
 			if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
 					p_producer, p_producerCode)) {
-				parts.setProTime(sdf.parse(p_proTime));
+
+				if (StringUtils.isNoneBlank(p_proTime)) {
+					parts.setProTime(sdf.parse(p_proTime));
+				}
 				parts.setRemark(p_remark);
 				parts.setPlace(p_place);
 				parts.setProNo(p_proNo);
 				parts.setName(p_name);
 				parts.setProducer(p_producer);
 				parts.setCode(p_code);
-				parts.setNum(p_num);
+				if (p_num != null) {
+					parts.setNum(p_num.intValue());
+				}
 
-				boolean isExist = partsService.isExist(p_id, p_name, sdf.parse(p_proTime), p_producer, p_producerCode)
+				boolean isExist = partsService.isExist(p_id, p_name,
+						StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer, p_producerCode)
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
@@ -811,7 +833,9 @@ public class TptTaskController extends AbstractController {
 			material.setMatNo(m_matNo);
 			material.setMatColor(m_matColor);
 			material.setProducer(m_producer);
-			material.setNum(m_num);
+			if (m_num != null) {
+				material.setNum(m_num);
+			}
 
 			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, formatAltType(atlType),
 					atlRemark, reasonObj);
@@ -1130,9 +1154,6 @@ public class TptTaskController extends AbstractController {
 		if (StringUtils.isNotBlank(endCreateTime)) {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
-		if (atlType != null) {
-			map.put("atlType", atlType);
-		}
 
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
@@ -1263,7 +1284,7 @@ public class TptTaskController extends AbstractController {
 					model.addAttribute("mAtlasResult_old", mAtlasResult_old);
 					model.addAttribute("mPfResult_new", mPfResult_new);
 					model.addAttribute("mAtlasResult_new", mAtlasResult_new);
-					
+
 					// 型式结果附件
 					model.addAttribute("old_attach", attachService.getFileName(task.gettId()));
 					model.addAttribute("new_attach", attachService.getFileName(task.getId()));

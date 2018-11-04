@@ -86,7 +86,9 @@ public class AccountServiceImpl implements AccountService {
 		if (ids != null && ids.length > 0) {
 			for (Long id : ids) {
 				Account account = accountDao.selectOne(id);
-				this.deleteByPrimaryKey(userName, account);
+				if (account != null) {
+					this.deleteByPrimaryKey(userName, account);
+				}
 			}
 		}
 	}

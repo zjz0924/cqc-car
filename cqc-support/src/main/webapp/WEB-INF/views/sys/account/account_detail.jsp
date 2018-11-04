@@ -46,7 +46,7 @@
 				</div>
 				
 				<div class="data-cell-right">
-					<span class="title-span"><span class="req-span">*</span>上级：</span> 
+					<span class="title-span">上级：</span> 
 					<input id="pId" name="pId" type="hidden" value="${facadeBean.parent.id }">
 					<input id="pName" class="easyui-textbox" style="width: 140px" disabled value="${facadeBean.parent.nickName}">&nbsp;&nbsp;&nbsp;
 					
@@ -238,14 +238,6 @@
 				errAccount("role_error", "");
 			}
 			$("#roleId").val(roleId);
-			
-			var pId = $("#pId").val();
-			if(isNull(pId)){
-				errAccount("pName_error", "必选");
-				return false;
-			}else{
-				errAccount("pName_error", "");
-			}
 			
 			var orgId = "";
 			var orgTree = $('#org').combotree('tree');	

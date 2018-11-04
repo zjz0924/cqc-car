@@ -9,7 +9,7 @@
 		<script src="${ctx}/resources/js/jquery.form.js"></script>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/query/getListData";
+			var getDataUrl = "${ctx}/backlog/getListData";
 			var datagrid = "taskTable";
 			
 			var toolbar = [{
@@ -26,12 +26,12 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "390px",
+			        height: "400px",
 					title: '待办任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true, 
-			        toolbar : toolbar,
+			        //toolbar : toolbar,
 			        idField: 'id',
 			        frozenColumns:[[{
 						field : '_operation',
@@ -47,7 +47,7 @@
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '120',
+						width : '140',
 						align : 'center',
 						sortable: true,
 						formatter : formatCellTooltip
@@ -117,180 +117,20 @@
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
-					}, {
-						field : 'isReceive',
-						title : '是否接收',
-						width : '80',
-						align : 'center',
-						sortable: true,
-						formatter : function(val){
-							var str = "";
-							var color = "red";
-							if(val == 1){
-								str = "接收";
-								color = "green";
-							}else if(val == 2){
-								str = "不接收";
-							}
-							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
-						}
-					}, {
-						field : 'result',
-						title : '结果',
-						width : '80',
-						align : 'center',
-						sortable: true,
-						formatter : function(val){
-							var str = "";
-							var color = "red";
-							if(val == 1){
-								str = "合格";
-								color = "green";
-							}else if(val == 2){
-								str = "不合格";
-							}
-							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
-						}
 					}]],
 			        columns : [ [ {
-						field : 'receiveLabOrg',
-						title : '接收实验室',
-						width : '130',
-						align : 'center',
-						rowspan: 2,
-						formatter : formatCellTooltip
-					}, {
 						field : 'createTime',
 						title : '录入时间',
-						width : '130',
+						width : '140',
 						align : 'center',
 						sortable: true,
 						rowspan: 2,
 						formatter : DateTimeFormatter
 					}, {
-						field : 'confirmTime',
-						title : '完成时间',
-						width : '130',
-						align : 'center',
-						sortable: true,
-						rowspan: 2,
-						formatter : DateTimeFormatter
-					},{
-						title:'车型信息', 
-						colspan:2
-					},{
-						title:'零件信息', 
-						colspan: 4
-					},{
-						title:'材料信息', 
-						colspan: 3
-					},{
 						title:'申请人信息', 
 						colspan: 3
 					}],
 					[{
-						field : 'info.vehicle.code',
-						title : '车型代码',
-						width : '120',
-						align : 'center',
-						rowspan: 1,
-						formatter :  function(value, row, index){
-							var vehicle = row.info.vehicle;
-							if(!isNull(vehicle)){
-								return "<span title='"+ vehicle.code +"'>"+ vehicle.code +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.vehicle.proAddr',
-						title : '生产基地',
-						width : '120',
-						align : 'center',
-						rowspan: 1,
-						formatter :  function(value, row, index){
-							var vehicle = row.info.vehicle;
-							if(!isNull(vehicle)){
-								return "<span title='"+ vehicle.proAddr +"'>"+ vehicle.proAddr +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.parts.name',
-						title : '零件名称',
-						width : '100',
-						align : 'center',
-						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.name +"'>"+ parts.name +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.parts.producer',
-						title : '供应商',
-						width : '100',
-						align : 'center',
-						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.producer +"'>"+ parts.producer +"</span>";
-							}
-						}
-					}, {
-						field : 'info.parts.producerCode',
-						title : '供应商代码',
-						width : '80',
-						align : 'center',
-						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								return "<span title='"+ parts.producerCode +"'>"+ parts.producerCode +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.parts.proTime',
-						title : '样件生产日期',
-						width : '100',
-						align : 'center',
-						formatter : function(value, row, index){
-							var parts = row.info.parts;
-							if(!isNull(parts)){
-								var date = formatDate(parts.proTime);
-								return "<span title='"+ date +"'>"+ date +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.material.name',
-						title : '材料名称',
-						width : '100',
-						align : 'center',
-						formatter : function(value, row, index){
-							var material = row.info.material;
-							if(!isNull(material)){
-								return "<span title='"+ material.matName +"'>"+ material.matName +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.material.matNo',
-						title : '材料牌号',
-						width : '100',
-						align : 'center',
-						formatter : function(value, row, index){
-							var material = row.info.material;
-							if(!isNull(material)){
-								return "<span title='"+ material.matNo +"'>"+ material.matNo +"</span>";
-							}							
-						}
-					}, {
-						field : 'info.material.producer',
-						title : '供应商',
-						width : '120',
-						align : 'center',
-						formatter : function(value, row, index){
-							var material = row.info.material;
-							if(!isNull(material)){
-								return "<span title='"+ material.producer +"'>"+ material.producer +"</span>";
-							}							
-						}
-					}, {
 						field : 'applicat.name',
 						title : '申请人',
 						width : '100',
@@ -318,9 +158,8 @@
 						width : '180',
 						align : 'center',
 						formatter : function(value, row, index){
-							var org = row.applicat.org;
-							if(!isNull(org)){
-								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+							if(!isNull(row.applicat) && !isNull(row.applicat.org)){
+								return "<span title='"+ row.applicat.org.name +"'>"+ row.applicat.org.name +"</span>";
 							}							
 						}
 					}] ],

@@ -445,8 +445,12 @@ public class PpapTaskController extends AbstractController {
 						parts.setProducerCode(temp.getProducerCode());
 						parts.setName(temp.getName());
 						parts.setProducer(temp.getProducer());
-						parts.setProTime(sdf.parse(p_proTime));
-						parts.setNum(p_num);
+						if(StringUtils.isNoneBlank(p_proTime)) {
+							parts.setProTime(sdf.parse(p_proTime));
+						}
+						if (p_num != null) {
+							parts.setNum(p_num.intValue());
+						}
 						parts.setProNo(p_proNo);
 						parts.setPlace(p_place);
 						parts.setRemark(p_remark);
@@ -462,7 +466,9 @@ public class PpapTaskController extends AbstractController {
 						material.setProducer(temp.getProducer());
 						material.setMatColor(temp.getMatColor());
 						material.setProNo(m_proNo);
-						material.setNum(m_num);
+						if (m_num != null) {
+							material.setNum(m_num);
+						}
 						material.setRemark(m_remark);
 					}
 

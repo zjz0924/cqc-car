@@ -263,7 +263,7 @@
 							if(!isNull(p2)){
 								var p3 = p2.parent;
 								
-								if(!isNull(p3.parent)){
+								if(!isNull(p3) && !isNull(p3.parent)){
 									errorMsg("错误提示：当前选择的用户上级已经超过3级，请重新选择");
 									return false;
 								}

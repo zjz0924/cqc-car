@@ -2,9 +2,11 @@ package cn.wow.support.shiro.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
@@ -70,7 +72,37 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 
 			// 菜单信息
 			Set<Long> illegalMenu = new HashSet<Long>();
-			session.setAttribute(Contants.CURRENT_PERMISSION_MENU, getPermission(account, illegalMenu));
+
+			// 获取有权限的菜单 
+			List<Menu> permissionMenu = getPermission(account, illegalMenu);
+			session.setAttribute(Contants.CURRENT_PERMISSION_MENU, permissionMenu);
+
+			Map<String, Menu> permissionMenuMap = new HashMap<String, Menu>();
+			for (Menu menu : permissionMenu) {
+				if (menu.getSubList() != null && menu.getSubList().size() > 0) {
+					for (Menu subMenu : menu.getSubList()) {
+						if (subMenu.getSubList() != null && subMenu.getSubList().size() > 0) {
+							for (Menu sMenu : subMenu.getSubList()) {
+								if (StringUtils.isNotBlank(sMenu.getAlias())) {
+									permissionMenuMap.put(sMenu.getAlias(), sMenu);
+								}
+							}
+						} else {
+							if (StringUtils.isNotBlank(subMenu.getAlias())) {
+								permissionMenuMap.put(subMenu.getAlias(), subMenu);
+							}
+						}
+					}
+				} else {
+					if (StringUtils.isNotBlank(menu.getAlias())) {
+						permissionMenuMap.put(menu.getAlias(), menu);
+					}
+				}
+			}
+			
+			session.setAttribute(Contants.PERMISSION_MENU_MAP, permissionMenuMap);
+			
+
 			// 没有权限的菜单ID
 			session.setAttribute(Contants.CURRENT_ILLEGAL_MENU, illegalMenu);
 
@@ -94,8 +126,8 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 	 * 获取当前角色的菜单
 	 */
 	private List<Menu> getPermission(Account account, Set<Long> illegalMenu) {
-		List<Menu> emptyData = new ArrayList<Menu>();		
-		
+		List<Menu> emptyData = new ArrayList<Menu>();
+
 		if (account.getRole() != null) {
 			// 获取二级父节点
 			List<Menu> menuList = menuService.getMenuList();
@@ -166,5 +198,4 @@ public class FormAuthenticationExtendFilter extends FormAuthenticationFilter {
 			return emptyData;
 		}
 	}
-
 }

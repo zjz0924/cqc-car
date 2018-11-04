@@ -476,6 +476,10 @@
 							saving = false; 
 							errorMsg(data.msg);
 						}
+					},
+					error: function(data){
+						saving = false;
+						errorMsg("系统提示：提交失败，系统异常");
 					}
 				});
 			}

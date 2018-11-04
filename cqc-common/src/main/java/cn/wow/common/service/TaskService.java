@@ -114,4 +114,10 @@ public interface TaskService {
 	 */
 	public Task getStandardTask(String code);
 	
+	
+	/**
+	 * 获取待办任务
+	 */
+	public List<Task> getBacklogTask(Map<String, Object> map);
+	
 }

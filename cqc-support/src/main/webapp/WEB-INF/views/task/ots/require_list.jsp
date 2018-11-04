@@ -250,9 +250,8 @@
 						width : '180',
 						align : 'center',
 						formatter : function(value, row, index){
-							var org = row.applicat.org;
-							if(!isNull(org)){
-								return "<span title='"+ org.name +"'>"+ org.name +"</span>";
+							if(!isNull(row.applicat) && !isNull(row.applicat.org)){
+								return "<span title='"+ row.applicat.org.name +"'>"+ row.applicat.org.name +"</span>";
 							}							
 						}
 					}]],

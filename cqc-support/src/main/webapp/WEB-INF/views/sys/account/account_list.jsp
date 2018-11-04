@@ -93,7 +93,7 @@
 		                        	success: function(data){
 		                        		if(data.success){
 		                        			tipMsg(data.msg, function(){
-		               						$('#' + accountDatagrid).datagrid('reload');
+		               						window.location.reload();
 		               					});
 		                				}else{
 		                					errorMsg(data.msg);
@@ -423,7 +423,7 @@
 	<body>
 		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
-				<span class="title_span">用户名：</span>
+				<span class="title_span" style="width: 80px;">用户名：</span>
 				<input id="q_account" name="q_account" class="easyui-textbox" style="width: 180px;">
 				
 				<span class="title_span">手机号码：</span>
@@ -437,7 +437,7 @@
 			</div>
 		
 			<div style="margin-top:10px;">
-				<span class="title_span">状态：</span> 
+				<span class="title_span" style="width: 80px;">状态：</span> 
 				<select id="q_lock" name="q_lock"  class="easyui-combobox" style="width: 180px;" data-options="panelHeight:'auto'">
 				   <option value="">全部</option>
 		           <option value="N" <c:if test="${lock == 'N'}">selected=selected</c:if>>正常</option>
@@ -464,7 +464,7 @@
 			</div>
 			
 			<div style="margin-top:10px;">
-				<span class="title_span" >上级用户名：</span>
+				<span class="title_span" style="width: 80px;">上级用户名：</span>
 				<input id="q_parentUserName" name="q_parentUserName" class="easyui-textbox" style="width: 180px;">
 				
 				<span class="title_span">创建时间：</span>

@@ -145,10 +145,10 @@ textarea
 .header_in .logo{ padding:9px 0 0 6px; float:left;}
 .header_in hr{ width:1px; height:54px; background:#2b78ad; float:left; margin:21px 0 0 23px;}
 .header_in h2{  font-size:26px; color:white; float:left; padding:30px 0 0 19px;}
-.header_in div.ri{ width:330px; height:71px; float:right; padding-top:20px;}
+.header_in div.ri{ width:400px; height:71px; float:right; padding-top:20px;}
 .header_in div.ri img{ width:23px; height:23px; float:left; padding-left:10px;}
 .header_in div.ri a{ line-height:22px;float:left; padding-left:5px; color:#b1defd;}
-.header_in div.ri p{ font-size:13px; height:22px; line-height:22px; float:left;  color:#b1defd;  margin:15px 0 0 -2px; width:300px;}
+.header_in div.ri p{ font-size:13px; height:22px; line-height:22px; float:left;  color:#b1defd;  margin:15px 0 0 -2px; width:400px;}
 .header_in div.ri p img{ width:29px; height:22px; padding-right:8px;}
 
 /*µ¼º½¿ªÊ¼*/

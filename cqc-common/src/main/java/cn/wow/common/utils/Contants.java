@@ -15,6 +15,8 @@ public class Contants {
 	
 	public static final String SHOW_BACKLOG = "showBacklog";
 	
+	public static final String PERMISSION_MENU_MAP = "permissionMenuMap";
+	
 	// 超级管理员
 	public static final String SUPER_ROLE_CODE = "admin";
 	public static final String SUPER_ROLE_ID = "1";
