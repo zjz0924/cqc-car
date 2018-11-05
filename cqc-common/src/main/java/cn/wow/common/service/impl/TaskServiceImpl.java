@@ -1,6 +1,7 @@
 package cn.wow.common.service.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,12 +75,6 @@ public class TaskServiceImpl implements TaskService {
 	// 结果内容
 	@Value("${result.content}")
 	protected String content;
-	// 警告书标题
-	@Value("${alarm.title}")
-	protected String alarmTitle;
-	// 警告书内容
-	@Value("${alarm.content}")
-	protected String alarmContent;
 	// 费用清单标题
 	@Value("${cost.title}")
 	protected String costTitle;
@@ -216,19 +211,19 @@ public class TaskServiceImpl implements TaskService {
 		// 发送结果（最后发送，防止事务提交失败）
 		if (type == 1) {
 			if (StringUtils.isNotBlank(pAtlVal)) {
-				sendByEmail(account, task, date, pAtlVal, "零部件图谱试验", title, content, 1);
+				sendByEmail(account, task, date, pAtlVal, 1);
 			}
 
 			if (StringUtils.isNotBlank(pPatVal)) {
-				sendByEmail(account, task, date, pPatVal, "零部件型式试验", title, content, 1);
+				sendByEmail(account, task, date, pPatVal, 2);
 			}
 
 			if (StringUtils.isNotBlank(mAtlVal)) {
-				sendByEmail(account, task, date, mAtlVal, "原材料图谱试验", title, content, 1);
+				sendByEmail(account, task, date, mAtlVal, 3);
 			}
 
 			if (StringUtils.isNotBlank(mPatVal)) {
-				sendByEmail(account, task, date, mPatVal, "原材料型式试验", title, content, 1);
+				sendByEmail(account, task, date, mPatVal, 4);
 			}
 		} else {
 			remark = "不发送结果";
@@ -258,7 +253,8 @@ public class TaskServiceImpl implements TaskService {
 				// OTS/GS 任务
 				if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 					OtsResultConfirm(task, account, result, type, remark);
-				} else if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+				} else if (task.getType() == TaskTypeEnum.PPAP.getState()
+						|| task.getType() == TaskTypeEnum.SOP.getState()) {
 					PpapResultConfirm(task, account, result, remark, orgs);
 				}
 			}
@@ -461,38 +457,6 @@ public class TaskServiceImpl implements TaskService {
 			TaskRecord taskRecord = new TaskRecord(task.getCode(), account.getId(),
 					SamplingTaskRecordEnum.SAVE.getState(), "不接收结果，原因：" + remark, date, task.getType());
 			taskRecordDao.insert(taskRecord);
-
-			// 第一次失败（确认后再进行第2次抽样）
-			/*
-			 * if(task.getFailNum() == 0 && task.gettId() == null){
-			 * task.setState(SamplingTaskEnum.RECONFIRM.getState());
-			 * task.setFailNum(task.getFailNum() + 1); task.setConfirmTime(new Date());
-			 * task.setRemark(remark); taskDao.update(task);
-			 * 
-			 * // 确认记录 ExamineRecord examineRecord = new ExamineRecord(taskId,
-			 * account.getId(), result, "第一次抽样结果不合格，原因：" + remark, 3, null, date,
-			 * TaskTypeEnum.PPAP.getState()); examineRecordDao.insert(examineRecord);
-			 * 
-			 * // 任务记录 TaskRecord taskRecord = new TaskRecord(task.getCode(),
-			 * account.getId(), SamplingTaskRecordEnum.REORDER.getState(),
-			 * "结果不合格，进行第2次抽样，不合格原因：" + remark, date, task.getType());
-			 * taskRecordDao.insert(taskRecord); }else{ // 第二次失败
-			 * task.setState(SamplingTaskEnum.ACCOMPLISH.getState()); task.setFailNum(2);
-			 * task.setRemark(remark); task.setConfirmTime(new Date());
-			 * taskDao.update(task);
-			 * 
-			 * // 发送警告书 sendByOrg(account, task, date, orgs, remark, alarmTitle,
-			 * alarmContent, 3);
-			 * 
-			 * // 确认记录 ExamineRecord examineRecord = new ExamineRecord(taskId,
-			 * account.getId(), result, "第二次抽样结果不合格，原因：" + remark, 3, null, date,
-			 * TaskTypeEnum.PPAP.getState()); examineRecordDao.insert(examineRecord);
-			 * 
-			 * // 任务记录 TaskRecord taskRecord = new TaskRecord(task.getCode(),
-			 * account.getId(), SamplingTaskRecordEnum.ALARM.getState(),
-			 * "结果不合格，发送警告书，不合格原因：" + remark, date, task.getType());
-			 * taskRecordDao.insert(taskRecord); }
-			 */
 		}
 
 		// 费用记录
@@ -659,13 +623,44 @@ public class TaskServiceImpl implements TaskService {
 	 * @param tips    提示
 	 * @param title   标题
 	 * @param content 内容
-	 * @param type    类型：1-结果发送，2-收费通知，3-警告书
+	 * @param type    类型：1-结果发送，2-收费通知
 	 */
-	protected void sendByEmail(Account account, Task task, Date date, String emails, String tips, String title,
-			String content, int type) throws Exception {
+	protected void sendByEmail(Account account, Task task, Date date, String emails, int type) throws Exception {
 
 		// 邮件内容
-		content = MessageFormat.format(content, new Object[] { task.getCode(), tips });
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+
+		String labOrg = "";
+		String lab = "";
+
+		if (type == 1) {
+			lab = "零部件图谱试验";
+
+			if (task.getPartsAtl() != null) {
+				labOrg = task.getPartsAtl().getName();
+			}
+		} else if (type == 2) {
+			lab = "零部件型式试验";
+
+			if (task.getPartsPat() != null) {
+				labOrg = task.getPartsPat().getName();
+			}
+		} else if (type == 3) {
+			lab = "原材料图谱试验";
+
+			if (task.getMatAtl() != null) {
+				labOrg = task.getMatAtl().getName();
+			}
+		} else if (type == 4) {
+			lab = "原材料型式试验";
+
+			if (task.getMatPat() != null) {
+				labOrg = task.getMatPat().getName();
+			}
+		}
+
+		String contentTemp = MessageFormat.format(content,
+				new Object[] { sdf.format(task.getCreateTime()), task.getCode(), labOrg, lab });
 		String[] emailArray = emails.split(";");
 
 		if (emailArray != null && emailArray.length > 0) {
@@ -674,8 +669,8 @@ public class TaskServiceImpl implements TaskService {
 			for (String email : emailArray) {
 				if (StringUtils.isNotBlank(email)) {
 					// 邮件记录
-					EmailRecord emailRecord = new EmailRecord(title, content, email, task.getId(), account.getId(), 1,
-							type, mailUser, date);
+					EmailRecord emailRecord = new EmailRecord(title, contentTemp, email, task.getId(), account.getId(), 1,
+							1, mailUser, date);
 					emailRecordList.add(emailRecord);
 				}
 			}
@@ -685,8 +680,8 @@ public class TaskServiceImpl implements TaskService {
 				emailRecordDao.batchAdd(emailRecordList);
 			}
 
-			// 发送文本邮件
-			sendEmail(title, content, emails, 1);
+			// 发送邮件
+			sendEmail(title, contentTemp, emails, 2);
 		}
 	}
 
@@ -867,12 +862,11 @@ public class TaskServiceImpl implements TaskService {
 	public List<Task> batchQueryByInfoId(List<Long> list) {
 		return taskDao.batchQueryByInfoId(list);
 	}
-	
-	
+
 	/**
 	 * 获取待办任务
 	 */
-	public List<Task> getBacklogTask(Map<String, Object> map){
+	public List<Task> getBacklogTask(Map<String, Object> map) {
 		PageHelperExt.startPage(map);
 		return taskDao.getBacklogTask(map);
 	}

@@ -4,211 +4,217 @@ import java.util.Date;
 
 /**
  * 任务
- * @author zhenjunzhuo
- * 2017-10-13
+ * 
+ * @author zhenjunzhuo 2017-10-13
  */
 public class Task {
-	
-    private Long id;
-    // 任务号
-    private String code;
-  
-    // 信息ID
-    private Long iId;
-    private Info info;
 
-    // 基准信息ID（用于 PPAP任务）
-    private Long standIid;
-    private Info standInfo;
-    
-    // 申请人机构
-    private Long orgId;
-    private Org org;
-    
-    // 申请人
-    private Long aId;
-    private Account applicat;
-    
-    // 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
-    private Integer type;
-    
-    // 父任务ID
-    private Long tId;
-    
-    /** 
-     * 	状态：
-     *  OTS、材料研究所任务： 1-审核中，2-审核不通过，3-试验中，4-完成，5-申请修改，6-申请不通过
-     *  PPAP、SOP： 1-审批中，2-审批不通过，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成，8-申请修改，9-申请不通过，10-确认是否二次抽样，11-中止任务
-     */
-    private Integer state;
-    
-    // 零部件图谱实验室ID
-    private Long partsAtlId; 
-    private Org partsAtl;
-    
-    // 原材料图谱实验室ID
-    private Long matAtlId;
-    private Org matAtl;
-    
-    // 零部件型式实验室ID
-    private Long partsPatId;
-    private Org partsPat;
-    
-    // 原材料型式实验室ID
-    private Long matPatId;
-    private Org matPat;
-    
-    // 结果确认失败次数
-    private Integer failNum;
-    // 备注
-    private String remark;
-    // 创建时间
-    private Date createTime;
-    // 确认时间
-    private Date confirmTime;
-    
-    // 零部件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
-    private Integer partsAtlResult;
-    // 原材料图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
-    private Integer matAtlResult;
-    // 零部件型式结果 (0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
-    private Integer partsPatResult;
-    // 原材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过) 
-    private Integer matPatResult;
-    
-    // 零部件图谱实验次数
-    private Integer partsAtlTimes;
-    // 原材料图谱实验次数
-    private Integer matAtlTimes;
-    // 零部件型式实验次数
-    private Integer partsPatTimes;
-    // 原材料型式实验次数
-    private Integer matPatTimes;
-    
-    // 是否申请修改信息（0-否， 1-等待审批）
-    private Integer infoApply;
-    // 是否申请修改试验结果（0-否，1-等待审批，2-子任务等待审批）
-    private Integer resultApply;
-    
-    // 结果（1-合格，2-不合格）
-    private Integer result;
-    
-    // 是否接收（1-接收，2-不接收）
-    private Integer isReceive;
-    
-    // 零部件图谱实验编号
-    private String partsAtlCode;
-    
-    // 原材料图谱实验编号
-    private String matAtlCode;
-    
-    // 零部件型式实验编号
-    private String partsPatCode;
-    
-    // 原材料型式实验编号
-    private String matPatCode;
-    
-    // PPAP和SOP 任务信息
-    private TaskInfo taskInfo;
-    
-    // 是否是草稿（0-否，1-是）
-    private Integer draft;
-    
-    // 基准图谱类型
-    private String atlType;
-    
-    // 测试项目
-    private String atlItem;
-    
-    // 基准图谱备注
-    private String atlRemark;
-    
-    // 期望完成时间
-    private Date expectDate;
-    
-    // 抽样原因
-    private Long reasonId;
-    private Reason reason;
-    
-    // 试验结论 - 冗余字段，用于显示
-    private String partsAtlConclusion;
-    private String matAtlConclusion;
-    private String partsPatConclusion;
-    private String matPatConclusion;
-    
-    // 接收实验室 - 冗余字段，用于显示
-    private String receiveLabOrg;
-    
-    // 审核人员（ots 和  第三方）
-    private Long examineAccountId;
-    // 下达人员（ots 和  第三方）
-    private Long trainsmitAccountId;
-    // 审批人员
-    private Long approveAccountId;
-    
-    public Long getId() {
-        return id;
-    }
+	private Long id;
+	// 任务号
+	private String code;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	// 信息ID
+	private Long iId;
+	private Info info;
 
-    public String getCode() {
-        return code;
-    }
+	// 基准信息ID（用于 PPAP任务）
+	private Long standIid;
+	private Info standInfo;
 
-    public void setCode(String code) {
-        this.code = code == null ? null : code.trim();
-    }
+	// 申请人机构
+	private Long orgId;
+	private Org org;
 
-    public Long getiId() {
-        return iId;
-    }
+	// 申请人
+	private Long aId;
+	private Account applicat;
 
-    public void setiId(Long iId) {
-        this.iId = iId;
-    }
+	// 类型(1-OTS、2-PPAP、3-SOP、4-材料研究所任务)
+	private Integer type;
 
-    public Long getOrgId() {
-        return orgId;
-    }
+	// 父任务ID
+	private Long tId;
 
-    public void setOrgId(Long orgId) {
-        this.orgId = orgId;
-    }
+	/**
+	 * 状态： OTS、材料研究所任务： 1-审核中，2-审核不通过，3-试验中，4-完成，5-申请修改，6-申请不通过 PPAP、SOP：
+	 * 1-审批中，2-审批不通过，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成，8-申请修改，9-申请不通过，10-确认是否二次抽样，11-中止任务
+	 */
+	private Integer state;
 
-    public Integer getType() {
-        return type;
-    }
+	// 零部件图谱实验室ID
+	private Long partsAtlId;
+	private Org partsAtl;
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
+	// 原材料图谱实验室ID
+	private Long matAtlId;
+	private Org matAtl;
 
-    public Integer getState() {
-        return state;
-    }
+	// 零部件型式实验室ID
+	private Long partsPatId;
+	private Org partsPat;
 
-    public void setState(Integer state) {
-        this.state = state;
-    }
+	// 原材料型式实验室ID
+	private Long matPatId;
+	private Org matPat;
+
+	// 结果确认失败次数
+	private Integer failNum;
+	// 备注
+	private String remark;
+	// 创建时间
+	private Date createTime;
+	// 确认时间
+	private Date confirmTime;
+
+	// 零部件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	private Integer partsAtlResult;
+	// 原材料图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	private Integer matAtlResult;
+	// 零部件型式结果 (0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	private Integer partsPatResult;
+	// 原材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	private Integer matPatResult;
+
+	// 零部件图谱实验次数
+	private Integer partsAtlTimes;
+	// 原材料图谱实验次数
+	private Integer matAtlTimes;
+	// 零部件型式实验次数
+	private Integer partsPatTimes;
+	// 原材料型式实验次数
+	private Integer matPatTimes;
+
+	// 是否申请修改信息（0-否， 1-等待审批）
+	private Integer infoApply;
+	// 是否申请修改试验结果（0-否，1-等待审批，2-子任务等待审批）
+	private Integer resultApply;
+
+	// 结果（1-合格，2-不合格）
+	private Integer result;
+
+	// 是否接收（1-接收，2-不接收）
+	private Integer isReceive;
+
+	// 零部件图谱实验编号
+	private String partsAtlCode;
+
+	// 原材料图谱实验编号
+	private String matAtlCode;
+
+	// 零部件型式实验编号
+	private String partsPatCode;
+
+	// 原材料型式实验编号
+	private String matPatCode;
+
+	// PPAP和SOP 任务信息
+	private TaskInfo taskInfo;
+
+	// 是否是草稿（0-否，1-是）
+	private Integer draft;
+
+	// 基准图谱类型
+	private String atlType;
+
+	// 测试项目
+	private String atlItem;
+
+	// 基准图谱备注
+	private String atlRemark;
+
+	// 期望完成时间
+	private Date expectDate;
+
+	// 抽样原因
+	private Long reasonId;
+	private Reason reason;
+
+	// 试验结论 - 冗余字段，用于显示
+	private String partsAtlConclusion;
+	private String matAtlConclusion;
+	private String partsPatConclusion;
+	private String matPatConclusion;
+
+	// 接收实验室 - 冗余字段，用于显示
+	private String receiveLabOrg;
+
+	// 审核人员（ots 和 第三方）
+	private Long examineAccountId;
+	// 下达人员（ots 和 第三方）
+	private Long trainsmitAccountId;
+	// 审批人员
+	private Long approveAccountId;
+
+	// 冗余字段（用于识别任务类型，1-ots申请，2-ots审核，3-ots下达任务，4-ots审批，5-ppap下达，6-ppap审批，7-sop下达，8-sop审批，9-tpt申请，10-tpt审核，11-tpt下达，12-tpt审批，13-型式结果，14-图谱结果，15-结果对比,
+	// 16-结果发送，17-结果确认：待上传列表，18-结果确认：已上传列表结果确认：已上传列表）
+	private int taskType;
+
+	// 跳转url（冗余字段）
+	private String url;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code == null ? null : code.trim();
+	}
+
+	public Long getiId() {
+		return iId;
+	}
+
+	public void setiId(Long iId) {
+		this.iId = iId;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 
 	public String getRemark() {
-        return remark;
-    }
+		return remark;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
+	public void setRemark(String remark) {
+		this.remark = remark == null ? null : remark.trim();
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
 	public Info getInfo() {
 		return info;
@@ -601,4 +607,21 @@ public class Task {
 	public void setApproveAccountId(Long approveAccountId) {
 		this.approveAccountId = approveAccountId;
 	}
+
+	public int getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(int taskType) {
+		this.taskType = taskType;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 }

@@ -285,7 +285,7 @@ public class InfoServiceImpl implements InfoService {
 
 			logDetail = "编辑任务，任务号：" + task.getCode();
 		}
-
+		
 		addLog(account.getUserName(), OperationType.APPLY, ServiceType.TASK, logDetail);
 	}
 

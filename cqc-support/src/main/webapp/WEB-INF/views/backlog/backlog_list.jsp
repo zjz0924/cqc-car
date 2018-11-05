@@ -26,7 +26,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "400px",
+			        height: "420px",
 					title: '待办任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -34,27 +34,19 @@
 			        //toolbar : toolbar,
 			        idField: 'id',
 			        frozenColumns:[[{
-						field : '_operation',
-						title : '操作',
-						width : '60',
-						align : 'center',
-						formatter : function(value,row,index){
-							return '<a href="javascript:void(0)" onclick="detail('+ row.id +')">详情</a>';  	
-						}
-					}, {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '140',
+						width : '150',
 						align : 'center',
 						sortable: true,
 						formatter : formatCellTooltip
 					}, {
 						field : 'type',
 						title : '任务类型',
-						width : '150',
+						width : '160',
 						align : 'center',
 						sortable: true,
 						formatter : function(val){
@@ -71,49 +63,49 @@
 					}, {
 						field : 'state',
 						title : '状态',
-						width : '120',
+						width : '140',
 						align : 'center',
 						sortable: true,
 						formatter : function(value,row,index){
 							var str = "";
-							if(row.type == 1 || row.type == 4){
-								if(row.state == 1){
-									str = "审核中";
-								}else if(row.state == 2){
-									str = "审核不通过";
-								}else if(row.state == 3){
-									str = "试验中";
-								}else if(row.state == 4){
-									str = "完成";
-								}else if(row.state == 5){
-									str = "申请修改";
-								}else {
-									str = "申请不通过";
-								}
-							}else if(row.type == 2 || row.type == 3){
-								if(row.state == 1){
-									str = "审批中";
-								}else if(row.state == 2){
-									str = "审批不通过";
-								}else if(row.state == 3){
-									str = "结果上传中";
-								}else if(row.state == 4){
-									str = "结果比对中";
-								}else if(row.state == 5){
-									str = "结果发送中";
-								}else if(row.state == 6){
-									str = "结果接收中";
-								}else if(row.state == 7){
-									str = "完成";
-								}else if(row.state == 8){
-									str = "申请修改";
-								}else if(row.state == 9){
-									str = "申请不通过";
-								}else if(row.state == 10){
-									str = "等待是否二次抽样";
-								}else {
-									str = "中止任务";
-								}
+							var type = row.taskType;
+							
+							if(type == 1){
+								str = "任务申请"
+							}else if(type == 2){
+								str = "信息审核"
+							}else if(type == 3){
+								str = "任务下达";
+							}else if(type == 4){
+								str = "任务审批";
+							}else if(type == 5){
+								str = "任务下达"
+							}else if(type == 6){
+								str = "任务审批";
+							}else if(type == 7){
+								str = "任务下达"
+							}else if(type == 8){
+								str = "任务审批";
+							}else if(type == 9){
+								str = "任务申请"
+							}else if(type == 10){
+								str = "信息审核"
+							}else if(type == 11){
+								str = "任务下达";
+							}else if(type == 12){
+								str = "任务审批";
+							}else if(type == 13){
+								str = "型式结果上传";
+							}else if(type == 14){
+								str = "图谱结果上传";
+							}else if(type == 15){
+								str = "结果对比";
+							}else if(type == 16){
+								str = "结果发送";
+							}else if(type == 17){
+								str = "待上传结果确认";
+							}else if(type == 18){
+								str = "已上传结果确认";
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
@@ -164,7 +156,7 @@
 						}
 					}] ],
 					onDblClickRow : function(rowIndex, rowData) {
-						window.location.href = "${ctx}/ppap/index?taskType=2&choose=1";
+						window.location.href = "${ctx}/" + rowData.url;
 					}
 				});
 		

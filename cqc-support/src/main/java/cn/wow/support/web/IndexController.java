@@ -1,7 +1,5 @@
 package cn.wow.support.web;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.wow.common.domain.Account;
 import cn.wow.common.domain.Menu;
-import cn.wow.common.service.EmailRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
@@ -83,11 +80,7 @@ public class IndexController {
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.EXAMINE.getState());
 				qMap.put("otsAndtPtTask", 1);
-
-				// 除了超级管理员，其它用户只能查看自己需要审核的任务
-				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-					qMap.put("examineAccountId", account.getId());
-				}
+				qMap.put("examineAccountId", account.getId());
 
 				examineNum = taskService.getTaskNum(qMap);
 			}
@@ -128,12 +121,7 @@ public class IndexController {
 			if (isHasPermission(permissionMap, "patternUpload")) {
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.TESTING.getState());
-				// 超级管理员具有所有的权限
-				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-					qMap.put("patternTask", account.getOrgId() == null ? -1 : account.getOrgId());
-				} else {
-					qMap.put("patternTask_admin", true);
-				}
+				qMap.put("patternTask", account.getOrgId() == null ? -1 : account.getOrgId());
 				patternUploadNum = taskService.getTaskNum(qMap);
 			}
 
@@ -141,12 +129,7 @@ public class IndexController {
 			if (isHasPermission(permissionMap, "atlasUpload")) {
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.TESTING.getState());
-				// 超级管理员具有所有的权限
-				if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-					qMap.put("atlasTask", account.getOrgId() == null ? -1 : account.getOrgId());
-				} else {
-					qMap.put("atlasTask_admin", true);
-				}
+				qMap.put("atlasTask", account.getOrgId() == null ? -1 : account.getOrgId());
 				atlasUploadNum = taskService.getTaskNum(qMap);
 			}
 

@@ -141,7 +141,7 @@ public class OtsTaskController extends AbstractController {
 	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose) {
 		HttpSession session = request.getSession();
 		Menu menu = menuService.selectByAlias("otsTask");
-
+		
 		// 没有权限的菜单
 		@SuppressWarnings("unchecked")
 		Set<Long> illegalMenu = (Set<Long>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);

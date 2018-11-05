@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,6 @@ import cn.wow.common.service.OrgService;
 import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.ReasonOptionService;
 import cn.wow.common.service.ReasonService;
-import cn.wow.common.service.TaskRecordService;
 import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
@@ -114,7 +114,7 @@ public class QueryController extends AbstractController {
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		// 抽样原因选项
 		Map<String, Object> optionMap = new PageMap(false);
 		optionMap.put("custom_order_sql", "type asc, name desc");
@@ -163,7 +163,7 @@ public class QueryController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", orderSql);
 		queryMap.put("custom_order_sql", orderSql);
-		
+
 		// 除了超级管理员， 流程上的用户都可以查看
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
 			map.put("currentAccountId", account.getId());
@@ -194,7 +194,7 @@ public class QueryController extends AbstractController {
 			map.put("type", taskType);
 			queryMap.put("type", taskType);
 		}
-		
+
 		List<Long> iIdList = infoService.selectIds(parts_name, parts_producer, parts_producerCode, startProTime,
 				endProTime, matName, matNo, mat_producer, v_code, v_proAddr);
 		if (iIdList.size() > 0) {
@@ -228,8 +228,10 @@ public class QueryController extends AbstractController {
 
 			if (orgList != null && orgList.size() > 0) {
 				for (Task task : dataList) {
-					for(ReceiveOrg org: orgList) {
-						task.setReceiveLabOrg(org.getName());
+					for (ReceiveOrg org : orgList) {
+						if (task.getId().longValue() == org.getTaskId().longValue()) {
+							task.setReceiveLabOrg(org.getName());
+						}
 					}
 				}
 			}
@@ -381,8 +383,8 @@ public class QueryController extends AbstractController {
 			sh.setColumnWidth(0, (short) 6000);
 			sh.setColumnWidth(1, (short) 6000);
 			sh.setColumnWidth(2, (short) 4000);
-			sh.setColumnWidth(3, (short) 4000);
-			sh.setColumnWidth(4, (short) 6000);
+			sh.setColumnWidth(3, (short) 3000);
+			sh.setColumnWidth(4, (short) 3000);
 			sh.setColumnWidth(5, (short) 6000);
 			sh.setColumnWidth(6, (short) 6000);
 			sh.setColumnWidth(7, (short) 6000);
@@ -390,23 +392,89 @@ public class QueryController extends AbstractController {
 			sh.setColumnWidth(9, (short) 6000);
 			sh.setColumnWidth(10, (short) 6000);
 			sh.setColumnWidth(11, (short) 6000);
+			sh.setColumnWidth(12, (short) 6000);
+			sh.setColumnWidth(13, (short) 6000);
+			sh.setColumnWidth(14, (short) 6000);
+			sh.setColumnWidth(15, (short) 6000);
+			sh.setColumnWidth(16, (short) 6000);
+			sh.setColumnWidth(17, (short) 6000);
+			sh.setColumnWidth(18, (short) 6000);
+			sh.setColumnWidth(19, (short) 6000);
+			
+
+			// 合并单元格（参数说明：1：开始行 2：结束行 3：开始列 4：结束列）
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 0, 0));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 1, 1));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 2, 2));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 3, 3));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 4, 4));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 5, 5));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 6, 6));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 7, 7));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 8, 9));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 10, 13));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 14, 16));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 17, 19));
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "任务号", "任务类型", "状态", "结果", "车型", "零件号", "零件名称", "生产商", "材料名称", "生产商", "录入用户", "录入时间",
-					"完成时间", };
+			String[] title1 = { "任务号", "任务类型", "状态", "是否接收", "结果", "接收实验室", "录入时间", "完成时间", "车型信息", "零件信息", "材料信息",
+					"申请人信息" };
+			String[] title2 = { "车型代码", "生产基地", "零件名称", "供应商", "供应商代码", "样件生产日期", "材料名称", "材料牌号", "供应商", "申请人", "科室",
+					"单位机构" };
+
 			int r = 0;
 
-			Row titleRow = sh.createRow(0);
-			titleRow.setHeight((short) 450);
-			for (int k = 0; k < titles.length; k++) {
-				Cell cell = titleRow.createCell(k);
+			Row titleRow1 = sh.createRow(r++);
+			titleRow1.setHeight((short) 450);
+			for (int k = 0; k < title1.length; k++) {
+				String title = title1[k];
+				int step = 0;
+
+				if ("零件信息".equals(title)) {
+					step = 1;
+				}
+				if ("材料信息".equals(title)) {
+					step = 4;
+				}
+				if ("申请人信息".equals(title)) {
+					step = 6;
+				}
+
+				Cell cell = titleRow1.createCell(k + step);
 				cell.setCellStyle(styles.get("header"));
-				cell.setCellValue(titles[k]);
+				cell.setCellValue(title);
 			}
 
-			++r;
+			Row titleRow2 = sh.createRow(r++);
+			titleRow2.setHeight((short) 450);
+			for (int k = 0; k < title2.length; k++) {
+				Cell cell = titleRow2.createCell(k + 8);
+				cell.setCellStyle(styles.get("header"));
+				cell.setCellValue(title2[k]);
+			}
+
 			List<Task> dataList = taskService.selectAllList(queryMap);
+
+			// 接收机构名称
+			Map<Long, String> orgNameMap = new HashMap<Long, String>();
+			if (dataList != null && dataList.size() > 0) {
+				List<Long> idList = new ArrayList<Long>();
+
+				for (Task task : dataList) {
+					idList.add(task.getId());
+				}
+				Map<String, Object> labMap = new HashMap<String, Object>();
+				labMap.put("list", idList);
+				List<ReceiveOrg> orgList = orgService.getReciveOrgName(labMap);
+
+				if (orgList != null && orgList.size() > 0) {
+					for (ReceiveOrg org : orgList) {
+						orgNameMap.put(org.getTaskId(), org.getName());
+					}
+				}
+			}
+
 			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
 				contentRow.setHeight((short) 400);
@@ -475,85 +543,120 @@ public class QueryController extends AbstractController {
 				}
 				cell3.setCellValue(state);
 
-				String result = "";
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
-				if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
-					if (task.getState() == StandardTaskEnum.ACCOMPLISH.getState()) {
-						if (task.getFailNum() == 0) {
-							result = "合格";
-						} else if (task.getFailNum() == 1) {
-							result = "一次不合格";
-						} else {
-							result = "两次不合格";
-						}
-					}
-				} else if (task.getType() == TaskTypeEnum.PPAP.getState()
-						|| task.getType() == TaskTypeEnum.SOP.getState()) {
-					if (task.getState() == SamplingTaskEnum.ACCOMPLISH.getState()) {
-						if (task.getFailNum() == 0) {
-							result = "合格";
-						} else if (task.getFailNum() == 1) {
-							result = "一次不合格";
-						} else {
-							result = "两次不合格";
-						}
-					}
+				String isReceive = "";
+				if (task.getIsReceive() != null && task.getIsReceive() == 1) {
+					isReceive = "接收";
+				} else if (task.getIsReceive() != null && task.getIsReceive() == 2) {
+					isReceive = "不接收";
 				}
-				cell4.setCellValue(result);
+				cell4.setCellValue(isReceive);
 
-				Cell cell6 = contentRow.createCell(4);
+				String result = "";
+				Cell cell5 = contentRow.createCell(4);
+				cell5.setCellStyle(styles.get("cell"));
+				if (task.getResult() != null && task.getResult() == 1) {
+					result = "合格";
+				} else if (task.getResult() != null && task.getResult() == 2) {
+					result = "不合格";
+				}
+				cell5.setCellValue(result);
+
+				// 接收实验室
+				Cell cell6 = contentRow.createCell(5);
 				cell6.setCellStyle(styles.get("cell"));
-				if (task.getType() != TaskTypeEnum.GS.getState()) {
-					if (task.getInfo() != null && task.getInfo().getParts() != null) {
-						cell6.setCellValue(task.getInfo().getParts().getCode());
-					}
+				String orgName = orgNameMap.get(task.getId());
+				if(StringUtils.isNotBlank(orgName)) {
+					cell6.setCellValue(orgName);
 				}
-
-				Cell cell7 = contentRow.createCell(5);
+				
+				// 录入时间
+				Cell cell7 = contentRow.createCell(6);
 				cell7.setCellStyle(styles.get("cell"));
-				if (task.getType() != TaskTypeEnum.GS.getState()) {
-					if (task.getInfo() != null && task.getInfo().getParts() != null) {
-						cell7.setCellValue(task.getInfo().getParts().getName());
-					}
+				if (task.getCreateTime() != null) {
+					cell7.setCellValue(sdf.format(task.getCreateTime()));
 				}
 
-				Cell cell8 = contentRow.createCell(6);
+				Cell cell8 = contentRow.createCell(7);
 				cell8.setCellStyle(styles.get("cell"));
-				if (task.getType() != TaskTypeEnum.GS.getState()) {
-					if (task.getInfo() != null && task.getInfo().getParts() != null
-							&& task.getInfo().getParts().getProducer() != null) {
-						cell8.setCellValue(task.getInfo().getParts().getProducer());
-					}
+				if (task.getConfirmTime() != null) {
+					cell8.setCellValue(sdf.format(task.getConfirmTime()));
 				}
 
-				Cell cell9 = contentRow.createCell(7);
+				Cell cell9 = contentRow.createCell(8);
 				cell9.setCellStyle(styles.get("cell"));
-				if (task.getInfo() != null && task.getInfo().getMaterial() != null) {
-					cell9.setCellValue(task.getInfo().getMaterial().getMatName());
+				if (task.getInfo() != null && task.getInfo().getVehicle() != null) {
+					cell9.setCellValue(task.getInfo().getVehicle().getCode());
 				}
 
-				Cell cell10 = contentRow.createCell(8);
+				Cell cell10 = contentRow.createCell(9);
 				cell10.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getVehicle() != null) {
+					cell10.setCellValue(task.getInfo().getVehicle().getProAddr());
+				}
+
+				Cell cell11 = contentRow.createCell(10);
+				cell11.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getParts() != null) {
+					cell11.setCellValue(task.getInfo().getParts().getName());
+				}
+
+				Cell cell12 = contentRow.createCell(11);
+				cell12.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getParts() != null) {
+					cell12.setCellValue(task.getInfo().getParts().getProducer());
+				}
+
+				Cell cell13 = contentRow.createCell(12);
+				cell13.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getParts() != null) {
+					cell13.setCellValue(task.getInfo().getParts().getProducerCode());
+				}
+
+				Cell cell14 = contentRow.createCell(13);
+				cell14.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getParts() != null
+						&& task.getInfo().getParts().getProTime() != null) {
+					cell14.setCellValue(sdf.format(task.getInfo().getParts().getProTime()));
+				}
+
+				Cell cell15 = contentRow.createCell(14);
+				cell15.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getMaterial() != null) {
+					cell15.setCellValue(task.getInfo().getMaterial().getMatName());
+				}
+
+				Cell cell16 = contentRow.createCell(15);
+				cell16.setCellStyle(styles.get("cell"));
 				if (task.getInfo() != null && task.getInfo().getMaterial() != null
 						&& task.getInfo().getMaterial().getProducer() != null) {
-					cell10.setCellValue(task.getInfo().getMaterial().getProducer());
+					cell16.setCellValue(task.getInfo().getMaterial().getMatNo());
 				}
 
-				Cell cell11 = contentRow.createCell(9);
-				cell11.setCellStyle(styles.get("cell"));
+				Cell cell17 = contentRow.createCell(16);
+				cell17.setCellStyle(styles.get("cell"));
+				if (task.getInfo() != null && task.getInfo().getMaterial() != null
+						&& task.getInfo().getMaterial().getProducer() != null) {
+					cell17.setCellValue(task.getInfo().getMaterial().getProducer());
+				}
+
+				Cell cell18 = contentRow.createCell(17);
+				cell18.setCellStyle(styles.get("cell"));
 				if (task.getApplicat() != null) {
-					cell11.setCellValue(task.getApplicat().getUserName());
+					cell18.setCellValue(task.getApplicat().getNickName());
 				}
 
-				Cell cell12 = contentRow.createCell(10);
-				cell12.setCellStyle(styles.get("cell"));
-				cell12.setCellValue(sdf.format(task.getCreateTime()));
+				Cell cell19 = contentRow.createCell(18);
+				cell19.setCellStyle(styles.get("cell"));
+				if (task.getApplicat() != null) {
+					cell19.setCellValue(task.getApplicat().getDepartment());
+				}
 
-				Cell cell13 = contentRow.createCell(11);
-				cell13.setCellStyle(styles.get("cell"));
-				if (task.getConfirmTime() != null) {
-					cell13.setCellValue(sdf.format(task.getConfirmTime()));
+				Cell cell20 = contentRow.createCell(19);
+				cell20.setCellStyle(styles.get("cell"));
+				if (task.getApplicat() != null && task.getApplicat().getOrg() != null) {
+					cell20.setCellValue(task.getApplicat().getOrg().getName());
 				}
 
 				r++;

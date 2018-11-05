@@ -26,10 +26,12 @@
 					for(var i = 0; i < menuJson.length; i++){
 						var selected = false;
 						var obj = menuJson[i];
+						var url = obj.url;
+						
 						if(i == selectTabIndex){
 							selected = true;
 						}
-						createTab(obj.name, obj.url, selected);
+						createTab(obj.name, url, selected);
 					}
 				}
 				
@@ -40,7 +42,7 @@
 	        
 			function refreshTab(currentTab) {
 				var url = currentTab.panel('options').href; 
-	
+		
 			 	$('#systemTabs').tabs('update', {
 					tab : currentTab,
 					options : {

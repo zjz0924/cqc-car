@@ -64,6 +64,9 @@
 		<!-- 审批人员 -->
 		<result column="approve_account_id" property="approveAccountId" jdbcType="BIGINT" />
 		
+		<!-- 任务类型（冗余字段） -->
+		<result column="taskType" property="taskType" jdbcType="INTEGER" />
+		
 		<association property="taskInfo" javaType="cn.wow.common.domain.TaskInfo" column="id" select="cn.wow.common.dao.TaskInfoDao.selectOne"/> 
 		<association property="partsAtl" javaType="cn.wow.common.domain.Org" column="parts_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="matAtl" javaType="cn.wow.common.domain.Org" column="mat_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
@@ -845,97 +848,97 @@
 	
 	
 	<select id="getBacklogTask" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select id, code, type, state, create_time, a_id from (
-			select id, code, type, state, create_time, a_id from task where code = null
+		select id, code, type, state, create_time, a_id, taskType from (
+			select id, code, type, state, create_time, a_id, 0 taskType from task where code = null
 			
 			<!-- ots 任务申请 -->
 			<if test="otsRequire != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 1 and (state = 1 or state = 2) and a_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 1 taskType from task where type = 1 and (state = 1 or state = 2) and a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 		
 			<!-- ots 审核任务 -->
 			<if test="otsExamine != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 1 and (state = 1 or state = 2) and examine_account_id = #{applicatId,jdbcType=BIGINT} and draft != 1
+				union all select id, code, type, state, create_time, a_id, 2 taskType from task where type = 1 and (state = 1 or state = 2) and examine_account_id = #{applicatId,jdbcType=BIGINT} and draft != 1
 			</if>
 		
 			<!-- ots 下达任务 -->
 			<if test="otsTransmit != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 1 and state = 3 and parts_atl_id is null and mat_atl_id is null and trainsmit_account_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 3 taskType from task where type = 1 and state = 3 and parts_atl_id is null and mat_atl_id is null and trainsmit_account_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- ots 任务审批 -->
 			<if test="otsApprove != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 1 and ((state = 3 and (( parts_atl_result = 0 AND parts_atl_id IS NOT NULL ) OR ( mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ))) or (info_apply = 1 or (result_apply = 1 and t_id is not null))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 4 taskType from task where type = 1 and ((state = 3 and (( parts_atl_result = 0 AND parts_atl_id IS NOT NULL ) OR ( mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ))) or (info_apply = 1 or (result_apply = 1 and t_id is not null))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- ppap 任务下达 -->
 			<if test="ppapTransmit != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 2 and state = 2 and a_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 5 taskType from task where type = 2 and state = 2 and a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- ppap 任务审批 -->
 			<if test="ppapApprove != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 2 and (state = 1 or (state = 8 and (info_apply = 1 or (result_apply = 1 and t_id is not null)))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 6 taskType from task where type = 2 and (state = 1 or (state = 8 and (info_apply = 1 or (result_apply = 1 and t_id is not null)))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- sop 任务下达 -->
 			<if test="sopTransmit != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 3 and state = 2 and a_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 7 taskType from task where type = 3 and state = 2 and a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- ppap 任务审批 -->
 			<if test="sopApprove != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 3 and (state = 1 or (state = 8 and (info_apply = 1 or (result_apply = 1 and t_id is not null)))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 8 taskType from task where type = 3 and (state = 1 or (state = 8 and (info_apply = 1 or (result_apply = 1 and t_id is not null)))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- tpt 任务申请 -->
 			<if test="tptRequire != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 4 and (state = 1 or state = 2) and a_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 9 taskType from task where type = 4 and (state = 1 or state = 2) and a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 		
 			<!-- tpt 审核任务 -->
 			<if test="tptExamine != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 4 and (state = 1 or state = 2) and examine_account_id = #{applicatId,jdbcType=BIGINT} and draft != 1
+				union all select id, code, type, state, create_time, a_id, 10 taskType from task where type = 4 and (state = 1 or state = 2) and examine_account_id = #{applicatId,jdbcType=BIGINT} and draft != 1
 			</if>
 		
 			<!-- tpt 下达任务 -->
 			<if test="tptTransmit != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 4 and state = 3 and trainsmit_account_id = #{applicatId,jdbcType=BIGINT} and ((mat_atl_id is null or mat_pat_id is null or parts_atl_id IS NULL OR parts_pat_id IS NULL) or ((mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( parts_atl_result = 0 AND parts_atl_id IS NOT NULL )))
+				union all select id, code, type, state, create_time, a_id, 11 taskType from task where type = 4 and state = 3 and trainsmit_account_id = #{applicatId,jdbcType=BIGINT} and ((mat_atl_id is null or mat_pat_id is null or parts_atl_id IS NULL OR parts_pat_id IS NULL) or ((mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( parts_atl_result = 0 AND parts_atl_id IS NOT NULL )))
 			</if>
 			
 			<!-- tpt 任务审批 -->
 			<if test="tptApprove != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 4 and ((state = 3 and ((mat_atl_result = 0 and mat_atl_id IS NOT NULL) or (mat_pat_result = 0 and mat_pat_id IS NOT NULL ) or (parts_pat_result = 0 and parts_pat_id IS NOT NULL) or (parts_atl_result = 0 and parts_atl_id IS NOT NULL))) or (info_apply = 1 or (result_apply = 1 and t_id is not null))) and approve_account_id = #{approveAccountId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 12 taskType from task where type = 4 and ((state = 3 and ((mat_atl_result = 0 and mat_atl_id IS NOT NULL) or (mat_pat_result = 0 and mat_pat_id IS NOT NULL ) or (parts_pat_result = 0 and parts_pat_id IS NOT NULL) or (parts_atl_result = 0 and parts_atl_id IS NOT NULL))) or (info_apply = 1 or (result_apply = 1 and t_id is not null))) and approve_account_id = #{approveAccountId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- 型式结果 -->
 			<if test="patternTask != null">
-				union all select id, code, type, state, create_time, a_id from task where state = 3 and ((parts_pat_id = #{patternTask, jdbcType=BIGINT} and parts_pat_result = 1 ) or (mat_pat_id = #{patternTask, jdbcType=BIGINT} and mat_pat_result = 1))
+				union all select id, code, type, state, create_time, a_id, 13 taskType from task where state = 3 and ((parts_pat_id = #{patternTask, jdbcType=BIGINT} and parts_pat_result = 1 ) or (mat_pat_id = #{patternTask, jdbcType=BIGINT} and mat_pat_result = 1))
 			</if>
 			
-			<!-- 型式结果 -->
+			<!-- 图谱结果 -->
 			<if test="atlasTask != null">
-				union all select id, code, type, state, create_time, a_id from task where state = 3 and ((parts_atl_id = #{atlasTask, jdbcType=BIGINT} and parts_atl_result = 1 ) or (mat_atl_id = #{atlasTask, jdbcType=BIGINT} and mat_atl_result = 1))
+				union all select id, code, type, state, create_time, a_id, 14 taskType from task where state = 3 and ((parts_atl_id = #{atlasTask, jdbcType=BIGINT} and parts_atl_result = 1 ) or (mat_atl_id = #{atlasTask, jdbcType=BIGINT} and mat_atl_result = 1))
 			</if>
 			
 			<!-- 结果对比 -->
 			<if test="patternTask != null">
-				union all select id, code, type, state, create_time, a_id from task where state = 4 and ( type = 2 or type = 3)
+				union all select id, code, type, state, create_time, a_id, 15 taskType from task where state = 4 and ( type = 2 or type = 3)
 			</if>
 			
 			<!-- 结果发送 -->
 			<if test="sendTask != null">
-				union all select id, code, type, state, create_time, a_id from task where ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and ((parts_pat_id = #{sendTask, jdbcType=BIGINT} and parts_pat_result = 2 ) or (mat_pat_id = #{sendTask, jdbcType=BIGINT} and mat_pat_result = 2) or (parts_atl_id = #{sendTask, jdbcType=BIGINT} and parts_atl_result = 2) or (mat_atl_id = #{sendTask, jdbcType=BIGINT} and mat_atl_result = 2))
+				union all select id, code, type, state, create_time, a_id, 16 taskType from task where ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and ((parts_pat_id = #{sendTask, jdbcType=BIGINT} and parts_pat_result = 2 ) or (mat_pat_id = #{sendTask, jdbcType=BIGINT} and mat_pat_result = 2) or (parts_atl_id = #{sendTask, jdbcType=BIGINT} and parts_atl_result = 2) or (mat_atl_id = #{sendTask, jdbcType=BIGINT} and mat_atl_result = 2))
 			</if>
 			
 			<!-- 结果确认：待上传列表 -->
 			<if test="confirmTask_wait != null">
-				union all select id, code, type, state, create_time, a_id from task where type = 4 and ((mat_pat_result = 3 or mat_atl_result = 3) and (mat_pat_result != 3 or mat_atl_result != 3))
+				union all select id, code, type, state, create_time, a_id, 17 taskType from task where type = 4 and ((mat_pat_result = 3 or mat_atl_result = 3) and (mat_pat_result != 3 or mat_atl_result != 3))
 			</if>
 			
 			<!-- 结果确认：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				union all select id, code, type, state, create_time, a_id from task where (type = 1 and state = 3 and parts_atl_result = 3 and mat_atl_result = 3) or (state = 6 and (type = 2 or type = 3) or (type = 4 and state = 3 and mat_pat_result = 3 and mat_atl_result = 3))
+				union all select id, code, type, state, create_time, a_id, 18 taskType from task where (type = 1 and state = 3 and parts_atl_result = 3 and mat_atl_result = 3) or (state = 6 and (type = 2 or type = 3) or (type = 4 and state = 3 and mat_pat_result = 3 and mat_atl_result = 3))
 			</if>
 			
 		) t 

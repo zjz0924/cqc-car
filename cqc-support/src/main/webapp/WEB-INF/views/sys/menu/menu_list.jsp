@@ -41,8 +41,7 @@
 								url: "${ctx}/menu/update?time" + new Date(),
 								data: {
 									name: row.name,
-									id: row.id,
-									sortNum: row.sortNum
+									id: row.id
 								},
 								success: function(data){
 									if(data.success){
@@ -83,12 +82,6 @@
 						title : '菜单名',
 						width : 200,
 						editor : 'text'
-					}, {
-						field : 'sortNum',
-						title : '排序号',
-						width : 80,
-						align : 'center',
-						editor : 'numberbox'
 					} ] ]
 				});
 			});

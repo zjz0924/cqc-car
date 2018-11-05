@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +36,10 @@ import cn.wow.common.domain.CostRecord;
 import cn.wow.common.domain.ExpItem;
 import cn.wow.common.domain.LabReq;
 import cn.wow.common.domain.Menu;
-import cn.wow.common.service.AtlasResultService;
-import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CostRecordService;
 import cn.wow.common.service.ExpItemService;
-import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
 import cn.wow.common.service.MenuService;
-import cn.wow.common.service.PfResultService;
-import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
@@ -199,7 +195,6 @@ public class CostController extends AbstractController {
 		return "cost/cost_detail";
 	}
 
-
 	/**
 	 * 费用清单发送
 	 * 
@@ -241,7 +236,8 @@ public class CostController extends AbstractController {
 	public void exportList(HttpServletRequest request, HttpServletResponse response, int type) {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+		
 		StringBuffer filename = new StringBuffer(sdf1.format(new Date()));
 		if (type == 1) {
 			filename.append("_待发送费用清单");
@@ -256,26 +252,78 @@ public class CostController extends AbstractController {
 			Workbook wb = new SXSSFWorkbook(100); // 保持100条在内存中，其它保存到磁盘中
 			// 工作簿
 			Sheet sh = wb.createSheet("清单列表");
-			sh.setColumnWidth(0, (short) 6000);
-			sh.setColumnWidth(1, (short) 6000);
-			sh.setColumnWidth(2, (short) 4000);
-			sh.setColumnWidth(3, (short) 4000);
-			sh.setColumnWidth(4, (short) 5000);
+			sh.setColumnWidth(0, (short) 5000);
+			sh.setColumnWidth(1, (short) 5000);
+			sh.setColumnWidth(2, (short) 5000);
+			sh.setColumnWidth(3, (short) 6000);
+			sh.setColumnWidth(4, (short) 6000);
+			sh.setColumnWidth(5, (short) 6000);
+			sh.setColumnWidth(6, (short) 5000);
+			sh.setColumnWidth(7, (short) 5000);
+			sh.setColumnWidth(8, (short) 5000);
+			sh.setColumnWidth(9, (short) 5000);
+			sh.setColumnWidth(10, (short) 5000);
+			sh.setColumnWidth(11, (short) 5000);
+			sh.setColumnWidth(12, (short) 5000);
+			sh.setColumnWidth(13, (short) 5000);
+			sh.setColumnWidth(14, (short) 5000);
+			sh.setColumnWidth(15, (short) 5000);
+			sh.setColumnWidth(16, (short) 5000);
+			sh.setColumnWidth(17, (short) 5000);
+			sh.setColumnWidth(18, (short) 5000);
+			sh.setColumnWidth(19, (short) 5000);
+			sh.setColumnWidth(20, (short) 5000);
+
+			// 合并单元格（参数说明：1：开始行 2：结束行 3：开始列 4：结束列）
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 0, 0));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 1, 1));
+			sh.addMergedRegion(new CellRangeAddress(0, 1, 2, 2));
+
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 3, 8));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 9, 10));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 11, 14));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 15, 17));
+			sh.addMergedRegion(new CellRangeAddress(0, 0, 18, 20));
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "任务号", "任务类型", "实验类型", "实验结果", "创建时间" };
+			String[] title1 = { "任务号", "任务类型", "创建时间", "实验信息", "车型信息", "零件信息", "材料信息", "申请人信息" };
+			String[] title2 = { "实验类型", "实验编号", "实验室", "实验结果", "费用出处", "总费用", "车型代码", "生产基地", "零件名称", "供应商", "供应商代码",
+					"样件生产日期", "材料名称", "材料牌号", "供应商", "申请人", "科室", "单位机构" };
 			int r = 0;
 
-			Row titleRow = sh.createRow(0);
-			titleRow.setHeight((short) 450);
-			for (int k = 0; k < titles.length; k++) {
-				Cell cell = titleRow.createCell(k);
+			Row titleRow1 = sh.createRow(r++);
+			titleRow1.setHeight((short) 450);
+			for (int k = 0; k < title1.length; k++) {
+				String title = title1[k];
+				int step = 0;
+
+				if ("车型信息".equals(title)) {
+					step = 5;
+				}
+				if ("零件信息".equals(title)) {
+					step = 6;
+				}
+				if ("材料信息".equals(title)) {
+					step = 9;
+				}
+				if ("申请人信息".equals(title)) {
+					step = 11;
+				}
+
+				Cell cell = titleRow1.createCell(k + step);
 				cell.setCellStyle(styles.get("header"));
-				cell.setCellValue(titles[k]);
+				cell.setCellValue(title1[k]);
 			}
 
-			++r;
+			Row titleRow2 = sh.createRow(r++);
+			titleRow2.setHeight((short) 450);
+			for (int k = 0; k < title2.length; k++) {
+				Cell cell = titleRow2.createCell(k + 3);
+				cell.setCellStyle(styles.get("header"));
+				cell.setCellValue(title2[k]);
+			}
+
 			List<CostRecord> dataList = costRecordService.selectAllList(queryMap);
 			for (int j = 0; j < dataList.size(); j++) {// 添加数据
 				Row contentRow = sh.createRow(r);
@@ -306,32 +354,175 @@ public class CostController extends AbstractController {
 				}
 				cell2.setCellValue(taskType);
 
-				// 实验类型
+				// 创建时间
 				Cell cell3 = contentRow.createCell(2);
 				cell3.setCellStyle(styles.get("cell"));
-				String labType = "";
-				if (costRecord.getLabType() == 1) {
-					labType = "零部件图谱";
-				} else if (costRecord.getLabType() == 2) {
-					labType = "零部件型式";
-				} else if (costRecord.getLabType() == 3) {
-					labType = "原材料图谱";
-				} else {
-					labType = "原材料型式";
+				if (costRecord.getCreateTime() != null) {
+					cell3.setCellValue(sdf.format(costRecord.getCreateTime()));
 				}
-				cell3.setCellValue(labType);
 
-				// 实验结果
+				// 实验类型
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
-				String labResult = costRecord.getLabResult().intValue() == 1 ? "合格" : "不合格";
-				cell4.setCellValue(labResult);
 
-				// 创建时间
+				String labCode = "";
+				String labOrgName = "";
+
+				// 实验类型
+				if (costRecord.getLabType() != null) {
+					String labType = "";
+
+					if (costRecord.getLabType() == 1) {
+						labType = "零部件图谱";
+						
+						if (StringUtils.isNotBlank(costRecord.getTask().getPartsAtlCode())) {
+							labCode = costRecord.getTask().getPartsAtlCode();
+						}
+
+						if (costRecord.getTask().getPartsAtl() != null) {
+							labOrgName = costRecord.getTask().getPartsAtl().getName();
+						}
+
+					} else if (costRecord.getLabType() == 2) {
+						labType = "零部件型式";
+
+						if (StringUtils.isNotBlank(costRecord.getTask().getPartsPatCode())) {
+							labCode = costRecord.getTask().getPartsPatCode();
+						}
+
+						if (costRecord.getTask().getPartsPat() != null) {
+							labOrgName = costRecord.getTask().getPartsPat().getName();
+						}
+
+					} else if (costRecord.getLabType() == 3) {
+						labType = "原材料图谱";
+
+						if (StringUtils.isNotBlank(costRecord.getTask().getMatAtlCode())) {
+							labCode = costRecord.getTask().getMatAtlCode();
+						}
+						
+						if (costRecord.getTask().getMatAtl() != null) {
+							labOrgName = costRecord.getTask().getMatAtl().getName();
+						}
+
+					} else {
+						labType = "原材料型式";
+
+						if (StringUtils.isNotBlank(costRecord.getTask().getMatPatCode())) {
+							labCode = costRecord.getTask().getMatPatCode();
+						}
+						
+						if (costRecord.getTask().getMatPat() != null) {
+							labOrgName = costRecord.getTask().getMatPat().getName();
+						}
+					}
+					cell4.setCellValue(labType);
+				}
+
+				// 实验编号
 				Cell cell5 = contentRow.createCell(4);
 				cell5.setCellStyle(styles.get("cell"));
-				if (costRecord.getCreateTime() != null) {
-					cell5.setCellValue(sdf.format(costRecord.getCreateTime()));
+				cell5.setCellValue(labCode);
+
+				// 实验室
+				Cell cell6 = contentRow.createCell(5);
+				cell6.setCellStyle(styles.get("cell"));
+				cell6.setCellValue(labOrgName);
+
+				// 实验结果
+				Cell cell7 = contentRow.createCell(6);
+				cell7.setCellStyle(styles.get("cell"));
+				if (costRecord.getLabResult() != null) {
+					cell7.setCellValue(costRecord.getLabResult() == 1 ? "合格" : "不合格");
+				}
+
+				// 费用出处
+				Cell cell8 = contentRow.createCell(7);
+				cell8.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getReason() != null) {
+					cell8.setCellValue(costRecord.getTask().getReason().getSource());
+				}
+
+				// 总费用
+				Cell cell9 = contentRow.createCell(8);
+				cell9.setCellStyle(styles.get("cell"));
+				if (costRecord.getTotal() != null) {
+					cell9.setCellValue(costRecord.getTotal().longValue());
+				}
+
+				Cell cell10 = contentRow.createCell(9);
+				cell10.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getVehicle() != null) {
+					cell10.setCellValue(costRecord.getTask().getInfo().getVehicle().getCode());
+				}
+
+				Cell cell11 = contentRow.createCell(10);
+				cell11.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getVehicle() != null) {
+					cell11.setCellValue(costRecord.getTask().getInfo().getVehicle().getProAddr());
+				}
+
+				Cell cell12 = contentRow.createCell(11);
+				cell12.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getParts() != null) {
+					cell12.setCellValue(costRecord.getTask().getInfo().getParts().getName());
+				}
+
+				Cell cell13 = contentRow.createCell(12);
+				cell13.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getParts() != null) {
+					cell13.setCellValue(costRecord.getTask().getInfo().getParts().getProducer());
+				}
+
+				Cell cell14 = contentRow.createCell(13);
+				cell14.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getParts() != null) {
+					cell14.setCellValue(costRecord.getTask().getInfo().getParts().getProducerCode());
+				}
+
+				Cell cell15 = contentRow.createCell(14);
+				cell15.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getParts() != null
+						&& costRecord.getTask().getInfo().getParts().getProTime() != null) {
+					cell15.setCellValue(sdf2.format(costRecord.getTask().getInfo().getParts().getProTime()));
+				}
+
+				Cell cell16 = contentRow.createCell(15);
+				cell16.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getMaterial() != null) {
+					cell16.setCellValue(costRecord.getTask().getInfo().getMaterial().getMatName());
+				}
+
+				Cell cell17 = contentRow.createCell(16);
+				cell17.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getMaterial() != null
+						&& costRecord.getTask().getInfo().getMaterial().getProducer() != null) {
+					cell17.setCellValue(costRecord.getTask().getInfo().getMaterial().getMatNo());
+				}
+
+				Cell cell18 = contentRow.createCell(17);
+				cell18.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getInfo() != null && costRecord.getTask().getInfo().getMaterial() != null
+						&& costRecord.getTask().getInfo().getMaterial().getProducer() != null) {
+					cell18.setCellValue(costRecord.getTask().getInfo().getMaterial().getProducer());
+				}
+
+				Cell cell19 = contentRow.createCell(18);
+				cell19.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getApplicat() != null) {
+					cell19.setCellValue(costRecord.getTask().getApplicat().getNickName());
+				}
+
+				Cell cell20 = contentRow.createCell(19);
+				cell20.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getApplicat() != null) {
+					cell20.setCellValue(costRecord.getTask().getApplicat().getDepartment());
+				}
+
+				Cell cell21 = contentRow.createCell(20);
+				cell21.setCellStyle(styles.get("cell"));
+				if (costRecord.getTask().getApplicat() != null && costRecord.getTask().getApplicat().getOrg() != null) {
+					cell21.setCellValue(costRecord.getTask().getApplicat().getOrg().getName());
 				}
 
 				r++;

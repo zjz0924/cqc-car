@@ -52,6 +52,29 @@ public class BacklogController {
 	@Autowired
 	private MenuService menuService;
 
+	private static Map<Integer, String> urlMap = new HashMap<Integer, String>();
+
+	static {
+		urlMap.put(1, "ots/index?choose=0");
+		urlMap.put(2, "ots/index?choose=1");
+		urlMap.put(3, "ots/index?choose=2");
+		urlMap.put(4, "ots/index?choose=3");
+		urlMap.put(5, "ppap/index?taskType=2&choose=0");
+		urlMap.put(6, "ppap/index?taskType=2&choose=1");
+		urlMap.put(7, "ppap/index?taskType=3&choose=0");
+		urlMap.put(8, "ppap/index?taskType=3&choose=1");
+		urlMap.put(9, "tpt/index?choose=0");
+		urlMap.put(10, "tpt/index?choose=1");
+		urlMap.put(11, "tpt/index?choose=2");
+		urlMap.put(12, "tpt/index?choose=3");
+		urlMap.put(13, "result/uploadList?type=1");
+		urlMap.put(14, "result/uploadList?type=2");
+		urlMap.put(15, "result/compareList");
+		urlMap.put(16, "result/sendList");
+		urlMap.put(17, "result/confirmList?type=1");
+		urlMap.put(18, "result/confirmList?type=2");
+	}
+
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest request, Model model) {
 
@@ -171,6 +194,12 @@ public class BacklogController {
 
 		map.put("applicatId", applicat.getId());
 		List<Task> dataList = taskService.getBacklogTask(map);
+
+		if (dataList != null && dataList.size() > 0) {
+			for (Task task : dataList) {
+				task.setUrl(urlMap.get(task.getTaskType()));
+			}
+		}
 
 		// 分页
 		Page<Task> pageList = (Page<Task>) dataList;

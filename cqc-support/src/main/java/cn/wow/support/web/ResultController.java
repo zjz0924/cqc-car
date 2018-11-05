@@ -578,7 +578,7 @@ public class ResultController extends AbstractController {
 			Map<String, String> data = new HashMap<String, String>();
 			this.getOperatorNameAndEmail(task, data);
 			model.addAttribute("sendEmails", data.get("email"));
-			model.addAttribute("sendNames",  data.get("name"));
+			model.addAttribute("sendNames", data.get("name"));
 
 			model.addAttribute("facadeBean", task);
 
@@ -1456,22 +1456,28 @@ public class ResultController extends AbstractController {
 		// 审批人员
 		if (task.getApproveAccountId() != null) {
 			Account approveAccount = accountService.selectOne(task.getApproveAccountId());
-			emails.append(approveAccount.getEmail() + ";");
-			names.append(approveAccount.getUserName() + ",");
+			if (approveAccount != null && StringUtils.isNotBlank(approveAccount.getEmail())) {
+				emails.append(approveAccount.getEmail() + ";");
+				names.append(approveAccount.getUserName() + ",");
+			}
 		}
 
 		// 审核人员
 		if (task.getExamineAccountId() != null) {
 			Account examineAccount = accountService.selectOne(task.getExamineAccountId());
-			emails.append(examineAccount.getEmail() + ";");
-			names.append(examineAccount.getUserName() + ",");
+			if (examineAccount != null && StringUtils.isNotBlank(examineAccount.getEmail())) {
+				emails.append(examineAccount.getEmail() + ";");
+				names.append(examineAccount.getUserName() + ",");
+			}
 		}
 
 		// 下达人员
 		if (task.getTrainsmitAccountId() != null) {
 			Account trainsmitAccount = accountService.selectOne(task.getTrainsmitAccountId());
-			emails.append(trainsmitAccount.getEmail() + ";");
-			names.append(trainsmitAccount.getUserName() + ",");
+			if (trainsmitAccount != null && StringUtils.isNotBlank(trainsmitAccount.getEmail())) {
+				emails.append(trainsmitAccount.getEmail() + ";");
+				names.append(trainsmitAccount.getUserName() + ",");
+			}
 		}
 
 		String emailStr = emails.toString();

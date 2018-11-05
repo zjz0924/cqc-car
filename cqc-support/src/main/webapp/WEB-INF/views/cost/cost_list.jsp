@@ -91,7 +91,7 @@
 			        ]],
 			        columns : [ [{
 						title:'实验信息', 
-						colspan:5
+						colspan:6
 					},{
 						title:'车型信息', 
 						colspan:2
@@ -346,8 +346,8 @@
 						width : '180',
 						align : 'center',
 						formatter : function(value, row, index){
-							if(!isNull(row.applicat) && !isNull(row.applicat.org)){
-								return "<span title='"+ row.applicat.org.name +"'>"+ row.applicat.org.name +"</span>";
+							if(!isNull(row.task.applicat) && !isNull(row.task.applicat.org)){
+								return "<span title='"+ row.task.applicat.org.name +"'>"+ row.task.applicat.org.name +"</span>";
 							}								
 						}
 					} ] ],

@@ -203,7 +203,6 @@
 						<option value="">全部</option>
 						<option value="1">结果消息</option>
 						<option value="2">收费通知</option>
-						<option value="3">警告书</option>
 					</select>&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">消息状态：</span>

@@ -44,7 +44,7 @@ public class MenuController extends AbstractController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/update")
-	public AjaxVO update(HttpServletRequest request, Model model, String id, String name, Integer sortNum) {
+	public AjaxVO update(HttpServletRequest request, Model model, String id, String name) {
 		AjaxVO vo = new AjaxVO();
 		Menu menu = null;
 
@@ -54,7 +54,6 @@ public class MenuController extends AbstractController {
 
 				if (menu != null) {
 					menu.setName(name);
-					menu.setSortNum(sortNum);
 					menuService.update(getCurrentUserName(), menu);
 					
 					vo.setMsg("编辑成功");
