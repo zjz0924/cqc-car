@@ -53,6 +53,7 @@ import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.CommonService;
 import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
@@ -71,6 +72,7 @@ import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
+import cn.wow.common.utils.taskState.TaskStageEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 import cn.wow.common.vo.ResultFlagVO;
 
@@ -144,6 +146,8 @@ public class TptTaskController extends AbstractController {
 	private DepartmentService departmentService;
 	@Autowired
 	private AttachService attachService;
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 首页
@@ -564,9 +568,13 @@ public class TptTaskController extends AbstractController {
 			}
 
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, reasonObj, Contants.SAMPLE_TYPE, t_id,
+			Task task = infoService.require(account, vehicle, parts, material, reasonObj, Contants.SAMPLE_TYPE, t_id,
 					TaskTypeEnum.GS.getState(), draft.intValue(), formatAltType(atlType), atlRemark, atlItem,
 					examineAccountId, trainsmitAccountId, approveAccountId);
+
+			// 发送邮件
+			commonService.mailNotify(account, task, TaskStageEnum.EXAMINE);
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -731,7 +739,15 @@ public class TptTaskController extends AbstractController {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		try {
-			infoService.examine(account, ids, type, remark);
+			List<Task> taskList = infoService.examine(account, ids, type, remark);
+
+			// 发送邮件
+			if (taskList != null && taskList.size() > 0) {
+				for (Task task : taskList) {
+					commonService.mailNotify(account, task, TaskStageEnum.TRANSMIT);
+				}
+			}
+
 		} catch (Exception ex) {
 			logger.error("任务批量审核失败", ex);
 
@@ -759,8 +775,8 @@ public class TptTaskController extends AbstractController {
 			String p_proNo, Long p_id, Integer p_num, String p_remark, Long m_id, String m_matName, String m_matColor,
 			String m_proNo, String m_matNo, String m_remark, Long t_id, Integer m_num, String p_producer,
 			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
-			Long reason_id, String origin, String reason, String otherRemark, String source,
-			String reasonRemark, int result, String examine_remark) {
+			Long reason_id, String origin, String reason, String otherRemark, String source, String reasonRemark,
+			int result, String examine_remark) {
 
 		AjaxVO vo = new AjaxVO();
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
@@ -837,8 +853,11 @@ public class TptTaskController extends AbstractController {
 				material.setNum(m_num);
 			}
 
-			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, formatAltType(atlType),
-					atlRemark, reasonObj);
+			Task task = infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material,
+					formatAltType(atlType), atlRemark, reasonObj);
+
+			// 发送邮件
+			commonService.mailNotify(account, task, TaskStageEnum.TRANSMIT);
 
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
@@ -1046,7 +1065,11 @@ public class TptTaskController extends AbstractController {
 						matPatReq, id, 4));
 			}
 
-			infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId, labReqList);
+			Task task = infoService.transmit(account, id, partsAtlId, matAtlId, partsPatId, matPatId, labReqList);
+
+			// 发送邮件
+			commonService.mailNotify(account, task, TaskStageEnum.APPROVE);
+
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
 

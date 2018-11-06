@@ -31,27 +31,6 @@ public interface TaskService {
 	 */
     public void sendResult(Account account, Long taskId, String pAtlVal, String pPatVal, String mAtlVal, String mPatVal, Integer type) throws Exception;
     
-    
-    /**
-     * 发送邮件
-     * @param subject  主题
-     * @param content  内容
-     * @param addr     接收人地址（多个邮件地址以";"分隔）
-     * @param type     类型：1-text 2-html
-     */
-    public boolean sendEmail(String subject, String content, String addr, int type) throws Exception;
-    
-    
-    /**
-	 * 发送费用清单
-	 * @param account     操作用户
-	 * @param costRecord  费用清单
-	 * @param orgs        发送机构
-	 * @param itemList    试验项目
-	 */
-	public void sendCost(Account account, String orgs, CostRecord costRecord, List<ExpItem> itemList) throws Exception;
-    
-    
     /**
 	 * 结果确认
 	 * @param result  结果：1-合格，2-不合格

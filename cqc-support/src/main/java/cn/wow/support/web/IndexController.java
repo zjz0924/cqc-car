@@ -77,6 +77,10 @@ public class IndexController {
 
 			// 审核数
 			if (isHasPermission(permissionMap, "otsExamine")) {
+				if(examineNum == -1) {
+					examineNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.EXAMINE.getState());
 				qMap.put("otsAndtPtTask", 1);
@@ -87,38 +91,62 @@ public class IndexController {
 
 			// OTS 审批数
 			if (isHasPermission(permissionMap, "otsApprove")) {
+				if(approveNum == -1) {
+					approveNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("approveTask_ots", true);
 				qMap.put("type", 1);
+				qMap.put("approveAccountId", account.getId());
 				approveNum += taskService.getTaskNum(qMap);
 			}
 
 			// GS审批数
 			if (isHasPermission(permissionMap, "gsApprove")) {
+				if(approveNum == -1) {
+					approveNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("approveTask_gs", true);
 				qMap.put("type", 4);
+				qMap.put("approveAccountId", account.getId());
 				approveNum += taskService.getTaskNum(qMap);
 			}
 
 			// SOP 审批数
 			if (isHasPermission(permissionMap, "sopApprove")) {
+				if(approveNum == -1) {
+					approveNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("ppap_approveTask", true);
 				qMap.put("type", TaskTypeEnum.SOP.getState());
+				qMap.put("approveAccountId", account.getId());
 				approveNum += taskService.getTaskNum(qMap);
 			}
 
 			// PPAP 审批数
 			if (isHasPermission(permissionMap, "ppapApprove")) {
+				if(approveNum == -1) {
+					approveNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("ppap_approveTask", true);
 				qMap.put("type", TaskTypeEnum.PPAP.getState());
+				qMap.put("approveAccountId", account.getId());
 				approveNum += taskService.getTaskNum(qMap);
 			}
 
 			// 型式结果上传数
 			if (isHasPermission(permissionMap, "patternUpload")) {
+				if(patternUploadNum == -1) {
+					patternUploadNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.TESTING.getState());
 				qMap.put("patternTask", account.getOrgId() == null ? -1 : account.getOrgId());
@@ -127,6 +155,10 @@ public class IndexController {
 
 			// 图谱结果上传数
 			if (isHasPermission(permissionMap, "atlasUpload")) {
+				if(atlasUploadNum == -1) {
+					atlasUploadNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("state", StandardTaskEnum.TESTING.getState());
 				qMap.put("atlasTask", account.getOrgId() == null ? -1 : account.getOrgId());
@@ -135,6 +167,10 @@ public class IndexController {
 
 			// 结果对比
 			if (isHasPermission(permissionMap, "compare")) {
+				if(compareNum == -1) {
+					compareNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("state", SamplingTaskEnum.COMPARE.getState());
 				qMap.put("compareTask", true);
@@ -143,6 +179,10 @@ public class IndexController {
 
 			// 结果确认-待上传
 			if (isHasPermission(permissionMap, "waitConfirm")) {
+				if(waitConfirmNum == -1) {
+					waitConfirmNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("confirmTask_wait", true);
 				waitConfirmNum = taskService.getTaskNum(qMap);
@@ -150,6 +190,10 @@ public class IndexController {
 
 			// 结果确认已上传
 			if (isHasPermission(permissionMap, "finishConfirm")) {
+				if(finishConfirmNum == -1) {
+					finishConfirmNum = 0;
+				}
+				
 				qMap.clear();
 				qMap.put("confirmTask_finish", true);
 

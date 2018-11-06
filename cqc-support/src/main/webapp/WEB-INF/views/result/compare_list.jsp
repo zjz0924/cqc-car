@@ -43,13 +43,13 @@
 				        }, {
 							field : 'code',
 							title : '任务号',
-							width : '150',
+							width : '140',
 							align : 'center',
 							formatter : formatCellTooltip
 						}, {
 							field : 'type',
 							title : '任务类型',
-							width : '100',
+							width : '150',
 							align : 'center',
 							formatter : function(val){
 								var str = "第三方委托"

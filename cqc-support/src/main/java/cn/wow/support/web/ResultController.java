@@ -1039,8 +1039,8 @@ public class ResultController extends AbstractController {
 			Task task = taskService.selectOne(id);
 
 			// 基准图谱结果
-			List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 1);
-			List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(task.getiId(), 2);
+			List<AtlasResult> sd_pAtlasResult = atlasResultService.getStandardAtlResult(task.getStandIid(), 1);
+			List<AtlasResult> st_mAtlasResult = atlasResultService.getStandardAtlResult(task.getStandIid(), 2);
 
 			// 抽样图谱结果
 			Map<String, Object> atMap = new HashMap<String, Object>();

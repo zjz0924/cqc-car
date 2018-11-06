@@ -2,6 +2,8 @@ package cn.wow.common.domain;
 
 import java.util.Date;
 
+import cn.wow.common.utils.taskState.EmailTypeEnum;
+
 /**
  * 邮件记录
  */
@@ -25,7 +27,7 @@ public class EmailRecord {
     
     // 状态：1-未查看，2-已查看
     private Integer state;
-    // 类型：1-结果发送，2-收费通知，3-警告书, 4-任务申请-5.信息审核，6-任务下达，7-任务审批
+    // 类型：1-结果发送，2-收费通知
     private Integer type;
     // 发送邮箱
     private String orginEmail;
@@ -37,14 +39,14 @@ public class EmailRecord {
     	
     }
     
-    public EmailRecord(String subject, String content, String addr, Long taskId, Long aId, Integer state, Integer type, String orginEmail, Date createTime){
+    public EmailRecord(String subject, String content, String addr, Long taskId, Long aId, EmailTypeEnum type, String orginEmail, Date createTime){
     	this.subject = subject;
     	this.content = content;
     	this.addr = addr;
     	this.taskId = taskId;
     	this.aId = aId;
-    	this.state = state;
-    	this.type = type;
+    	this.state = 1;
+    	this.type = type.getState();
     	this.orginEmail = orginEmail;
     	this.createTime = createTime;
     }

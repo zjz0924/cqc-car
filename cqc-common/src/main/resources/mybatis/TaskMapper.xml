@@ -393,7 +393,7 @@
 
 			<!-- OTS 审批列表 -->
 			<if test="approveTask_ots != null">
-				and ((t.state = 3 and (( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL ) OR ( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ) OR ( t.parts_pat_result = 0 AND t.parts_pat_id IS NOT NULL ) OR ( t.mat_pat_result = 0 AND t.mat_pat_id IS NOT NULL ))) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+				and ((t.state = 3 and (( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL ) OR ( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ))) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
 			</if>
 			
 			<!-- gs 审批列表-->
@@ -868,7 +868,7 @@
 			
 			<!-- ots 任务审批 -->
 			<if test="otsApprove != null">
-				union all select id, code, type, state, create_time, a_id, 4 taskType from task where type = 1 and ((state = 3 and (( parts_atl_result = 0 AND parts_atl_id IS NOT NULL ) OR ( mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ))) or (info_apply = 1 or (result_apply = 1 and t_id is not null))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 4 taskType from task where type = 1 and ((state = 3 and (( parts_atl_result = 0 AND parts_atl_id IS NOT NULL ) OR ( mat_atl_result = 0 AND mat_atl_id IS NOT NULL ))) or (info_apply = 1 or (result_apply = 1 and t_id is not null))) and approve_account_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- ppap 任务下达 -->

@@ -27,7 +27,6 @@ import cn.wow.common.dao.PartsDao;
 import cn.wow.common.dao.PfResultDao;
 import cn.wow.common.dao.ReasonDao;
 import cn.wow.common.dao.TaskDao;
-import cn.wow.common.dao.TaskInfoDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
 import cn.wow.common.domain.Account;
@@ -141,13 +140,15 @@ public class InfoServiceImpl implements InfoService {
 	}
 
 	/**
-	 * 添加信息
+	 * 任务申请
 	 */
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
+	public Task require(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
 			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem,
 			Long examineAccountId, Long trainsmitAccountId, Long approveAccountId) {
+
 		Date date = new Date();
 		String taskCode = generateTaskCode(date);
+		Task task = null;
 
 		// 抽样原因
 		if (taskType == TaskTypeEnum.GS.getState()) {
@@ -197,7 +198,7 @@ public class InfoServiceImpl implements InfoService {
 			infoDao.insert(info);
 
 			// 任务
-			Task task = new Task();
+			task = new Task();
 			task.setCode(taskCode);
 			task.setCreateTime(date);
 			task.setiId(info.getId());
@@ -240,7 +241,7 @@ public class InfoServiceImpl implements InfoService {
 
 			logDetail = "任务申请，任务号：" + task.getCode();
 		} else {
-			Task task = taskDao.selectOne(taskId);
+			task = taskDao.selectOne(taskId);
 			task.setAtlType(atlType);
 			task.setAtlRemark(atlRemark);
 			task.setAtlItem(atlItem);
@@ -285,8 +286,10 @@ public class InfoServiceImpl implements InfoService {
 
 			logDetail = "编辑任务，任务号：" + task.getCode();
 		}
-		
+
 		addLog(account.getUserName(), OperationType.APPLY, ServiceType.TASK, logDetail);
+
+		return task;
 	}
 
 	/**
@@ -297,7 +300,9 @@ public class InfoServiceImpl implements InfoService {
 	 * @param type    结果：1-通过，2-不通过
 	 * @param remark  备注
 	 */
-	public void examine(Account account, Long[] ids, int type, String remark) {
+	public List<Task> examine(Account account, Long[] ids, int type, String remark) {
+		List<Task> taskList = new ArrayList<Task>();
+
 		if (ids != null && ids.length > 0) {
 			for (Long id : ids) {
 				Task task = taskDao.selectOne(id);
@@ -333,12 +338,14 @@ public class InfoServiceImpl implements InfoService {
 					record.setRemark(remark);
 				}
 				taskRecordDao.insert(record);
+				taskList.add(task);
 
 				String str = type == 1 ? "通过" : "不通过";
 				String logDetail = "任务：" + task.getCode() + "，审核" + str;
 				addLog(account.getUserName(), OperationType.EXAMINE, ServiceType.TASK, logDetail);
 			}
 		}
+		return taskList;
 	}
 
 	/**
@@ -347,7 +354,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param result 结果：1-通过 2-不通过
 	 * @param remark 备注
 	 */
-	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
+	public Task examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
 			Material material, String atlType, String atlRemark, Reason reason) {
 
 		if (reason != null) {
@@ -430,6 +437,8 @@ public class InfoServiceImpl implements InfoService {
 		String str = result == 1 ? "通过" : "不通过";
 		String logDetail = "任务：" + task.getCode() + "，审核" + str;
 		addLog(account.getUserName(), OperationType.EXAMINE, ServiceType.TASK, logDetail);
+
+		return task;
 	}
 
 	/**
@@ -443,7 +452,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param matPatId   原材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
+	public Task transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
 			List<LabReq> labReqList) {
 		Task task = taskDao.selectOne(id);
 		Date date = new Date();
@@ -488,6 +497,8 @@ public class InfoServiceImpl implements InfoService {
 
 		String logDetail = "下达任务，任务号：" + task.getCode();
 		addLog(account.getUserName(), OperationType.TRANSMIT, ServiceType.TASK, logDetail);
+
+		return task;
 	}
 
 	/**
@@ -497,13 +508,14 @@ public class InfoServiceImpl implements InfoService {
 	 * @param i_id     信息ID
 	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
+	public Object[] transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
 			String atlRemark, String expectDate, Long partsAtlId, Long matAtlId, Vehicle vehicle, Parts parts,
 			Material material, Long approveAccountId) throws ParseException {
 		String taskCode = "";
 		boolean flag = true;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
+		Task task = null;
+		
 		if (reason.getId() == null) {
 			reasonDao.insert(reason);
 		} else {
@@ -551,7 +563,7 @@ public class InfoServiceImpl implements InfoService {
 				flag = false;
 			}
 
-			Task task = new Task();
+			task = new Task();
 			task.setCode(code);
 			task.setCreateTime(date);
 			task.setiId(info.getId());
@@ -604,7 +616,7 @@ public class InfoServiceImpl implements InfoService {
 			taskCode = task.getCode();
 		} else {
 			Date date = new Date();
-			Task task = taskDao.selectOne(t_id);
+			task = taskDao.selectOne(t_id);
 
 			if (partsAtlId != null) {
 				task.setPartsAtlCode(generatorCode(date, task.getType(), 1));
@@ -650,7 +662,7 @@ public class InfoServiceImpl implements InfoService {
 		String logDetail = "下达任务，任务号：" + taskCode;
 		addLog(account.getUserName(), OperationType.TRANSMIT, ServiceType.TASK, logDetail);
 
-		return flag;
+		return new Object[] {flag, task};
 	}
 
 	/**
@@ -1152,7 +1164,7 @@ public class InfoServiceImpl implements InfoService {
 			attachDao.deleteByPrimaryKey(taskId);
 			attachDao.insert(attachFile);
 		}
-		
+
 		Task task = taskDao.selectOne(taskId);
 		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 			task.setState(StandardTaskEnum.APPLYING.getState());

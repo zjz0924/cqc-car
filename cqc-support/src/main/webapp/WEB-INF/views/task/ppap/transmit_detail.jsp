@@ -66,7 +66,7 @@
 							<input type="checkbox" id="partAtl" name="atlType" value="1">零件图谱&nbsp;&nbsp;&nbsp;&nbsp;
 						</td>
 						<td>
-							<span class="title-span" style="width:150px">零件图谱委托实验室：</span> 
+							<span class="title-span" style="width:150px"><span class="req-span">*</span>零件图谱委托实验室：</span> 
 							<input id="partsAtl_org" name="partsAtl_org" style="width: 280px;"/>
 						</td>
 						<td>
@@ -79,7 +79,7 @@
 							<input type="checkbox" id="materialAtl" name="atlType" value="2">材料图谱
 						</td>
 						<td>
-							<span class="title-span" style="width:150px">材料图谱委托实验室：</span> 
+							<span class="title-span" style="width:150px"><span class="req-span">*</span>材料图谱委托实验室：</span> 
 							<input id="matAtl_org" name="matAtl_org" style="width: 280px;"/>
 						</td>
 						<td>

@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import cn.wow.common.dao.AccountDao;
 import cn.wow.common.dao.CostRecordDao;
 import cn.wow.common.dao.EmailRecordDao;
 import cn.wow.common.dao.ExamineRecordDao;
@@ -30,21 +28,20 @@ import cn.wow.common.domain.Account;
 import cn.wow.common.domain.CostRecord;
 import cn.wow.common.domain.EmailRecord;
 import cn.wow.common.domain.ExamineRecord;
-import cn.wow.common.domain.ExpItem;
 import cn.wow.common.domain.Info;
 import cn.wow.common.domain.Material;
 import cn.wow.common.domain.Parts;
 import cn.wow.common.domain.Task;
 import cn.wow.common.domain.TaskRecord;
 import cn.wow.common.domain.Vehicle;
+import cn.wow.common.service.CommonService;
 import cn.wow.common.service.OperationLogService;
 import cn.wow.common.service.TaskService;
-import cn.wow.common.utils.mailSender.MailInfo;
-import cn.wow.common.utils.mailSender.MailSender;
 import cn.wow.common.utils.operationlog.OperationType;
 import cn.wow.common.utils.operationlog.ServiceType;
 import cn.wow.common.utils.pagination.PageHelperExt;
 import cn.wow.common.utils.pagination.PageMap;
+import cn.wow.common.utils.taskState.EmailTypeEnum;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.SamplingTaskRecordEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
@@ -60,32 +57,16 @@ public class TaskServiceImpl implements TaskService {
 	// 邮箱账号
 	@Value("${mail.user}")
 	protected String mailUser;
-	// 账号密码
-	@Value("${mail.password}")
-	protected String mailPassword;
-	// 服务器
-	@Value("${mail.smtp.host}")
-	protected String mailHost;
-	// 服务器端口
-	@Value("${mail.smtp.port}")
-	protected String mailPort;
+
 	// 结果标题
 	@Value("${result.title}")
-	protected String title;
+	protected String titleTemplate;
 	// 结果内容
 	@Value("${result.content}")
-	protected String content;
-	// 费用清单标题
-	@Value("${cost.title}")
-	protected String costTitle;
-	// 费用清单内容
-	@Value("${cost.content}")
-	protected String costContent;
+	protected String contentTemplate;
 
 	@Autowired
 	private TaskDao taskDao;
-	@Autowired
-	private AccountDao accountDao;
 	@Autowired
 	private EmailRecordDao emailRecordDao;
 	@Autowired
@@ -104,6 +85,8 @@ public class TaskServiceImpl implements TaskService {
 	private CostRecordDao costRecordDao;
 	@Autowired
 	private OperationLogService operationLogService;
+	@Autowired
+	private CommonService commonService;
 
 	public Task selectOne(Long id) {
 		return taskDao.selectOne(id);
@@ -124,33 +107,6 @@ public class TaskServiceImpl implements TaskService {
 	public List<Task> selectAllList(Map<String, Object> map) {
 		PageHelperExt.startPage(map);
 		return taskDao.selectAllList(map);
-	}
-
-	/**
-	 * 发送邮件
-	 * 
-	 * @param subject 主题
-	 * @param content 内容
-	 * @param addr    接收人地址（多个邮件地址以";"分隔）
-	 * @param type    类型：1-text 2-html
-	 */
-	public boolean sendEmail(String subject, String content, String addr, int type) throws Exception {
-		MailSender mailSender = MailSender.getInstance();
-
-		MailInfo info = new MailInfo();
-		info.setMailHost(mailHost);
-		info.setMailPort(mailPort);
-		info.setUsername(mailUser);
-		info.setPassword(mailPassword);
-		info.setNotifyTo(addr);
-		info.setSubject(subject);
-		info.setContent(content);
-
-		if (type == 1) {
-			return mailSender.sendTextMail(info, 3);
-		} else {
-			return mailSender.sendHtmlMail(info, 3);
-		}
 	}
 
 	/**
@@ -211,19 +167,19 @@ public class TaskServiceImpl implements TaskService {
 		// 发送结果（最后发送，防止事务提交失败）
 		if (type == 1) {
 			if (StringUtils.isNotBlank(pAtlVal)) {
-				sendByEmail(account, task, date, pAtlVal, 1);
+				sendResultEmail(account, task, date, pAtlVal, 1);
 			}
 
 			if (StringUtils.isNotBlank(pPatVal)) {
-				sendByEmail(account, task, date, pPatVal, 2);
+				sendResultEmail(account, task, date, pPatVal, 2);
 			}
 
 			if (StringUtils.isNotBlank(mAtlVal)) {
-				sendByEmail(account, task, date, mAtlVal, 3);
+				sendResultEmail(account, task, date, mAtlVal, 3);
 			}
 
 			if (StringUtils.isNotBlank(mPatVal)) {
-				sendByEmail(account, task, date, mPatVal, 4);
+				sendResultEmail(account, task, date, mPatVal, 4);
 			}
 		} else {
 			remark = "不发送结果";
@@ -568,50 +524,6 @@ public class TaskServiceImpl implements TaskService {
 		taskRecordDao.insert(taskRecord);
 	}
 
-	/**
-	 * 发送邮件
-	 * 
-	 * @param account 用户
-	 * @param task    任务
-	 * @param date    日期
-	 * @param orgs    机构ID
-	 * @param tips    提示
-	 * @param title   标题
-	 * @param content 内容
-	 * @param type    类型：1-结果发送，2-收费通知，3-警告书
-	 */
-	protected void sendByOrg(Account account, Task task, Date date, String orgs, String tips, String title,
-			String content, int type) throws Exception {
-
-		List<Account> accountList = getAccountList(orgs);
-
-		// 邮件内容
-		content = MessageFormat.format(content, new Object[] { task.getCode(), tips });
-
-		if (accountList != null && accountList.size() > 0) {
-			List<EmailRecord> emailRecordList = new ArrayList<EmailRecord>();
-			StringBuffer addrs = new StringBuffer("");
-
-			for (Account ac : accountList) {
-				if (StringUtils.isNotBlank(ac.getEmail())) {
-					addrs.append(ac.getEmail() + ";");
-
-					// 邮件记录
-					EmailRecord emailRecord = new EmailRecord(title, content, ac.getEmail(), task.getId(),
-							account.getId(), 1, type, mailUser, date);
-					emailRecordList.add(emailRecord);
-				}
-			}
-
-			// 邮件记录
-			if (emailRecordList.size() > 0) {
-				emailRecordDao.batchAdd(emailRecordList);
-			}
-
-			// 发送文本邮件
-			sendEmail(title, content, addrs.toString(), 1);
-		}
-	}
 
 	/**
 	 * 发送邮件
@@ -625,9 +537,8 @@ public class TaskServiceImpl implements TaskService {
 	 * @param content 内容
 	 * @param type    类型：1-结果发送，2-收费通知
 	 */
-	protected void sendByEmail(Account account, Task task, Date date, String emails, int type) throws Exception {
+	protected void sendResultEmail(Account account, Task task, Date date, String emails, int type) throws Exception {
 
-		// 邮件内容
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 
 		String labOrg = "";
@@ -659,7 +570,7 @@ public class TaskServiceImpl implements TaskService {
 			}
 		}
 
-		String contentTemp = MessageFormat.format(content,
+		String contentTemp = MessageFormat.format(contentTemplate,
 				new Object[] { sdf.format(task.getCreateTime()), task.getCode(), labOrg, lab });
 		String[] emailArray = emails.split(";");
 
@@ -669,8 +580,8 @@ public class TaskServiceImpl implements TaskService {
 			for (String email : emailArray) {
 				if (StringUtils.isNotBlank(email)) {
 					// 邮件记录
-					EmailRecord emailRecord = new EmailRecord(title, contentTemp, email, task.getId(), account.getId(), 1,
-							1, mailUser, date);
+					EmailRecord emailRecord = new EmailRecord(titleTemplate, contentTemp, email, task.getId(), account.getId(),
+							EmailTypeEnum.RESULT, mailUser, date);
 					emailRecordList.add(emailRecord);
 				}
 			}
@@ -681,74 +592,7 @@ public class TaskServiceImpl implements TaskService {
 			}
 
 			// 发送邮件
-			sendEmail(title, contentTemp, emails, 2);
-		}
-	}
-
-	/**
-	 * 发送费用清单
-	 * 
-	 * @param account    操作用户
-	 * @param costRecord 费用清单
-	 * @param orgs       发送机构
-	 */
-	public void sendCost(Account account, String orgs, CostRecord costRecord, List<ExpItem> itemList) throws Exception {
-		Date date = new Date();
-		List<Account> accountList = getAccountList(orgs);
-
-		if (accountList != null && accountList.size() > 0) {
-
-			String labType = "";
-			if (costRecord.getLabType() == 1) {
-				labType = "零部件图谱试验";
-			} else if (costRecord.getLabType() == 2) {
-				labType = "零部件型式试验";
-			} else if (costRecord.getLabType() == 3) {
-				labType = "原材料图谱试验";
-			} else {
-				labType = "原材料型式试验";
-			}
-			costContent = MessageFormat.format(costContent, new Object[] { costRecord.getTask().getCode(), labType });
-
-			// 费用列表
-			StringBuffer tempContent = new StringBuffer(
-					"<div><table style='margin-left: 5px;font-size: 14px;'><tr style='height: 30px'><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>序号</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>试验项目</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>参考标准</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>单价（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>数量</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>价格（元）</td><td style='width:13%;background: #F0F0F0;padding-left: 5px;font-weight: bold;'>备注</td></tr>");
-			if (itemList != null && itemList.size() > 0) {
-				for (int i = 0; i < itemList.size(); i++) {
-					ExpItem item = itemList.get(i);
-					tempContent.append("<tr style='height: 30px'><td style='background: #f5f5f5;padding-left: 5px;'>"
-							+ (i + 1) + "</td><td style='background: #f5f5f5;padding-left: 5px;'>" + item.getProject()
-							+ "</td><td style='background: #f5f5f5;padding-left: 5px;'>" + item.getStandard()
-							+ "</td><td style='background: #f5f5f5;padding-left: 5px;'>" + item.getPrice()
-							+ "</td><td style='background: #f5f5f5;padding-left: 5px;'>" + item.getNum()
-							+ "</td><td style='background: #f5f5f5;padding-left: 5px;'>" + item.getTotal()
-							+ "</td><td style='background: #f5f5f5;padding-left: 5px;'>" + item.getRemark()
-							+ "</td></tr>");
-				}
-			}
-			tempContent.append("</table></div>");
-
-			StringBuffer addrs = new StringBuffer("");
-			List<EmailRecord> emailRecordList = new ArrayList<EmailRecord>();
-
-			for (Account ac : accountList) {
-				if (StringUtils.isNotBlank(ac.getEmail())) {
-					addrs.append(ac.getEmail() + ";");
-
-					// 邮件记录
-					EmailRecord emailRecord = new EmailRecord(costTitle, costContent + tempContent.toString(),
-							ac.getEmail(), costRecord.getTask().getId(), account.getId(), 1, 2, mailUser, date);
-					emailRecordList.add(emailRecord);
-				}
-			}
-
-			// 邮件记录
-			if (emailRecordList.size() > 0) {
-				emailRecordDao.batchAdd(emailRecordList);
-			}
-
-			// 发送Html邮件
-			sendEmail(costTitle, costContent + tempContent.toString(), addrs.toString(), 2);
+			commonService.sendEmail(titleTemplate, contentTemp, emails, null, 2);
 		}
 	}
 
@@ -887,29 +731,6 @@ public class TaskServiceImpl implements TaskService {
 			taskNum = taskList.size() + 1;
 		}
 		return taskNum;
-	}
-
-	/**
-	 * 获取用户列表
-	 * 
-	 * @param orgs 机构ID
-	 */
-	List<Account> getAccountList(String orgs) {
-		// 机构ID
-		String[] orgsList = orgs.split(",");
-		List<Long> orgIdList = new ArrayList<Long>();
-		for (String str : orgsList) {
-			if (StringUtils.isNotBlank(str)) {
-				orgIdList.add(Long.parseLong(str));
-			}
-		}
-
-		// 用户列表
-		Map<String, Object> aMap = new PageMap(false);
-		aMap.put("orgs", orgIdList);
-		List<Account> accountList = accountDao.selectAllList(aMap);
-
-		return accountList;
 	}
 
 	/**

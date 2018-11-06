@@ -507,7 +507,7 @@ public class QueryController extends AbstractController {
 					} else if (task.getState() == 2) {
 						state = "审核不通过";
 					} else if (task.getState() == 3) {
-						state = "试验中";
+						state = "进行中";
 					} else if (task.getState() == 4) {
 						state = "完成";
 					} else if (task.getState() == 5) {

@@ -53,6 +53,7 @@ import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.CommonService;
 import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
@@ -69,6 +70,7 @@ import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
+import cn.wow.common.utils.taskState.TaskStageEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 /**
@@ -127,6 +129,8 @@ public class PpapTaskController extends AbstractController {
 	private AccountService accountService;
 	@Autowired
 	private DepartmentService departmentService;
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 首页
@@ -445,7 +449,7 @@ public class PpapTaskController extends AbstractController {
 						parts.setProducerCode(temp.getProducerCode());
 						parts.setName(temp.getName());
 						parts.setProducer(temp.getProducer());
-						if(StringUtils.isNoneBlank(p_proTime)) {
+						if (StringUtils.isNoneBlank(p_proTime)) {
 							parts.setProTime(sdf.parse(p_proTime));
 						}
 						if (p_num != null) {
@@ -474,13 +478,17 @@ public class PpapTaskController extends AbstractController {
 
 				}
 
-				boolean flag = infoService.transmit(account, reasonObj, t_id, i_id, taskType, formatAltType(atlType),
+				Object[] res = infoService.transmit(account, reasonObj, t_id, i_id, taskType, formatAltType(atlType),
 						atlRemark, expectDate, partsAtl_org, matAtl_org, vehicle, parts, material, approveAccountId);
-				if (!flag) {
+				
+				if (!(Boolean) res[0]) {
 					vo.setSuccess(true);
 					vo.setMsg("操作成功，已有进行中抽样");
 					return vo;
 				}
+
+				// 发送邮件
+				commonService.mailNotify(account, (Task) res[1], TaskStageEnum.APPROVE);
 			}
 		} catch (Exception ex) {
 			logger.error("PPAP/SOP任务下达失败", ex);

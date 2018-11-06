@@ -33,7 +33,7 @@
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
 		<div class="title">抽样原因</div>
-		<div style="width: 98%;">
+		<div style="width: 98%;display:none;" id="reasonDiv">
 			<table class="info">
 				<tr class="single-row">
 					<td class="title-td">样件来源：</td>
@@ -866,6 +866,10 @@
 					}else{
 						$("#patternError").html(data.msg);
 					}
+				},
+				error: function(data){
+					saving = false;
+					$("#patternError").html("系统提示：提交失败，如上传附件，请检查附件是否超过50M");
 				}
 			});
 		}
@@ -1184,6 +1188,7 @@
 			$("#hideBtn").toggle();
 			$("#taskInfoDiv").toggle();
 			$("#applicatDiv").toggle();
+			$("#reasonDiv").toggle();
 		}
 	</script>	
 	

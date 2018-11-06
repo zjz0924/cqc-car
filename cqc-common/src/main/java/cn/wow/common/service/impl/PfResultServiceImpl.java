@@ -1,6 +1,7 @@
 package cn.wow.common.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -98,9 +99,6 @@ public class PfResultServiceImpl implements PfResultService {
 		Task task = taskDao.selectOne(taskId);
 		String remark = "上传零部件型式试验和原材料型式试验结果";
 
-		// 型式试验结果
-		batchAdd(dataList);
-
 		// 试验结论
 		if (conclusionDataList != null && conclusionDataList.size() > 0) {
 			labConclusionService.batchAdd(conclusionDataList);
@@ -112,23 +110,44 @@ public class PfResultServiceImpl implements PfResultService {
 			attachDao.insert(attachFile);
 		}
 
-		List<Integer> catagory = getCatagory(dataList);
-		if (catagory.size() == 2) {
-			// 结果
-			task.setPartsPatResult(2);
-			task.setMatPatResult(2);
+		// 型式试验结果
+		if (dataList != null && dataList.size() > 0) {
+			batchAdd(dataList);
+		}
 
-			// 实验次数
-			task.setPartsPatTimes(task.getPartsPatTimes() + 1);
-			task.setMatPatTimes(task.getMatPatTimes() + 1);
+		List<Integer> catagory = getCatagory(dataList);
+		if (catagory != null && catagory.size() > 0) {
+			if (catagory.size() == 2) {
+				// 结果
+				task.setPartsPatResult(2);
+				task.setMatPatResult(2);
+
+				// 实验次数
+				task.setPartsPatTimes(task.getPartsPatTimes() + 1);
+				task.setMatPatTimes(task.getMatPatTimes() + 1);
+			} else {
+				if ((catagory.get(0) != null && catagory.get(0) == 1)
+						|| StringUtils.isNotBlank(attachFile.getPartsFile())) {
+					task.setPartsPatResult(2);
+					task.setPartsPatTimes(task.getPartsPatTimes() + 1);
+					remark = "上传零部件型式试验结果";
+				}
+
+				if ((catagory.get(0) != null && catagory.get(0) == 2)
+						|| StringUtils.isNotBlank(attachFile.getMaterialFile())) {
+					task.setMatPatResult(2);
+					task.setMatPatTimes(task.getMatPatTimes() + 1);
+					remark = "上传原材料型式试验结果";
+				}
+			}
 		} else {
-			if ((catagory.get(0) != null && catagory.get(0) == 1) || StringUtils.isNotBlank(attachFile.getPartsFile())) {
+			if (StringUtils.isNotBlank(attachFile.getPartsFile())) {
 				task.setPartsPatResult(2);
 				task.setPartsPatTimes(task.getPartsPatTimes() + 1);
 				remark = "上传零部件型式试验结果";
 			}
 
-			if ((catagory.get(0) != null && catagory.get(0) == 2) || StringUtils.isNotBlank(attachFile.getMaterialFile())) {
+			if (StringUtils.isNotBlank(attachFile.getMaterialFile())) {
 				task.setMatPatResult(2);
 				task.setMatPatTimes(task.getMatPatTimes() + 1);
 				remark = "上传原材料型式试验结果";
@@ -137,7 +156,7 @@ public class PfResultServiceImpl implements PfResultService {
 
 		// 操作记录
 		TaskRecord record = new TaskRecord();
-		record.setCreateTime(dataList.get(0).getCreateTime());
+		record.setCreateTime(new Date());
 		record.setCode(task.getCode());
 		if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
 			record.setState(StandardTaskRecordEnum.UPLOAD.getState());

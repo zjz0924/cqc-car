@@ -30,6 +30,7 @@ import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.SamplingTaskEnum;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
+import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Controller
 @RequestMapping(value = "backlog")
@@ -42,31 +43,23 @@ public class BacklogController {
 	@Autowired
 	private TaskService taskService;
 	@Autowired
-	private EmailRecordService emailRecordService;
-	@Autowired
-	private InfoService infoService;
-	@Autowired
-	private AccountService accountService;
-	@Autowired
-	private ReasonService reasonService;
-	@Autowired
 	private MenuService menuService;
 
 	private static Map<Integer, String> urlMap = new HashMap<Integer, String>();
 
 	static {
 		urlMap.put(1, "ots/index?choose=0");
-		urlMap.put(2, "ots/index?choose=1");
-		urlMap.put(3, "ots/index?choose=2");
-		urlMap.put(4, "ots/index?choose=3");
+		urlMap.put(2, "ots/index?choose=");
+		urlMap.put(3, "ots/index?choose=");
+		urlMap.put(4, "ots/index?choose=");
 		urlMap.put(5, "ppap/index?taskType=2&choose=0");
-		urlMap.put(6, "ppap/index?taskType=2&choose=1");
+		urlMap.put(6, "ppap/index?taskType=2&choose=");
 		urlMap.put(7, "ppap/index?taskType=3&choose=0");
-		urlMap.put(8, "ppap/index?taskType=3&choose=1");
+		urlMap.put(8, "ppap/index?taskType=3&choose=");
 		urlMap.put(9, "tpt/index?choose=0");
-		urlMap.put(10, "tpt/index?choose=1");
-		urlMap.put(11, "tpt/index?choose=2");
-		urlMap.put(12, "tpt/index?choose=3");
+		urlMap.put(10, "tpt/index?choose=");
+		urlMap.put(11, "tpt/index?choose=");
+		urlMap.put(12, "tpt/index?choose=");
 		urlMap.put(13, "result/uploadList?type=1");
 		urlMap.put(14, "result/uploadList?type=2");
 		urlMap.put(15, "result/compareList");
@@ -197,7 +190,7 @@ public class BacklogController {
 
 		if (dataList != null && dataList.size() > 0) {
 			for (Task task : dataList) {
-				task.setUrl(urlMap.get(task.getTaskType()));
+				task.setUrl(getUrl(permissionMap, task));
 			}
 		}
 
@@ -226,56 +219,6 @@ public class BacklogController {
 		return "backlog/backlog_detail";
 	}
 
-	/**
-	 * 获取不同类型的任务 type:
-	 * 1-任务申请，2-信息审核，3-任务下达，4-任务审批，5-图谱结果上传，6-型式结果上传，7-结果对比，8-结果发送，9-结果确认-待上传结果，10-结果确认-已上传结果
-	 */
-	private void getTaskByType(int type, List<Task> dataList, Account account) {
-		Map<String, Object> map = new PageMap(false);
-
-		if (type == 1) {
-			map.put("examineState", true);
-			map.put("otsAndtPtTask", true);
-		} else if (type == 2) {
-			map.put("state", StandardTaskEnum.EXAMINE.getState());
-			map.put("otsAndtPtTask", true);
-			map.put("neDraft", "1");
-			map.put("examineAccountId", account.getId());
-		} else if (type == 3) {
-			map.put("transimtTask_ots", true);
-			map.put("state", StandardTaskEnum.TESTING.getState());
-			map.put("otsAndtPtTask", true);
-			map.put("trainsmitAccountId", account.getId());
-
-			map.put("state", SamplingTaskEnum.APPROVE_NOTPASS.getState());
-			map.put("ppapAndSopTask", true);
-
-		} else if (type == 4) {
-			map.put("approveTask_ots", true);
-			map.put("otsAndtPtTask", true);
-			map.put("approveAccountId", account.getId());
-
-			map.put("ppap_approveTask", true);
-			map.put("approveAccountId", account.getId());
-			map.put("ppapAndSopTask", true);
-		} else if (type == 5) {
-			map.put("state", StandardTaskEnum.TESTING.getState());
-			map.put("atlasTask", account.getOrgId() == null ? -1 : account.getOrgId());
-		} else if (type == 6) {
-			map.put("state", StandardTaskEnum.TESTING.getState());
-			map.put("patternTask", account.getOrgId() == null ? -1 : account.getOrgId());
-		} else if (type == 7) {
-			map.put("state", SamplingTaskEnum.COMPARE.getState());
-			map.put("compareTask", true);
-		} else if (type == 8) {
-			map.put("sendTask", account.getOrgId());
-		} else if (type == 9) {
-			map.put("confirmTask_wait", true);
-		} else {
-			map.put("confirmTask_finish", true);
-		}
-	}
-
 	public boolean isHasPermission(Map<String, Menu> permissionMap, String alias) {
 		Menu menu = permissionMap.get(alias);
 		if (menu != null) {
@@ -283,6 +226,86 @@ public class BacklogController {
 		} else {
 			return false;
 		}
+	}
+
+	private String getUrl(Map<String, Menu> permissionMap, Task task) {
+		String url = urlMap.get(task.getTaskType());
+		int num = 0;
+
+		if (task.getTaskType() == 2) {
+			if (isHasPermission(permissionMap, "otsRequire")) {
+				url += 1;
+			} else {
+				url += 0;
+			}
+		} else if (task.getTaskType() == 3) {
+			if (isHasPermission(permissionMap, "otsRequire")) {
+				++num;
+			}
+
+			if (isHasPermission(permissionMap, "otsExamine")) {
+				++num;
+			}
+			url += num;
+
+		} else if (task.getTaskType() == 4) {
+			if (isHasPermission(permissionMap, "otsRequire")) {
+				++num;
+			}
+
+			if (isHasPermission(permissionMap, "otsExamine")) {
+				++num;
+			}
+
+			if (isHasPermission(permissionMap, "otsOrder")) {
+				++num;
+			}
+
+			url += num;
+		} else if (task.getTaskType() == 6) {
+			if (isHasPermission(permissionMap, "ppapOrder")) {
+				++num;
+			}
+
+			url += num;
+		} else if (task.getTaskType() == 8) {
+			if (isHasPermission(permissionMap, "sopOrder")) {
+				++num;
+			}
+
+			url += num;
+		} else if (task.getTaskType() == 11) {
+			if (isHasPermission(permissionMap, "tptRequire")) {
+				url += 1;
+			} else {
+				url += 0;
+			}
+		} else if (task.getTaskType() == 12) {
+			if (isHasPermission(permissionMap, "tptRequire")) {
+				++num;
+			}
+
+			if (isHasPermission(permissionMap, "tptExamine")) {
+				++num;
+			}
+			url += num;
+
+		} else if (task.getTaskType() == 13) {
+			if (isHasPermission(permissionMap, "tptRequire")) {
+				++num;
+			}
+
+			if (isHasPermission(permissionMap, "tptExamine")) {
+				++num;
+			}
+
+			if (isHasPermission(permissionMap, "tptOrder")) {
+				++num;
+			}
+
+			url += num;
+		}
+		return url;
 	}
 
 }

@@ -50,6 +50,7 @@ import cn.wow.common.service.AddressService;
 import cn.wow.common.service.ApplyRecordService;
 import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.CarCodeService;
+import cn.wow.common.service.CommonService;
 import cn.wow.common.service.DepartmentService;
 import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
@@ -66,6 +67,7 @@ import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.StandardTaskEnum;
+import cn.wow.common.utils.taskState.TaskStageEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 import cn.wow.common.vo.ResultFlagVO;
 
@@ -133,6 +135,8 @@ public class OtsTaskController extends AbstractController {
 	private AccountService accountService;
 	@Autowired
 	private DepartmentService departmentService;
+	@Autowired
+	private CommonService commonService;
 
 	/**
 	 * 首页
@@ -141,7 +145,7 @@ public class OtsTaskController extends AbstractController {
 	public String index(HttpServletRequest request, HttpServletResponse response, Model model, String choose) {
 		HttpSession session = request.getSession();
 		Menu menu = menuService.selectByAlias("otsTask");
-		
+
 		// 没有权限的菜单
 		@SuppressWarnings("unchecked")
 		Set<Long> illegalMenu = (Set<Long>) session.getAttribute(Contants.CURRENT_ILLEGAL_MENU);
@@ -352,6 +356,7 @@ public class OtsTaskController extends AbstractController {
 			String m_producer, String[] atlType, String atlRemark, String atlItem, String p_producerCode,
 			Long examineAccountId, Long trainsmitAccountId, Long approveAccountId) {
 
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 		AjaxVO vo = new AjaxVO();
 
 		try {
@@ -519,10 +524,13 @@ public class OtsTaskController extends AbstractController {
 				}
 			}
 
-			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-			infoService.insert(account, vehicle, parts, material, null, Contants.STANDARD_TYPE, t_id,
+			Task task = infoService.require(account, vehicle, parts, material, null, Contants.STANDARD_TYPE, t_id,
 					TaskTypeEnum.OTS.getState(), draft.intValue(), formatAltType(atlType), atlRemark, atlItem,
 					examineAccountId, trainsmitAccountId, approveAccountId);
+
+			// 发送邮件
+			commonService.mailNotify(account, task, TaskStageEnum.EXAMINE);
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("任务申请失败", ex);
@@ -665,7 +673,15 @@ public class OtsTaskController extends AbstractController {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 
 		try {
-			infoService.examine(account, ids, type, remark);
+			List<Task> taskList = infoService.examine(account, ids, type, remark);
+
+			// 发送邮件
+			if (taskList != null && taskList.size() > 0) {
+				for (Task task : taskList) {
+					commonService.mailNotify(account, task, TaskStageEnum.TRANSMIT);
+				}
+			}
+
 		} catch (Exception ex) {
 			logger.error("任务批量审核失败", ex);
 
@@ -721,8 +737,8 @@ public class OtsTaskController extends AbstractController {
 			Parts parts = partsService.selectOne(p_id);
 			if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
 					p_producer, p_producerCode)) {
-				
-				if(StringUtils.isNoneBlank(p_proTime)) {
+
+				if (StringUtils.isNoneBlank(p_proTime)) {
 					parts.setProTime(sdf.parse(p_proTime));
 				}
 				parts.setRemark(p_remark);
@@ -758,8 +774,11 @@ public class OtsTaskController extends AbstractController {
 				material.setNum(m_num);
 			}
 
-			infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material, formatAltType(atlType),
-					atlRemark, null);
+			Task task = infoService.examine(account, t_id, result, examine_remark, vehicle, parts, material,
+					formatAltType(atlType), atlRemark, null);
+
+			// 发送邮件
+			commonService.mailNotify(account, task, TaskStageEnum.TRANSMIT);
 
 		} catch (Exception ex) {
 			logger.error("任务审核失败", ex);
@@ -920,11 +939,18 @@ public class OtsTaskController extends AbstractController {
 				labReqList.add(new LabReq(partsAtlCode,
 						StringUtils.isNotBlank(partsAtlTime) ? sdf.parse(partsAtlTime) : null, partsAtlReq, id, 1));
 			}
+			
 			if (matAtlId != null) {
 				labReqList.add(new LabReq(matAtlCode, StringUtils.isNotBlank(matAtlTime) ? sdf.parse(matAtlTime) : null,
 						matAtlReq, id, 2));
 			}
-			infoService.transmit(account, id, partsAtlId, matAtlId, null, null, labReqList);
+			
+			
+			Task task = infoService.transmit(account, id, partsAtlId, matAtlId, null, null, labReqList);
+			
+			// 发送邮件
+			commonService.mailNotify(account, task, TaskStageEnum.APPROVE);
+			
 		} catch (Exception ex) {
 			logger.error("OTS任务下达失败", ex);
 

@@ -86,7 +86,7 @@
 								}else if(row.state == 2){
 									str = "审核不通过";
 								}else if(row.state == 3){
-									str = "试验中";
+									str = "进行中";
 								}else if(row.state == 4){
 									str = "完成";
 								}else if(row.state == 5){

@@ -30,7 +30,10 @@ public interface InfoService {
 
 	public List<Info> selectAllList(Map<String, Object> map);
 
-	public void insert(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
+	/**
+	 * 任务申请
+	 */
+	public Task require(Account account, Vehicle vehicle, Parts parts, Material material, Reason reason, int type,
 			Long taskId, int taskType, int draft, String atlType, String atlRemark, String atlItem,
 			Long examineAccountId, Long trainsmitAccountId, Long approveAccountId);
 
@@ -42,7 +45,7 @@ public interface InfoService {
 	 * @param type    结果：1-通过，2-不通过
 	 * @param remark  备注
 	 */
-	public void examine(Account account, Long[] ids, int type, String remark);
+	public List<Task> examine(Account account, Long[] ids, int type, String remark);
 
 	/**
 	 * 审核
@@ -50,7 +53,7 @@ public interface InfoService {
 	 * @param result 结果：1-通过 2-不通过
 	 * @param remark 备注
 	 */
-	public void examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
+	public Task examine(Account account, Long id, int result, String remark, Vehicle vehicle, Parts parts,
 			Material material, String atlType, String atlRemark, Reason reason);
 
 	/**
@@ -70,7 +73,7 @@ public interface InfoService {
 	 * @param matAtlId   原材料图谱实验室ID
 	 * @param labReqList 试验说明
 	 */
-	public void transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
+	public Task transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
 			List<LabReq> labReqList);
 
 	/**
@@ -80,7 +83,7 @@ public interface InfoService {
 	 * @param i_id     信息ID
 	 * @param taskType 任务类型
 	 */
-	public boolean transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
+	public Object[] transmit(Account account, Reason reason, Long t_id, Long i_id, int taskType, String atlType,
 			String atlRemark, String expectDate, Long partsAtlId, Long matAtlId, Vehicle vehicle, Parts parts,
 			Material material, Long approveAccountId) throws ParseException;
 

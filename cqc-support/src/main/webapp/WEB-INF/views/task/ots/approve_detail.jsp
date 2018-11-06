@@ -156,7 +156,6 @@
 							<td class="title-td">试验编号</td>
 							<td class="title-td">试验名称</td>
 							<td class="title-td">分配实验室</td>
-							<td class="title-td">操作</td>
 						</tr>
 						
 						<c:if test="${not empty facadeBean.partsAtl}">
@@ -172,14 +171,6 @@
 											<input id="partsAtlId" name="partsAtlId">
 										</c:otherwise>
 									</c:choose>
-								</td>
-								<td>
-									<span id="partsAtl1" <c:if test="${facadeBean.partsAtlResult != 0}">style="display:none;"</c:if>>
-										<a href="javascript:void(0);"  onclick="approve(1,'', 1)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-										<a href="javascript:void(0);"  onclick="notPass(1)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-									</span>
-									<span id="partsAtl2" style="color:green;display:none;">同意</span>
-									<span id="partsAtl3" style="color:red;display:none;">不同意</span>
 								</td>
 							</tr>
 						</c:if>
@@ -198,25 +189,15 @@
 										</c:otherwise>
 									</c:choose>
 								</td>
-								<td>
-									<span id="matAtl1" <c:if test="${facadeBean.matAtlResult != 0}">style="display:none;"</c:if>>
-										<a href="javascript:void(0);"  onclick="approve(1,'', 2)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">同意</a>
-										<a href="javascript:void(0);"  onclick="notPass(2)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">不同意</a>
-									</span>
-									<span id="matAtl2" style="color:green;display:none;">同意</span>
-									<span id="matAtl3" style="color:red;display:none;">不同意</span>
-								</td>
 							</tr>
 						</c:if>
 					</table>
 				</div>
 		
-				<c:if test="${facadeBean.partsAtlResult == 0 and facadeBean.matAtlResult == 0 and facadeBean.partsPatResult ==0 and facadeBean.matPatResult == 0}">
-					 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
-						<a id="allAgree" href="javascript:void(0);"  onclick="approve(1,'', 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部同意</a>&nbsp;&nbsp;
-						<a id="allNotAgree" href="javascript:void(0);"  onclick="notPass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">全部不同意</a>
-					</div>
-				</c:if>
+				 <div style="text-align:center;margin-top:25px;margin-bottom: 15px;" class="data-row">
+					<a id="allAgree" href="javascript:void(0);"  onclick="approve(1,'', 5)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">全部同意</a>&nbsp;&nbsp;
+					<a id="allNotAgree" href="javascript:void(0);"  onclick="notPass(5)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">全部不同意</a>
+				</div>
 			</c:when>
 			<c:when test="${approveType == 2}">  
 				<div class="title">试验结果</div>
@@ -603,68 +584,9 @@
 				},
 				success: function(data){
 					if(data.success){
-						var approveType = "${approveType}";
-						var taskType = "${taskType}";
 						saving = false;
 						
-						// 正常流程
-						if(approveType == 3){
-							if(result == 1){
-								if(catagory == 1){
-									$("#partsAtl1").hide();
-									$("#partsAtl2").show();
-								}else if(catagory == 2){
-									$("#matAtl1").hide();
-									$("#matAtl2").show();
-								}else if(catagory == 3){
-									$("#partsPat1").hide();
-									$("#partsPat2").show();
-								}else if(catagory == 4){
-									$("#matPat1").hide();
-									$("#matPat2").show();
-								}else{
-									closeDialog(data.msg);
-								}
-							}else{
-								if(catagory == 1){
-									$("#partsAtl1").hide();
-									$("#partsAtl3").show();
-								}else if(catagory == 2){
-									$("#matAtl1").hide();
-									$("#matAtl3").show();
-								}else if(catagory == 3){
-									$("#partsPat1").hide();
-									$("#partsPat3").show();
-								}else if(catagory == 4){
-									$("#matPat1").hide();
-									$("#matPat3").show();
-								}else{
-									closeDialog(data.msg);
-								}
-							}
-							
-							// 隐藏 全部同意/全部不同意 按钮
-							if(catagory != 5){
-								$("#allAgree").hide();
-								$("#allNotAgree").hide();
-							}
-							
-							// 全部审批完
-							if(taskType == 1){
-								if (($("#partsAtl1").length < 1 || $("#partsAtl1").is(":hidden"))
-										&& ($("#matAtl1").length < 1 || $("#matAtl1").is(":hidden"))
-										&& ($("#partsPat1").length < 1 || $("#partsPat1").is(":hidden"))
-										&& ($("#matPat1").length < 1 || $("#matPat1").is(":hidden"))) {
-									closeDialog("操作成功");
-								}
-							} else if (taskType == 4) {
-								if (($("#matAtl1").length < 1 || $("#matAtl1").is(":hidden")) && ($("#matPat1").length < 1 || $("#matPat1").is(":hidden"))) {
-									closeDialog("操作成功");
-								}
-							}
-						} else {
-							closeDialog(data.msg);
-						}
+						closeDialog(data.msg);
 					} else {
 						errorMsg(data.msg);
 					}
