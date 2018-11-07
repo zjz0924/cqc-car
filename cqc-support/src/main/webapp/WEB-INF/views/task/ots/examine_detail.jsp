@@ -63,9 +63,9 @@
 		</table>
 	</div>
 	
-	<!-- 整车信息 -->
+	<!-- 车型信息 -->
 	<div style="margin-left: 10px;margin-top:20px;">
-		<div class="title">整车信息</div>
+		<div class="title">车型信息</div>
 		<table class="info">
 			<tr>
 				<td>
@@ -99,7 +99,7 @@
 	</div>
 		
 	<div style="margin-left: 10px;margin-top:20px;">
-		<div class="title">零部件信息</div>
+		<div class="title">零件信息</div>
 		
 		<table class="info">
 			<tr>
@@ -148,7 +148,7 @@
 	</div>
 	
 	<div style="margin-left: 10px;margin-top:20px;">	
-		<div class="title">原材料信息</div>
+		<div class="title">材料信息</div>
 		<table class="info">
 			<tr>
 				<td>
@@ -341,11 +341,11 @@
 			}
 			
 			if(validChoose(altType, 1)){
-				// 整车信息
+				// 车型信息
 				if(!isRequire("v_code", "车型代码必选")){ saving = false; return false; }
 				if(!isRequire("v_proAddr", "整车生产基地必选")){ saving = false; return false; }
 				
-				// 零部件信息
+				// 零件信息
 				if(!isRequire("p_name", "零件名称必填")){ saving = false; return false; }
 				if(!isRequire("p_producer", "零件供应商必填")){ saving = false; return false; }
 				if(!isRequire("p_producerCode", "零件供应商代码必填")){ saving = false; return false; }
@@ -361,7 +361,7 @@
 				}
 			}
 			
-			// 原材料信息
+			// 材料信息
 			if(!isRequire("m_matName", "材料名称必填")){ saving = false; return false; }
 			if(!isRequire("m_matNo", "材料牌号必填")){ saving = false; return false; }
 			if(!isRequire("m_producer", "材料供应商必填")){ saving = false; return false; }

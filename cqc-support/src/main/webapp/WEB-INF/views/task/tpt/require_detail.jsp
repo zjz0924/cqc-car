@@ -140,8 +140,8 @@
 			</div>
 			
 		
-			<!-- 整车信息 -->
-			<div class="title" style="margin-top:20px;">整车信息&nbsp;&nbsp;
+			<!-- 车型信息 -->
+			<div class="title" style="margin-top:20px;">车型信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="检索"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="addVehicle()" title="清空"><i class="icon icon-edit"></i></a>
 			</div>
@@ -180,7 +180,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">零部件信息&nbsp;&nbsp;
+			<div class="title">零件信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="partsInfo()"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="addParts()" title="清空"><i class="icon icon-edit"></i></a>
 			</div>
@@ -232,7 +232,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">原材料信息&nbsp;&nbsp;
+			<div class="title">材料信息&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="materialInfo()"><i class="icon icon-search"></i></a>&nbsp;&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="addMaterial()" title="清空"><i class="icon icon-edit"></i></a>
 			</div>
@@ -481,11 +481,11 @@
 				
 				// 零件试验 
 				if(validChoose(altType, 1) || validChoose(altType, 3)){
-					// 整车信息
+					// 车型信息
 					if(!isRequire("v_code", "系统提示：选择零件试验时，车型代码必选")){ saving = false; return false; }
 					if(!isRequire("v_proAddr", "系统提示：选择零件试验时，整车生产基地必选")){ saving = false; return false; }
 					
-					// 零部件信息
+					// 零件信息
 					if(!isRequire("p_name", "系统提示：选择零件试验时，零件名称必填")){ saving = false; return false; }
 					if(!isRequire("p_producer", "系统提示：选择零件试验时，零件供应商必填")){ saving = false; return false; }
 					if(!isRequire("p_producerCode", "系统提示：选择零件试验时，零件供应商代码必填")){ saving = false; return false; }
@@ -503,7 +503,7 @@
 				
 				// 材料试验
 				if(validChoose(altType, 2) || validChoose(altType, 4)){
-					// 原材料信息
+					// 材料信息
 					if(!isRequire("m_matName", "系统提示：选择材料试验时，材料名称必填")){ saving = false; return false; }
 					if(!isRequire("m_matNo", "系统提示：选择材料试验时，材料牌号必填")){ saving = false; return false; }
 					if(!isRequire("m_producer", "系统提示：选择材料试验时，材料供应商必填")){ saving = false; return false; }
@@ -576,7 +576,7 @@
 		
 			function vehicleInfo() {
 				$('#vehicleDialog').dialog({
-					title : '整车信息',
+					title : '车型信息',
 					width : 1000,
 					height : 520,
 					closed : false,
@@ -592,7 +592,7 @@
 			
 			function materialInfo() {
 				$('#materialDialog').dialog({
-					title : '原材料信息',
+					title : '材料信息',
 					width : 1000,
 					height : 520,
 					closed : false,
@@ -609,7 +609,7 @@
 			
 			function partsInfo() {
 				$('#partsDialog').dialog({
-					title : '零部件信息',
+					title : '零件信息',
 					width : 1000,
 					height : 550,
 					closed : false,
@@ -623,7 +623,7 @@
 				window.parent.parent.scrollY(510);
 			}
 			
-			// 新增整车信息
+			// 新增车型信息
 			function addVehicle(){
 				$("#v_code").combobox("select", '');
 				$("#v_proAddr").combobox("select", "");
@@ -632,7 +632,7 @@
 				$("#v_id").val("");
 			}
 			
-			// 新增零部件信息
+			// 新增零件信息
 			function addParts(){
 				$("#p_code").textbox("setValue", "");
 				$("#p_name").textbox("setValue", "");
@@ -646,7 +646,7 @@
 				$("#p_id").val("");
 			}
 			
-			// 新增原材料信息
+			// 新增材料信息
 			function addMaterial(){
 				$("#m_matName").textbox("setValue", "");
 				$("#m_proNo").textbox("setValue", "");

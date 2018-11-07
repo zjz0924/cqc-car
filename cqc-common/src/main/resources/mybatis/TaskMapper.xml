@@ -535,7 +535,7 @@
 			
 			<!-- 流程上的用户 -->
 			<if test="currentAccountId != null">
-				and (t.approve_account_id = #{currentAccountId,jdbcType=BIGINT} or t.trainsmit_account_id = #{currentAccountId,jdbcType=BIGINT} or t.examine_account_id = #{currentAccountId,jdbcType=BIGINT} or t.a_id = #{currentAccountId,jdbcType=BIGINT})
+				and ((t.approve_account_id = #{currentAccountId,jdbcType=BIGINT} or t.trainsmit_account_id = #{currentAccountId,jdbcType=BIGINT} or t.examine_account_id = #{currentAccountId,jdbcType=BIGINT} or t.a_id = #{currentAccountId,jdbcType=BIGINT}) or (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}))
 			</if>
 			
 			<!-- 任务类型多选 -->

@@ -6,7 +6,7 @@
 		<input type="hidden" id="t_id" name="t_id" value="${facadeBean.id }">
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">整车信息</div>
+			<div class="title">车型信息</div>
 			<c:if test="${empty newVehicle}">
 				<div style="width: 98%;">
 					<table class="info" style="width: 98%;">
@@ -71,7 +71,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">零部件信息</div>
+			<div class="title">零件信息</div>
 			
 			<c:if test="${empty newParts}">
 				<div style="width: 98%;">
@@ -196,7 +196,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">原材料信息</div>
+			<div class="title">材料信息</div>
 			
 			<c:if test="${empty newMaterial}">
 				<div style="width: 98%;">

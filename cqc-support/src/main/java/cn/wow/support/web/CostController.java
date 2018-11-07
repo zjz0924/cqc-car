@@ -180,7 +180,15 @@ public class CostController extends AbstractController {
 				Map<String, Object> eMap = new PageMap(false);
 				eMap.put("cId", costRecord.getId());
 				List<ExpItem> itemList = expItemService.selectAllList(eMap);
-
+				
+				double sum = 0;
+				if(itemList != null && itemList.size() > 0) {
+					for(ExpItem item:itemList) {
+						sum += item.getTotal().doubleValue();
+					}
+				}
+				
+				model.addAttribute("itemPrice", sum);
 				model.addAttribute("itemList", itemList);
 			}
 
@@ -237,7 +245,7 @@ public class CostController extends AbstractController {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-		
+
 		StringBuffer filename = new StringBuffer(sdf1.format(new Date()));
 		if (type == 1) {
 			filename.append("_待发送费用清单");
@@ -374,7 +382,7 @@ public class CostController extends AbstractController {
 
 					if (costRecord.getLabType() == 1) {
 						labType = "零部件图谱";
-						
+
 						if (StringUtils.isNotBlank(costRecord.getTask().getPartsAtlCode())) {
 							labCode = costRecord.getTask().getPartsAtlCode();
 						}
@@ -400,7 +408,7 @@ public class CostController extends AbstractController {
 						if (StringUtils.isNotBlank(costRecord.getTask().getMatAtlCode())) {
 							labCode = costRecord.getTask().getMatAtlCode();
 						}
-						
+
 						if (costRecord.getTask().getMatAtl() != null) {
 							labOrgName = costRecord.getTask().getMatAtl().getName();
 						}
@@ -411,7 +419,7 @@ public class CostController extends AbstractController {
 						if (StringUtils.isNotBlank(costRecord.getTask().getMatPatCode())) {
 							labCode = costRecord.getTask().getMatPatCode();
 						}
-						
+
 						if (costRecord.getTask().getMatPat() != null) {
 							labOrgName = costRecord.getTask().getMatPat().getName();
 						}

@@ -157,7 +157,7 @@
 				</div>
 			</div>
 		
-			<div class="title">整车信息&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="title">车型信息&nbsp;&nbsp;&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="vehicleInfo()" title="选择"><i class="icon icon-search"></i></a>
 			</div>
 			
@@ -236,7 +236,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">原材料信息&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="title">材料信息&nbsp;&nbsp;&nbsp;&nbsp;
 				<a href="javascript:void(0)" onclick="materialInfo()"><i class="icon icon-search"></i></a>
 			</div>
 			
@@ -531,7 +531,7 @@
 					}
 				}
 				
-				// 原材料信息
+				// 材料信息
 				if(!isRequire("m_proNo", "系统提示：材料批号必填")){ saving = false; return false; }
 				
 				var mNum = $("#m_num").textbox("getValue");
@@ -580,7 +580,7 @@
 
 			function vehicleInfo() {
 				$('#vehicleDialog').dialog({
-					title : '整车信息',
+					title : '车型信息',
 					width : 1000,
 					height : 520,
 					closed : false,
@@ -595,7 +595,7 @@
 
 			function materialInfo() {
 				$('#materialDialog').dialog({
-					title : '原材料信息',
+					title : '材料信息',
 					width : 1000,
 					height : 520,
 					closed : false,
@@ -611,7 +611,7 @@
 
 			function partsInfo() {
 				$('#partsDialog').dialog({
-					title : '零部件信息',
+					title : '零件信息',
 					width : 1000,
 					height : 550,
 					closed : false,
@@ -680,14 +680,14 @@
 							var parts = eval('(' + data.data.parts + ')');;
 							var material = eval('(' + data.data.material + ')');;
 							
-							// 整车信息
+							// 车型信息
 							$("#v_code").textbox("setValue", vehicle.code);
 							$("#v_proTime").datebox('setValue',formatDate(vehicle.proTime));
 							$("#v_proAddr").textbox("setValue", vehicle.proAddr);
 							$("#v_remark").textbox("setValue", vehicle.remark);
 							$("#v_id").val(vehicle.id);
 							
-							// 零部件信息
+							// 零件信息
 							$("#p_name").textbox("setValue", parts.name);
 							$("#p_code").textbox("setValue", parts.code);
 							$("#p_producer").val(parts.producer);
@@ -699,7 +699,7 @@
 							$("#p_remark").textbox("setValue", parts.remark);	
 							$("#p_id").val(parts.id);
 							
-							// 原材料信息
+							// 材料信息
 							$("#m_matName").textbox("setValue", material.matName);
 							$("#m_proNo").textbox("setValue", material.proNo);
 							$("#m_producer").val(material.producer);

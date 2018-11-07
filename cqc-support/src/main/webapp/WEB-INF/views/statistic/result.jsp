@@ -150,17 +150,9 @@
 						if(data.success){
 							var taskNum = data.data.taskNum;
 							var passNum = data.data.passNum;
-							var onceNum = data.data.onceNum;
 							
 							$("#taskNum").html(taskNum);
 							$("#passNum").html(passNum);
-							$("#onceNum").html(onceNum);
-							
-							var passNumPer = percentNum(passNum, taskNum);
-							var onceNumPer = percentNum(onceNum, taskNum);
-							
-							$("#passNum_per").html(passNumPer);
-							$("#onceNum_per").html(onceNumPer);
 						}
 					}
 				});
@@ -213,9 +205,7 @@
 				
 				$("#taskNum").html("0");
 				$("#passNum").html("0");
-				$("#onceNum").html("0");
 				$("#passNum_per").html("0 %");
-				$("#onceNum_per").html("0 %");
 			}
 		</script>
 	</head>
@@ -349,18 +339,6 @@
 					<div class="count">
 						<span class="title1">比例</span>
 						<span id="passNum_per">0 %</span>
-					</div>
-				</div>
-				
-				<div class="info-box" style="background-color: #e65097;margin-left: 50px;">
-					<div class="title">一次不合格</div>
-					<div class="count">
-						<span class="title1">数量</span>
-						<span id="onceNum">0</span>
-					</div>
-					<div class="count">
-						<span class="title1">比例</span>
-						<span id="onceNum_per">0 %</span>
 					</div>
 				</div>
 			</div>

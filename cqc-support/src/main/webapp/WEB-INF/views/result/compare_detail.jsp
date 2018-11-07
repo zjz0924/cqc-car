@@ -32,7 +32,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">整车信息</div>
+		<div class="title">车型信息</div>
 		<div style="width: 98%;display: none;" id="vehicleDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -52,7 +52,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">零部件信息</div>
+		<div class="title">零件信息</div>
 		<div style="width: 98%; display: none;" id="partsDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -88,7 +88,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">原材料信息</div>
+		<div class="title">材料信息</div>
 		<div style="width: 98%;display: none;" id="materialDiv">
 			<table class="info">
 				<tr class="single-row">

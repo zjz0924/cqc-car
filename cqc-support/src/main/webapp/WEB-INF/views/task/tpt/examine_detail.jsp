@@ -118,9 +118,9 @@
 		</table>
 	</div>
 	
-	<!-- 整车信息 -->
+	<!-- 车型信息 -->
 	<div style="margin-left: 10px;margin-top:20px;">
-		<div class="title">整车信息</div>
+		<div class="title">车型信息</div>
 		<table class="info">
 			<tr>
 				<td>
@@ -152,7 +152,7 @@
 	</div>
 		
 	<div style="margin-left: 10px;margin-top:20px;">
-		<div class="title">零部件信息</div>
+		<div class="title">零件信息</div>
 		
 		<table class="info">
 			<tr>
@@ -201,7 +201,7 @@
 	</div>
 	
 	<div style="margin-left: 10px;margin-top:20px;">	
-		<div class="title">原材料信息</div>
+		<div class="title">材料信息</div>
 		<table class="info">
 			<tr>
 				<td>
@@ -411,11 +411,11 @@
 			
 			// 零件试验 
 			if(validChoose(altType, 1) || validChoose(altType, 3)){
-				// 整车信息
+				// 车型信息
 				if(!isRequire("v_code", "系统提示：选择零件试验时，车型代码必选")){ saving = false; return false; }
 				if(!isRequire("v_proAddr", "系统提示：选择零件试验时，整车生产基地必选")){ saving = false; return false; }
 				
-				// 零部件信息
+				// 零件信息
 				if(!isRequire("p_name", "系统提示：选择零件试验时，零件名称必填")){ saving = false; return false; }
 				if(!isRequire("p_producer", "系统提示：选择零件试验时，零件供应商必填")){ saving = false; return false; }
 				if(!isRequire("p_producerCode", "系统提示：选择零件试验时，零件供应商代码必填")){ saving = false; return false; }
@@ -433,7 +433,7 @@
 			
 			// 材料试验
 			if(validChoose(altType, 2) || validChoose(altType, 4)){
-				// 原材料信息
+				// 材料信息
 				if(!isRequire("m_matName", "系统提示：选择材料试验时，材料名称必填")){ saving = false; return false; }
 				if(!isRequire("m_matNo", "系统提示：选择材料试验时，材料牌号必填")){ saving = false; return false; }
 				if(!isRequire("m_producer", "系统提示：选择材料试验时，材料供应商必填")){ saving = false; return false; }

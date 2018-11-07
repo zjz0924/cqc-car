@@ -59,8 +59,6 @@ import cn.wow.common.service.TaskService;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.pagination.PageMap;
-import cn.wow.common.utils.taskState.SamplingTaskEnum;
-import cn.wow.common.utils.taskState.StandardTaskEnum;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Controller
@@ -166,8 +164,13 @@ public class QueryController extends AbstractController {
 
 		// 除了超级管理员， 流程上的用户都可以查看
 		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+			// 流程上的用户
 			map.put("currentAccountId", account.getId());
 			queryMap.put("currentAccountId", account.getId());
+			
+			// 分配到自己的实验室
+			map.put("accomplishTask_lab", account.getOrgId());
+			queryMap.put("accomplishTask_lab", account.getId());
 		}
 
 		if (StringUtils.isNotBlank(task_code)) {

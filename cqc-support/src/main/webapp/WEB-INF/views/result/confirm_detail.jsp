@@ -32,7 +32,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">整车信息</div>
+		<div class="title">车型信息</div>
 		<div style="width: 98%;display: none;" id="vehicleDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -52,7 +52,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">零部件信息</div>
+		<div class="title">零件信息</div>
 		<div style="width: 98%; display: none;" id="partsDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -88,7 +88,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">原材料信息</div>
+		<div class="title">材料信息</div>
 		<div style="width: 98%;display: none;" id="materialDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -224,6 +224,7 @@
 									<option value="合格" <c:if test="${partsPatConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
 									<option value="不合格" <c:if test="${partsPatConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
 									<option value="其它" <c:if test="${partsPatConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									<option value="基准" <c:if test="${partsPatConclusion.conclusion == '基准' }">selected="selected"</c:if>>基准</option>
 								</select>
 								<span id="partsPat_conclusion_error" class="req-span"></span>
 							</td>
@@ -299,6 +300,7 @@
 									<option value="合格" <c:if test="${matPatConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
 									<option value="不合格" <c:if test="${matPatConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
 									<option value="其它" <c:if test="${matPatConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									<option value="基准" <c:if test="${matPatConclusion.conclusion == '基准' }">selected="selected"</c:if>>基准</option>
 								</select>
 								<span id="matPat_conclusion_error" class="req-span"></span>
 							</td>
@@ -372,6 +374,7 @@
 									<option value="合格" <c:if test="${partsAtlConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
 									<option value="不合格" <c:if test="${partsAtlConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
 									<option value="其它" <c:if test="${partsAtlConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									<option value="基准" <c:if test="${partsAtlConclusion.conclusion == '基准' }">selected="selected"</c:if>>基准</option>
 								</select>
 								<span id="partsAtl_conclusion_error" class="req-span"></span>
 							</td>
@@ -445,6 +448,7 @@
 									<option value="合格" <c:if test="${matAtlConclusion.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
 									<option value="不合格" <c:if test="${matAtlConclusion.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
 									<option value="其它" <c:if test="${matAtlConclusion.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									<option value="基准" <c:if test="${matAtlConclusion.conclusion == '基准' }">selected="selected"</c:if>>基准</option>
 								</select>
 								<span id="matAtl_conclusion_error" class="req-span"></span>
 							</td>
@@ -738,6 +742,7 @@
 									<option value="合格" <c:if test="${vo.conclusion == '合格' }">selected="selected"</c:if>>合格</option>
 									<option value="不合格" <c:if test="${vo.conclusion == '不合格' }">selected="selected"</c:if>>不合格</option>
 									<option value="其它" <c:if test="${vo.conclusion == '其它' }">selected="selected"</c:if>>其它</option>
+									<option value="基准" <c:if test="${vo.conclusion == '基准' }">selected="selected"</c:if>>基准</option>
 								</select>
 								<span id="matPat_conclusion_error" class="req-span"></span>
 							</td>

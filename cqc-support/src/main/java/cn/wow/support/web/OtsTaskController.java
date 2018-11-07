@@ -398,7 +398,7 @@ public class OtsTaskController extends AbstractController {
 					}
 				} else {
 					// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
-					ResultFlagVO isExist = vehicleService.isExist(null, v_code,
+					ResultFlagVO isExist = vehicleService.isExist(v_id, v_code,
 							StringUtils.isNotBlank(v_proTime) ? sdf.parse(v_proTime) : null, v_proAddr);
 					if (!isExist.getFlag()) {
 						vehicle.setId(null);
@@ -464,7 +464,7 @@ public class OtsTaskController extends AbstractController {
 					}
 				} else {
 					// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
-					ResultFlagVO isExist = partsService.isExist(null, p_name,
+					ResultFlagVO isExist = partsService.isExist(p_id, p_name,
 							StringUtils.isNotBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer,
 							p_producerCode);
 

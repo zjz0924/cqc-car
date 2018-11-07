@@ -131,7 +131,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">整车信息</div>
+		<div class="title">车型信息</div>
 		<div style="width: 98%;display: none;" id="vehicleDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -151,7 +151,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">零部件信息</div>
+		<div class="title">零件信息</div>
 		<div style="width: 98%; display: none;" id="partsDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -187,7 +187,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title">原材料信息</div>
+		<div class="title">材料信息</div>
 		<div style="width: 98%;display: none;" id="materialDiv">
 			<table class="info">
 				<tr class="single-row">
@@ -301,13 +301,14 @@
 			<c:when test="${type == 1}">
 				<div class="title" style="margin-top: 30px;">收费清单&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addItem()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a></div>
 				<div>
-					<table class="info" id="expItemTable" style="width: 70%;">
+					<table class="info" id="expItemTable" style="width: 80%;">
 						<tr>
 							<td style="background: #F0F0F0;font-weight:bold;">序号</td>
 							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>试验项目</td>
 							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>参考标准</td>
-							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>单价</td>
+							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>单价（元）</td>
 							<td style="background: #F0F0F0;font-weight:bold;"><span class="req-span">*</span>数量</td>
+							<td style="background: #F0F0F0;font-weight:bold;">总价（元）</td>
 							<td style="background: #F0F0F0;font-weight:bold;">备注</td>
 							<td style="background: #F0F0F0;font-weight:bold;">操作</td>
 						</tr>
@@ -324,12 +325,15 @@
 									<span id="standard_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="price_${status.index}" name="price_${status.index}" class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:2"/>
+									<input id="price_${status.index}" name="price_${status.index}" onchange="priceChange(${status.index})" class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:2"/>
 									<span id="price_${status.index}_error" class="req-span"></span>
 								</td>
 								<td class="value-td1">
-									<input id="num_${status.index}" name="num_${status.index}" class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:0"/>
+									<input id="num_${status.index}" name="num_${status.index}" onchange="priceChange(${status.index})" class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:0"/>
 									<span id="num_${status.index}_error" class="req-span"></span>
+								</td>
+								<td class="value-td1">
+									<input id="total_${status.index}" name="total_${status.index}" disabled class="easyui-numberbox" style="width: 100px;" data-options="min:0,precision:0"/>
 								</td>
 								<td class="value-td1">
 									<input id="remark_${status.index}" name="remark_${status.index}" class="easyui-textbox"/>
@@ -341,6 +345,10 @@
 							</tr>
 						</c:forEach>
 					</table>
+					
+					<div style="margin-top: 10px;margin-left: 5px;font-weight:bold;">
+						<span>总费用：</span><span style="color: red;font-weight:bold;font-size: 15px;" id="totalVal">0</span> &nbsp;元
+					</div>
 				</div>
 			
 				<!-- 待发送 -->
@@ -371,7 +379,7 @@
 							<td class="title-td">参考标准</td>
 							<td class="title-td">单价</td>
 							<td class="title-td">数量</td>
-							<td class="title-td">价格</td>
+							<td class="title-td">总价</td>
 							<td class="title-td">备注</td>
 						</tr>
 						
@@ -387,12 +395,18 @@
 							</tr>
 						</c:forEach>
 					</table>
+					
+					<div style="margin-top: 10px;margin-left: 5px;font-weight:bold;">
+						<span>总费用：</span><span style="color: red;font-weight:bold;font-size: 15px;">${itemPrice}</span> &nbsp;元
+					</div>
 				</div>
 			</c:otherwise>
 		</c:choose>
 	</div>
 			
 	<script type="text/javascript">
+		var sum = 0;
+		
 		$(function(){
 			if("${type == 1}"){
 				$('#org').combotree({
@@ -409,6 +423,20 @@
 					   }
 				   }
 				});
+				
+				
+				$("#num_1").numberbox({
+				    "onChange": function(){
+				    	priceChange(1);
+				    }
+				});
+				
+				$("#price_1").numberbox({
+				    "onChange": function(){
+				    	priceChange(1);
+				    }
+				});
+				
 			}
 		});
 		
@@ -570,6 +598,9 @@
 					+		"<span id='num_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
 					+	 "<td class='value-td1'>"
+					+		"<input id='total_"+ num +"' name='total_"+ num +"' class='easyui-numberbox' disabled style='width: 100px;' data-options='min:0,precision:0'/>"
+					+	 "</td>"
+					+	 "<td class='value-td1'>"
 					+		"<input id='remark_"+ num +"' name='remark_"+ num +"' class='easyui-textbox'/>"
 					+		"<span id='remark_"+ num +"_error' class='req-span'></span>"
 					+	 "</td>"
@@ -585,11 +616,51 @@
 			$.parser.parse($("#standard_"+ num).parent());
 			$.parser.parse($("#price_"+ num).parent());
 			$.parser.parse($("#num_"+ num).parent());
+			$.parser.parse($("#total_"+ num).parent());
 			$.parser.parse($("#remark_"+ num).parent());
+			
+			$("#num_" + num).numberbox({
+			    "onChange": function(){
+			    	priceChange(num);
+			    }
+			});
+			
+			$("#price_" + num).numberbox({
+			    "onChange": function(){
+			    	priceChange(num);
+			    }
+			});
+			
 		}
 		
 		function deleteItem(num){
+			var sumVal = $("#total_" + num).numberbox("getValue");
+			if(!isNull(sumVal)){
+				sum -= sumVal;
+				$("#totalVal").html(sum);
+			}
+			
 			$("tr[num='"+ num + "']").remove();
+		}
+		
+		function priceChange(num){
+			var numVal = $("#num_" + num).numberbox("getValue");
+			var price = $("#price_" + num).numberbox("getValue");
+			var sumVal = $("#total_" + num).numberbox("getValue");
+			
+			if(!isNull(numVal) && !isNull(price)){
+				var sm = numVal * price;
+				$("#total_" + num).numberbox("setValue", sm);
+				sum += sm;
+			}else{
+				$("#total_" + num).numberbox("setValue", "");
+				
+				if(!isNull(sumVal)){
+					sum -= sumVal;
+				}
+			}
+			
+			$("#totalVal").html(sum);
 		}
 	</script>	
 	

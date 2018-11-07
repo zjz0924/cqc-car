@@ -4,7 +4,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +92,7 @@ public class StatisticController {
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		// 抽样原因选项
 		Map<String, Object> optionMap = new PageMap(false);
 		optionMap.put("custom_order_sql", "type asc, name desc");
@@ -131,7 +130,7 @@ public class StatisticController {
 			qMap.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 		if (StringUtils.isNotBlank(taskType)) {
-			List<String> typeList = Arrays.asList(taskType.split(","));	
+			List<String> typeList = Arrays.asList(taskType.split(","));
 			qMap.put("typeList", typeList);
 		}
 
@@ -160,17 +159,10 @@ public class StatisticController {
 			resultVO.setTaskNum(taskList.size());
 
 			for (Task task : taskList) {
-				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
-					if (task.getResult() != null) {
-						if (task.getFailNum() == 0) {
-							resultVO.setPassNum(resultVO.getPassNum() + 1);
-						} else if (task.getFailNum() == 1) {
-							resultVO.setOnceNum(resultVO.getOnceNum() + 1);
-						}
-					}
+				if (task.getResult() != null && task.getResult().intValue() == 1) {
+					resultVO.setPassNum(resultVO.getPassNum() + 1);
 				}
 			}
-
 			taskResultList.addAll(taskList);
 		}
 
@@ -206,10 +198,10 @@ public class StatisticController {
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "任务数量", "合格", "一次不合格" };
+			String[] titles = { "任务数量", "合格" };
 			int r = 0;
 
-			Row titleRow = sh.createRow(0);
+			Row titleRow = sh.createRow(r++);
 			titleRow.setHeight((short) 450);
 
 			Cell cell = titleRow.createCell(0);
@@ -219,12 +211,6 @@ public class StatisticController {
 			Cell cel2 = titleRow.createCell(3);
 			cel2.setCellStyle(styles.get("header"));
 			cel2.setCellValue(titles[1]);
-
-			Cell cel3 = titleRow.createCell(6);
-			cel3.setCellStyle(styles.get("header"));
-			cel3.setCellValue(titles[2]);
-
-			++r;
 
 			if (resultVO != null) {
 				Row contentRow = sh.createRow(r);
@@ -242,14 +228,6 @@ public class StatisticController {
 				cell3.setCellStyle(styles.get("cell"));
 				cell3.setCellValue(resultVO.getPassNum());
 
-				Cell cell4 = contentRow.createCell(5);
-				cell4.setCellStyle(styles.get("cell"));
-				cell4.setCellValue("数量");
-
-				Cell cell5 = contentRow.createCell(6);
-				cell5.setCellStyle(styles.get("cell"));
-				cell5.setCellValue(resultVO.getOnceNum());
-
 				++r;
 				Row contentRow2 = sh.createRow(r);
 				contentRow2.setHeight((short) 400);
@@ -261,14 +239,6 @@ public class StatisticController {
 				Cell cell7 = contentRow2.createCell(3);
 				cell7.setCellStyle(styles.get("cell"));
 				cell7.setCellValue((Math.round(resultVO.getPassNum() / resultVO.getTaskNum() * 10000) / 100.00) + "%");
-
-				Cell cell8 = contentRow2.createCell(5);
-				cell8.setCellStyle(styles.get("cell"));
-				cell8.setCellValue("比例");
-
-				Cell cell9 = contentRow2.createCell(6);
-				cell9.setCellStyle(styles.get("cell"));
-				cell9.setCellValue((Math.round(resultVO.getOnceNum() / resultVO.getTaskNum() * 10000) / 100.00) + "%");
 			}
 
 			OutputStream os = response.getOutputStream();
@@ -398,26 +368,11 @@ public class StatisticController {
 				String result = "";
 				Cell cell4 = contentRow.createCell(3);
 				cell4.setCellStyle(styles.get("cell"));
-				if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) {
-					if (task.getState() == StandardTaskEnum.ACCOMPLISH.getState()) {
-						if (task.getFailNum() == 0) {
-							result = "合格";
-						} else if (task.getFailNum() == 1) {
-							result = "一次不合格";
-						} else {
-							result = "两次不合格";
-						}
-					}
-				} else if (task.getType() == TaskTypeEnum.PPAP.getState()
-						|| task.getType() == TaskTypeEnum.SOP.getState()) {
-					if (task.getState() == SamplingTaskEnum.ACCOMPLISH.getState()) {
-						if (task.getFailNum() == 0) {
-							result = "合格";
-						} else if (task.getFailNum() == 1) {
-							result = "一次不合格";
-						} else {
-							result = "两次不合格";
-						}
+				if (task.getResult() != null) {
+					if (task.getResult().intValue() == 1) {
+						result = "合格";
+					} else if (task.getResult().intValue() == 0) {
+						result = "不合格";
 					}
 				}
 				cell4.setCellValue(result);

@@ -133,7 +133,13 @@
 						width : '80',
 						align : 'center',
 						rowspan: 1,
-						formatter : formatCellTooltip
+						formatter : function(value,row,index){
+							var str = "/";
+							if(row.type == 4){
+								str = value;
+							}
+							return "<span title='"+ str +"'>"+ str +"</span>";
+						}
 					},{
 						field : 'matAtlConclusion',
 						title : '图谱',
@@ -147,7 +153,13 @@
 						width : '80',
 						align : 'center',
 						rowspan: 1,
-						formatter : formatCellTooltip
+						formatter : function(value,row,index){
+							var str = "/";
+							if(row.type == 4){
+								str = value;
+							}
+							return "<span title='"+ str +"'>"+ str +"</span>";
+						}
 					}, {
 						field : 'info.vehicle.code',
 						title : '车型代码',

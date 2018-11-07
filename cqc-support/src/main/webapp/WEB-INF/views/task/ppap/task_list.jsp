@@ -493,7 +493,7 @@
 				if (!isNull(row)) {
 					$("#qCode").textbox("setValue", row.code);
 					
-					// 整车信息
+					// 车型信息
 					$("#v_code").textbox("setValue", row.info.vehicle.code);
 					$("#v_proAddr").textbox("setValue", row.info.vehicle.proAddr);
 					$("#v_remark").textbox("setValue", row.info.vehicle.remark);

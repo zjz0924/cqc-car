@@ -7,7 +7,7 @@
 	
 		<div style="margin-left: 10px;margin-top:20px;">
 			
-			<div class="title">整车信息</div>
+			<div class="title">车型信息</div>
 			<table class="info">
 				<tr>
 					<td>
@@ -60,7 +60,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">零部件信息</div>
+			<div class="title">零件信息</div>
 			
 			<table class="info">
 				<tr>
@@ -149,7 +149,7 @@
 		</div>
 	
 		<div style="margin-left: 10px;margin-top:20px;">
-			<div class="title">原材料信息</div>
+			<div class="title">材料信息</div>
 			
 			<table class="info">
 				<tr>
