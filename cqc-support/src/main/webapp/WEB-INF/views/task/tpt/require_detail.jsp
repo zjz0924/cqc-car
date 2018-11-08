@@ -483,7 +483,7 @@
 				if(validChoose(altType, 1) || validChoose(altType, 3)){
 					// 车型信息
 					if(!isRequire("v_code", "系统提示：选择零件试验时，车型代码必选")){ saving = false; return false; }
-					if(!isRequire("v_proAddr", "系统提示：选择零件试验时，整车生产基地必选")){ saving = false; return false; }
+					if(!isRequire("v_proAddr", "系统提示：选择零件试验时，车型生产基地必选")){ saving = false; return false; }
 					
 					// 零件信息
 					if(!isRequire("p_name", "系统提示：选择零件试验时，零件名称必填")){ saving = false; return false; }

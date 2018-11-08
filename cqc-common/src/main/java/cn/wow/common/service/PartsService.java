@@ -24,7 +24,7 @@ public interface PartsService {
     /**
      * 检查零部件信息是否存在
      */
-	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode);
+	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode, String p_code, String p_proNo, Integer p_num, String p_place);
 	
 	
 	/**

@@ -70,7 +70,8 @@ public class PartsServiceImpl implements PartsService {
 	/**
 	 * 检查零部件信息是否存在
 	 */
-	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode) {
+	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode, String p_code,
+			String p_proNo, Integer p_num, String p_place) {
 
 		ResultFlagVO vo = new ResultFlagVO();
 
@@ -85,8 +86,31 @@ public class PartsServiceImpl implements PartsService {
 
 		List<Parts> dataList = partsDao.selectAllList(map);
 		if (dataList != null && dataList.size() > 0) {
-			vo.setFlag(true);
-			vo.setState(dataList.get(0).getState());
+			for (Parts p : dataList) {
+				if (p.getState() == 1) {
+					continue;
+				}
+
+				if (!isTheSame(p.getCode(), p_code)) {
+					continue;
+				}
+
+				if (!isTheSame(p.getProNo(), p_proNo)) {
+					continue;
+				}
+
+				if (!isTheSame(p.getPlace(), p_place)) {
+					continue;
+				}
+
+				if (!isTheSame(p_num, p.getNum())) {
+					continue;
+				}
+
+				vo.setFlag(true);
+				vo.setState(0);
+				break;
+			}
 		} else {
 			vo.setFlag(false);
 		}
@@ -118,9 +142,11 @@ public class PartsServiceImpl implements PartsService {
 			}
 		} else {
 			if (p_code.equals(parts.getCode()) && p_name.equals(parts.getName())
-					&& ((parts.getProTime() != null && p_proTime.equals(sdf.format(parts.getProTime()))) || (parts.getProTime() == null && StringUtils.isBlank(p_proTime)))
+					&& ((parts.getProTime() != null && p_proTime.equals(sdf.format(parts.getProTime())))
+							|| (parts.getProTime() == null && StringUtils.isBlank(p_proTime)))
 					&& p_place.equals(parts.getPlace()) && p_proNo.equals(parts.getProNo())
-					&& p_remark.equals(parts.getRemark()) && ((p_num != null && p_num.intValue() == parts.getNum()) || p_num == null)
+					&& p_remark.equals(parts.getRemark())
+					&& ((p_num != null && p_num.intValue() == parts.getNum()) || p_num == null)
 					&& p_producer.equals(parts.getProducer()) && p_producerCode.equals(parts.getProducerCode())) {
 				return false;
 			} else {
@@ -129,4 +155,29 @@ public class PartsServiceImpl implements PartsService {
 		}
 
 	}
+
+	private boolean isTheSame(String obj1, String obj2) {
+		if (StringUtils.isNotBlank(obj1) && StringUtils.isNotBlank(obj2)) {
+			if (obj1.equals(obj2)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	private boolean isTheSame(Integer obj1, Integer obj2) {
+		if (obj1 != null && obj2 != null) {
+			if (obj1.intValue() == obj2.intValue()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
 }

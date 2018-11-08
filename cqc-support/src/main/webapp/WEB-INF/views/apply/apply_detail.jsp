@@ -28,7 +28,7 @@
 				<table class="info">
 					<tr>
 						<td>
-							<span class="title-span"><span class="req-span">*</span>整车代码：</span>
+							<span class="title-span"><span class="req-span">*</span>车型代码：</span>
 							<span class="val" title="${facadeBean.info.vehicle.code }">${facadeBean.info.vehicle.code }</span>
 						</td>
 						<td class="input-td">

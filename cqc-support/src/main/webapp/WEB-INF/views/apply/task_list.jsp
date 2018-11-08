@@ -34,12 +34,14 @@
 						width : '120',
 						align : 'center',
 						formatter : function(value,row,index){
-							if(row.infoApply == 1){
+							// 信息修改由该任务申请方发起
+							// 试验结果修改由上传的实验室修改
+							if(row.aId == "${currentAccount.id}"){
+								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>'; 
+							}
+							
+							if(row.partsAtlId == "${currentAccount.orgId}" || row.matAtlId == "${currentAccount.orgId}" || row.partsPatId == "${currentAccount.orgId}" || row.matPatId == "${currentAccount.orgId}"){
 								return '<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
-							}else if(row.resultApply == 1){
-								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>';
-							}else{
-								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
 							}
 						}
 					} , {

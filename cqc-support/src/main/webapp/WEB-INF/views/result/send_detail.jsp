@@ -159,7 +159,7 @@
 		<div class="title">试验结果</div>
 		
 		<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and ( facadeBean.partsPatResult == 2) }">
-			<div class="title" style="margin-top:15px;">零部件型式试验结果</div>
+			<div class="title" style="margin-top:15px;">零部件型式试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.partsPat.name }</span></div>
 			
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
@@ -233,7 +233,7 @@
 		</c:if>
 		
 		<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 2) }">
-			<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
+			<div class="title" style="margin-top:15px;">零部件图谱试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.partsAtl.name }</span></div>
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
 					<c:if test="${vo.type eq 1}">
@@ -302,7 +302,7 @@
 		</c:if>
 		
 		<c:if test="${(facadeBean.matPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matPatResult == 2) }">
-			<div class="title" style="margin-top:15px;">原材料型式试验结果</div>
+			<div class="title" style="margin-top:15px;">原材料型式试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.matPat.name }</span></div>
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
 					<c:if test="${vo.type eq 4}">
@@ -375,7 +375,7 @@
 		</c:if>
 		
 		<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matAtlResult == 2) }">
-			<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
+			<div class="title" style="margin-top:15px;">原材料图谱试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.matAtl.name }</span></div>
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
 					<c:if test="${vo.type eq 2}">

@@ -67,7 +67,7 @@
 		<!-- 任务类型（冗余字段） -->
 		<result column="taskType" property="taskType" jdbcType="INTEGER" />
 		
-		<association property="taskInfo" javaType="cn.wow.common.domain.TaskInfo" column="id" select="cn.wow.common.dao.TaskInfoDao.selectOne"/> 
+		<!-- <association property="taskInfo" javaType="cn.wow.common.domain.TaskInfo" column="id" select="cn.wow.common.dao.TaskInfoDao.selectOne"/>  -->
 		<association property="partsAtl" javaType="cn.wow.common.domain.Org" column="parts_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="matAtl" javaType="cn.wow.common.domain.Org" column="mat_atl_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
 		<association property="partsPat" javaType="cn.wow.common.domain.Org" column="parts_pat_id" select="cn.wow.common.dao.OrgDao.selectOne"/> 
@@ -426,7 +426,7 @@
 			
 			<!-- 结果对比列表 -->
 			<if test="compareTask != null">
-				and ( t.type = 2 or t.type = 3)
+				and ( t.type = 2 or t.type = 3) and (parts_atl_id = #{compareTask, jdbcType=BIGINT} or mat_atl_id = #{compareTask, jdbcType=BIGINT})
 			</if>
 
 			<!-- 结果发送列表 -->
@@ -438,14 +438,14 @@
 				and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
 			</if>
 
-			<!-- 结果确认：待上传列表 -->
+			<!-- 结果确认：待上传列表 只有第三方任务，其它任务都是同时上传的  -->
 			<if test="confirmTask_wait != null">
-				and (t.type = 4 and ((t.mat_pat_result = 3 or t.mat_atl_result = 3) and (t.mat_pat_result != 3 or t.mat_atl_result != 3)))
+				and (t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL )))
 			</if>
 			
 			<!-- 结果确认：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				and ((t.type = 1 and t.state = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3) or (t.state = 6 and (type = 2 or type = 3) or (t.type = 4 and t.state = 3 and t.mat_pat_result = 3 and t.mat_atl_result = 3)))
+				and ((t.type != 4 and (t.mat_atl_result = 3 or t.parts_atl_result = 3)) or ( t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND NOT (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL ))))
 			</if>
 
 			<!-- 所有已完成的任务 -->
@@ -535,8 +535,14 @@
 			
 			<!-- 流程上的用户 -->
 			<if test="currentAccountId != null">
-				and ((t.approve_account_id = #{currentAccountId,jdbcType=BIGINT} or t.trainsmit_account_id = #{currentAccountId,jdbcType=BIGINT} or t.examine_account_id = #{currentAccountId,jdbcType=BIGINT} or t.a_id = #{currentAccountId,jdbcType=BIGINT}) or (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}))
+				and ((t.approve_account_id = #{currentAccountId,jdbcType=BIGINT} or t.trainsmit_account_id = #{currentAccountId,jdbcType=BIGINT} or t.examine_account_id = #{currentAccountId,jdbcType=BIGINT} or t.a_id = #{currentAccountId,jdbcType=BIGINT}) or (t.parts_pat_id = #{labId, jdbcType=BIGINT} or t.mat_pat_id = #{labId, jdbcType=BIGINT} or t.parts_atl_id = #{labId, jdbcType=BIGINT} or t.mat_atl_id = #{labId, jdbcType=BIGINT}))
 			</if>
+			
+			<!-- 申请用户或者实验室用户（申请修改） -->
+			<if test="applyTask != null">
+				and (t.a_id = #{applyTask,jdbcType=BIGINT} or (t.parts_pat_id = #{labId, jdbcType=BIGINT} or t.mat_pat_id = #{labId, jdbcType=BIGINT} or t.parts_atl_id = #{labId, jdbcType=BIGINT} or t.mat_atl_id = #{labId, jdbcType=BIGINT}))
+			</if>
+			
 			
 			<!-- 任务类型多选 -->
 			<if test="typeList != null">
@@ -554,120 +560,52 @@
 		</choose>
 	</select>
 	
+	
 	<select id="getTaskNum" resultType="java.lang.Integer" parameterType="java.util.Map">
 		select ifnull(count(T.id),0) as totalNum from task t LEFT JOIN account a on t.a_id = a.id
 		<where>
-			<if test="code != null and code != ''">
-				and t.code like concat('%', #{code,jdbcType=VARCHAR}, '%')
-			</if>
-
-			<if test="nickName != null and nickName != ''">
-				and a.nickname like concat('%', #{nickName,jdbcType=VARCHAR}, '%')
-			</if>
-			
-			<if test="userName != null and userName != ''">
-				and a.username like concat('%', #{userName,jdbcType=VARCHAR}, '%')
-			</if>
-
-			<if test="orgId != null">
-				and t.org_id = #{orgId,jdbcType=BIGINT}
-			</if>
-
-			<if test="iId != null">
-				and t.i_id = #{iId,jdbcType=BIGINT}
-			</if>
-
-			<if test="aId != null">
-				and t.a_id = #{aId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="tId != null">
-				and t.t_id = #{tId,jdbcType=BIGINT}
-			</if>
-
 			<if test="state != null">
 				and t.state = #{state,jdbcType=INTEGER}
+			</if>
+			
+			<if test="type != null">
+				and t.type = #{type,jdbcType=INTEGER}
+			</if>
+			
+			<if test="approveAccountId != null">
+				and t.approve_account_id = #{approveAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<!-- OTS 审批列表 -->
+			<if test="approveTask_ots != null">
+				and ((t.state = 3 and (( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL ) OR ( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ))) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+			</if>
+			
+			<!-- gs 审批列表-->
+			<if test="approveTask_gs != null">
+				and ((t.state = 3 and ((t.mat_atl_result = 0 and t.mat_atl_id IS NOT NULL) or (t.mat_pat_result = 0 and t.mat_pat_id IS NOT NULL ) or (t.parts_pat_result = 0 and t.parts_pat_id IS NOT NULL) or (t.parts_atl_result = 0 and t.parts_atl_id IS NOT NULL))) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
+			</if>
+			
+			<!-- PPAP 审批列表 -->
+			<if test="ppap_approveTask != null">
+				and (t.state = 1 or (t.state = 8 and (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null))))
+			</if>
+			
+			<if test="trainsmitAccountId != null">
+				and t.trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}
+			</if>
+			
+			<if test="examineAccountId != null">
+				and t.examine_account_id = #{examineAccountId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- 抽样是否存在 -->
 			<if test="unstate != null">
 				and t.state != 7 and t.state != 9
 			</if>
-			
-			<if test="type != null">
-				and t.type = #{type,jdbcType=INTEGER}
-			</if>
 
 			<if test="examineState != null">
 				and (t.state = 1 or t.state = 2)
-			</if>
-
-			<if test="partsAtlId != null">
-				and t.parts_atl_id = #{partsAtlId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="matAtlId != null">
-				and t.mat_atl_id = #{matAtlId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="partsPatId != null">
-				and t.parts_pat_id = #{partsPatId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="matPatId != null">
-				and t.mat_pat_id = #{matPatId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="partsAtlTimes != null">
-				and t.parts_atl_times = #{partsAtlTimes,jdbcType=INTEGER}
-			</if>
-			
-			<if test="matAtlTimes != null">
-				and t.mat_atl_times = #{matAtlTimes,jdbcType=INTEGER}
-			</if>
-			
-			<if test="partsPatTimes != null">
-				and t.parts_pat_times = #{partsPatTimes,jdbcType=INTEGER}
-			</if>
-			
-			<if test="matPatTimes != null">
-				and t.mat_pat_times = #{matPatTimes,jdbcType=INTEGER}
-			</if>
-			
-			<if test="failNum != null">
-				and t.fail_num &gt;= #{failNum,jdbcType=INTEGER}
-			</if>
-
-			<if test="partsAtlResult != null">
-				and t.parts_atl_result = #{partsAtlResult,jdbcType=INTEGER}
-			</if>
-
-			<if test="matAtlResult != null">
-				and t.mat_atl_result = #{matAtlResult,jdbcType=INTEGER}
-			</if>
-
-			<if test="partsPatResult != null">
-				and t.parts_pat_result = #{partsPatResult,jdbcType=INTEGER}
-			</if>
-
-			<if test="matPatResult != null">
-				and t.mat_pat_result = #{matPatResult,jdbcType=INTEGER}
-			</if>
-
-			<if test="startCreateTime != null and startCreateTime != ''">
-				and t.create_time &gt;= #{startCreateTime, jdbcType=TIMESTAMP}
-			</if>
-
-			<if test="endCreateTime != null and endCreateTime != ''">
-				and t.create_time &lt;= #{endCreateTime, jdbcType=TIMESTAMP}
-			</if>
-			
-			<if test="startConfirmTime != null and startConfirmTime != ''">
-				and t.confirm_time &gt;= #{startConfirmTime, jdbcType=TIMESTAMP}
-			</if>
-
-			<if test="endConfirmTime != null and endConfirmTime != ''">
-				and t.confirm_time &lt;= #{endConfirmTime, jdbcType=TIMESTAMP}
 			</if>
 			
 			<if test="infoApply != null">
@@ -687,163 +625,42 @@
 				and ((t.mat_atl_id is null or t.mat_pat_id is null or t.parts_atl_id IS NULL OR t.parts_pat_id IS NULL) or (( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ) OR ( t.mat_pat_result = 0 AND t.mat_pat_id IS NOT NULL ) OR ( t.parts_pat_result = 0 AND t.parts_pat_id IS NOT NULL ) OR ( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL )))
 			</if>
 
-			<!-- OTS 审批列表 -->
-			<if test="approveTask_ots != null">
-				and ((t.state = 3 and (( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL ) OR ( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ))) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
-			</if>
-			
-			<!-- gs 审批列表-->
-			<if test="approveTask_gs != null">
-				and ((t.state = 3 and ((t.mat_atl_result = 0 and t.mat_atl_id IS NOT NULL) or (t.mat_pat_result = 0 and t.mat_pat_id IS NOT NULL ) or (t.parts_pat_result = 0 and t.parts_pat_id IS NOT NULL) or (t.parts_atl_result = 0 and t.parts_atl_id IS NOT NULL))) or (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null)))
-			</if>
-			
-			<!-- PPAP 审批列表 -->
-			<if test="ppap_approveTask != null">
-				and (t.state = 1 or (t.state = 8 and (t.info_apply = 1 or (t.result_apply = 1 and t_id is not null))))
-			</if>
-
 			<!-- 图谱结果上传 -->
 			<if test="atlasTask != null">
 				and ((t.parts_atl_id = #{atlasTask, jdbcType=BIGINT} and t.parts_atl_result = 1 ) or (t.mat_atl_id = #{atlasTask, jdbcType=BIGINT} and t.mat_atl_result = 1))
-			</if>
-
-			<if test="atlasTask_admin != null">
-				and ( t.parts_atl_result = 1 or t.mat_atl_result = 1 )
 			</if>
 
 			<!-- 型式结果上传 -->
 			<if test="patternTask != null">
 				and ((t.parts_pat_id = #{patternTask, jdbcType=BIGINT} and t.parts_pat_result = 1 ) or (t.mat_pat_id = #{patternTask, jdbcType=BIGINT} and t.mat_pat_result = 1))
 			</if>
-
-			<if test="patternTask_admin != null">
-				and ( t.parts_pat_result = 1 or t.mat_pat_result = 1)
-			</if>
 			
 			<!-- 结果对比列表 -->
 			<if test="compareTask != null">
-				and ( t.type = 2 or t.type = 3)
+				and ( t.type = 2 or t.type = 3) and (parts_atl_id = #{compareTask, jdbcType=BIGINT} or mat_atl_id = #{compareTask, jdbcType=BIGINT})
 			</if>
 
 			<!-- 结果发送列表 -->
 			<if test="sendTask != null">
 			    and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
 			</if>
-			
-			<if test="sendTask_admin != null">
-				and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
-			</if>
 
-
-			<!-- 结果确认：待上传列表 -->
+			<!-- 结果确认：待上传列表 只有第三方任务，其它任务都是同时上传的  -->
 			<if test="confirmTask_wait != null">
-				and (t.type = 4 and ((t.mat_pat_result = 3 or t.mat_atl_result = 3) and (t.mat_pat_result != 3 or t.mat_atl_result != 3)))
+				and (t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL )))
 			</if>
 			
 			<!-- 结果确认：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				and ((t.type = 1 and t.state = 3 and t.parts_atl_result = 3 and t.mat_atl_result = 3) or (t.state = 6 and (type = 2 or type = 3) or (t.type = 4 and t.state = 3 and t.mat_pat_result = 3 and t.mat_atl_result = 3)))
+				and ((t.type != 4 and (t.mat_atl_result = 3 or t.parts_atl_result = 3)) or ( t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND NOT (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL ))))
+			</if>
+			
+			<!-- 申请人 -->
+			<if test="applicatId != null">
+				and t.a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 
-			<!-- 所有已完成的任务 -->
-			<if test="accomplishTask != null">
-				and (((t.type = 1 or t.type = 4) and (t.state = 4 or t.state = 5)) or ((t.type = 2 or t.type = 3) and (t.state = 7 or t.state = 8))) and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
-			</if>
-			
-			<!-- 只能看到分配自己实验室的任务 -->
-			<if test="accomplishTask_lab != null">
-				and (t.parts_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_pat_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.parts_atl_id = #{accomplishTask_lab, jdbcType=BIGINT} or t.mat_atl_id = #{accomplishTask_lab, jdbcType=BIGINT}) and (((t.type = 1 or t.type = 4) and (t.state = 4 or t.state = 5)) or ((t.type = 2 or t.type = 3) and (t.state = 7 or t.state = 8)))  and (t.info_apply != 1 and t.result_apply != 1 and t.result_apply != 2)
-			</if>
-			
-			<!-- 任务查询  -->
-			<if test="queryMap != null">
-				and (a.id = #{queryMap.accountId, jdbcType=BIGINT} or parts_atl_id = #{queryMap.orgId, jdbcType=BIGINT} or mat_atl_id = #{queryMap.orgId, jdbcType=BIGINT} or parts_pat_id = #{queryMap.orgId, jdbcType=BIGINT} or mat_pat_id = #{queryMap.orgId, jdbcType=BIGINT}
-				<if test="queryMap.taskIdList != null">
-					or t.id in <foreach collection="queryMap.taskIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
-				</if>
-				)
-			</if>
-			
-			<!-- 任务查询  -->
-			<if test="taskIdList != null">
-				and t.id in <foreach collection="taskIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
-			</if>
-			
-			<!-- 信息ID -->
-			<if test="iIdList != null">
-				and t.i_id in <foreach collection="iIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
-			</if>
-			
-			<!-- 实验室ID -->
-			<if test="labOrgId != null">
-				and (t.parts_atl_id = #{labOrgId, jdbcType=BIGINT} or t.mat_atl_id = #{labOrgId, jdbcType=BIGINT} or t.parts_pat_id = #{labOrgId, jdbcType=BIGINT} or t.mat_pat_id = #{labOrgId, jdbcType=BIGINT})
-			</if>
-			
-			<if test="result != null">	
-				and t.result = #{result,jdbcType=INTEGER}
-			</if>
-			
-			<if test="isReceive != null">	
-				and t.is_receive = #{isReceive,jdbcType=INTEGER}
-			</if>
-			
-			<if test="reasonId != null">
-				and t.reason_id = #{reasonId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="startExpectDate != null and startExpectDate != ''">
-				and t.expect_date &gt;= #{startExpectDate, jdbcType=DATE}
-			</if>
-
-			<if test="endExpectDate != null and endExpectDate != ''">
-				and t.expect_date &lt;= #{endExpectDate, jdbcType=DATE}
-			</if>
-			
-			<if test="standIid != null">
-				and t.stand_i_id = #{standIid,jdbcType=BIGINT}
-			</if>
-			
-			<if test="approveAccountId != null">
-				and t.approve_account_id = #{approveAccountId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="trainsmitAccountId != null">
-				and t.trainsmit_account_id = #{trainsmitAccountId,jdbcType=BIGINT}
-			</if>
-			
-			<if test="examineAccountId != null">
-				and t.examine_account_id = #{examineAccountId,jdbcType=BIGINT}
-			</if>
-			
-			<!-- OTS 和 Tpt 任务 -->
-			<if test="otsAndtPtTask != null">
-				and (t.type = 1 or type = 4)
-			</if>
-			
-			<!-- PPAP 和 SOP 任务 -->
-			<if test="ppapAndSopTask != null">
-				and (t.type = 2 or type = 3)
-			</if>
-			
-			<!-- 流程上的用户 -->
-			<if test="currentAccountId != null">
-				and (t.approve_account_id = #{currentAccountId,jdbcType=BIGINT} or t.trainsmit_account_id = #{currentAccountId,jdbcType=BIGINT} or t.examine_account_id = #{currentAccountId,jdbcType=BIGINT} or t.a_id = #{currentAccountId,jdbcType=BIGINT})
-			</if>
-			
-			<!-- 任务类型多选 -->
-			<if test="typeList != null">
-				and t.type in <foreach collection="typeList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
-			</if>
 		</where>
-
-		<choose>
-			<when test="custom_order_sql != null">
-				order by ${custom_order_sql}
-			</when>
-			<otherwise>
-				order by t.id desc
-			</otherwise>
-		</choose>
 	</select>
 	
 	
@@ -922,8 +739,8 @@
 			</if>
 			
 			<!-- 结果对比 -->
-			<if test="patternTask != null">
-				union all select id, code, type, state, create_time, a_id, 15 taskType from task where state = 4 and ( type = 2 or type = 3)
+			<if test="compareTask != null">
+				union all select id, code, type, state, create_time, a_id, 15 taskType from task where state = 4 and ( type = 2 or type = 3) and (parts_atl_id = #{compareTask, jdbcType=BIGINT} or mat_atl_id = #{compareTask, jdbcType=BIGINT})
 			</if>
 			
 			<!-- 结果发送 -->
@@ -933,12 +750,12 @@
 			
 			<!-- 结果确认：待上传列表 -->
 			<if test="confirmTask_wait != null">
-				union all select id, code, type, state, create_time, a_id, 17 taskType from task where type = 4 and ((mat_pat_result = 3 or mat_atl_result = 3) and (mat_pat_result != 3 or mat_atl_result != 3))
+				union all select id, code, type, state, create_time, a_id, 17 taskType from task where type = 4 and a_id = #{applicatId,jdbcType=BIGINT} AND (( mat_atl_code IS NOT NULL AND mat_atl_times > 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times > 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times > 0 ) OR ( parts_pat_times > 0 AND parts_pat_code IS NOT NULL )) AND (( mat_atl_code IS NOT NULL AND mat_atl_times = 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times = 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND parts_pat_code IS NOT NULL )) and a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
 			<!-- 结果确认：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				union all select id, code, type, state, create_time, a_id, 18 taskType from task where (type = 1 and state = 3 and parts_atl_result = 3 and mat_atl_result = 3) or (state = 6 and (type = 2 or type = 3) or (type = 4 and state = 3 and mat_pat_result = 3 and mat_atl_result = 3))
+				union all select id, code, type, state, create_time, a_id, 18 taskType from task where (type != 4 and a_id = #{applicatId,jdbcType=BIGINT} and (mat_atl_result = 3 or parts_atl_result = 3)) or ( type = 4 and a_id = #{applicatId,jdbcType=BIGINT} AND (( mat_atl_code IS NOT NULL AND mat_atl_times > 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times > 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times > 0 ) OR ( parts_pat_times > 0 AND parts_pat_code IS NOT NULL )) AND NOT (( mat_atl_code IS NOT NULL AND mat_atl_times = 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times = 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND parts_pat_code IS NOT NULL )))
 			</if>
 			
 		) t 

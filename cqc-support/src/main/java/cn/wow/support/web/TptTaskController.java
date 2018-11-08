@@ -483,8 +483,9 @@ public class TptTaskController extends AbstractController {
 				}
 				parts.setState(Contants.ONDOING_TYPE);
 
-				boolean isExist = partsService.isExist(null, p_name,
-						StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer, p_producerCode)
+				boolean isExist = partsService
+						.isExist(null, p_name, StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null,
+								p_producer, p_producerCode, p_code, p_proNo, p_num, p_place)
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
@@ -498,7 +499,7 @@ public class TptTaskController extends AbstractController {
 				if (parts.getState().intValue() == 0) {
 					boolean isExist = partsService
 							.isExist(p_id, p_name, StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null,
-									p_producer, p_producerCode)
+									p_producer, p_producerCode, p_code, p_proNo, p_num, p_place)
 							.getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
@@ -509,7 +510,7 @@ public class TptTaskController extends AbstractController {
 					// 新增时，如果是选择的情况，先判断输入的信息是否存在，如果存在就不新增，如果不存在就新增一条记录（表示有修改过）
 					ResultFlagVO isExist = partsService.isExist(p_id, p_name,
 							StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer,
-							p_producerCode);
+							p_producerCode, p_code, p_proNo, p_num, p_place);
 
 					if (!isExist.getFlag()) {
 						parts.setId(null);
@@ -831,8 +832,9 @@ public class TptTaskController extends AbstractController {
 					parts.setNum(p_num.intValue());
 				}
 
-				boolean isExist = partsService.isExist(p_id, p_name,
-						StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null, p_producer, p_producerCode)
+				boolean isExist = partsService
+						.isExist(p_id, p_name, StringUtils.isNoneBlank(p_proTime) ? sdf.parse(p_proTime) : null,
+								p_producer, p_producerCode, p_code, p_proNo, p_num, p_place)
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);

@@ -187,7 +187,7 @@ public class IndexController {
 
 				qMap.clear();
 				qMap.put("state", SamplingTaskEnum.COMPARE.getState());
-				qMap.put("compareTask", true);
+				qMap.put("compareTask", account.getOrgId());
 				compareNum = taskService.getTaskNum(qMap);
 			}
 
@@ -198,6 +198,7 @@ public class IndexController {
 				}
 
 				qMap.clear();
+				qMap.put("applicatId", account.getId());
 				qMap.put("confirmTask_wait", true);
 				waitConfirmNum = taskService.getTaskNum(qMap);
 			}
@@ -209,6 +210,7 @@ public class IndexController {
 				}
 
 				qMap.clear();
+				qMap.put("applicatId", account.getId());
 				qMap.put("confirmTask_finish", true);
 
 				finishConfirmNum = taskService.getTaskNum(qMap);

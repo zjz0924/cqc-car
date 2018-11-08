@@ -223,6 +223,23 @@
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
 						getRecordList(rowData.code);
+					},
+					onLoadSuccess:function(data){
+						if("${isLabUser}" == 1){
+							$('#' + datagrid).datagrid("hideColumn", "info.vehicle.code");
+							$('#' + datagrid).datagrid("hideColumn", "info.vehicle.proAddr");
+							$('#' + datagrid).datagrid("hideColumn", "info.parts.name");
+							$('#' + datagrid).datagrid("hideColumn", "info.parts.producer");
+							$('#' + datagrid).datagrid("hideColumn", "info.parts.producerCode");
+							$('#' + datagrid).datagrid("hideColumn", "info.parts.proTime");
+							$('#' + datagrid).datagrid("hideColumn", "info.material.name");
+							$('#' + datagrid).datagrid("hideColumn", "info.material.matNo");
+							$('#' + datagrid).datagrid("hideColumn", "info.material.producer");
+							
+							$("#datagrid-td-group1-0-0").hide();
+							$("#datagrid-td-group1-0-1").hide();
+							$("#datagrid-td-group1-0-2").hide();
+						}
 					}
 				});
 		
@@ -376,7 +393,6 @@
 					   }
 					}
 				});
-				
 			});
 		
 			function doSearch() {

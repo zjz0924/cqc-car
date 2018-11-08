@@ -178,9 +178,13 @@ public class ApplyController extends AbstractController {
 			map.put("endCreateTime", endCreateTime + " 23:59:59");
 		}
 
-		// 非超级管理员，只能看到分配到自己实验室的任务
-		if (!Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
-			map.put("accomplishTask_lab", account.getOrgId());
+		// 除了超级管理员， 流程上的用户都可以查看
+		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+			// 流程上的用户
+			map.put("applyTask", account.getId());
+
+			// 分配到自己的实验室
+			map.put("labId", account.getOrgId());
 		}
 
 		// 申请人信息
@@ -612,7 +616,7 @@ public class ApplyController extends AbstractController {
 						p_producerCode);
 
 				boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getName(), parts.getProTime(),
-						p_producer, p_producerCode).getFlag();
+						p_producer, p_producerCode, p_code, p_proNo, p_num, p_place).getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
 					vo.setMsg("零部件信息已存在");

@@ -5,108 +5,170 @@
 	<head>
 		<meta charset="utf-8">
 		<title>SGMW</title>
-		<%@include file="../common/source.jsp"%>
-		<script src="${ctx}/resources/js/jquery.form.js"></script>
+		<%@include file="../../common/source.jsp"%>
 		
 		<script type="text/javascript">
-			var getDataUrl = "${ctx}/result/confirmListData?type=${type}";
+			var getDataUrl = "${ctx}/task/getListData";
 			var getRecordUrl = "${ctx}/ots/taskRecordListData";
-			var datagrid = "confirmTable";
+			var datagrid = "taskTable";
 			var recordDatagrid = "taskRecordTable";
 			// 当前选中的任务的任务号
 			var currentTaskCode = "";
-			
-			var toolbar = [{
-				text : '接收',
-				iconCls : 'icon-ok',
-				handler : function() {
-					var result = getSelectedIds();
-					if(!result){
-						return false;
-					}
-					batchConfirm(result, 5, "");
-				}
-			},{
-				text : '不接收',
-				iconCls : 'icon-cancel',
-				handler : function() {
-					var result = getSelectedIds();
-					if(!result){
-						return false;
-					}
-					$("#batchRemark").textbox("setValue", "");
-					$("#seasonDialog").dialog("open");
-					
-					// 移动y滚动条
-					top.parent.scrollTo(0, 300);
-				}
-			}];
 			
 			$(function(){
 				 // 任务列表
 				 $("#" + datagrid).datagrid({
 			        url : getDataUrl,
-			        singleSelect : false, /*是否选中一行*/
-			        checkOnSelect: false, // 只有点击checkbox才会选中
+			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "380px",
+			        height: "390px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
-			        rownumbers: true,
-			        toolbar : toolbar,
+			        rownumbers: true, 
 			        idField: 'id',
-			        frozenColumns: [[{
-				        	field:'ck',
-				        	checkbox:true 
-				        },  
-			        	{
-							field : '_operation',
-							title : '操作',
-							width : '60',
-							align : 'center',
-							formatter : function(value,row,index){
-								return '<a href="javascript:void(0)" onclick="confirmDetail('+ row.id +')">接收</a>';  	
-							}
-						} , {
-				            field : 'id', 
-				            hidden: 'true'
-				        }, {
-							field : 'code',
-							title : '任务号',
-							width : '150',
-							align : 'center',
-							formatter : formatCellTooltip
-						}, {	
-							field : 'type',
-							title : '任务类型',
-							width : '150',
-							align : 'center',
-							formatter : function(val){
-								var str = "第三方委托"
-								if(val == 1){
-									str = "基准图谱建立";
-								}else if(val == 2){
-									str = "图谱试验抽查-开发阶段";
-								}else if(val == 3){
-									str = "图谱试验抽查-量产阶段";
-								}
-								return "<span title='" + str + "'>" + str + "</span>";
-							}
-						}, {
-							field : 'createTime',
-							title : '录入时间',
-							width : '130',
-							align : 'center',
-							formatter : DateTimeFormatter
+			        frozenColumns:[[{
+						field : '_operation',
+						title : '操作',
+						width : '60',
+						align : 'center',
+						formatter : function(value,row,index){
+							return '<a href="javascript:void(0)" onclick="deleteTask('+ row.id +')">删除</a>';  	
 						}
-			        ]],
-			        columns : [ [{
-						title:'零件试验结果', 
-						colspan:2
-					},{
-						title:'材料试验结果', 
-						colspan:2
+					}, {
+			            field : 'id', 
+			            hidden: 'true'
+			        }, {
+						field : 'code',
+						title : '任务号',
+						width : '120',
+						align : 'center',
+						sortable: true,
+						formatter : formatCellTooltip
+					}, {
+						field : 'type',
+						title : '任务类型',
+						width : '150',
+						align : 'center',
+						sortable: true,
+						formatter : function(val){
+							var str = "第三方委托"
+							if(val == 1){
+								str = "基准图谱建立";
+							}else if(val == 2){
+								str = "图谱试验抽查-开发阶段";
+							}else if(val == 3){
+								str = "图谱试验抽查-量产阶段";
+							}
+							return "<span title='" + str + "'>" + str + "</span>";
+						}
+					}, {
+						field : 'state',
+						title : '状态',
+						width : '120',
+						align : 'center',
+						sortable: true,
+						formatter : function(value,row,index){
+							var str = "";
+							if(row.type == 1 || row.type == 4){
+								if(row.state == 1){
+									str = "审核中";
+								}else if(row.state == 2){
+									str = "审核不通过";
+								}else if(row.state == 3){
+									str = "进行中";
+								}else if(row.state == 4){
+									str = "完成";
+								}else if(row.state == 5){
+									str = "申请修改";
+								}else {
+									str = "申请不通过";
+								}
+							}else if(row.type == 2 || row.type == 3){
+								if(row.state == 1){
+									str = "审批中";
+								}else if(row.state == 2){
+									str = "审批不通过";
+								}else if(row.state == 3){
+									str = "结果上传中";
+								}else if(row.state == 4){
+									str = "结果比对中";
+								}else if(row.state == 5){
+									str = "结果发送中";
+								}else if(row.state == 6){
+									str = "结果接收中";
+								}else if(row.state == 7){
+									str = "完成";
+								}else if(row.state == 8){
+									str = "申请修改";
+								}else if(row.state == 9){
+									str = "申请不通过";
+								}else if(row.state == 10){
+									str = "等待是否二次抽样";
+								}else {
+									str = "中止任务";
+								}
+							}
+							return "<span title='" + str + "'>" + str + "</span>";
+						}
+					}, {
+						field : 'isReceive',
+						title : '是否接收',
+						width : '80',
+						align : 'center',
+						sortable: true,
+						formatter : function(val){
+							var str = "";
+							var color = "red";
+							if(val == 1){
+								str = "接收";
+								color = "green";
+							}else if(val == 2){
+								str = "不接收";
+							}
+							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
+						}
+					}, {
+						field : 'result',
+						title : '结果',
+						width : '80',
+						align : 'center',
+						sortable: true,
+						formatter : function(val){
+							var str = "";
+							var color = "red";
+							if(val == 1){
+								str = "合格";
+								color = "green";
+							}else if(val == 2){
+								str = "不合格";
+							}
+							return "<span title='" + str + "' style='color:"+ color +"'>" + str + "</span>";
+						}
+					}]],
+			        columns : [ [ {
+						field : 'receiveLabOrg',
+						title : '接收实验室',
+						width : '130',
+						align : 'center',
+						rowspan: 2,
+						formatter : formatCellTooltip
+					}, {
+						field : 'createTime',
+						title : '录入时间',
+						width : '130',
+						align : 'center',
+						sortable: true,
+						rowspan: 2,
+						formatter : DateTimeFormatter
+					}, {
+						field : 'confirmTime',
+						title : '完成时间',
+						width : '130',
+						align : 'center',
+						sortable: true,
+						rowspan: 2,
+						formatter : DateTimeFormatter
 					},{
 						title:'车型信息', 
 						colspan:2
@@ -121,54 +183,6 @@
 						colspan: 3
 					}],
 					[{
-						field : 'partsAtlConclusion',
-						title : '图谱',
-						width : '80',
-						align : 'center',
-						rowspan: 1,
-						formatter : formatCellTooltip
-					}, {
-						field : 'partsPatConclusion',
-						title : '型式',
-						width : '80',
-						align : 'center',
-						rowspan: 1,
-						formatter : function(value,row,index){
-							var str = "/";
-							if(row.type == 4){
-								if(value != null){
-									str = value;
-								}else{
-									str = "";
-								}
-							}
-							return "<span title='"+ str +"'>"+ str +"</span>";
-						}
-					},{
-						field : 'matAtlConclusion',
-						title : '图谱',
-						width : '80',
-						align : 'center',
-						rowspan: 1,
-						formatter : formatCellTooltip
-					}, {
-						field : 'matPatConclusion',
-						title : '型式',
-						width : '80',
-						align : 'center',
-						rowspan: 1,
-						formatter : function(value,row,index){
-							var str = "/";
-							if(row.type == 4){
-								if(value != null){
-									str = value;
-								}else{
-									str = "";
-								}
-							}
-							return "<span title='"+ str +"'>"+ str +"</span>";
-						}
-					}, {
 						field : 'info.vehicle.code',
 						title : '车型代码',
 						width : '120',
@@ -300,16 +314,16 @@
 						formatter : function(value, row, index){
 							if(!isNull(row.applicat) && !isNull(row.applicat.org)){
 								return "<span title='"+ row.applicat.org.name +"'>"+ row.applicat.org.name +"</span>";
-							}								
+							}							
 						}
 					}] ],
-					onDblClickRow : function(rowIndex, rowData) {
-						confirmDetail(rowData.id);
-					},
+					/*	onDblClickRow : function(rowIndex, rowData) {
+						detail(rowData.id);
+					} ,
 					onClickRow: function(rowIndex, rowData) {
 						currentTaskCode = rowData.code;
 						getRecordList(rowData.code);
-					}
+					} */
 				});
 		
 				// 分页信息
@@ -335,6 +349,11 @@
 							'applicat_org': $('#applicat_org').combotree('getValue'),
 							'startCreateTime' : $("#q_startCreateTime").val(),
 							'endCreateTime' : $("#q_endCreateTime").val(),
+							'taskType': $("#q_taskType").textbox("getValue"),
+							'startConfirmTime' : $("#q_startConfirmTime").val(),
+							'endConfirmTime' : $("#q_endConfirmTime").val(),
+							'reason': $("#reason").textbox("getValue"),
+							'source': $("#source").textbox("getValue"),
 							'pageNum' : pageNumber,
 							'pageSize' : pageSize
 						}
@@ -344,29 +363,30 @@
 				
 				
 				// 任务记录列表
-				$("#" + recordDatagrid).datagrid({
+			/* 	$("#" + recordDatagrid).datagrid({
 			        url : getRecordUrl,
-			        singleSelect : true, /*是否选中一行*/
+			        singleSelect : true, 
 			        width:'auto', 	
-			        height: "380px",
-			        pagination : true,  /*是否显示下面的分页菜单*/
+			        height: "360px",
+			        pagination : true, 
 			        border:false,
 			        rownumbers: true,
 			        idField: 'id',
 					title: '操作记录',
+					nowrap: false,  
 			        columns : [ [ {
 			            field : 'id', 
 			            hidden: 'true'
 			        }, {
 						field : 'code',
 						title : '任务号',
-						width : '220',
+						width : '180',
 						align : 'center',
 						formatter : formatCellTooltip
 					}, {
 						field : 'account',
 						title : '操作用户',
-						width : '150',
+						width : '120',
 						align : 'center',
 						formatter : function(val){
 							if(val){
@@ -386,12 +406,12 @@
 						field : 'remark',
 						title : '备注',
 						width : '350',
-						align : 'center',
+						align : 'left',
 						formatter : formatCellTooltip
 					},{
 						field : 'createTime',
 						title : '录入时间',
-						width : '180',
+						width : '200',
 						align : 'center',
 						formatter : DateTimeFormatter
 					}  ] ]
@@ -410,7 +430,7 @@
 						}
 						getData(recordDatagrid, getRecordUrl, data);
 					}
-				});
+				}); */
 				
 				// 零部件生产商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
@@ -480,7 +500,12 @@
 					'applicat_depart': $("#applicat_depart").textbox("getValue"),
 					'applicat_org': $('#applicat_org').combotree('getValue'),
 					'startCreateTime' : $("#q_startCreateTime").val(),
-					'endCreateTime' : $("#q_endCreateTime").val()
+					'endCreateTime' : $("#q_endCreateTime").val(),
+					'startConfirmTime' : $("#q_startConfirmTime").val(),
+					'endConfirmTime' : $("#q_endConfirmTime").val(),
+					'taskType': $("#q_taskType").combobox("getValue"),
+					'reason': $("#reason").textbox("getValue"),
+					'source': $("#source").textbox("getValue")
 				}
 				getData(datagrid, getDataUrl, data);
 			}
@@ -509,93 +534,65 @@
 				$('#applicat_org').combotree('setValue', "");
 				$("#q_startCreateTime").val('');
 				$("#q_endCreateTime").val('');
+				$("#q_startConfirmTime").val('');
+				$("#q_endConfirmTime").val('');
+				$("#q_taskType").combobox("select", "");
+				$("#reason").textbox("clear");
+				$("#source").textbox("clear");
+				
 				getData(datagrid, getDataUrl, {});
 			}
 			
 			// 关掉对话时回调
 			function closeDialog(msg) {
-				$('#confirmDetailDialog').dialog('close');
+				$('#detailDialog').dialog('close');
 				tipMsg(msg, function(){
 					$('#' + datagrid).datagrid('reload');
 					$('#' + recordDatagrid).datagrid('reload');
 				});
 			}
 			
-			function confirmDetail(id) {
-				$('#confirmDetailDialog').dialog({
-					title : '结果信息',
+			function detail(id) {
+				$('#detailDialog').dialog({
+					title : '任务详情',
 					width : 1200,
-					height : 650,
-					top: "500px",
+					height : 660,
 					closed : false,
 					cache : false,
-					href : "${ctx}/result/confirmDetail?id=" + id + "&type=${type}",
+					top: 300,
+					href : "${ctx}/query/detail?id=" + id,
 					modal : true
 				});
-				
-				// 移动y滚动条
-				top.parent.scrollTo(0, 500);
+				top.parent.scrollTo(0, 300);
 			}
 			
-			function getSelectedIds(){
-				var rows =  $("#" + datagrid).datagrid('getChecked');
-				if(!isNull(rows)){
-					var ids = [];
-					for(var i = 0; i < rows.length; i++){
-						ids.push(rows[i].id);
-					}
-					return ids;
-				}else{
-					errorMsg("请选择要操作的任务");
-					return false;
-				}
+			function deleteTask(id){
+				 $.messager.confirm('系统提示', "此操作将删除该任务，您确定要继续吗？", function(r){
+                     if (r){
+                         $.ajax({
+                         	url: "${ctx}/task/delete",
+                         	data: {
+                         		id: id,
+                         	},
+                         	success: function(data){
+                         		if(data.success){
+                         			tipMsg(data.msg, function(){
+                						$('#' + datagrid).datagrid('reload');
+                					});
+                 				}else{
+                 					errorMsg(data.msg);
+                 				}
+                         	}
+                         });
+                     }
+                 });
 			}
 			
-			function batchConfirm(ids, type, remark){
-				$.ajax({
-					url: "${ctx}/result/batchConfirm",
-					data:{
-						"ids": ids,
-						"type": type,
-						"remark": remark
-					},
-					success: function(data){
-						if(data.success){
-							tipMsg(data.msg, function(){
-								$('#' + datagrid).datagrid('reload');
-								$('#' + recordDatagrid).datagrid('reload');
-							});
-						}else{
-							errorMsg(data.msg);
-						}
-						saving = false;
-					}
-				});
-			}
-			
-			function doBatchSubmit(){
-				var remark = $("#batchRemark").textbox("getValue");
-				if(isNull(remark)){
-					errorMsg("请输入原因");
-					$("#batchRemark").next('span').find('input').focus();
-					return false;
-				}
-				
-				batchConfirm(getSelectedIds(), 5, remark);
-				$("#seasonDialog").dialog("close");
-			}
 		</script>
 	</head>
 	
 	<body>
-		<%@include file="../common/header.jsp"%>
-		
-		<!--banner-->
-		<div class="inbanner XSLR">
-			<span style="font-size: 30px;font-weight: bold; margin-top: 70px; display: inline-block; margin-left: 80px;color: #4169E1">${menuName}</span>
-		</div>
-	
-		<div style="margin-top: 25px; padding-left: 20px; margin-bottom: 10px;font-size:12px;margin-left: 5%;margin-right: 5%;">
+		<div style="margin-top: 15px; padding-left: 20px; margin-bottom: 10px;font-size:12px;">
 			<div>
 				<div style="margin-top: 5px;">
 					<span class="qlabel">零件名称：</span>
@@ -653,6 +650,41 @@
 				<div style="margin-top: 5px;">
 					<span class="qlabel">任务号：</span>
 					<input id="task_code" name="task_code" class="easyui-textbox" style="width: 168px;"> &nbsp;&nbsp;&nbsp;&nbsp;
+				
+					<span class="qlabel">任务类型：</span>
+					<select id="q_taskType" name="q_taskType" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+						<option value="">全部</option>
+						<option value="1">基准图谱建立</option>
+						<option value="2">图谱试验抽查-开发阶段</option>
+						<option value="3">图谱试验抽查-量产阶段</option>
+						<option value="4">第三方委托</option>
+					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">抽检原因：</span>
+					<select id="reason" name="reason" style="width:168px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+						<option value="">全部</option>
+						<c:forEach items="${optionList}" var="vo">
+							<c:if test="${vo.type == 2}">
+								<option value="${vo.name}" <c:if test="${facadeBean.reason.reason == vo.name }">selected="selected"</c:if>>${vo.name}</option>
+							</c:if>
+						</c:forEach>
+					</select> &nbsp;&nbsp;&nbsp;&nbsp;
+					
+					<span class="qlabel">费用出处：</span>
+					<select id="source" name="source" style="width:160px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
+						<option value="">请选择</option>
+						<c:forEach items="${optionList}" var="vo">
+							<c:if test="${vo.type == 3}">
+								<option value="${vo.name}" <c:if test="${facadeBean.reason.source == vo.name }">selected="selected"</c:if>>${vo.name}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+				</div>
+				
+				<div style="margin-top: 5px;">
+					<span class="qlabel">完成时间：</span>
+					<input type="text" id="q_startConfirmTime" name="q_startConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endConfirmTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
+					<input type="text" id="q_endConfirmTime" name="q_endConfirmTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'q_startConfirmTime\')}'})" class="textbox"  style="line-height: 23px;width:80px;display:inline-block;"/> &nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">录入时间：</span>
 					<input type="text" id="q_startCreateTime" name="q_startCreateTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'q_endCreateTime\')}'})" class="textbox" style="line-height: 23px;width:80px;display:inline-block"/> - 
@@ -664,29 +696,17 @@
 			</div>
 			
 			<div style="margin-top:10px;">
-				<table id="confirmTable" style="height:auto;width:auto"></table>
+				<table id="taskTable" style="height:auto;width:auto"></table>
 			</div>
 			
-			<div style="margin-top:10px;">
+		<!-- 	<div style="margin-top:10px;">
 				<table id="taskRecordTable" style="height:auto;width:auto"></table>
-			</div>
+			</div> -->
 			
-			<div id="confirmDetailDialog"></div>
-			
-			<div id="seasonDialog" class="easyui-dialog" title="不接收" style="width: 400px; height: 200px; padding: 10px;top:500px;" closed="true" data-options="modal:true">
-				<input id="batchRemark" class="easyui-textbox" label="不接收原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/>
-				
-				<div align=center style="margin-top: 15px;">
-					<a href="javascript:void(0);"  onclick="doBatchSubmit()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">提交</a>&nbsp;&nbsp;
-					<a href="javascript:void(0);"  onclick="$('#seasonDialog').dialog('close')" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">取消</a>
-				</div>
-			</div>
+			<div id="detailDialog"></div>
 		
 		</div>
 
-		<!-- footer -->
-		<%@include file="../common/footer.jsp"%>
-		
 		<style type="text/css">
 			.qlabel{
 				display: inline-block;

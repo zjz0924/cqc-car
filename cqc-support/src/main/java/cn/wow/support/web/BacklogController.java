@@ -115,77 +115,90 @@ public class BacklogController {
 
 		if (isHasPermission(permissionMap, "otsRequire")) {
 			map.put("otsRequire", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "otsExamine")) {
 			map.put("otsExamine", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "otsOrder")) {
 			map.put("otsTransmit", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "otsApprove")) {
 			map.put("otsApprove", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "ppapOrder")) {
 			map.put("ppapTransmit", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "ppapApprove")) {
 			map.put("ppapApprove", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "sopOrder")) {
 			map.put("sopTransmit", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "sopApprove")) {
 			map.put("sopApprove", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "tptRequire")) {
 			map.put("tptRequire", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "tptExamine")) {
 			map.put("tptExamine", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "tptOrder")) {
 			map.put("tptTransmit", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "tptApprove")) {
 			map.put("tptApprove", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "patternUpload")) {
-			map.put("patternTask", true);
+			map.put("patternTask", applicat.getOrgId());
 		}
 
 		if (isHasPermission(permissionMap, "atlasUpload")) {
-			map.put("atlasTask", true);
+			map.put("atlasTask", applicat.getOrgId());
 		}
 
 		if (isHasPermission(permissionMap, "compare")) {
-			map.put("patternTask", true);
+			map.put("compareTask", applicat.getOrgId());
 		}
 
 		if (isHasPermission(permissionMap, "send")) {
-			map.put("sendTask", true);
+			map.put("sendTask", applicat.getOrgId());
 		}
 
 		if (isHasPermission(permissionMap, "waitConfirm")) {
 			map.put("confirmTask_wait", true);
+			map.put("applicatId", applicat.getId());
 		}
 
 		if (isHasPermission(permissionMap, "finishConfirm")) {
 			map.put("confirmTask_finish", true);
+			map.put("applicatId", applicat.getId());
 		}
 
-		map.put("applicatId", applicat.getId());
 		List<Task> dataList = taskService.getBacklogTask(map);
 
 		if (dataList != null && dataList.size() > 0) {

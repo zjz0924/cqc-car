@@ -254,8 +254,8 @@
 						<td style="font-weight:bold;">零部件</td>
 						<td align="center">
 							<div style="margin-top:5px;">
-								<label><input name="p_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<label><input name="p_temp" type="radio" value="2" />不一致 </label> 
+								<label><input name="p_temp" type="radio" value="1" checked onchange="chooseChange('p')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="p_temp" type="radio" value="2" onchange="chooseChange('p')"/>不一致 </label> 
 							</div>
 							<div style="margin-top:5px;">
 								<textarea id="p_temp_remark" name="p_temp_remark" rows="1" cols="25"></textarea>
@@ -263,8 +263,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:5px;">
-								<label><input name="p_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<label><input name="p_inf" type="radio" value="2" />不一致 </label> 
+								<label><input name="p_inf" type="radio" value="1" checked onchange="chooseChange('p')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="p_inf" type="radio" value="2" onchange="chooseChange('p')"/>不一致 </label> 
 							</div>
 							<div style="margin-top:5px;">
 								<textarea id="p_inf_remark" name="p_inf_remark" rows="1" cols="25"></textarea>
@@ -272,8 +272,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:5px;">
-								<label><input name="p_dt" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<label><input name="p_dt" type="radio" value="2" />不一致 </label> 
+								<label><input name="p_dt" type="radio" value="1" checked onchange="chooseChange('p')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="p_dt" type="radio" value="2" onchange="chooseChange('p')"/>不一致 </label> 
 							</div>
 							<div style="margin-top:5px;">
 								<textarea id="p_dt_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
@@ -281,8 +281,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:5px;">
-								<label><input name="p_tg" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-								<label><input name="p_tg" type="radio" value="2" />不一致 </label> 
+								<label><input name="p_tg" type="radio" value="1" checked onchange="chooseChange('p')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="p_tg" type="radio" value="2" onchange="chooseChange('p')"/>不一致 </label> 
 							</div>
 							<div style="margin-top:5px;">
 								<textarea  id="p_tg_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
@@ -290,8 +290,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:5px;">
-								<label><input name="p_result" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-								<label><input name="p_result" type="radio" value="2" />不一致 </label> 
+								<label><input name="p_result" type="radio" value="1" checked onchange="chooseChange('p')" disabled/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="p_result" type="radio" value="2" onchange="chooseChange('p')" disabled/>不一致 </label> 
 							</div> 
 							<div style="margin-top:5px;">
 								<textarea id="p_result_remark" name="p_dt_remark" rows="1" cols="25"></textarea>
@@ -305,8 +305,8 @@
 						<td style="font-weight:bold;">原材料</td>
 						<td align="center">
 							<div style="margin-top:5px;">
-								<label><input name="m_temp" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<label><input name="m_temp" type="radio" value="2" />不一致 </label> 
+								<label><input name="m_temp" type="radio" value="1" checked onchange="chooseChange('m')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<label><input name="m_temp" type="radio" value="2" onchange="chooseChange('m')"/>不一致 </label> 
 							</div>
 							<div style="margin-top:5px;">
 								<textarea id="m_temp_remark" name="m_temp_remark" rows="1" cols="25"></textarea>
@@ -314,8 +314,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:10px;">
-								<label><input name="m_inf" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-								<label><input name="m_inf" type="radio" value="2" />不一致 </label> 
+								<label><input name="m_inf" type="radio" value="1" checked onchange="chooseChange('m')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_inf" type="radio" value="2" onchange="chooseChange('m')"/>不一致 </label> 
 							</div> 
 							<div style="margin-top:5px;">
 								<textarea id="m_inf_remark" name="m_inf_remark" rows="1" cols="25"></textarea>
@@ -323,8 +323,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:10px;">
-								<label><input name="m_dt" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-								<label><input name="m_dt" type="radio" value="2" />不一致 </label> 
+								<label><input name="m_dt" type="radio" value="1" checked onchange="chooseChange('m')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_dt" type="radio" value="2" onchange="chooseChange('m')"/>不一致 </label> 
 							</div> 
 							<div style="margin-top:5px;">
 								<textarea id="m_dt_remark" name="m_dt_remark" rows="1" cols="25"></textarea>
@@ -332,8 +332,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:10px;">
-								<label><input name="m_tg" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-								<label><input name="m_tg" type="radio" value="2" />不一致 </label> 
+								<label><input name="m_tg" type="radio" value="1" checked onchange="chooseChange('m')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_tg" type="radio" value="2" onchange="chooseChange('m')"/>不一致 </label> 
 							</div> 
 							<div style="margin-top:5px;">
 								<textarea id="m_tg_remark" name="m_tg_remark" rows="1" cols="25"></textarea>
@@ -341,8 +341,8 @@
 						</td>
 						<td align="center">
 							<div style="margin-top:10px;">
-								<label><input name="m_result" type="radio" value="1" checked/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-								<label><input name="m_result" type="radio" value="2" />不一致 </label> 
+								<label><input name="m_result" type="radio" value="1" checked onchange="chooseChange('m')" disabled/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								<label><input name="m_result" type="radio" value="2" onchange="chooseChange('m')" disabled/>不一致 </label> 
 							</div> 
 							<div style="margin-top:5px;">
 								<textarea id="m_result_remark" name="m_result_remark" rows="1" cols="25"></textarea>
@@ -449,6 +449,20 @@
 			$("#taskInfoDiv").toggle();
 			$("#applicatDiv").toggle();
 			$("#atlDiv").toggle();
+		}
+		
+		function chooseChange(pre){
+			var temp = $("input[name='"+ pre +"_temp']:checked").val();
+			var inf = $("input[name='"+ pre +"_inf']:checked").val();
+			var dt = $("input[name='"+ pre +"_dt']:checked").val();
+			var tg = $("input[name='"+ pre +"_tg']:checked").val();
+			
+			if(temp == 2 || inf == 2 || dt == 2 || tg == 2){
+				$("input[name='"+ pre +"_result']:eq(1)").attr("checked",'checked');
+			}else{
+				$("input[name='"+ pre +"_result']:eq(0)").attr("checked",'checked');
+			}
+			
 		}
 	</script>	
 	

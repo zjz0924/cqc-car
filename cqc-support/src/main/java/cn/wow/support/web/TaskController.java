@@ -56,16 +56,17 @@ import cn.wow.common.service.PfResultService;
 import cn.wow.common.service.ReasonOptionService;
 import cn.wow.common.service.ReasonService;
 import cn.wow.common.service.TaskService;
+import cn.wow.common.utils.AjaxVO;
 import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.ImportExcelUtil;
 import cn.wow.common.utils.pagination.PageMap;
 import cn.wow.common.utils.taskState.TaskTypeEnum;
 
 @Controller
-@RequestMapping(value = "query")
-public class QueryController extends AbstractController {
+@RequestMapping(value = "task")
+public class TaskController extends AbstractController {
 
-	Logger logger = LoggerFactory.getLogger(QueryController.class);
+	Logger logger = LoggerFactory.getLogger(TaskController.class);
 
 	private final static String DEFAULT_PAGE_SIZE = "10";
 
@@ -104,7 +105,7 @@ public class QueryController extends AbstractController {
 	@RequestMapping(value = "/list")
 	public String list(HttpServletRequest httpServletRequest, Model model) {
 
-		Menu menu = menuService.selectByAlias("query");
+		Menu menu = menuService.selectByAlias("task");
 
 		// 生产基地
 		List<Address> addressList = addressService.getAddressList();
@@ -121,7 +122,7 @@ public class QueryController extends AbstractController {
 		model.addAttribute("defaultPageSize", DEFAULT_PAGE_SIZE);
 		model.addAttribute("optionList", optionList);
 		model.addAttribute("menuName", menu.getName());
-		return "query/task_list";
+		return "task/manage/task_list";
 	}
 
 	/**
@@ -167,7 +168,7 @@ public class QueryController extends AbstractController {
 			// 流程上的用户
 			map.put("currentAccountId", account.getId());
 			queryMap.put("currentAccountId", account.getId());
-			
+
 			// 分配到自己的实验室
 			map.put("labId", account.getOrgId());
 			queryMap.put("labId", account.getId());
@@ -364,7 +365,7 @@ public class QueryController extends AbstractController {
 			model.addAttribute("facadeBean", task);
 		}
 		model.addAttribute("resUrl", resUrl);
-		return "query/task_detail";
+		return "task/manage/task_detail";
 	}
 
 	/**
@@ -403,7 +404,6 @@ public class QueryController extends AbstractController {
 			sh.setColumnWidth(17, (short) 6000);
 			sh.setColumnWidth(18, (short) 6000);
 			sh.setColumnWidth(19, (short) 6000);
-			
 
 			// 合并单元格（参数说明：1：开始行 2：结束行 3：开始列 4：结束列）
 			sh.addMergedRegion(new CellRangeAddress(0, 1, 0, 0));
@@ -570,10 +570,10 @@ public class QueryController extends AbstractController {
 				Cell cell6 = contentRow.createCell(5);
 				cell6.setCellStyle(styles.get("cell"));
 				String orgName = orgNameMap.get(task.getId());
-				if(StringUtils.isNotBlank(orgName)) {
+				if (StringUtils.isNotBlank(orgName)) {
 					cell6.setCellValue(orgName);
 				}
-				
+
 				// 录入时间
 				Cell cell7 = contentRow.createCell(6);
 				cell7.setCellStyle(styles.get("cell"));
@@ -754,6 +754,34 @@ public class QueryController extends AbstractController {
 		}
 
 		return false;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/delete")
+	public AjaxVO delete(HttpServletRequest request, String id) {
+		AjaxVO vo = new AjaxVO();
+		vo.setMsg("删除成功");
+
+		try {
+			Task task = taskService.selectOne(Long.parseLong(id));
+
+			if (task != null) {
+				taskService.deleteByPrimaryKey(getCurrentUserName(), task);
+			} else {
+				vo.setMsg("删除失败，记录不存在");
+				vo.setSuccess(false);
+				return vo;
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("任务删除失败", ex);
+
+			vo.setMsg("删除失败，系统异常");
+			vo.setSuccess(false);
+			return vo;
+		}
+		return vo;
 	}
 
 }

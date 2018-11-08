@@ -133,6 +133,8 @@ public class ResultController extends AbstractController {
 	 */
 	@RequestMapping(value = "/uploadList")
 	public String uploadList(HttpServletRequest request, HttpServletResponse response, Model model, int type) {
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		Menu menu = null;
 
 		if (type == 1) {
@@ -152,6 +154,13 @@ public class ResultController extends AbstractController {
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
+		
+		// 是否是实验室用户
+		int isLabUser = 0;
+		if(account.getOrg() != null && account.getOrg().getType() == 3) {
+			isLabUser = 1;
+		}
+		model.addAttribute("isLabUser",  isLabUser);
 
 		return "result/upload_list";
 	}
@@ -705,6 +714,8 @@ public class ResultController extends AbstractController {
 			String matName, String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Long applicat_org) {
 
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -714,6 +725,9 @@ public class ResultController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 
+		// 申请的人来接收
+		map.put("applicatId", account.getId());
+		
 		if (type == 1) {
 			map.put("confirmTask_wait", true);
 		} else {
@@ -985,6 +999,8 @@ public class ResultController extends AbstractController {
 			String mat_producer, String matNo, String v_code, String v_proAddr, String applicat_name,
 			String applicat_depart, Long applicat_org) {
 
+		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
+		
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -994,7 +1010,7 @@ public class ResultController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 		map.put("state", SamplingTaskEnum.COMPARE.getState());
-		map.put("compareTask", true);
+		map.put("compareTask", account.getOrgId());
 
 		if (StringUtils.isNotBlank(task_code)) {
 			map.put("code", task_code);
