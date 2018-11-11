@@ -14,7 +14,7 @@ public enum SamplingTaskRecordEnum {
 	COMPARISON_NORMAL(5, "结果比对正常"),
 	COMPARISON_ABNORMAL(6, "结果比对异常"),
 	SEND(7, "结果发送"), 
-	CONFIRM(8, "结果确认"), 
+	CONFIRM(8, "结果接收"), 
 	SAVE(9, "结果留存"),
 	REORDER(10, "重新下任务"),
 	ALARM(11, "发送警告书"),

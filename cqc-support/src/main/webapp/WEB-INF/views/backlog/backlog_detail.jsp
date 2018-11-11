@@ -46,7 +46,7 @@
 				</tr>
 				
 				<tr id="confirmNumDiv" style="display: none;background-color: #f5fafe;">
-					<td colspan="2"><span style="font-weight: bold; font-size: 12px;">待结果确认</span></td>
+					<td colspan="2"><span style="font-weight: bold; font-size: 12px;">待结果接收</span></td>
 				</tr>
 				
 				<tr id="waitConfirmNumDiv" style="display: none;">
@@ -111,7 +111,7 @@
 						$("#compareNumDiv").show();
 					}
 					
-					// 结果确认
+					// 结果接收
 					var waitConfirmNum = data.data[5];
 					var finishConfirmNum = data.data[6];
 					

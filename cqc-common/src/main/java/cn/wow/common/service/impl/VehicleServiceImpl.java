@@ -55,7 +55,7 @@ public class VehicleServiceImpl implements VehicleService {
 	}
 
 	/**
-	 * 检查整车信息是否存在
+	 * 检查车型信息是否存在
 	 */
 	public ResultFlagVO isExist(Long id, String code, Date proTime, String proAddr) {
 		ResultFlagVO vo = new ResultFlagVO();
@@ -80,7 +80,7 @@ public class VehicleServiceImpl implements VehicleService {
 
 	
 	/**
-	 * 是否更新整车信息
+	 * 是否更新车型信息
 	 */
 	public boolean isUpdateVehicleInfo(Vehicle vehicle, String v_code, String v_proTime, String v_proAddr, String v_remark) {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

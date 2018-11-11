@@ -46,7 +46,7 @@
 							<c:if test="${facadeBean.task.state == 3}">结果上传中</c:if>
 							<c:if test="${facadeBean.task.state == 4}">结果比对中</c:if>
 							<c:if test="${facadeBean.task.state == 5}">结果发送中</c:if>
-							<c:if test="${facadeBean.task.state == 6}">结果确认中</c:if>
+							<c:if test="${facadeBean.task.state == 6}">结果接收中</c:if>
 							<c:if test="${facadeBean.task.state == 7}">完成</c:if>
 							<c:if test="${facadeBean.task.state == 8}">申请修改</c:if>
 							<c:if test="${facadeBean.task.state == 9}">申请不通过</c:if>
@@ -245,10 +245,10 @@
 								</td>
 								<td>
 									<c:choose>
-										<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-										<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-										<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-										<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+										<c:when test="${vo.type eq 1}">零件图谱试验</c:when>
+										<c:when test="${vo.type eq 2}">材料图谱试验</c:when>
+										<c:when test="${vo.type eq 3}">零件型式试验</c:when>
+										<c:when test="${vo.type eq 4}">材料型式试验</c:when>
 									</c:choose>
 								</td>
 								<td>${vo.code}</td>
@@ -262,7 +262,7 @@
 		</c:if>
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-		<div class="title" style="margin-top:15px;">结果确认</div>
+		<div class="title" style="margin-top:15px;">结果接收</div>
 		<div style="margin-left: 10px; margin-bottom: 15px;">
 			<c:choose>
 				<c:when test="${facadeBean.task.type == 1}">
@@ -281,20 +281,20 @@
 			
 			<c:choose>
 				<c:when test="${facadeBean.labType == 1}">
-					-- 零部件图谱实验
+					-- 零件图谱实验
 				</c:when>
 				<c:when test="${facadeBean.labType == 2}">
-					-- 零部件型式实验
+					-- 零件型式实验
 				</c:when>
 				<c:when test="${facadeBean.labType == 3}">
-					-- 原材料图谱实验
+					-- 材料图谱实验
 				</c:when>
 				<c:otherwise>
-					-- 原材料型式实验
+					-- 材料型式实验
 				</c:otherwise>
 			</c:choose>
 			
-			&nbsp;&nbsp;&nbsp;&nbsp;第 <span style="color:red;font-weight:bold;">${facadeBean.times}</span> 次实验，结果确认：<c:if test="${ facadeBean.labResult == 1}"><span style="color:green;font-weight:bold;">合格</span></c:if><c:if test="${ facadeBean.labResult == 2}"><span style="color:red;font-weight:bold;">不合格</span></c:if>
+			&nbsp;&nbsp;&nbsp;&nbsp;第 <span style="color:red;font-weight:bold;">${facadeBean.times}</span> 次实验，结果接收：<c:if test="${ facadeBean.labResult == 1}"><span style="color:green;font-weight:bold;">合格</span></c:if><c:if test="${ facadeBean.labResult == 2}"><span style="color:red;font-weight:bold;">不合格</span></c:if>
 		</div>
 		
 		<c:choose>

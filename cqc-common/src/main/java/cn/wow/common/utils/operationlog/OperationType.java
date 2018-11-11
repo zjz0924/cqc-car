@@ -9,7 +9,7 @@ public enum OperationType implements Serializable {
    CREATE("新建", LogLevel.ONLYNEW), UPDATE("编辑", LogLevel.BOTH),
    DELETE("删除", LogLevel.ONLYOLD), 
    LOGIN("登录"), LOGOUT("登出"), MOVE("移动"), EXAMINE("审核"), APPLY("申请"), TRANSMIT("下达任务"), APPROVE("审批任务"),  APPLY_INFO("信息修改申请"),
-   APPLY_RESULT("试验结果修改申请"), UPLOAD_ATL("上传图谱结果"), UPLOAD_PF("上传型式结果"),SEND("结果发送"), CONFIRM("结果确认"), COMPARE("结果对比"),END("中止申请"),
+   APPLY_RESULT("试验结果修改申请"), UPLOAD_ATL("上传图谱结果"), UPLOAD_PF("上传型式结果"),SEND("结果发送"), CONFIRM("结果接收"), COMPARE("结果对比"),END("中止申请"),
    SEND_COST("费用单发送"), EXPORT("导出"), IMPORT("导入"),
    // will not use in code
    UNKNOWN("Unknown");

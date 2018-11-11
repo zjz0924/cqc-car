@@ -144,10 +144,10 @@
 						<tr>
 							<td>
 								<c:choose>
-									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-									<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-									<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-									<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+									<c:when test="${vo.type eq 1}">零件图谱试验</c:when>
+									<c:when test="${vo.type eq 2}">材料图谱试验</c:when>
+									<c:when test="${vo.type eq 3}">零件型式试验</c:when>
+									<c:when test="${vo.type eq 4}">材料型式试验</c:when>
 								</c:choose>
 							</td>
 							<td>${vo.code}</td>
@@ -159,13 +159,13 @@
 			</div>	
 		</c:if>
 		
-		<!-- PPAP/SOP 对比结果确认 -->
+		<!-- PPAP/SOP 对比结果接收 -->
 		<c:if test="${facadeBean.type == 2 or facadeBean.type == 3}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">对比结果</div>
 			
 			<div style="margin-left: 15px;">
-				<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
+				<div class="title" style="margin-top:15px;">零件图谱对比（基准-抽样）</div>
 					<c:forEach items="${pAtlasResult}" var="m">
 						<div style="margin-bottom: 10px;">
 							<c:choose>
@@ -208,7 +208,7 @@
 					
 					<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 					
-					<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
+					<div class="title" style="margin-top:15px;">材料图谱对比（基准-抽样）</div>
 					<c:forEach items="${mAtlasResult}" var="m">
 						<div style="margin-bottom: 10px;">
 							<c:choose>
@@ -293,7 +293,7 @@
 			</div>	
 
 			
-			<div id="dlg" class="easyui-dialog" title="结果确认" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
+			<div id="dlg" class="easyui-dialog" title="结果接收" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
 				
 				<div>
 					<input id="remark" class="easyui-textbox" label="中止原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/><br>

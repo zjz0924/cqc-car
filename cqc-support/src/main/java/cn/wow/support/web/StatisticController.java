@@ -350,7 +350,7 @@ public class StatisticController {
 					} else if (task.getState() == 5) {
 						state = "结果发送中";
 					} else if (task.getState() == 6) {
-						state = "结果确认中";
+						state = "结果接收中";
 					} else if (task.getState() == 7) {
 						state = "完成";
 					} else if (task.getState() == 8) {

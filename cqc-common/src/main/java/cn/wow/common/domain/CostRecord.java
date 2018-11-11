@@ -31,7 +31,7 @@ public class CostRecord {
     private Date sendTime;
     // 实验次数
     private Integer times;
-    // 实验类型（1-零部件图谱，2-零部件型式，3-原材料图谱，4-原材料型式）
+    // 实验类型（1-零件图谱，2-零件型式，3-材料图谱，4-材料型式）
     private Integer labType;
     // 实验结果（1-合格，2-不合格）
     private Integer labResult;

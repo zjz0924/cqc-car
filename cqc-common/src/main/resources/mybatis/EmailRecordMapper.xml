@@ -27,7 +27,7 @@
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from email_record
-		where id = #{id,jdbcType=BIGINT}
+		where task_id = #{id,jdbcType=BIGINT}
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.EmailRecord">

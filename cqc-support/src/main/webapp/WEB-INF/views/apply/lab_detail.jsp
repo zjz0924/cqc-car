@@ -160,10 +160,10 @@
 						<tr>
 							<td>
 								<c:choose>
-									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-									<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-									<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-									<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+									<c:when test="${vo.type eq 1}">零件图谱试验</c:when>
+									<c:when test="${vo.type eq 2}">材料图谱试验</c:when>
+									<c:when test="${vo.type eq 3}">零件型式试验</c:when>
+									<c:when test="${vo.type eq 4}">材料型式试验</c:when>
 								</c:choose>
 							</td>
 							<td>${vo.code}</td>
@@ -180,7 +180,7 @@
 		<form method="POST" enctype="multipart/form-data" id="uploadForm">
 			<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole)}">
 				<c:if test="${facadeBean.type == 4 }">					
-					<div class="title" style="margin-top:15px;">零部件型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a></div>
+					<div class="title" style="margin-top:15px;">零件型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a></div>
 					<table class="info" id="p_pfTable">
 						<tr class="single-row">
 							<td class="remark-span">序号</td>
@@ -264,7 +264,7 @@
 			</c:if>
 		
 			<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole)}">
-				<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
+				<div class="title" style="margin-top:15px;">零件图谱试验结果</div>
 				<table class="info" id="p_arTable">
 					<tr class="single-row">
 						<td class="title-td">图谱类型</td>
@@ -396,7 +396,7 @@
 			
 			<c:if test="${facadeBean.type == 4 }">
 				<c:if test="${(facadeBean.matPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole)}">
-					<div class="title" style="margin-top:15px;">原材料型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('m')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a></div>
+					<div class="title" style="margin-top:15px;">材料型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('m')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a></div>
 					<table class="info" id="m_pfTable">
 						<tr class="single-row">
 							<td class="remark-span">序号</td>
@@ -481,7 +481,7 @@
 			</c:if>
 			
 			<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole)}">
-				<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
+				<div class="title" style="margin-top:15px;">材料图谱试验结果</div>
 				<table class="info" id="m_arTable">
 					<tr class="single-row">
 						<td class="title-td">图谱类型</td>
@@ -624,7 +624,7 @@
 						</tr>
 						
 						<tr>
-							<td style="font-weight:bold;">零部件</td>
+							<td style="font-weight:bold;">零件</td>
 							<td align="center">
 								<div style="margin-top:5px;">
 									<label><input name="p_temp" type="radio" value="1" <c:if test="${p_temp.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -673,7 +673,7 @@
 						</tr>
 						
 						<tr>
-							<td style="font-weight:bold;">原材料</td>
+							<td style="font-weight:bold;">材料</td>
 							<td align="center">
 								<div style="margin-top:5px;">
 									<label><input name="m_temp" type="radio" value="1" <c:if test="${m_temp.state == 1}">checked</c:if>/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -746,13 +746,13 @@
 			}
 			saving = true;
 			
-			// 零部件图谱结论
+			// 零件图谱结论
 			var partsAtl_result = [];
-			// 原材料图谱结论
+			// 材料图谱结论
 			var matAtl_result = [];
-			// 零部件型式结论
+			// 零件型式结论
 			var partsPat_result = [];
-			// 原材料型式结论
+			// 材料型式结论
 			var matPat_result = [];
 			// 试验结论结果
 			var conclusionDataArray = [];
@@ -763,7 +763,7 @@
 			var pAtlasResult = "${pAtlasResult}";
 			var mAtlasResult = "${mAtlasResult}";
 			
-			// 零部件结果
+			// 零件结果
 			if(p_arTable > 0){
 				// 样品照片
 				var p_tempLabDir = $("#p_tempLab_pic").filebox("getValue");
@@ -850,7 +850,7 @@
 				}
 			}
 			
-			// 原材料结果
+			// 材料结果
 			if(m_arTable > 0){
 				// 样品照片
 				var m_tempLabDir = $("#m_tempLab_pic").filebox("getValue");
@@ -945,13 +945,13 @@
 			var p_pfTable =  $("#p_pfTable").length;
 			var m_pfTable = $("#m_pfTable").length;
 			
-			// 零部件试验结果
+			// 零件试验结果
 			if(p_pfTable > 0){
 				// 附件
 				var partsResultAttachFile = $("#partsResultAttachFile").filebox("getValue");
 				
 				if($("tr[p_num]").length < 1 && isNull(partsResultAttachFile)){
-					$("#p_pfTable_error").html("请添加零部件型试结果");
+					$("#p_pfTable_error").html("请添加零件型试结果");
 					saving = false;
 					return false;
 				}
@@ -972,13 +972,13 @@
 				}
 			}
 			
-			// 原材料试验结果
+			// 材料试验结果
 			if(m_pfTable > 0){
 				// 附件
 				var materialResultAttachFile = $("#materialResultAttachFile").filebox("getValue");
 				
 				if($("tr[m_num]").length < 1){
-					$("#m_pfTable_error").html("请添加原材料型试结果");
+					$("#m_pfTable_error").html("请添加材料型试结果");
 					saving = false;
 					return false;
 				}else{
@@ -1035,7 +1035,7 @@
 		
 		/**
 		 *  添加试验结果
-		 *  @param type 种类: m-原材料， p-零部件
+		 *  @param type 种类: m-材料， p-零件
 		 */
 		function addResult(type){
 			var num;

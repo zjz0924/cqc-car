@@ -15,17 +15,17 @@ public class Info extends JpaEntity{
 
 	private Long id;
 
-    // 整车信息ID
+    // 车型信息ID
     private Long vId;
     
     private Vehicle vehicle;
 
-    // 零部件信息ID
+    // 零件信息ID
     private Long pId;
 
     private Parts parts;
     
-    // 原材料信息ID
+    // 材料信息ID
     private Long mId;
     
     private Material material;

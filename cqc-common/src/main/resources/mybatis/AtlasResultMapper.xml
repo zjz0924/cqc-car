@@ -21,7 +21,7 @@
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from atlas_result where id = #{id,jdbcType=BIGINT}
+		delete from atlas_result where t_id = #{id,jdbcType=BIGINT}
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.AtlasResult">

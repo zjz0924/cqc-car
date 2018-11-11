@@ -90,7 +90,7 @@ public class PpapTaskController extends AbstractController {
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
 	// 任务审批列表
 	private final static String APPROVE_DEFAULT_PAGE_SIZE = "10";
-	// 结果确认列表
+	// 结果接收列表
 	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";
 	// 任务选择列表
 	private final static String TASK_DEFAULT_PAGE_SIZE = "10";
@@ -388,7 +388,7 @@ public class PpapTaskController extends AbstractController {
 				Material material = null;
 
 				if (t_id == null) {
-					// 整车信息
+					// 车型信息
 					vehicle = new Vehicle();
 					if (v_id != null) {
 						Vehicle temp = vehicleService.selectOne(v_id);
@@ -400,7 +400,7 @@ public class PpapTaskController extends AbstractController {
 						}
 					}
 
-					// 零部件信息
+					// 零件信息
 					parts = new Parts();
 					if (p_id != null) {
 						Parts temp = partsService.selectOne(p_id);
@@ -429,7 +429,7 @@ public class PpapTaskController extends AbstractController {
 				} else {
 					Task task = taskService.selectOne(t_id);
 
-					// 整车信息
+					// 车型信息
 					if (task.getInfo().getvId() != null) {
 						Vehicle temp = vehicleService.selectOne(v_id);
 
@@ -440,7 +440,7 @@ public class PpapTaskController extends AbstractController {
 						vehicle.setRemark(v_remark);
 					}
 
-					// 零部件信息
+					// 零件信息
 					if (task.getInfo().getpId() != null) {
 						Parts temp = partsService.selectOne(p_id);
 
@@ -641,10 +641,10 @@ public class PpapTaskController extends AbstractController {
 					approveType = 2;
 
 					/** --------- 原结果 ----------- */
-					// 零部件-图谱结果（只取最后一次实验）
+					// 零件-图谱结果（只取最后一次实验）
 					List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
 
-					// 原材料-图谱结果（只取最后一次实验）
+					// 材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
 
 					// 对比结果
@@ -655,10 +655,10 @@ public class PpapTaskController extends AbstractController {
 					List<LabConclusion> conclusionList_old = labConclusionService.selectByTaskId(task.gettId());
 
 					/** --------- 修改之后的结果 ----------- */
-					// 零部件-图谱结果（只取最后一次实验）
+					// 零件-图谱结果（只取最后一次实验）
 					List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
 
-					// 原材料-图谱结果（只取最后一次实验）
+					// 材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
 
 					// 对比结果
@@ -797,10 +797,10 @@ public class PpapTaskController extends AbstractController {
 		return vo;
 	}
 
-	/** -------------------------------- 结果确认 --------------------------------- */
+	/** -------------------------------- 结果接收 --------------------------------- */
 
 	/**
-	 * 结果确认列表
+	 * 结果接收列表
 	 */
 	@RequestMapping(value = "/confirmList")
 	public String confirmList(HttpServletRequest request, HttpServletResponse response, Model model, int taskType) {
@@ -892,10 +892,10 @@ public class PpapTaskController extends AbstractController {
 			List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
 			groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
 
-			// 零部件图谱结果
+			// 零件图谱结果
 			Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult,
 					sl_pAtlasResult);
-			// 原材料图谱结果
+			// 材料图谱结果
 			Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult,
 					sl_mAtlasResult);
 			// 对比结果
@@ -917,7 +917,7 @@ public class PpapTaskController extends AbstractController {
 	}
 
 	/**
-	 * 结果确认
+	 * 结果接收
 	 * 
 	 * @param taskId 任务ID
 	 * @param result 结果：1-第二次抽样，2-中止任务
@@ -932,7 +932,7 @@ public class PpapTaskController extends AbstractController {
 			Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
 			taskService.confirmResult(account, taskId, result, remark);
 		} catch (Exception ex) {
-			logger.error("结果确认失败", ex);
+			logger.error("结果接收失败", ex);
 
 			vo.setSuccess(false);
 			vo.setMsg("操作失败，系统异常，请重试");

@@ -23,18 +23,18 @@ public interface TaskService {
     /**
 	 * 结果发送
 	 * @param taskId  任务ID
-	 * @param pAtlVal    零部件图谱
-	 * @param pPatVal    零部件型式
-	 * @param mAtlVal    原材料图谱
-	 * @param mPatVal    原材料型式   
+	 * @param pAtlVal    零件图谱
+	 * @param pPatVal    零件型式
+	 * @param mAtlVal    材料图谱
+	 * @param mPatVal    材料型式   
 	 * @param type          类型：1-发送结果， 2-不发送，直接跳过 
 	 */
     public void sendResult(Account account, Long taskId, String pAtlVal, String pPatVal, String mAtlVal, String mPatVal, Integer type) throws Exception;
     
     /**
-	 * 结果确认
+	 * 结果接收
 	 * @param result  结果：1-合格，2-不合格
-	 * @param type    类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部
+	 * @param type    类型：1-零件图谱试验，2-零件型式试验，3-材料图谱试验，4-材料型式试验，5-全部
 	 * @param remark  不合格的理由
 	 * @param orgs    发送警告书的机构
 	 */

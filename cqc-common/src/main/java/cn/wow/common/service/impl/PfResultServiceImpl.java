@@ -97,7 +97,7 @@ public class PfResultServiceImpl implements PfResultService {
 	public void upload(Account account, List<PfResult> dataList, Long taskId, List<LabConclusion> conclusionDataList,
 			Attach attachFile) {
 		Task task = taskDao.selectOne(taskId);
-		String remark = "上传零部件型式试验和原材料型式试验结果";
+		String remark = "上传零件型式试验和材料型式试验结果";
 
 		// 试验结论
 		if (conclusionDataList != null && conclusionDataList.size() > 0) {
@@ -130,27 +130,27 @@ public class PfResultServiceImpl implements PfResultService {
 						|| StringUtils.isNotBlank(attachFile.getPartsFile())) {
 					task.setPartsPatResult(2);
 					task.setPartsPatTimes(task.getPartsPatTimes() + 1);
-					remark = "上传零部件型式试验结果";
+					remark = "上传零件型式试验结果";
 				}
 
 				if ((catagory.get(0) != null && catagory.get(0) == 2)
 						|| StringUtils.isNotBlank(attachFile.getMaterialFile())) {
 					task.setMatPatResult(2);
 					task.setMatPatTimes(task.getMatPatTimes() + 1);
-					remark = "上传原材料型式试验结果";
+					remark = "上传材料型式试验结果";
 				}
 			}
 		} else {
 			if (StringUtils.isNotBlank(attachFile.getPartsFile())) {
 				task.setPartsPatResult(2);
 				task.setPartsPatTimes(task.getPartsPatTimes() + 1);
-				remark = "上传零部件型式试验结果";
+				remark = "上传零件型式试验结果";
 			}
 
 			if (StringUtils.isNotBlank(attachFile.getMaterialFile())) {
 				task.setMatPatResult(2);
 				task.setMatPatTimes(task.getMatPatTimes() + 1);
-				remark = "上传原材料型式试验结果";
+				remark = "上传材料型式试验结果";
 			}
 		}
 
@@ -174,7 +174,7 @@ public class PfResultServiceImpl implements PfResultService {
 		addLog(account.getUserName(), OperationType.UPLOAD_PF, ServiceType.LAB, logDetail);
 	}
 
-	// 获取性能结果是哪种结果（零部件、原材料、全部）
+	// 获取性能结果是哪种结果（零件、材料、全部）
 	List<Integer> getCatagory(List<PfResult> dataList) {
 		Set<Integer> catagory = new HashSet<Integer>();
 		for (PfResult pfResult : dataList) {
@@ -191,15 +191,15 @@ public class PfResultServiceImpl implements PfResultService {
 	 * 组装型式结果
 	 * 
 	 * @param pfDataList 当前任务所有的型式结果记录
-	 * @param pPfResult  零部件的型式结果记录
-	 * @param mPfResult  原材料的型式结果记录
+	 * @param pPfResult  零件的型式结果记录
+	 * @param mPfResult  材料的型式结果记录
 	 */
 	public void assemblePfResult(List<PfResult> pfDataList, Map<Integer, List<PfResult>> pPfResult,
 			Map<Integer, List<PfResult>> mPfResult) {
 
 		if (pfDataList != null && pfDataList.size() > 0) {
 			for (PfResult pf : pfDataList) {
-				if (pf.getCatagory() == 1) { // 零部件
+				if (pf.getCatagory() == 1) { // 零件
 					List<PfResult> list = pPfResult.get(pf.getExpNo());
 					if (list != null) {
 						list.add(pf);
@@ -208,7 +208,7 @@ public class PfResultServiceImpl implements PfResultService {
 						list.add(pf);
 					}
 					pPfResult.put(pf.getExpNo(), list);
-				} else { // 原材料
+				} else { // 材料
 					List<PfResult> list = mPfResult.get(pf.getExpNo());
 					if (list != null) {
 						list.add(pf);
@@ -225,7 +225,7 @@ public class PfResultServiceImpl implements PfResultService {
 	/**
 	 * 获取最后一次试验结果
 	 * 
-	 * @param type   类型（1-零部件，2-原材料）
+	 * @param type   类型（1-零件，2-材料）
 	 * @param taskId 任务ID
 	 */
 	public List<PfResult> getLastResult(int type, Long taskId) {

@@ -36,12 +36,16 @@
 						formatter : function(value,row,index){
 							// 信息修改由该任务申请方发起
 							// 试验结果修改由上传的实验室修改
-							if(row.aId == "${currentAccount.id}"){
-								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>'; 
-							}
-							
-							if(row.partsAtlId == "${currentAccount.orgId}" || row.matAtlId == "${currentAccount.orgId}" || row.partsPatId == "${currentAccount.orgId}" || row.matPatId == "${currentAccount.orgId}"){
-								return '<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+							if("${currentAccount.role.code == 'admin'}"){
+								return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+							}else{
+								if(row.aId == "${currentAccount.id}"){
+									return '<a href="javascript:void(0)" onclick="infoDetail('+ row.id +')">修改信息</a>'; 
+								}
+								
+								if(row.partsAtlId == "${currentAccount.orgId}" || row.matAtlId == "${currentAccount.orgId}" || row.partsPatId == "${currentAccount.orgId}" || row.matPatId == "${currentAccount.orgId}"){
+									return '<a href="javascript:void(0)" onclick="labDetail('+ row.id +')">修改结果</a>';
+								}
 							}
 						}
 					} , {
@@ -339,7 +343,7 @@
 					}
 				});
 				
-				// 零部件生产商
+				// 零件生产商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -357,7 +361,7 @@
 					$("#parts_producer").val(obj.text);
 				});
 				
-				// 原材料生产商
+				// 材料生产商
 				$("#mat_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象

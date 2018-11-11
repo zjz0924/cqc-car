@@ -154,13 +154,13 @@
 			</div>
 		</c:if>
 		
-		<!-- OTS/GS 结果确认  -->
+		<!-- OTS/GS 结果接收  -->
 		<c:if test="${facadeBean.type == 1 or facadeBean.type == 4}">
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 			<div class="title">试验结果</div>
 			
 			<c:if test="${not empty facadeBean.partsPatId}">
-				<div class="title" style="margin-top:15px;">零部件型式试验结果</div>
+				<div class="title" style="margin-top:15px;">零件型式试验结果</div>
 				<div style="margin-left:10px;margin-bottom: 10px;">
 					<c:forEach items="${labReqList}" var="vo">
 						<c:if test="${vo.type eq 3}">
@@ -237,7 +237,7 @@
 			</c:if>
 			
 			<c:if test="${not empty facadeBean.matPatId}">
-				<div class="title" style="margin-top:15px;">原材料型式试验结果</div>
+				<div class="title" style="margin-top:15px;">材料型式试验结果</div>
 				<div style="margin-left:10px;margin-bottom: 10px;">
 					<c:forEach items="${labReqList}" var="vo">
 						<c:if test="${vo.type eq 4}">
@@ -313,7 +313,7 @@
 			</c:if>
 			
 			<c:if test="${not empty facadeBean.partsAtlId}">
-				<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
+				<div class="title" style="margin-top:15px;">零件图谱试验结果</div>
 				<div style="margin-left:10px;margin-bottom: 10px;">
 					<c:forEach items="${labReqList}" var="vo">
 						<c:if test="${vo.type eq 1}">
@@ -387,7 +387,7 @@
 			</c:if>
 			
 			<c:if test="${not empty facadeBean.matAtlId}">
-				<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
+				<div class="title" style="margin-top:15px;">材料图谱试验结果</div>
 				<div style="margin-left:10px;margin-bottom: 10px;">
 					<c:forEach items="${labReqList}" var="vo">
 						<c:if test="${vo.type eq 2}">
@@ -461,11 +461,11 @@
 			</c:if>
 			
 			<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
-			<div class="title" style="margin-top:15px;">结果确认</div>
+			<div class="title" style="margin-top:15px;">结果接收</div>
 		
 			<div style="margin-left: 15px;">
 				<c:if test="${not empty facadeBean.partsAtlId}">
-					<div style="margin-bottom: 5px;">零部件图谱试验结果：
+					<div style="margin-bottom: 5px;">零件图谱试验结果：
 						<c:choose>
 							<c:when test="${facadeBean.partsAtlResult == 3 }">
 								<span id="partsAtl1">
@@ -486,7 +486,7 @@
 				</c:if>
 				
 				<c:if test="${not empty facadeBean.matAtlId}">
-					<div style="margin-bottom: 5px;">原材料图谱试验结果：
+					<div style="margin-bottom: 5px;">材料图谱试验结果：
 						<c:choose>
 							<c:when test="${facadeBean.matAtlResult == 3}">
 								<span id="matAtl1">
@@ -507,7 +507,7 @@
 				</c:if>
 				
 				<c:if test="${not empty facadeBean.partsPatId}">
-					<div style="margin-bottom: 5px;">零部件型式试验结果：
+					<div style="margin-bottom: 5px;">零件型式试验结果：
 						<c:choose>
 							<c:when test="${facadeBean.partsPatResult == 3}">
 								<span id="partsPat1">
@@ -528,7 +528,7 @@
 				</c:if>
 				
 				<c:if test="${not empty facadeBean.matPatId }">
-					<div style="margin-bottom: 5px;">原材料型式试验结果：
+					<div style="margin-bottom: 5px;">材料型式试验结果：
 						<c:choose>
 							<c:when test="${facadeBean.matPatResult == 3}">
 								<span id="matPat1">
@@ -549,7 +549,7 @@
 				</c:if>
 			</div>
 			
-			<div id="dlg" class="easyui-dialog" title="结果确认" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
+			<div id="dlg" class="easyui-dialog" title="结果接收" style="width: 400px; height: 250px; padding: 10px" closed="true" data-options="modal:true">
 				<div>
 					<input type="hidden" id="testType" name="testType">
 					<input id="remark" class="easyui-textbox" label="不接收原因：" labelPosition="top" multiline="true" style="width: 350px;height: 100px;"/><br>
@@ -574,7 +574,7 @@
 			</div>
 		</c:if>
 		
-		<!-- PPAP 对比结果确认 -->
+		<!-- PPAP 对比结果接收 -->
 		<c:if test="${facadeBean.type == 2 or facadeBean.type == 3 }">
 			<c:if test="${not empty labReqList}">
 				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
@@ -601,10 +601,10 @@
 								</td>
 								<td>
 									<c:choose>
-										<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-										<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-										<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-										<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+										<c:when test="${vo.type eq 1}">零件图谱试验</c:when>
+										<c:when test="${vo.type eq 2}">材料图谱试验</c:when>
+										<c:when test="${vo.type eq 3}">零件型式试验</c:when>
+										<c:when test="${vo.type eq 4}">材料型式试验</c:when>
 									</c:choose>
 								</td>
 								<td>${vo.code}</td>
@@ -621,7 +621,7 @@
 			
 			<div style="margin-left: 15px;">
 				<c:if test="${not empty facadeBean.partsAtlId }">
-					<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
+					<div class="title" style="margin-top:15px;">零件图谱对比（基准-抽样）</div>
 					<c:forEach items="${pAtlasResult}" var="m">
 						<div style="margin-bottom: 10px;">
 							<c:choose>
@@ -666,7 +666,7 @@
 				</c:if>
 				
 				<c:if test="${not empty facadeBean.matAtlId }">
-					<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
+					<div class="title" style="margin-top:15px;">材料图谱对比（基准-抽样）</div>
 					<c:forEach items="${mAtlasResult}" var="m">
 						<div style="margin-bottom: 10px;">
 							<c:choose>
@@ -723,16 +723,16 @@
 							<td class="value-td1">
 								<c:choose>
 									<c:when test="${vo.type == 1}">
-										零部件图谱
+										零件图谱
 									</c:when>
 									<c:when test="${vo.type == 2}">
-										原材料图谱
+										材料图谱
 									</c:when>
 									<c:when test="${vo.type == 3}">
-										零部件型式
+										零件型式
 									</c:when>
 									<c:otherwise>
-										原材料型式
+										材料型式
 									</c:otherwise>
 								</c:choose>
 							</td>
@@ -827,7 +827,7 @@
 		$(function(){
 			var tId = "${facadeBean.tId}";
 			if(!isNull(tId)){
-				// 零部件图谱
+				// 零件图谱
 				$('#labId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,

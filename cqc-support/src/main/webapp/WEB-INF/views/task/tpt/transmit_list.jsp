@@ -386,7 +386,7 @@
 					}
 				});
 				
-				// 零部件生产商
+				// 零件生产商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1&date=" + new Date(), {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -404,7 +404,7 @@
 					$("#parts_producer").val(obj.text);
 				});
 				
-				// 原材料生产商
+				// 材料生产商
 				$("#mat_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象

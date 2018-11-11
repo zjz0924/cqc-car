@@ -24,6 +24,10 @@
 		delete from task_record where id = #{id,jdbcType=BIGINT}
 	</delete>
 	
+	<delete id="deleteByCode" parameterType="java.lang.String">
+		delete from task_record where code = #{code,jdbcType=BIGINT}
+	</delete>
+	
 	<insert id="insert" parameterType="cn.wow.common.domain.TaskRecord">
 		insert into task_record (code, a_id, state, remark, create_time, task_type)
 			values (#{code,jdbcType=VARCHAR}, #{aId,jdbcType=BIGINT}, #{state,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{taskType,jdbcType=INTEGER}

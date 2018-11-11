@@ -36,28 +36,28 @@ public class Task {
 	private Long tId;
 
 	/**
-	 * 状态： OTS、材料研究所任务： 1-审核中，2-审核不通过，3-试验中，4-完成，5-申请修改，6-申请不通过 PPAP、SOP：
-	 * 1-审批中，2-审批不通过，3-结果上传中，4-结果比对中，5-结果发送中，6-结果确认中，7-完成，8-申请修改，9-申请不通过，10-确认是否二次抽样，11-中止任务
+	 * 状态： OTS、材料研究所任务： 1-审核中，2-审核不通过，3-试验中，4-完成，5-申请修改，6-申请不通过 
+	 *    PPAP、SOP：1-审批中，2-审批不通过，3-结果上传中，4-结果比对中，5-结果发送中，6-结果接收中，7-完成，8-申请修改，9-申请不通过，10-确认是否二次抽样，11-中止任务
 	 */
 	private Integer state;
 
-	// 零部件图谱实验室ID
+	// 零件图谱实验室ID
 	private Long partsAtlId;
 	private Org partsAtl;
 
-	// 原材料图谱实验室ID
+	// 材料图谱实验室ID
 	private Long matAtlId;
 	private Org matAtl;
 
-	// 零部件型式实验室ID
+	// 零件型式实验室ID
 	private Long partsPatId;
 	private Org partsPat;
 
-	// 原材料型式实验室ID
+	// 材料型式实验室ID
 	private Long matPatId;
 	private Org matPat;
 
-	// 结果确认失败次数
+	// 结果接收失败次数
 	private Integer failNum;
 	// 备注
 	private String remark;
@@ -66,22 +66,22 @@ public class Task {
 	// 确认时间
 	private Date confirmTime;
 
-	// 零部件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	// 零件图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
 	private Integer partsAtlResult;
-	// 原材料图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	// 材料图谱结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
 	private Integer matAtlResult;
-	// 零部件型式结果 (0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	// 零件型式结果 (0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
 	private Integer partsPatResult;
-	// 原材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
+	// 材料型式结果(0-待处理，1-未上传，2-已上传，3-已发送，4-接收，5-不接收， 6-审批不通过)
 	private Integer matPatResult;
 
-	// 零部件图谱实验次数
+	// 零件图谱实验次数
 	private Integer partsAtlTimes;
-	// 原材料图谱实验次数
+	// 材料图谱实验次数
 	private Integer matAtlTimes;
-	// 零部件型式实验次数
+	// 零件型式实验次数
 	private Integer partsPatTimes;
-	// 原材料型式实验次数
+	// 材料型式实验次数
 	private Integer matPatTimes;
 
 	// 是否申请修改信息（0-否， 1-等待审批）
@@ -95,16 +95,16 @@ public class Task {
 	// 是否接收（1-接收，2-不接收）
 	private Integer isReceive;
 
-	// 零部件图谱实验编号
+	// 零件图谱实验编号
 	private String partsAtlCode;
 
-	// 原材料图谱实验编号
+	// 材料图谱实验编号
 	private String matAtlCode;
 
-	// 零部件型式实验编号
+	// 零件型式实验编号
 	private String partsPatCode;
 
-	// 原材料型式实验编号
+	// 材料型式实验编号
 	private String matPatCode;
 
 	// PPAP和SOP 任务信息
@@ -146,7 +146,7 @@ public class Task {
 	private Long approveAccountId;
 
 	// 冗余字段（用于识别任务类型，1-ots申请，2-ots审核，3-ots下达任务，4-ots审批，5-ppap下达，6-ppap审批，7-sop下达，8-sop审批，9-tpt申请，10-tpt审核，11-tpt下达，12-tpt审批，13-型式结果，14-图谱结果，15-结果对比,
-	// 16-结果发送，17-结果确认：待上传列表，18-结果确认：已上传列表结果确认：已上传列表）
+	// 16-结果发送，17-结果接收：待上传列表，18-结果接收：已上传列表结果接收：已上传列表）
 	private int taskType;
 
 	// 跳转url（冗余字段）

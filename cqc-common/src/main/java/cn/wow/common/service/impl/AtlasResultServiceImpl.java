@@ -111,16 +111,16 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 			task.setPartsAtlTimes(task.getPartsAtlTimes() + 1);
 			task.setMatAtlTimes(task.getMatAtlTimes() + 1);
 			
-			remark = "上传零部件和原材料图谱试验结果";
+			remark = "上传零件和材料图谱试验结果";
 		}else{
 			if(atlasResult.get(0).getCatagory() == 1){
 				task.setPartsAtlResult(2);
 				task.setPartsAtlTimes(task.getPartsAtlTimes() + 1);
-				remark = "上传零部件图谱试验结果";
+				remark = "上传零件图谱试验结果";
 			}else{
 				task.setMatAtlResult(2);
 				task.setMatAtlTimes(task.getMatAtlTimes() + 1);
-				remark = "上传原材料图谱试验结果";
+				remark = "上传材料图谱试验结果";
 			}
 		}
 		
@@ -157,7 +157,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 	/**
      * 获取基准图谱结果
      * @param iId        信息ID
-     * @param catagory  种类：1-零部件，2-原材料
+     * @param catagory  种类：1-零件，2-材料
      */
 	public List<AtlasResult> getStandardAtlResult(Long iId, int catagory) {
 		Map<String, Object> aMap = new PageMap(false);
@@ -202,15 +202,15 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 	/**
 	 * 组装图谱结果
 	 * @param pfDataList  当前任务所有的图谱结果记录
-	 * @param pPfResult   零部件的图谱结果记录
-	 * @param mPfResult   原材料的图谱结果记录
+	 * @param pPfResult   零件的图谱结果记录
+	 * @param mPfResult   材料的图谱结果记录
 	 */
 	public void assembleAtlasResult(List<AtlasResult> atDataList, Map<Integer, List<AtlasResult>> pAtlasResult,
 			Map<Integer, List<AtlasResult>> mAtlasResult) {
 
 		if (atDataList != null && atDataList.size() > 0) {
 			for (AtlasResult at : atDataList) {
-				if (at.getCatagory() == 1) { // 零部件
+				if (at.getCatagory() == 1) { // 零件
 					List<AtlasResult> list = pAtlasResult.get(at.getExpNo());
 					if (list != null) {
 						list.add(at);
@@ -219,7 +219,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 						list.add(at);
 					}
 					pAtlasResult.put(at.getExpNo(), list);
-				} else { // 原材料
+				} else { // 材料
 					List<AtlasResult> list = mAtlasResult.get(at.getExpNo());
 					if (list != null) {
 						list.add(at);
@@ -267,9 +267,9 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		erMap.put("custom_order_sql", "create_time desc, catagory asc limit 10");
 		List<ExamineRecord> erList = examineRecordDao.selectAllList(erMap);
 
-		// 零部件结果
+		// 零件结果
 		List<ExamineRecord> pList = new ArrayList<ExamineRecord>();
-		// 原材料结果
+		// 材料结果
 		List<ExamineRecord> mList = new ArrayList<ExamineRecord>();
 		
 		for (ExamineRecord er : erList) {
@@ -306,10 +306,10 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 		}
 		
 		if (pList != null && pList.size() > 0) {
-			result.put("零部件", pList);
+			result.put("零件", pList);
 		}
 		if (mList != null && mList.size() > 0) {
-			result.put("原材料", mList);
+			result.put("材料", mList);
 		}
 		
 		return result;
@@ -318,7 +318,7 @@ public class AtlasResultServiceImpl implements AtlasResultService{
 	
 	/**
 	 * 获取最后一次试验结果
-	 * @param type    类型（1-零部件，2-原材料）
+	 * @param type    类型（1-零件，2-材料）
 	 * @param taskId  任务ID
 	 */
 	public List<AtlasResult> getLastResult(int type, Long taskId) {

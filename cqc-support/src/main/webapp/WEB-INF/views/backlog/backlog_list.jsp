@@ -103,9 +103,9 @@
 							}else if(type == 16){
 								str = "结果发送";
 							}else if(type == 17){
-								str = "待上传结果确认";
+								str = "待上传结果接收";
 							}else if(type == 18){
-								str = "已上传结果确认";
+								str = "已上传结果接收";
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}

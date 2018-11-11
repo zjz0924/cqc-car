@@ -159,7 +159,7 @@
 		<div class="title">试验结果</div>
 		
 		<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and ( facadeBean.partsPatResult == 2) }">
-			<div class="title" style="margin-top:15px;">零部件型式试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.partsPat.name }</span></div>
+			<div class="title" style="margin-top:15px;">零件型式试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.partsPat.name }</span></div>
 			
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
@@ -233,7 +233,7 @@
 		</c:if>
 		
 		<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 2) }">
-			<div class="title" style="margin-top:15px;">零部件图谱试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.partsAtl.name }</span></div>
+			<div class="title" style="margin-top:15px;">零件图谱试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.partsAtl.name }</span></div>
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
 					<c:if test="${vo.type eq 1}">
@@ -302,7 +302,7 @@
 		</c:if>
 		
 		<c:if test="${(facadeBean.matPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matPatResult == 2) }">
-			<div class="title" style="margin-top:15px;">原材料型式试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.matPat.name }</span></div>
+			<div class="title" style="margin-top:15px;">材料型式试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.matPat.name }</span></div>
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
 					<c:if test="${vo.type eq 4}">
@@ -375,7 +375,7 @@
 		</c:if>
 		
 		<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matAtlResult == 2) }">
-			<div class="title" style="margin-top:15px;">原材料图谱试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.matAtl.name }</span></div>
+			<div class="title" style="margin-top:15px;">材料图谱试验结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>${facadeBean.matAtl.name }</span></div>
 			<div style="margin-left:10px;margin-bottom: 10px;">
 				<c:forEach items="${labReqList}" var="vo">
 					<c:if test="${vo.type eq 2}">
@@ -482,7 +482,7 @@
 		<div class="title" style="margin-top:15px;">结果发送</div>
 		<div style="margin-left: 15px;">
 			<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 2) }">
-				<div style="margin-bottom: 5px;">零部件图谱试验结果：
+				<div style="margin-bottom: 5px;">零件图谱试验结果：
 					<input id="pAtlText" class="inputxt" readonly="readonly">
 					<input id="pAtlValue" class="inputxt" type="hidden">
 					<a onclick="chooseUser('pAtl')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
@@ -493,7 +493,7 @@
 			</c:if>
 			
 			<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and ( facadeBean.partsPatResult == 2) }">
-				<div style="margin-bottom: 5px;">零部件型式试验结果：
+				<div style="margin-bottom: 5px;">零件型式试验结果：
 					<input id="pPatText" class="inputxt" readonly="readonly">
 					<input id="pPatValue" class="inputxt" type="hidden">
 					<a onclick="chooseUser('pPat')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
@@ -504,7 +504,7 @@
 			</c:if>
 			
 			<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matAtlResult == 2) }">
-				<div style="margin-bottom: 5px;">原材料图谱试验结果：
+				<div style="margin-bottom: 5px;">材料图谱试验结果：
 					<input id="mAtlText" class="inputxt" readonly="readonly">
 					<input id="mAtlValue" class="inputxt" type="hidden">
 					<a onclick="chooseUser('mAtl')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>
@@ -515,7 +515,7 @@
 			</c:if>
 			
 			<c:if test="${(facadeBean.matPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matPatResult == 2) }">
-				<div style="margin-bottom: 5px;">原材料型式试验结果：
+				<div style="margin-bottom: 5px;">材料型式试验结果：
 					<input id="mPatText" class="inputxt" readonly="readonly">
 					<input id="mPatValue" class="inputxt" type="hidden">
 					<a onclick="chooseUser('mPat')" href="javascript:void(0)" class="easyui-linkbutton l-btn l-btn-plain" icon="icon-search">选择</a>

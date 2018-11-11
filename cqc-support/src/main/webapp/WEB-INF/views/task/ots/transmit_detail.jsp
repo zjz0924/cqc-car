@@ -12,16 +12,16 @@
        	    			<fmt:formatDate value='${vo.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>&nbsp;&nbsp;&nbsp;&nbsp;
 						<c:choose>
 							<c:when test="${vo.catagory == 1}">
-								<span>零部件图谱试验</span>
+								<span>零件图谱试验</span>
 							</c:when>
 							<c:when test="${vo.catagory == 2}">
-								<span>原材料图谱试验</span>
+								<span>材料图谱试验</span>
 							</c:when>
 							<c:when test="${vo.catagory == 3}">
-								<span>零部件型式试验</span>
+								<span>零件型式试验</span>
 							</c:when>
 							<c:when test="${vo.catagory == 4}">
-								<span>原材料型式试验</span>
+								<span>材料型式试验</span>
 							</c:when>
 							<c:otherwise>   
 						        <span>所有试验</span>  
@@ -154,7 +154,7 @@
 			
 			<c:if test="${empty facadeBean.partsAtlId and not empty partAtl}">
 				<div>
-					<span class="title-span">零部件图谱试验：</span>
+					<span class="title-span">零件图谱试验：</span>
 					<input id="partsAtlId" name="partsAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
@@ -170,7 +170,7 @@
 			
 			<c:if test="${empty facadeBean.matAtlId and not empty materialAtl}">
 				<div style="margin-top:5px;">
-					<span class="title-span">原材料图谱试验： </span>
+					<span class="title-span">材料图谱试验： </span>
 					<input id="matAtlId" name="matAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
@@ -253,7 +253,7 @@
 		$(function(){	
 			partsAtlId = "${facadeBean.partsAtlId}";
 			if(isNull(partsAtlId) && !isNull("${partAtl}")){
-				// 零部件图谱
+				// 零件图谱
 				$('#partsAtlId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
@@ -271,7 +271,7 @@
 			
 			matAtlId = "${facadeBean.matAtlId}";
 			if(isNull(matAtlId) && !isNull("${materialAtl}")){
-				// 原材料图谱
+				// 材料图谱
 				$('#matAtlId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
@@ -315,11 +315,11 @@
 		function doSubmit(){
 			var partsAtlId_val;
 			var matAtlId_val;
-			// 零部件图谱试验说明
+			// 零件图谱试验说明
 			var partsAtlCode;
 			var partsAtlTime;
 			var partsAtlReq;
-			// 原材料图谱试验说明
+			// 材料图谱试验说明
 			var matAtlCode;
 			var matAtlTime;
 			var matAtlReq;
@@ -332,7 +332,7 @@
 			if(isNull(partsAtlId) && !isNull("${partAtl}")){
 				partsAtlId_val = $("#partsAtlId").combotree("getValue");
 				if(isNull(partsAtlId_val)){
-					errorMsg("请为零部件图谱试验选择实验室");
+					errorMsg("请为零件图谱试验选择实验室");
 					saving = false;
 					return false;
 				}
@@ -341,7 +341,7 @@
 			if(isNull(matAtlId) && !isNull("${materialAtl}")){
 				matAtlId_val = $("#matAtlId").combotree("getValue");
 				if(isNull(matAtlId_val)){
-					errorMsg("请为原材料图谱试验选择实验室");
+					errorMsg("请为材料图谱试验选择实验室");
 					saving = false;
 					return false;
 				}

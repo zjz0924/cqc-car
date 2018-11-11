@@ -29,7 +29,7 @@ public class LabConclusion {
     private String remark;
     // 任务ID
     private Long taskId;
-	// 类型： 1-零部件图谱,2-原材料图谱,3-零部件型式,4-原材料型式
+	// 类型： 1-零件图谱,2-材料图谱,3-零件型式,4-材料型式
     private Integer type;
 
     public Long getId() {

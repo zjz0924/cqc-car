@@ -180,7 +180,7 @@
 			<c:when test="${approveType == 2}"> 
 				<div class="title">试验结果</div>
 		
-				<div class="title">零部件图谱试验结果</div>
+				<div class="title">零件图谱试验结果</div>
 				<table class="info">
 					<tr class="single-row">
 						<td class="title-td">图谱类型</td>
@@ -290,7 +290,7 @@
 			
 				<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-				<div class="title">原材料图谱试验结果</div>
+				<div class="title">材料图谱试验结果</div>
 				<table class="info">
 					<tr class="single-row">
 						<td class="title-td">图谱类型</td>

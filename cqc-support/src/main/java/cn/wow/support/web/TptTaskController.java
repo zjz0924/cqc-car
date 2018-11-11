@@ -98,11 +98,11 @@ public class TptTaskController extends AbstractController {
 	// 任务审批列表
 	private final static String APPROVE_DEFAULT_PAGE_SIZE = "10";
 
-	// 零部件图片上传图片
+	// 零件图片上传图片
 	@Value("${info.parts.url}")
 	protected String partsUrl;
 
-	// 原材料图片上传路径
+	// 材料图片上传路径
 	@Value("${info.material.url}")
 	protected String materialUrl;
 
@@ -405,7 +405,7 @@ public class TptTaskController extends AbstractController {
 			reasonObj.setRemark(reasonRemark);
 			reasonObj.setSource(source);
 
-			// 整车信息
+			// 车型信息
 			Vehicle vehicle = null;
 			if (v_id == null) {
 				vehicle = new Vehicle();
@@ -422,7 +422,7 @@ public class TptTaskController extends AbstractController {
 						StringUtils.isNotBlank(v_proTime) ? sdf.parse(v_proTime) : null, v_proAddr).getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("整车信息已存在");
+					vo.setMsg("车型信息已存在");
 					return vo;
 				}
 			} else {
@@ -435,7 +435,7 @@ public class TptTaskController extends AbstractController {
 
 					if (isExist) {
 						vo.setSuccess(false);
-						vo.setMsg("整车信息已存在");
+						vo.setMsg("车型信息已存在");
 						return vo;
 					}
 				} else {
@@ -448,7 +448,7 @@ public class TptTaskController extends AbstractController {
 						// 存在正在审批的记录
 						if (isExist.getState() == 0) {
 							vo.setSuccess(false);
-							vo.setMsg("整车信息已存在");
+							vo.setMsg("车型信息已存在");
 							return vo;
 						}
 					}
@@ -462,7 +462,7 @@ public class TptTaskController extends AbstractController {
 				vehicle.setCode(v_code);
 			}
 
-			// 零部件信息
+			// 零件信息
 			Parts parts = null;
 			if (p_id == null) {
 				parts = new Parts();
@@ -489,7 +489,7 @@ public class TptTaskController extends AbstractController {
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("零部件信息已存在");
+					vo.setMsg("零件信息已存在");
 					return vo;
 				}
 			} else {
@@ -503,7 +503,7 @@ public class TptTaskController extends AbstractController {
 							.getFlag();
 					if (isExist) {
 						vo.setSuccess(false);
-						vo.setMsg("零部件信息已存在");
+						vo.setMsg("零件信息已存在");
 						return vo;
 					}
 				} else {
@@ -518,7 +518,7 @@ public class TptTaskController extends AbstractController {
 						// 存在正在审批的记录
 						if (isExist.getState() == 0) {
 							vo.setSuccess(false);
-							vo.setMsg("零部件信息已存在");
+							vo.setMsg("零件信息已存在");
 							return vo;
 						}
 					}
@@ -539,7 +539,7 @@ public class TptTaskController extends AbstractController {
 				parts.setProducerCode(p_producerCode);
 			}
 
-			// 原材料信息
+			// 材料信息
 			Material material = null;
 			if (m_id == null) {
 				material = new Material();
@@ -797,7 +797,7 @@ public class TptTaskController extends AbstractController {
 			reasonObj.setRemark(reasonRemark);
 			reasonObj.setSource(source);
 
-			// 整车信息
+			// 车型信息
 			Vehicle vehicle = vehicleService.selectOne(v_id);
 			if (vehicleService.isUpdateVehicleInfo(vehicle, v_code, v_proTime, v_proAddr, v_remark)) {
 				vehicle.setProTime(sdf.parse(v_proTime));
@@ -809,12 +809,12 @@ public class TptTaskController extends AbstractController {
 						StringUtils.isNotBlank(v_proTime) ? sdf.parse(v_proTime) : null, v_proAddr).getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("整车信息已存在");
+					vo.setMsg("车型信息已存在");
 					return vo;
 				}
 			}
 
-			// 零部件信息
+			// 零件信息
 			Parts parts = partsService.selectOne(p_id);
 			if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
 					p_producer, p_producerCode)) {
@@ -838,12 +838,12 @@ public class TptTaskController extends AbstractController {
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("零部件信息已存在");
+					vo.setMsg("零件信息已存在");
 					return vo;
 				}
 			}
 
-			// 原材料信息
+			// 材料信息
 			Material material = materialService.selectOne(m_id);
 			material.setRemark(m_remark);
 			material.setProNo(m_proNo);
@@ -1024,10 +1024,10 @@ public class TptTaskController extends AbstractController {
 	 * 下达任务结果
 	 * 
 	 * @param id         任务ID
-	 * @param partsAtlId 零部件图谱实验室ID
-	 * @param matAtlId   原材料图谱实验室ID
-	 * @param partsPatId 零部件型式实验室ID
-	 * @param matPatId   原材料型式实验室ID
+	 * @param partsAtlId 零件图谱实验室ID
+	 * @param matAtlId   材料图谱实验室ID
+	 * @param partsPatId 零件型式实验室ID
+	 * @param matPatId   材料型式实验室ID
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/transmit")
@@ -1240,38 +1240,38 @@ public class TptTaskController extends AbstractController {
 					approveType = 2;
 
 					/** --------- 原结果 ----------- */
-					// 零部件-性能结果（只取最后一次实验）
+					// 零件-性能结果（只取最后一次实验）
 					List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
 
-					// 零部件-图谱结果（只取最后一次实验）
+					// 零件-图谱结果（只取最后一次实验）
 					List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
 
 					model.addAttribute("pPfResult_old", pPfResult_old);
 					model.addAttribute("pAtlasResult_old", pAtlasResult_old);
 
-					// 原材料-性能结果（只取最后一次实验结果）
+					// 材料-性能结果（只取最后一次实验结果）
 					List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
 
-					// 原材料-图谱结果（只取最后一次实验）
+					// 材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
 
 					// 试验结论
 					List<LabConclusion> conclusionList_old = labConclusionService.selectByTaskId(task.gettId());
 
 					/** --------- 修改之后的结果 ----------- */
-					// 零部件-性能结果（只取最后一次实验）
+					// 零件-性能结果（只取最后一次实验）
 					List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
 
-					// 零部件-图谱结果（只取最后一次实验）
+					// 零件-图谱结果（只取最后一次实验）
 					List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
 
 					model.addAttribute("pAtlasResult_new", pAtlasResult_new);
 					model.addAttribute("pPfResult_new", pPfResult_new);
 
-					// 原材料-性能结果（只取最后一次实验结果）
+					// 材料-性能结果（只取最后一次实验结果）
 					List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
 
-					// 原材料-图谱结果（只取最后一次实验）
+					// 材料-图谱结果（只取最后一次实验）
 					List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
 
 					// 试验结论
@@ -1348,7 +1348,7 @@ public class TptTaskController extends AbstractController {
 	 * @param id         任务ID
 	 * @param result     结果：1-通过，2-不通过
 	 * @param remark     备注
-	 * @param catagory   分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param catagory   分类：1-零件图谱，2-材料图谱，3-零件型式，4-材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 * @param partsAtlId
 	 * @param matAtlId
 	 * @param partsPatId
@@ -1419,7 +1419,7 @@ public class TptTaskController extends AbstractController {
 	}
 
 	/**
-	 * 获取实验要求 type-类型： 1- 零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式
+	 * 获取实验要求 type-类型： 1- 零件图谱，2-材料图谱，3-零件型式，4-材料型式
 	 */
 	private LabReq getLabReqByType(List<LabReq> dataList, int type) {
 		LabReq labReq = null;

@@ -22,7 +22,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "375px",
+			        height: "400px",
 					title: '任务列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -279,7 +279,7 @@
 			        url : getRecordUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "375px",
+			        height: "400px",
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
 			        rownumbers: true,
@@ -343,7 +343,7 @@
 					}
 				});
 				
-				// 零部件生产商
+				// 零件生产商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -361,7 +361,7 @@
 					$("#parts_producer").val(obj.text);
 				});
 				
-				// 原材料生产商
+				// 材料生产商
 				$("#mat_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -553,7 +553,7 @@
 			</div>
 			
 			<div style="margin-top:10px;">
-				<table id="taskRecordTable" style="height:auto;width:auto"></table>
+				<table id="taskRecordTable" style="height:auto;width:auto;"></table>
 			</div>
 			
 			<div id="uploadDetailDialog"></div>

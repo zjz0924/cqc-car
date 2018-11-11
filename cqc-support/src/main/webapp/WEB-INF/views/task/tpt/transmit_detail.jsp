@@ -12,16 +12,16 @@
        	    			<fmt:formatDate value='${vo.createTime}' type="date" pattern="yyyy-MM-dd hh:mm:ss"/>&nbsp;&nbsp;&nbsp;&nbsp;
 						<c:choose>
 							<c:when test="${vo.catagory == 1}">
-								<span>零部件图谱试验</span>
+								<span>零件图谱试验</span>
 							</c:when>
 							<c:when test="${vo.catagory == 2}">
-								<span>原材料图谱试验</span>
+								<span>材料图谱试验</span>
 							</c:when>
 							<c:when test="${vo.catagory == 3}">
-								<span>零部件型式试验</span>
+								<span>零件型式试验</span>
 							</c:when>
 							<c:when test="${vo.catagory == 4}">
-								<span>原材料型式试验</span>
+								<span>材料型式试验</span>
 							</c:when>
 							<c:otherwise>   
 						        <span>所有试验</span>  
@@ -178,7 +178,7 @@
 			
 			<c:if test="${not empty partAtl}">
 				<div>
-					<span class="title-span">零部件图谱试验：</span>
+					<span class="title-span">零件图谱试验：</span>
 					<input id="partsAtlId" name="partsAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
@@ -194,7 +194,7 @@
 			
 			<c:if test="${not empty materialAtl}">
 				<div style="margin-top:5px;">
-					<span class="title-span">原材料图谱试验： </span>
+					<span class="title-span">材料图谱试验： </span>
 					<input id="matAtlId" name="matAtlId">&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					<div style="margin-top:5px;">
@@ -210,7 +210,7 @@
 			
 			<c:if test="${not empty partsPat}">
 				<div style="margin-top:5px;">
-					<span class="title-span">零部件型式试验： </span>
+					<span class="title-span">零件型式试验： </span>
 					<input id="partsPatId" name="partsPatId">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<div style="margin-top:5px;">
@@ -226,7 +226,7 @@
 			
 			<c:if test="${not empty matPat}">
 				<div style="margin-top:5px;">
-					<span class="title-span">原材料型式试验： </span>
+					<span class="title-span">材料型式试验： </span>
 					<input id="matPatId" name="matPatId">&nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<div style="margin-top:5px;">
@@ -308,7 +308,7 @@
 		
 		$(function(){	
 			if(!isNull("${partAtl}")){
-				// 零部件图谱
+				// 零件图谱
 				$('#partsAtlId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
@@ -325,7 +325,7 @@
 			}
 			
 			if(!isNull("${partsPat}")){
-				// 零部件型式
+				// 零件型式
 				$('#partsPatId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
@@ -342,7 +342,7 @@
 			}
 			
 			if(!isNull("${materialAtl}")){
-				// 原材料图谱
+				// 材料图谱
 				$('#matAtlId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
@@ -359,7 +359,7 @@
 			}
 			
 			if(!isNull("${matPat}")){
-				// 原材料型式
+				// 材料型式
 				$('#matPatId').combotree({
 					url: '${ctx}/org/getTreeByType?type=3',
 					multiple: false,
@@ -439,15 +439,15 @@
 			var matAtlId_val;
 			var partsPatId_val;
 			var matPatId_val;
-			// 零部件图谱试验说明
+			// 零件图谱试验说明
 			var partsAtlCode;
 			var partsAtlTime;
 			var partsAtlReq;
-			// 原材料图谱试验说明
+			// 材料图谱试验说明
 			var matAtlCode;
 			var matAtlTime;
 			var matAtlReq;
-			// 零部件型式试验说明
+			// 零件型式试验说明
 			var partsPatCode;
 			var partsPatTime;
 			var partsPatReq;
@@ -464,7 +464,7 @@
 			if(!isNull("${partAtl}")){
 				partsAtlId_val = $("#partsAtlId").combotree("getValue");
 				if(isNull(partsAtlId_val)){
-					errorMsg("请为零部件图谱试验选择实验室");
+					errorMsg("请为零件图谱试验选择实验室");
 					saving = false;
 					return false;
 				}
@@ -477,7 +477,7 @@
 			if(!isNull("${partsPat}")){
 				partsPatId_val = $("#partsPatId").combotree("getValue");
 				if(isNull(partsPatId_val)){
-					errorMsg("请为零部件型式试验选择实验室");
+					errorMsg("请为零件型式试验选择实验室");
 					saving = false;
 					return false;
 				}
@@ -490,7 +490,7 @@
 			if(!isNull("${materialAtl}")){
 				matAtlId_val = $("#matAtlId").combotree("getValue");
 				if(isNull(matAtlId_val)){
-					errorMsg("请为原材料型式试验选择实验室");
+					errorMsg("请为材料型式试验选择实验室");
 					saving = false;
 					return false;
 				}
@@ -503,7 +503,7 @@
 			if(!isNull("${matPat}")){
 				matPatId_val = $("#matPatId").combotree("getValue");
 				if(isNull(matPatId_val)){
-					errorMsg("请为原材料型式试验选择实验室");
+					errorMsg("请为材料型式试验选择实验室");
 					saving = false;
 					return false;
 				}

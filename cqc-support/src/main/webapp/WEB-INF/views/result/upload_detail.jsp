@@ -160,10 +160,10 @@
 				<form method="POST" enctype="multipart/form-data" id="patResultForm">
 					<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
 				
-					<!-- 零部件型式试验结果-start  -->
+					<!-- 零件型式试验结果-start  -->
 					<c:if test="${(facadeBean.partsPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsPatResult == 1)  }">
 						<div class="title" style="margin-top:15px;">
-							零部件型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+							零件型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('p')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
 						</div>
 						<div style="margin-left:10px;margin-bottom: 10px;">
 							<c:forEach items="${labReqList}" var="vo">
@@ -256,12 +256,12 @@
 							</table>
 						</div>
 					</c:if>
-					<!-- 零部件型式试验结果-end -->
+					<!-- 零件型式试验结果-end -->
 					
-					<!-- 原材料型式试验结果-start  -->
+					<!-- 材料型式试验结果-start  -->
 					<c:if test="${(facadeBean.matPatId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matPatResult == 1) }">
 						<div class="title" style="margin-top:15px;">
-							原材料型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('m')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+							材料型式试验结果&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);"  onclick="addResult('m')" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
 						</div>
 						<div style="margin-left:10px;margin-bottom: 10px;">
 							<c:forEach items="${labReqList}" var="vo">
@@ -349,7 +349,7 @@
 							</table>
 						</div>
 					</c:if>
-					<!-- 原材料型式试验结果-end  -->
+					<!-- 材料型式试验结果-end  -->
 				</form>
 				
 				<!-- Excel 导入 -->
@@ -382,9 +382,9 @@
 				<form method="POST" enctype="multipart/form-data" id="uploadForm">
 					<input type="hidden" id="taskId" name="taskId" value="${facadeBean.id}">
 					
-					<!-- 零部件图谱试验结果-start -->
+					<!-- 零件图谱试验结果-start -->
 					<c:if test="${(facadeBean.partsAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.partsAtlResult == 1) }">
-						<div class="title" style="margin-top:15px;">零部件图谱试验结果</div>
+						<div class="title" style="margin-top:15px;">零件图谱试验结果</div>
 						<div style="margin-left:10px;margin-bottom: 10px;">
 							<c:forEach items="${labReqList}" var="vo">
 								<c:if test="${vo.type eq 1}">
@@ -470,11 +470,11 @@
 						</div>
 						
 					</c:if>
-					<!-- 零部件图谱试验结果-end -->
+					<!-- 零件图谱试验结果-end -->
 					
-					<!-- 原材料图谱试验结果-start -->
+					<!-- 材料图谱试验结果-start -->
 					<c:if test="${(facadeBean.matAtlId == currentAccount.org.id or currentAccount.role.code == superRoleCole) and (facadeBean.matAtlResult == 1) }">
-						<div class="title" style="margin-top:15px;">原材料图谱试验结果</div>
+						<div class="title" style="margin-top:15px;">材料图谱试验结果</div>
 						<div style="margin-left:10px;margin-bottom: 10px;">
 							<c:forEach items="${labReqList}" var="vo">
 								<c:if test="${vo.type eq 2}">
@@ -558,7 +558,7 @@
 							</table>
 						</div>
 					</c:if>
-					<!-- 原材料图谱试验结果-end -->
+					<!-- 材料图谱试验结果-end -->
 				
 					<div style="margin-top:10px;font-weight:bold;color:red;" align="center" id="atlasError"></div>
 					<div align="center" style="margin-top:10px;">
@@ -583,16 +583,16 @@
 			saving = true;
 			
 			var m_arTable = $("#m_arTable").length;
-			// 零部件图谱结论
+			// 零件图谱结论
 			var partsAtl_result = [];
-			// 原材料图谱结论
+			// 材料图谱结论
 			var matAtl_result = [];
 			// 试验结论结果
 			var conclusionDataArray = [];
 			
 			var p_arTable =  $("#p_arTable").length;
 			
-			// 零部件结果
+			// 零件结果
 			if(p_arTable > 0){
 				// 样品图谱
 				var p_tempLabDir = $("#p_tempLab_pic").filebox("getValue");
@@ -670,7 +670,7 @@
 				}
 			}
 			
-			// 原材料结果
+			// 材料结果
 			if(m_arTable > 0){
 				// 样品图谱
 				var m_tempLabDir = $("#m_tempLab_pic").filebox("getValue");
@@ -781,20 +781,20 @@
 			var conclusionDataArray = [];
 			var date = new Date();
 			var flag = true;
-			// 零部件结果
+			// 零件结果
 			var p_result = [];
-			// 原材料结果
+			// 材料结果
 			var m_result = [];
-			// 零部件型式结论
+			// 零件型式结论
 			var partsPat_result = [];
-			// 原材料型式结论
+			// 材料型式结论
 			var matPat_result = [];
 			
 			var p_pfTable =  $("#p_pfTable").length;
 			var m_pfTable = $("#m_pfTable").length;
 			var taskType = "${facadeBean.type}";
 			
-			// 零部件试验结果
+			// 零件试验结果
 			if(p_pfTable > 0){
 				// 附件
 				var partsResultAttachFile = $("#partsResultAttachFile").filebox("getValue");
@@ -823,13 +823,13 @@
 				}
 			}
 			
-			// 原材料试验结果
+			// 材料试验结果
 			if(m_pfTable > 0){
 				// 附件
 				var materialResultAttachFile = $("#materialResultAttachFile").filebox("getValue");
 				
 				if($("tr[m_num]").length < 1 && isNull(materialResultAttachFile)){
-					$("#patternError").html("请添加原材料试验结果或者上传附件");
+					$("#patternError").html("请添加材料试验结果或者上传附件");
 					saving = false;
 					return false;
 				}
@@ -884,7 +884,7 @@
 		
 		/**
 		 *  添加试验结果
-		 *  @param type 种类: m-原材料， p-零部件
+		 *  @param type 种类: m-材料， p-零件
 		 */
 		function addResult(type){
 			var num;

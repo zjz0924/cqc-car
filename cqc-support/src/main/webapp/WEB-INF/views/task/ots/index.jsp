@@ -58,7 +58,7 @@
 			
 			// 创建tab
 		 	function createTab(title, url, selected) {  
-				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="950px;">'; 
+				var content = '<iframe src="${ctx}/' + url + '" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="auto" width="100%" height="980px;">'; 
 			    $('#systemTabs').tabs('add', {   
 			        title : title,   
 			        selected : selected,   
@@ -84,7 +84,7 @@
 			<span style="font-size: 30px;font-weight: bold; margin-top: 70px; display: inline-block; margin-left: 80px;color: #4169E1">${menuName}</span>
 		</div>
 		
-		<div style="width: auto;height: 950px; min-height: 950px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
+		<div style="width: auto;height: 980px; min-height: 980px; background: #e6e6e6; font-size: 14px;margin-left: 5%;margin-right: 5%;margin-top:20px;margin-bottom: 20px;">
 			<div id="systemTabs" style="width:100%;height:auto;" data-options="plain: true,pill: true, justified: true, narrow: false">
 		    </div>
 		</div>

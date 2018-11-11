@@ -260,7 +260,7 @@ public class QueryController extends AbstractController {
 			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(Long.parseLong(id));
 
 			if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) { // OTS/GS
-																													// 结果确认
+																													// 结果接收
 
 				if (task.getMatAtlResult() >= 2 || task.getMatPatResult() >= 2 || task.getPartsAtlResult() >= 2
 						|| task.getPartsPatResult() >= 2) {
@@ -284,13 +284,13 @@ public class QueryController extends AbstractController {
 					Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 					atlasResultService.assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
 
-					// 原材料图谱结果
+					// 材料图谱结果
 					model.addAttribute("mAtlasResult", mAtlasResult);
-					// 零部件图谱结果
+					// 零件图谱结果
 					model.addAttribute("pAtlasResult", pAtlasResult);
-					// 原材料型式结果
+					// 材料型式结果
 					model.addAttribute("mPfResult", mPfResult);
-					// 零部件型式结果
+					// 零件型式结果
 					model.addAttribute("pPfResult", pPfResult);
 					// 型式结果附件
 					model.addAttribute("attach", attachService.getFileName(task.getId()));
@@ -336,10 +336,10 @@ public class QueryController extends AbstractController {
 					List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
 					groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
 
-					// 零部件图谱结果
+					// 零件图谱结果
 					Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult,
 							sl_pAtlasResult);
-					// 原材料图谱结果
+					// 材料图谱结果
 					Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult,
 							sl_mAtlasResult);
 					// 对比结果
@@ -531,7 +531,7 @@ public class QueryController extends AbstractController {
 					} else if (task.getState() == 5) {
 						state = "结果发送中";
 					} else if (task.getState() == 6) {
-						state = "结果确认中";
+						state = "结果接收中";
 					} else if (task.getState() == 7) {
 						state = "完成";
 					} else if (task.getState() == 8) {
@@ -724,7 +724,7 @@ public class QueryController extends AbstractController {
 	protected boolean hasPermission(HttpServletRequest request, String alias) {
 		List<Menu> menuList = (List<Menu>) request.getSession().getAttribute(Contants.CURRENT_PERMISSION_MENU);
 
-		// 查看当前是否有审核、审批、上传结果、比对、结果确认权限
+		// 查看当前是否有审核、审批、上传结果、比对、结果接收权限
 		for (Menu menu : menuList) {
 			if (menu.getSubList() != null && menu.getSubList().size() > 0) {
 				for (Menu subMenu : menu.getSubList()) {

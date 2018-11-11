@@ -157,9 +157,9 @@
 								}else if(val == 9){
 									str = "结果发送";
 								}else if(val == 10){
-									str = "结果确认合格";
+									str = "结果接收合格";
 								}else if(val == 11){
-									str = "结果确认不合格";
+									str = "结果接收不合格";
 								}else if(val == 12){
 									str = "基准保存";
 								}else if(val == 13){

@@ -158,10 +158,10 @@
 								<tr>
 									<td>
 										<c:choose>
-											<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-											<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-											<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-											<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+											<c:when test="${vo.type eq 1}">零件图谱试验</c:when>
+											<c:when test="${vo.type eq 2}">材料图谱试验</c:when>
+											<c:when test="${vo.type eq 3}">零件型式试验</c:when>
+											<c:when test="${vo.type eq 4}">材料型式试验</c:when>
 										</c:choose>
 									</td>
 									<td>${vo.code}</td>
@@ -185,7 +185,7 @@
 						<c:if test="${not empty facadeBean.partsAtl}">
 							<tr>
 								<td class="value-td">${facadeBean.partsAtlCode }</td>
-								<td class="value-td">零部件图谱试验</td>
+								<td class="value-td">零件图谱试验</td>
 								<td class="value-td">
 									<c:choose>
 										<c:when test="${facadeBean.partsAtlResult != 0}">
@@ -202,7 +202,7 @@
 						<c:if test="${not empty facadeBean.matAtl}">
 							<tr>
 								<td class="value-td">${facadeBean.matAtlCode }</td>
-								<td class="value-td">原材料图谱试验</td>
+								<td class="value-td">材料图谱试验</td>
 								<td class="value-td">
 									<c:choose>
 										<c:when test="${facadeBean.matAtlResult != 0}">
@@ -219,7 +219,7 @@
 						<c:if test="${not empty facadeBean.partsPat}">
 							<tr>
 								<td class="value-td">${facadeBean.partsPatCode }</td>
-								<td class="value-td">零部件型式试验</td>
+								<td class="value-td">零件型式试验</td>
 								<td class="value-td">
 									<c:choose>
 										<c:when test="${facadeBean.partsPatResult != 0}">
@@ -236,7 +236,7 @@
 						<c:if test="${not empty facadeBean.matPat}">
 							<tr>
 								<td class="value-td">${facadeBean.matPatCode }</td>
-								<td class="value-td">原材料型式试验</td>
+								<td class="value-td">材料型式试验</td>
 								<td class="value-td">
 									<c:choose>
 										<c:when test="${facadeBean.matPatResult != 0}">
@@ -261,7 +261,7 @@
 				<div class="title">试验结果</div>
 				
 				<c:if test="${taskType == 1 }">
-					<div class="title">零部件试验结果</div>
+					<div class="title">零件试验结果</div>
 					<table class="info">
 						<tr class="single-row">
 							<td class="table-title" style="width: 5%;">序号</td>
@@ -483,7 +483,7 @@
 					
 				</c:if>
 				
-				<div class="title" style="margin-top: 10px;">原材料试验结果</div>
+				<div class="title" style="margin-top: 10px;">材料试验结果</div>
 				<table class="info">
 					<tr class="single-row">
 						<td class="table-title" style="width: 5%;">序号</td>
@@ -795,7 +795,7 @@
 			// 正常流程
 			if(approveType == 3){
 				
-				// 零部件图谱试验结果
+				// 零件图谱试验结果
 				if(!isNull("${facadeBean.partsAtlId}")){
 					var partsAtlResult = "${facadeBean.partsAtlResult}";
 					if(partsAtlResult == 1){
@@ -815,7 +815,7 @@
 					}
 				}
 				
-				// 零部件型式试验结果
+				// 零件型式试验结果
 				if(!isNull("${facadeBean.partsPatId}")){
 					var partsPatResult = "${facadeBean.partsPatResult}";
 					if(partsPatResult == 1){
@@ -835,7 +835,7 @@
 					}
 				}
 				
-				// 原材料图谱试验结果
+				// 材料图谱试验结果
 				if(!isNull("${facadeBean.matAtlId}")){
 					var matAtlResult = "${facadeBean.matAtlResult}";
 					if(matAtlResult == 1){
@@ -855,7 +855,7 @@
 					}
 				}
 				
-				// 原材料型式试验结果
+				// 材料型式试验结果
 				if(!isNull("${facadeBean.matPatId}")){
 					var matPatResult = "${facadeBean.matPatResult}";
 					if(matPatResult == 1){

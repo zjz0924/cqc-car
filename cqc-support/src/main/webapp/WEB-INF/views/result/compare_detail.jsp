@@ -148,7 +148,7 @@
 		<div class="title">结果对比</div>
 		
 		<c:if test="${not empty facadeBean.partsAtlId }">
-			<div class="title" style="margin-top:15px;">零部件图谱对比（基准-抽样）</div>
+			<div class="title" style="margin-top:15px;">零件图谱对比（基准-抽样）</div>
 			<c:forEach items="${pAtlasResult}" var="m">
 				<div style="margin-bottom: 10px;">
 					<c:choose>
@@ -193,7 +193,7 @@
 		</c:if>
 		
 		<c:if test="${not empty facadeBean.matAtlId }">
-			<div class="title" style="margin-top:15px;">原材料图谱对比（基准-抽样）</div>
+			<div class="title" style="margin-top:15px;">材料图谱对比（基准-抽样）</div>
 			<c:forEach items="${mAtlasResult}" var="m">
 				<div style="margin-bottom: 10px;">
 					<c:choose>
@@ -251,7 +251,7 @@
 				
 				<c:if test="${not empty facadeBean.partsAtlId }">
 					<tr>
-						<td style="font-weight:bold;">零部件</td>
+						<td style="font-weight:bold;">零件</td>
 						<td align="center">
 							<div style="margin-top:5px;">
 								<label><input name="p_temp" type="radio" value="1" checked onchange="chooseChange('p')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -302,7 +302,7 @@
 				
 				<c:if test="${not empty facadeBean.matAtlId }">
 					<tr>
-						<td style="font-weight:bold;">原材料</td>
+						<td style="font-weight:bold;">材料</td>
 						<td align="center">
 							<div style="margin-top:5px;">
 								<label><input name="m_temp" type="radio" value="1" checked onchange="chooseChange('m')"/>一致</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -371,7 +371,7 @@
 			}
 			saving = true;
 			
-			// 零部件
+			// 零件
 			var p_temp = $("input[name='p_temp']:checked").val();
 			var p_temp_remark = $("#p_temp_remark").val();
 			
@@ -387,7 +387,7 @@
 			var p_result = $("input[name='p_result']:checked").val();
 			var p_result_remark = $("#p_result_remark").val();
 			
-			// 原材料
+			// 材料
 			var m_temp = $("input[name='m_temp']:checked").val();
 			var m_temp_remark = $("#m_temp_remark").val();
 			

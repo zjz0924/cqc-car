@@ -23,7 +23,7 @@
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-		delete from examine_record where id = #{id,jdbcType=BIGINT}
+		delete from examine_record where t_id = #{id,jdbcType=BIGINT}
 	</delete>
 	
 	<insert id="insert" parameterType="cn.wow.common.domain.ExamineRecord">
@@ -98,6 +98,15 @@
 				and task_type = #{taskType,jdbcType=INTEGER}
 			</if>
 			
+			<!-- 分类多选 -->
+			<if test="catagoryList != null">
+				and catagory in <foreach collection="catagoryList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
+			
+			<!-- 任务ID多选 -->
+			<if test="tIdList != null">
+				and t_id in <foreach collection="tIdList" item="id" index="index" separator=","  open= "(" close =")"> #{id} </foreach> 
+			</if>
 	      </where>
 	      
 		  <choose>

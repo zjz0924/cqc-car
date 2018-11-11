@@ -408,10 +408,10 @@
 						<tr>
 							<td>
 								<c:choose>
-									<c:when test="${vo.type eq 1}">零部件图谱试验</c:when>
-									<c:when test="${vo.type eq 2}">原材料图谱试验</c:when>
-									<c:when test="${vo.type eq 3}">零部件型式试验</c:when>
-									<c:when test="${vo.type eq 4}">原材料型式试验</c:when>
+									<c:when test="${vo.type eq 1}">零件图谱试验</c:when>
+									<c:when test="${vo.type eq 2}">材料图谱试验</c:when>
+									<c:when test="${vo.type eq 3}">零件型式试验</c:when>
+									<c:when test="${vo.type eq 4}">材料型式试验</c:when>
 								</c:choose>
 							</td>
 							<td>${vo.code}</td>
@@ -423,7 +423,7 @@
 			</div>	
 		</c:if>
 				
-		<div class="title">零部件试验结果</div>
+		<div class="title">零件试验结果</div>
 		<table class="info">
 			<tr class="single-row">
 				<td class="remark-span">序号</td>
@@ -652,7 +652,7 @@
 		
 		<div style="border: 0.5px dashed #C9C9C9;width:98%;margin-top:15px;margin-bottom: 15px;"></div>
 		
-		<div class="title" style="margin-top: 10px;">原材料试验结果</div>
+		<div class="title" style="margin-top: 10px;">材料试验结果</div>
 		<table class="info">
 			<tr class="single-row">
 				<td class="remark-span">序号</td>

@@ -22,7 +22,7 @@ public interface PartsService {
     public Parts selectByCodeAndType(String code, Integer type);
     
     /**
-     * 检查零部件信息是否存在
+     * 检查零件信息是否存在
      */
 	public ResultFlagVO isExist(Long id, String name, Date proTime, String producer, String producerCode, String p_code, String p_proNo, Integer p_num, String p_place);
 	
@@ -34,7 +34,7 @@ public interface PartsService {
 	
 	
 	/**
-	 * 是否更新零部件信息
+	 * 是否更新零件信息
 	 */
 	public boolean isUpdatePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place,
 			String p_proNo, String p_remark, Integer p_num, String p_producer, String p_producerCode);

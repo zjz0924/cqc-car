@@ -69,8 +69,8 @@ public interface InfoService {
 	 * 
 	 * @param account    操作用户
 	 * @param id         任务ID
-	 * @param partsAtlId 零部件图谱实验室ID
-	 * @param matAtlId   原材料图谱实验室ID
+	 * @param partsAtlId 零件图谱实验室ID
+	 * @param matAtlId   材料图谱实验室ID
 	 * @param labReqList 试验说明
 	 */
 	public Task transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
@@ -94,7 +94,7 @@ public interface InfoService {
 	 * @param id       任务ID
 	 * @param result   结果：1-通过，2-不通过
 	 * @param remark   备注
-	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param catagory 分类：1-零件图谱，2-材料图谱，3-零件型式，4-材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
 			Long matAtlId, Long partsPatId, Long matPatId);
@@ -114,9 +114,9 @@ public interface InfoService {
 	 * 申请信息修改
 	 * 
 	 * @param account
-	 * @param vehicle  整车信息
-	 * @param parts    零部件信息
-	 * @param material 原材料信息
+	 * @param vehicle  车型信息
+	 * @param parts    零件信息
+	 * @param material 材料信息
 	 * @param task     任务
 	 */
 	public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material);

@@ -388,7 +388,7 @@
 			
 			<!-- gs 任务下达列表 -->
 			<if test="transimtTask_gs != null">
-				and ((t.mat_atl_id is null or t.mat_pat_id is null or t.parts_atl_id IS NULL OR t.parts_pat_id IS NULL) or (( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ) OR ( t.mat_pat_result = 0 AND t.mat_pat_id IS NOT NULL ) OR ( t.parts_pat_result = 0 AND t.parts_pat_id IS NOT NULL ) OR ( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL )))
+				and (((t.mat_atl_id is null or t.mat_pat_id is null or t.parts_atl_id IS NULL OR t.parts_pat_id IS NULL) or (( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ) OR ( t.mat_pat_result = 0 AND t.mat_pat_id IS NOT NULL ) OR ( t.parts_pat_result = 0 AND t.parts_pat_id IS NOT NULL ) OR ( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL ))) and (t.parts_atl_result &lt;= 1 and t.mat_atl_result &lt;= 1 and t.mat_pat_result &lt;= 1 and t.parts_pat_result &lt;= 1 ))
 			</if>
 
 			<!-- OTS 审批列表 -->
@@ -438,14 +438,14 @@
 				and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and (t.parts_pat_result = 2  or t.mat_pat_result = 2 or t.parts_atl_result = 2 or t.mat_atl_result = 2)
 			</if>
 
-			<!-- 结果确认：待上传列表 只有第三方任务，其它任务都是同时上传的  -->
+			<!-- 结果接收：待上传列表 只有第三方任务，其它任务都是同时上传的  -->
 			<if test="confirmTask_wait != null">
-				and (t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL )))
+				and (t.type = 4 and t.state != 4 AND (t.parts_atl_result = 3 or t.mat_atl_result = 3 or t.parts_pat_result = 3 or t.mat_pat_result = 3) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL )))
 			</if>
 			
-			<!-- 结果确认：已上传列表 -->
+			<!-- 结果接收：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				and ((t.type != 4 and (t.mat_atl_result = 3 or t.parts_atl_result = 3)) or ( t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND NOT (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL ))))
+				and ((t.type != 4 and (t.state != 4 or t.state != 7) and (t.mat_atl_result = 3 or t.parts_atl_result = 3)) or ( t.type = 4 AND t.state != 4 AND (t.parts_atl_result = 3 or t.mat_atl_result = 3 or t.parts_pat_result = 3 or t.mat_pat_result = 3) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND NOT (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL ))))
 			</if>
 
 			<!-- 所有已完成的任务 -->
@@ -622,7 +622,7 @@
 			
 			<!-- gs 任务下达列表 -->
 			<if test="transimtTask_gs != null">
-				and ((t.mat_atl_id is null or t.mat_pat_id is null or t.parts_atl_id IS NULL OR t.parts_pat_id IS NULL) or (( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ) OR ( t.mat_pat_result = 0 AND t.mat_pat_id IS NOT NULL ) OR ( t.parts_pat_result = 0 AND t.parts_pat_id IS NOT NULL ) OR ( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL )))
+				and (((t.mat_atl_id is null or t.mat_pat_id is null or t.parts_atl_id IS NULL OR t.parts_pat_id IS NULL) or (( t.mat_atl_result = 0 AND t.mat_atl_id IS NOT NULL ) OR ( t.mat_pat_result = 0 AND t.mat_pat_id IS NOT NULL ) OR ( t.parts_pat_result = 0 AND t.parts_pat_id IS NOT NULL ) OR ( t.parts_atl_result = 0 AND t.parts_atl_id IS NOT NULL ))) and (t.parts_atl_result &lt;= 1 and t.mat_atl_result &lt;= 1 and t.mat_pat_result &lt;= 1 and t.parts_pat_result &lt;= 1 ))
 			</if>
 
 			<!-- 图谱结果上传 -->
@@ -645,14 +645,14 @@
 			    and ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and ((t.parts_pat_id = #{sendTask, jdbcType=BIGINT} and t.parts_pat_result = 2 ) or (t.mat_pat_id = #{sendTask, jdbcType=BIGINT} and t.mat_pat_result = 2) or (t.parts_atl_id = #{sendTask, jdbcType=BIGINT} and t.parts_atl_result = 2) or (t.mat_atl_id = #{sendTask, jdbcType=BIGINT} and t.mat_atl_result = 2))
 			</if>
 
-			<!-- 结果确认：待上传列表 只有第三方任务，其它任务都是同时上传的  -->
+			<!-- 结果接收：待上传列表 只有第三方任务，其它任务都是同时上传的  -->
 			<if test="confirmTask_wait != null">
-				and (t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL )))
+				and state != 4 AND (t.type = 4 AND (t.parts_atl_result = 3 or t.mat_atl_result = 3 or t.parts_pat_result = 3 or t.mat_pat_result = 3) AND  (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL )))
 			</if>
 			
-			<!-- 结果确认：已上传列表 -->
+			<!-- 结果接收：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				and ((t.type != 4 and (t.mat_atl_result = 3 or t.parts_atl_result = 3)) or ( t.type = 4 AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND NOT (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL ))))
+				and ((t.type != 4 and (state != 4 or state != 7) and (t.mat_atl_result = 3 or t.parts_atl_result = 3)) or ( t.type = 4 AND state != 4 AND (t.parts_atl_result = 3 or t.mat_atl_result = 3 or t.parts_pat_result = 3 or t.mat_pat_result = 3) AND (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times > 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times > 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times > 0 ) OR ( t.parts_pat_times > 0 AND t.parts_pat_code IS NOT NULL )) AND NOT (( t.mat_atl_code IS NOT NULL AND t.mat_atl_times = 0 ) OR ( t.parts_atl_code IS NOT NULL AND t.parts_atl_times = 0 ) OR ( t.mat_pat_code IS NOT NULL AND t.mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND t.parts_pat_code IS NOT NULL ))))
 			</if>
 			
 			<!-- 申请人 -->
@@ -720,7 +720,7 @@
 		
 			<!-- tpt 下达任务 -->
 			<if test="tptTransmit != null">
-				union all select id, code, type, state, create_time, a_id, 11 taskType from task where type = 4 and state = 3 and trainsmit_account_id = #{applicatId,jdbcType=BIGINT} and ((mat_atl_id is null or mat_pat_id is null or parts_atl_id IS NULL OR parts_pat_id IS NULL) or ((mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( parts_atl_result = 0 AND parts_atl_id IS NOT NULL )))
+				union all select id, code, type, state, create_time, a_id, 11 taskType from task where type = 4 and state = 3 and trainsmit_account_id = #{applicatId,jdbcType=BIGINT} and ((mat_atl_id is null or mat_pat_id is null or parts_atl_id IS NULL OR parts_pat_id IS NULL) or ((mat_atl_result = 0 AND mat_atl_id IS NOT NULL ) OR ( mat_pat_result = 0 AND mat_pat_id IS NOT NULL ) OR ( parts_pat_result = 0 AND parts_pat_id IS NOT NULL ) OR ( parts_atl_result = 0 AND parts_atl_id IS NOT NULL ))) and (t.parts_atl_result &lt;= 1 and t.mat_atl_result &lt;= 1 and t.mat_pat_result &lt;= 1 and t.parts_pat_result &lt;= 1 )
 			</if>
 			
 			<!-- tpt 任务审批 -->
@@ -748,14 +748,14 @@
 				union all select id, code, type, state, create_time, a_id, 16 taskType from task where ((state =3 and (type = 1 or type = 4)) or (state = 5 and (type = 2 or type = 3))) and ((parts_pat_id = #{sendTask, jdbcType=BIGINT} and parts_pat_result = 2 ) or (mat_pat_id = #{sendTask, jdbcType=BIGINT} and mat_pat_result = 2) or (parts_atl_id = #{sendTask, jdbcType=BIGINT} and parts_atl_result = 2) or (mat_atl_id = #{sendTask, jdbcType=BIGINT} and mat_atl_result = 2))
 			</if>
 			
-			<!-- 结果确认：待上传列表 -->
+			<!-- 结果接收：待上传列表 -->
 			<if test="confirmTask_wait != null">
-				union all select id, code, type, state, create_time, a_id, 17 taskType from task where type = 4 and a_id = #{applicatId,jdbcType=BIGINT} AND (( mat_atl_code IS NOT NULL AND mat_atl_times > 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times > 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times > 0 ) OR ( parts_pat_times > 0 AND parts_pat_code IS NOT NULL )) AND (( mat_atl_code IS NOT NULL AND mat_atl_times = 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times = 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND parts_pat_code IS NOT NULL )) and a_id = #{applicatId,jdbcType=BIGINT}
+				union all select id, code, type, state, create_time, a_id, 17 taskType from task where type = 4 AND state != 4 AND (parts_atl_result = 3 or mat_atl_result = 3 or parts_pat_result = 3 or mat_pat_result = 3) and a_id = #{applicatId,jdbcType=BIGINT} AND (( mat_atl_code IS NOT NULL AND mat_atl_times > 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times > 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times > 0 ) OR ( parts_pat_times > 0 AND parts_pat_code IS NOT NULL )) AND (( mat_atl_code IS NOT NULL AND mat_atl_times = 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times = 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND parts_pat_code IS NOT NULL )) and a_id = #{applicatId,jdbcType=BIGINT}
 			</if>
 			
-			<!-- 结果确认：已上传列表 -->
+			<!-- 结果接收：已上传列表 -->
 			<if test="confirmTask_finish != null">
-				union all select id, code, type, state, create_time, a_id, 18 taskType from task where (type != 4 and a_id = #{applicatId,jdbcType=BIGINT} and (mat_atl_result = 3 or parts_atl_result = 3)) or ( type = 4 and a_id = #{applicatId,jdbcType=BIGINT} AND (( mat_atl_code IS NOT NULL AND mat_atl_times > 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times > 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times > 0 ) OR ( parts_pat_times > 0 AND parts_pat_code IS NOT NULL )) AND NOT (( mat_atl_code IS NOT NULL AND mat_atl_times = 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times = 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND parts_pat_code IS NOT NULL )))
+				union all select id, code, type, state, create_time, a_id, 18 taskType from task where (type != 4 and (state != 4 or state != 7) and a_id = #{applicatId,jdbcType=BIGINT} and (mat_atl_result = 3 or parts_atl_result = 3)) or ( type = 4 and state != 4 AND (parts_atl_result = 3 or mat_atl_result = 3 or parts_pat_result = 3 or mat_pat_result = 3) and a_id = #{applicatId,jdbcType=BIGINT} AND (( mat_atl_code IS NOT NULL AND mat_atl_times > 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times > 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times > 0 ) OR ( parts_pat_times > 0 AND parts_pat_code IS NOT NULL )) AND NOT (( mat_atl_code IS NOT NULL AND mat_atl_times = 0 ) OR ( parts_atl_code IS NOT NULL AND parts_atl_times = 0 ) OR ( mat_pat_code IS NOT NULL AND mat_pat_times = 0 ) OR ( parts_pat_times = 0 AND parts_pat_code IS NOT NULL )))
 			</if>
 			
 		) t 

@@ -159,7 +159,7 @@ public class InfoServiceImpl implements InfoService {
 			}
 		}
 
-		// 整车信息
+		// 车型信息
 		if (vehicle.getId() == null) {
 			vehicleDao.insert(vehicle);
 		} else {
@@ -446,10 +446,10 @@ public class InfoServiceImpl implements InfoService {
 	 * 
 	 * @param account    操作用户
 	 * @param id         任务ID
-	 * @param partsAtlId 零部件图谱实验室ID
-	 * @param matAtlId   原材料图谱实验室ID
-	 * @param partsPatId 零部件型式实验室ID
-	 * @param matPatId   原材料型式实验室ID
+	 * @param partsAtlId 零件图谱实验室ID
+	 * @param matAtlId   材料图谱实验室ID
+	 * @param partsPatId 零件型式实验室ID
+	 * @param matPatId   材料型式实验室ID
 	 * @param labReqList 试验说明
 	 */
 	public Task transmit(Account account, Long id, Long partsAtlId, Long matAtlId, Long partsPatId, Long matPatId,
@@ -672,7 +672,7 @@ public class InfoServiceImpl implements InfoService {
 	 * @param id       任务ID
 	 * @param result   结果：1-通过，2-不通过
 	 * @param remark   备注
-	 * @param catagory 分类：1-零部件图谱，2-原材料图谱，3-零部件型式，4-原材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
+	 * @param catagory 分类：1-零件图谱，2-材料图谱，3-零件型式，4-材料型式，5-全部（试验），6-信息修改申请，7-试验结果修改申请
 	 */
 	public void approve(Account account, Long id, int result, String remark, int catagory, Long partsAtlId,
 			Long matAtlId, Long partsPatId, Long matPatId) {
@@ -834,16 +834,16 @@ public class InfoServiceImpl implements InfoService {
 			if (result == 1) {
 				if (catagory == 1) {
 					task.setPartsAtlResult(1);
-					remark = "零部件图谱试验审批通过";
+					remark = "零件图谱试验审批通过";
 				} else if (catagory == 2 && task.getMatAtlId() != null) {
 					task.setMatAtlResult(1);
-					remark = "原材料图谱试验审批通过";
+					remark = "材料图谱试验审批通过";
 				} else if (catagory == 3 && task.getPartsPatId() != null) {
 					task.setPartsPatResult(1);
-					remark = "零部件型式试验审批通过";
+					remark = "零件型式试验审批通过";
 				} else if (catagory == 4) {
 					task.setMatPatResult(1);
-					remark = "原材料型式试验审批通过";
+					remark = "材料型式试验审批通过";
 				} else {
 					if (task.getMatAtlId() != null) {
 						task.setMatAtlResult(1);
@@ -867,19 +867,19 @@ public class InfoServiceImpl implements InfoService {
 				if (catagory == 1) {
 					task.setPartsAtlResult(6);
 					task.setPartsAtlId(null);
-					remark = "零部件图谱试验审批不通过：" + remark;
+					remark = "零件图谱试验审批不通过：" + remark;
 				} else if (catagory == 2) {
 					task.setMatAtlResult(6);
 					task.setMatAtlId(null);
-					remark = "原材料图谱试验审批不通过：" + remark;
+					remark = "材料图谱试验审批不通过：" + remark;
 				} else if (catagory == 3) {
 					task.setPartsPatResult(6);
 					task.setPartsPatId(null);
-					remark = "零部件型式试验审批不通过：" + remark;
+					remark = "零件型式试验审批不通过：" + remark;
 				} else if (catagory == 4) {
 					task.setMatPatResult(6);
 					task.setMatPatId(null);
-					remark = "原材料型式试验审批不通过：" + remark;
+					remark = "材料型式试验审批不通过：" + remark;
 				} else {
 					if (task.getMatAtlId() != null) {
 						task.setMatAtlResult(6);
@@ -1090,9 +1090,9 @@ public class InfoServiceImpl implements InfoService {
 	 * 申请信息修改
 	 * 
 	 * @param account
-	 * @param vehicle  整车信息
-	 * @param parts    零部件信息
-	 * @param material 原材料信息
+	 * @param vehicle  车型信息
+	 * @param parts    零件信息
+	 * @param material 材料信息
 	 * @param task     任务
 	 */
 	public void applyInfo(Account account, Task task, Vehicle vehicle, Parts parts, Material material) {
@@ -1293,7 +1293,7 @@ public class InfoServiceImpl implements InfoService {
 		List<Long> mIdList = new ArrayList<Long>();
 		List<Long> iIdList = new ArrayList<Long>();
 
-		// 整车信息
+		// 车型信息
 		Map<String, Object> vMap = new PageMap(false);
 		if (StringUtils.isNotBlank(v_code)) {
 			vMap.put("code", v_code);
@@ -1315,7 +1315,7 @@ public class InfoServiceImpl implements InfoService {
 			}
 		}
 
-		// 零部件
+		// 零件
 		Map<String, Object> pMap = new PageMap(false);
 		pMap.put("notstate", 2);
 
@@ -1352,7 +1352,7 @@ public class InfoServiceImpl implements InfoService {
 			}
 		}
 
-		// 原材料
+		// 材料
 		Map<String, Object> mMap = new PageMap(false);
 		mMap.put("notstate", 2);
 
@@ -1423,7 +1423,7 @@ public class InfoServiceImpl implements InfoService {
 	 * 
 	 * @param iId  信息ID
 	 * @param id   ID
-	 * @param type 类型：1-整车信息，2-零部件信息，3-原材料信息
+	 * @param type 类型：1-车型信息，2-零件信息，3-材料信息
 	 * @return
 	 */
 	boolean isUse(Long iId, Long id, int type) {

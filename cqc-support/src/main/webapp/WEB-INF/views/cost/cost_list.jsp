@@ -111,13 +111,13 @@
 						width : '90',
 						align : 'center',
 						formatter : function(val){
-							var str = "原材料型式"
+							var str = "材料型式"
 							if(val == 1){
-								str = "零部件图谱";
+								str = "零件图谱";
 							}else if(val == 2){
-								str = "零部件型式";
+								str = "零件型式";
 							}else if(val == 3){
-								str = "原材料图谱";
+								str = "材料图谱";
 							}
 							return "<span title='" + str + "'>" + str + "</span>";
 						}
@@ -460,10 +460,10 @@
 					<span class="qlabel">实验类型：</span>
 					<select id="labType" name="labType" style="width:163px;" class="easyui-combobox" data-options="panelHeight: 'auto'">
 						<option value="">全部</option>	
-						<option value="1">零部件图谱</option>
-						<option value="2">零部件型式</option>
-						<option value="3">原材料图谱</option>
-						<option value="4">原材料型式</option>
+						<option value="1">零件图谱</option>
+						<option value="2">零件型式</option>
+						<option value="3">材料图谱</option>
+						<option value="4">材料型式</option>
 					</select> &nbsp;&nbsp;&nbsp;&nbsp;
 					
 					<span class="qlabel">创建时间：</span>

@@ -23,7 +23,7 @@ public class PfResult {
     private String remark;
     // 创建时间
     private Date createTime;
-    // 类型（1-零部件，2-原材料）
+    // 类型（1-零件，2-材料）
     private Integer catagory;
     // 实验序号
     private Integer expNo;

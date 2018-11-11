@@ -25,7 +25,7 @@ import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 
 /**
- * 零部件材料信息
+ * 零件材料信息
  * 
  * @author zhenjunzhuo 2017-09-28
  */

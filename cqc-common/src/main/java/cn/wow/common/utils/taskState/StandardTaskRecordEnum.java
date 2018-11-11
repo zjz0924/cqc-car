@@ -15,7 +15,7 @@ public enum StandardTaskRecordEnum {
 	APPROVE_DISAGREE(6, "审批不同意"),
 	UPLOAD(7, "结果上传"),
 	SEND(8, "结果发送"), 
-	CONFIRM(9, "结果确认"), 
+	CONFIRM(9, "结果接收"), 
 	SAVE(10, "基准保存"),
 	NOTICE(11, "收费通知"),
 	UPDATE(12, "信息修改"),

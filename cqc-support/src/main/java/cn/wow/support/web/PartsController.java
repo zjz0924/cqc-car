@@ -23,7 +23,7 @@ import cn.wow.common.utils.Contants;
 import cn.wow.common.utils.pagination.PageMap;
 
 /**
- * 零部件信息
+ * 零件信息
  * 
  * @author zhenjunzhuo 2017-09-28
  */
@@ -134,7 +134,7 @@ public class PartsController extends AbstractController {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("零部件信息删除失败", ex);
+			logger.error("零件信息删除失败", ex);
 
 			vo.setMsg("删除失败，系统异常");
 			vo.setSuccess(false);

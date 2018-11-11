@@ -86,7 +86,33 @@
 								}else if(row.state == 2){
 									str = "审核不通过";
 								}else if(row.state == 3){
-									str = "进行中";
+									var def = true;
+									
+									if(row.type == 1){
+										if(isNull(row.partsAtlId) && isNull(row.matAtlId)){
+											str = "下达任务中";
+										}else if((row.state == 3 && ((row.partsAtlResult == 0 && !isNull(row.partsAtlId)) || ( row.matAtlResult == 0 && !isNull(row.matAtlId) ))) || (row.infoApply == 1 || (row.resultApply == 1 || !isNull(row.tId)))){
+											str = "审批中";
+										}
+										def = false;
+									}else{
+										if((( isNull(row.matAtlId) || isNull(row.matPatId) || isNull(row.partsAtlId) || isNull(row.partsPatId)) || (( row.matAtlResult == 0 && !isNull(row.matAtlId)) || ( row.matPatResult == 0 && isNull(row.matPatId)) || ( row.partsPatResult == 0 && isNull(row.partsPatId)) || ( row.partsAtlResult = 0 && isNull(row.partsAtlId)))) && (row.partsAtlResult <= 1 && row.matAtlResult <= 1 && row.matPatResult <= 1 && row.partsPatResult <= 1 )){
+											str = "下达任务中";
+										}else if((row.state == 3 && ((row.matAtlResult = 0 && !isNull(row.matAtlId)) || (row.matPatResult = 0 && !isNull(row.matPatId) ) || (row.partsPatResult = 0 && !isNull(row.partsPatId)) || (row.partsAtlResult = 0 && !isNull(row.partsAtlId)))) || (row.infoApply = 1 || (row.resultApply = 1 && !isNull(tId)))){
+											str = "审批中";
+										}
+										def = false;
+									}
+									
+									if(def){
+										if(row.partsAtlResult == 1 || row.matAtlResult == 1 || row. matPatResult == 1 || row.partsPatResult == 1){
+											str = "结果上传中";
+										}else if(row.partsAtlResult == 2 || row.matAtlResult == 2 || row. matPatResult == 2 || row.partsPatResult == 2){
+											str = "结果发送中";
+										}else{
+											str = "结果确认中";
+										}
+									}
 								}else if(row.state == 4){
 									str = "完成";
 								}else if(row.state == 5){
@@ -442,7 +468,7 @@
 					}
 				});
 				
-				// 零部件生产商
+				// 零件生产商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -460,7 +486,7 @@
 					$("#parts_producer").val(obj.text);
 				});
 				
-				// 原材料生产商
+				// 材料生产商
 				$("#mat_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象

@@ -108,7 +108,7 @@ public class ApplyController extends AbstractController {
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	// 原材料图片上传路径
+	// 材料图片上传路径
 	@Value("${info.material.url}")
 	protected String materialUrl;
 
@@ -242,13 +242,13 @@ public class ApplyController extends AbstractController {
 		if (id != null) {
 			Task task = taskService.selectOne(id);
 
-			// 零部件-性能结果（只取最后一次实验）
+			// 零件-性能结果（只取最后一次实验）
 			List<PfResult> pPfResult = pfResultService.getLastResult(1, id);
 
-			// 原材料-性能结果（只取最后一次实验结果）
+			// 材料-性能结果（只取最后一次实验结果）
 			List<PfResult> mPfResult = pfResultService.getLastResult(2, id);
 
-			// 零部件-图谱结果（只取最后一次实验）
+			// 零件-图谱结果（只取最后一次实验）
 			List<AtlasResult> pAtlasResult = atlasResultService.getLastResult(1, id);
 			// 后面加上的样品照片
 			if (pAtlasResult != null && pAtlasResult.size() == 3) {
@@ -257,7 +257,7 @@ public class ApplyController extends AbstractController {
 				pAtlasResult.add(ar);
 			}
 
-			// 原材料-图谱结果（只取最后一次实验）
+			// 材料-图谱结果（只取最后一次实验）
 			List<AtlasResult> mAtlasResult = atlasResultService.getLastResult(2, id);
 			// 后面加上的样品照片
 			if (mAtlasResult != null && mAtlasResult.size() == 3) {
@@ -266,13 +266,13 @@ public class ApplyController extends AbstractController {
 				mAtlasResult.add(ar);
 			}
 
-			// 零部件-性能结果
+			// 零件-性能结果
 			model.addAttribute("pPfResult", pPfResult);
-			// 原材料-性能结果
+			// 材料-性能结果
 			model.addAttribute("mPfResult", mPfResult);
-			// 零部件-图谱结果
+			// 零件-图谱结果
 			model.addAttribute("pAtlasResult", pAtlasResult);
-			// 原材料-图谱结果
+			// 材料-图谱结果
 			model.addAttribute("mAtlasResult", mAtlasResult);
 
 			model.addAttribute("facadeBean", task);
@@ -308,7 +308,7 @@ public class ApplyController extends AbstractController {
 
 				if (compareResult != null && !compareResult.isEmpty()) {
 
-					List<ExamineRecord> pRecordList = compareResult.get("零部件");
+					List<ExamineRecord> pRecordList = compareResult.get("零件");
 					if (pRecordList != null && pRecordList.size() > 0) {
 						for (ExamineRecord record : pRecordList) {
 							if (record.getCatagory() == 1) {
@@ -325,7 +325,7 @@ public class ApplyController extends AbstractController {
 						}
 					}
 
-					List<ExamineRecord> mRecordList = compareResult.get("原材料");
+					List<ExamineRecord> mRecordList = compareResult.get("材料");
 					if (mRecordList != null && mRecordList.size() > 0) {
 						for (ExamineRecord record : mRecordList) {
 							if (record.getCatagory() == 5) {
@@ -439,16 +439,16 @@ public class ApplyController extends AbstractController {
 				List<LabReq> labReqList = labReqService.getLabReqListByTaskId(task.getId());
 
 				/** --------- 原结果 ----------- */
-				// 零部件-性能结果（只取最后一次实验）
+				// 零件-性能结果（只取最后一次实验）
 				List<PfResult> pPfResult_old = pfResultService.getLastResult(1, task.gettId());
 
-				// 原材料-性能结果（只取最后一次实验结果）
+				// 材料-性能结果（只取最后一次实验结果）
 				List<PfResult> mPfResult_old = pfResultService.getLastResult(2, task.gettId());
 
-				// 零部件-图谱结果（只取最后一次实验）
+				// 零件-图谱结果（只取最后一次实验）
 				List<AtlasResult> pAtlasResult_old = atlasResultService.getLastResult(1, task.gettId());
 
-				// 原材料-图谱结果（只取最后一次实验）
+				// 材料-图谱结果（只取最后一次实验）
 				List<AtlasResult> mAtlasResult_old = atlasResultService.getLastResult(2, task.gettId());
 
 				// 对比结果
@@ -459,16 +459,16 @@ public class ApplyController extends AbstractController {
 				List<LabConclusion> conclusionList_old = labConclusionService.selectByTaskId(task.gettId());
 
 				/** --------- 修改之后的结果 ----------- */
-				// 零部件-性能结果（只取最后一次实验）
+				// 零件-性能结果（只取最后一次实验）
 				List<PfResult> pPfResult_new = pfResultService.getLastResult(1, task.getId());
 
-				// 原材料-性能结果（只取最后一次实验结果）
+				// 材料-性能结果（只取最后一次实验结果）
 				List<PfResult> mPfResult_new = pfResultService.getLastResult(2, task.getId());
 
-				// 零部件-图谱结果（只取最后一次实验）
+				// 零件-图谱结果（只取最后一次实验）
 				List<AtlasResult> pAtlasResult_new = atlasResultService.getLastResult(1, task.getId());
 
-				// 原材料-图谱结果（只取最后一次实验）
+				// 材料-图谱结果（只取最后一次实验）
 				List<AtlasResult> mAtlasResult_new = atlasResultService.getLastResult(2, task.getId());
 
 				// 对比结果
@@ -591,7 +591,7 @@ public class ApplyController extends AbstractController {
 			Date date = new Date();
 			Task task = taskService.selectOne(t_id);
 
-			// 整车信息
+			// 车型信息
 			Vehicle vehicle = null;
 			if (isUpdateVehicleInfo(v_code, v_proTime, v_proAddr, v_remark)) {
 				vehicle = vehicleService.selectOne(task.getInfo().getvId());
@@ -602,31 +602,31 @@ public class ApplyController extends AbstractController {
 						.getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("整车信息已存在");
+					vo.setMsg("车型信息已存在");
 					return vo;
 				}
 			}
 
-			// 零部件信息
+			// 零件信息
 			Parts parts = null;
 			if (partsService.isUpdatePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_remark, p_num,
 					p_producer, p_producerCode)) {
 				parts = partsService.selectOne(task.getInfo().getpId());
-				assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date, p_num,
-						p_producerCode);
+				this.assemblePartsInfo(parts, p_code, p_name, p_proTime, p_place, p_proNo, p_producer, p_remark, date,
+						p_num, p_producerCode);
 
 				boolean isExist = partsService.isExist(task.getInfo().getpId(), parts.getName(), parts.getProTime(),
 						p_producer, p_producerCode, p_code, p_proNo, p_num, p_place).getFlag();
 				if (isExist) {
 					vo.setSuccess(false);
-					vo.setMsg("零部件信息已存在");
+					vo.setMsg("零件信息已存在");
 					return vo;
 				}
 			} else {
 				parts = null;
 			}
 
-			// 原材料信息
+			// 材料信息
 			Material material = null;
 			if (isUpdateMetailInfo(m_matName, m_matColor, m_proNo, m_producer, m_matNo, m_remark, m_num)) {
 				material = materialService.selectOne(task.getInfo().getmId());
@@ -660,12 +660,12 @@ public class ApplyController extends AbstractController {
 	 * 试验结果修改申请保存
 	 * 
 	 * @param taskId   任务ID
-	 * @param p_tgLab  零部件热重分析描述
-	 * @param p_infLab 零部件红外光分析描述
-	 * @param p_dtLab  零部件差热扫描描述
-	 * @param m_tgLab  原材料热重分析描述
-	 * @param m_infLab 原材料红外光分析描述
-	 * @param m_dtLab  原材料差热扫描描述
+	 * @param p_tgLab  零件热重分析描述
+	 * @param p_infLab 零件红外光分析描述
+	 * @param p_dtLab  零件差热扫描描述
+	 * @param m_tgLab  材料热重分析描述
+	 * @param m_infLab 材料红外光分析描述
+	 * @param m_dtLab  材料差热扫描描述
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/labInfoSave")
@@ -786,7 +786,7 @@ public class ApplyController extends AbstractController {
 	}
 
 	/**
-	 * 是否更新整车信息
+	 * 是否更新车型信息
 	 */
 	boolean isUpdateVehicleInfo(String v_code, String v_proTime, String v_proAddr, String v_remark) {
 		if (StringUtils.isBlank(v_code) && StringUtils.isBlank(v_proTime) && StringUtils.isBlank(v_proAddr)
@@ -798,7 +798,7 @@ public class ApplyController extends AbstractController {
 	}
 
 	/**
-	 * 是否更新原材料信息
+	 * 是否更新材料信息
 	 * 
 	 * @return
 	 */
@@ -814,7 +814,7 @@ public class ApplyController extends AbstractController {
 	}
 
 	/**
-	 * 组装整车信息
+	 * 组装车型信息
 	 */
 	void assembleVehicleInfo(Vehicle vehicle, String v_code, String v_proTime, String v_proAddr, String v_remark,
 			Date date) {
@@ -844,10 +844,10 @@ public class ApplyController extends AbstractController {
 	}
 
 	/**
-	 * 组装零部件信息
+	 * 组装零件信息
 	 */
 	void assemblePartsInfo(Parts parts, String p_code, String p_name, String p_proTime, String p_place, String p_proNo,
-			String p_producer, String p_remark, Date date, int p_num, String p_producerCode) {
+			String p_producer, String p_remark, Date date, Integer p_num, String p_producerCode) {
 
 		if (StringUtils.isNotBlank(p_code)) {
 			parts.setCode(p_code);
@@ -885,14 +885,16 @@ public class ApplyController extends AbstractController {
 			parts.setRemark(p_remark);
 		}
 
-		parts.setNum(p_num);
+		if (p_num != null) {
+			parts.setNum(p_num);
+		}
 		parts.setCreateTime(date);
 		parts.setId(null);
 		parts.setState(0);
 	}
 
 	/**
-	 * 组装原材料信息
+	 * 组装材料信息
 	 */
 	void assembleMaterialInfo(Material material, String m_matName, String m_matColor, String m_proNo, String m_producer,
 			String m_matNo, String m_remark, Date date, int m_num) throws Exception {
@@ -947,7 +949,7 @@ public class ApplyController extends AbstractController {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String dateStr = sdf.format(date);
 
-		// 零部件-图谱结果（只取最后一次实验）
+		// 零件-图谱结果（只取最后一次实验）
 		Map<String, Object> pAtMap = new HashMap<String, Object>();
 		pAtMap.put("tId", taskId);
 		pAtMap.put("expNo", atlasResultService.getExpNoByCatagory(taskId, 1));
@@ -1035,7 +1037,7 @@ public class ApplyController extends AbstractController {
 			}
 		}
 
-		// 原材料-图谱结果（只取最后一次实验）
+		// 材料-图谱结果（只取最后一次实验）
 		Map<String, Object> mAtMap = new HashMap<String, Object>();
 		mAtMap.put("tId", taskId);
 		mAtMap.put("catagory", 2);

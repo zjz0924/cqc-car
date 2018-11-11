@@ -381,7 +381,7 @@ public class CostController extends AbstractController {
 					String labType = "";
 
 					if (costRecord.getLabType() == 1) {
-						labType = "零部件图谱";
+						labType = "零件图谱";
 
 						if (StringUtils.isNotBlank(costRecord.getTask().getPartsAtlCode())) {
 							labCode = costRecord.getTask().getPartsAtlCode();
@@ -392,7 +392,7 @@ public class CostController extends AbstractController {
 						}
 
 					} else if (costRecord.getLabType() == 2) {
-						labType = "零部件型式";
+						labType = "零件型式";
 
 						if (StringUtils.isNotBlank(costRecord.getTask().getPartsPatCode())) {
 							labCode = costRecord.getTask().getPartsPatCode();
@@ -403,7 +403,7 @@ public class CostController extends AbstractController {
 						}
 
 					} else if (costRecord.getLabType() == 3) {
-						labType = "原材料图谱";
+						labType = "材料图谱";
 
 						if (StringUtils.isNotBlank(costRecord.getTask().getMatAtlCode())) {
 							labCode = costRecord.getTask().getMatAtlCode();
@@ -414,7 +414,7 @@ public class CostController extends AbstractController {
 						}
 
 					} else {
-						labType = "原材料型式";
+						labType = "材料型式";
 
 						if (StringUtils.isNotBlank(costRecord.getTask().getMatPatCode())) {
 							labCode = costRecord.getTask().getMatPatCode();

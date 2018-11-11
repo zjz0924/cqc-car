@@ -15,12 +15,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.wow.common.dao.AtlasResultDao;
 import cn.wow.common.dao.CostRecordDao;
 import cn.wow.common.dao.EmailRecordDao;
 import cn.wow.common.dao.ExamineRecordDao;
 import cn.wow.common.dao.InfoDao;
+import cn.wow.common.dao.LabConclusionDao;
+import cn.wow.common.dao.LabReqDao;
 import cn.wow.common.dao.MaterialDao;
 import cn.wow.common.dao.PartsDao;
+import cn.wow.common.dao.PfResultDao;
+import cn.wow.common.dao.ReasonDao;
 import cn.wow.common.dao.TaskDao;
 import cn.wow.common.dao.TaskRecordDao;
 import cn.wow.common.dao.VehicleDao;
@@ -87,6 +93,16 @@ public class TaskServiceImpl implements TaskService {
 	private OperationLogService operationLogService;
 	@Autowired
 	private CommonService commonService;
+	@Autowired
+	private LabConclusionDao labConclusionDao;
+	@Autowired
+	private LabReqDao labReqDao;
+	@Autowired
+	private PfResultDao pfResultDao;
+	@Autowired
+	private AtlasResultDao atlasResultDao;
+	@Autowired
+	private ReasonDao reasonDao;
 
 	public Task selectOne(Long id) {
 		return taskDao.selectOne(id);
@@ -101,6 +117,27 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	public int deleteByPrimaryKey(String userName, Task task) {
+		// 试验结论
+		labConclusionDao.deleteByPrimaryKey(task.getId());
+		// 实验要求
+		labReqDao.deleteByTaskId(task.getId());
+		// 型式试验
+		pfResultDao.deleteByPrimaryKey(task.getId());
+		// 图谱试验
+		atlasResultDao.deleteByPrimaryKey(task.getId());
+		// 抽样原因
+		if (task.getReasonId() != null) {
+			reasonDao.deleteByPrimaryKey(task.getReasonId());
+		}
+		// 任务记录
+		taskRecordDao.deleteByCode(task.getCode());
+		// 费用记录
+		costRecordDao.deleteByPrimaryKey(task.getId());
+		// 邮件
+		emailRecordDao.deleteByPrimaryKey(task.getId());
+		// 审核记录
+		examineRecordDao.deleteByPrimaryKey(task.getId());
+
 		return taskDao.deleteByPrimaryKey(task.getId());
 	}
 
@@ -113,10 +150,10 @@ public class TaskServiceImpl implements TaskService {
 	 * 结果发送
 	 * 
 	 * @param taskId  任务ID
-	 * @param pAtlVal 零部件图谱
-	 * @param pPatVal 零部件型式
-	 * @param mAtlVal 原材料图谱
-	 * @param mPatVal 原材料型式
+	 * @param pAtlVal 零件图谱
+	 * @param pPatVal 零件型式
+	 * @param mAtlVal 材料图谱
+	 * @param mPatVal 材料型式
 	 * @param type    类型：1-发送结果， 2-不发送，直接跳过
 	 */
 	public void sendResult(Account account, Long taskId, String pAtlVal, String pPatVal, String mAtlVal, String mPatVal,
@@ -128,22 +165,22 @@ public class TaskServiceImpl implements TaskService {
 
 		if (StringUtils.isNotBlank(pAtlVal) || type.intValue() == 2) {
 			task.setPartsAtlResult(3);
-			remark += "零部件图谱试验、";
+			remark += "零件图谱试验、";
 		}
 
 		if (StringUtils.isNotBlank(pPatVal) || type.intValue() == 2) {
 			task.setPartsPatResult(3);
-			remark += "零部件型式试验、";
+			remark += "零件型式试验、";
 		}
 
 		if (StringUtils.isNotBlank(mAtlVal) || type.intValue() == 2) {
 			task.setMatAtlResult(3);
-			remark += "原材料图谱试验、";
+			remark += "材料图谱试验、";
 		}
 
 		if (StringUtils.isNotBlank(mPatVal) || type.intValue() == 2) {
 			task.setMatPatResult(3);
-			remark += "原材料型式试验、";
+			remark += "材料型式试验、";
 		}
 
 		if (StringUtils.isNotBlank(remark)) {
@@ -151,7 +188,7 @@ public class TaskServiceImpl implements TaskService {
 			remark = "发送" + remark + "结果";
 		}
 
-		// PPAP/SOP任务发送结果后，进入结果确认阶段
+		// PPAP/SOP任务发送结果后，进入结果接收阶段
 		if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
 			task.setState(SamplingTaskEnum.COMFIRM.getState());
 		}
@@ -191,11 +228,11 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	/**
-	 * 结果确认
+	 * 结果接收
 	 * 
 	 * @param taskId 任务ID
 	 * @param result 结果：1-合格，2-不合格
-	 * @param type   类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部 （针对OTS任务类型）
+	 * @param type   类型：1-零件图谱试验，2-零件型式试验，3-材料图谱试验，4-材料型式试验，5-全部 （针对OTS任务类型）
 	 * @param remark 不合格的理由
 	 * @param orgs   发送警告书的机构
 	 */
@@ -218,7 +255,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	/**
-	 * OTS 结果确认
+	 * OTS 结果接收
 	 */
 	void OtsResultConfirm(Task task, Account account, int result, int type, String remark) {
 		boolean isPass = false;
@@ -227,35 +264,35 @@ public class TaskServiceImpl implements TaskService {
 		if (result == 1) {
 			if (type == 1) {
 				task.setPartsAtlResult(4);
-				remark += "零部件图谱试验、";
+				remark += "零件图谱试验、";
 			} else if (type == 2) {
 				task.setPartsPatResult(4);
-				remark += "零部件型式试验、";
+				remark += "零件型式试验、";
 			} else if (type == 3) {
 				task.setMatAtlResult(4);
-				remark += "原材料图谱试验、";
+				remark += "材料图谱试验、";
 			} else if (type == 4) {
 				task.setMatPatResult(4);
-				remark += "原材料型式试验、";
+				remark += "材料型式试验、";
 			} else {
 				if (task.getMatAtlId() != null && task.getMatAtlResult() != 4) {
 					task.setMatAtlResult(4);
-					remark += "原材料图谱试验、";
+					remark += "材料图谱试验、";
 				}
 
 				if (task.getMatPatId() != null && task.getMatPatResult() != 4) {
 					task.setMatPatResult(4);
-					remark += "原材料型式试验、";
+					remark += "材料型式试验、";
 				}
 
 				if (task.getPartsAtlId() != null && task.getPartsAtlResult() != 4) {
 					task.setPartsAtlResult(4);
-					remark += "零部件图谱试验、";
+					remark += "零件图谱试验、";
 				}
 
 				if (task.getPartsPatId() != null && task.getPartsPatResult() != 4) {
 					task.setPartsPatResult(4);
-					remark += "零部件型式试验、";
+					remark += "零件型式试验、";
 				}
 				isPass = true;
 			}
@@ -265,15 +302,57 @@ public class TaskServiceImpl implements TaskService {
 				remark = remark + "结果接收";
 			}
 
-			// 所有实验已确认
-			if (task.getType() == TaskTypeEnum.OTS.getState()) {
-				if (task.getMatAtlResult() == 4 && task.getPartsAtlResult() == 4) {
-					isPass = true;
-				}
-			} else if (task.getType() == TaskTypeEnum.GS.getState()) {
-				if (task.getMatAtlResult() == 4 && task.getMatPatResult() == 4 && task.getMatPatResult() == 4
-						&& task.getPartsPatResult() == 4) {
-					isPass = true;
+			// 所有实验已确认（可以单独分开接收结果）
+			if (!isPass) {
+				if (task.getType() == TaskTypeEnum.OTS.getState()) {
+					if (task.getMatAtlId() != null) {
+						if (task.getMatAtlResult() == 4) {
+							isPass = true;
+						} else {
+							isPass = false;
+						}
+					}
+
+					if (task.getPartsAtlId() != null) {
+						if (task.getPartsAtlResult() == 4) {
+							isPass = true;
+						} else {
+							isPass = false;
+						}
+					}
+				} else if (task.getType() == TaskTypeEnum.GS.getState()) {
+					// 有做实验的都必须接收才是完成
+					if (task.getPartsAtlId() != null) {
+						if (task.getPartsAtlResult() == 4) {
+							isPass = true;
+						} else {
+							isPass = false;
+						}
+					}
+
+					if (task.getPartsPatId() != null) {
+						if (task.getPartsAtlResult() == 4) {
+							isPass = true;
+						} else {
+							isPass = false;
+						}
+					}
+
+					if (task.getMatAtlId() != null) {
+						if (task.getMatAtlResult() == 4) {
+							isPass = true;
+						} else {
+							isPass = false;
+						}
+					}
+
+					if (task.getMatPatId() != null) {
+						if (task.getMatPatResult() == 4) {
+							isPass = true;
+						} else {
+							isPass = false;
+						}
+					}
 				}
 			}
 
@@ -301,36 +380,36 @@ public class TaskServiceImpl implements TaskService {
 			if (type == 1) {
 				task.setPartsAtlResult(0);
 				task.setPartsAtlId(null);
-				temp += "零部件图谱试验、";
+				temp += "零件图谱试验、";
 			} else if (type == 2) {
 				task.setPartsPatResult(0);
 				task.setPartsPatId(null);
-				temp += "零部件型式试验、";
+				temp += "零件型式试验、";
 			} else if (type == 3) {
 				task.setMatAtlResult(0);
 				task.setMatAtlId(null);
-				temp += "原材料图谱试验、";
+				temp += "材料图谱试验、";
 			} else if (type == 4) {
 				task.setMatPatResult(0);
 				task.setMatPatId(null);
-				temp += "原材料型式试验、";
+				temp += "材料型式试验、";
 			} else {
 
 				task.setPartsAtlResult(0);
 				task.setPartsAtlId(null);
-				temp += "零部件图谱试验、";
+				temp += "零件图谱试验、";
 
 				task.setPartsPatResult(0);
 				task.setPartsPatId(null);
-				temp += "零部件型式试验、";
+				temp += "零件型式试验、";
 
 				task.setMatAtlResult(0);
 				task.setMatAtlId(null);
-				temp += "原材料图谱试验、";
+				temp += "材料图谱试验、";
 
 				task.setMatPatResult(0);
 				task.setMatPatId(null);
-				temp += "原材料型式试验、";
+				temp += "材料型式试验、";
 			}
 
 			if (StringUtils.isNotBlank(temp)) {
@@ -368,7 +447,7 @@ public class TaskServiceImpl implements TaskService {
 		costRecordDao.batchAdd(costRecordList);
 
 		if (StringUtils.isBlank(remark)) {
-			remark = "结果确认，结果合格";
+			remark = "结果接收，结果合格";
 		}
 
 		// 操作日志
@@ -377,7 +456,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	/**
-	 * PPAP 任务结果确认
+	 * PPAP 任务结果接收
 	 */
 	void PpapResultConfirm(Task task, Account account, int result, String remark, String orgs) throws Exception {
 		Date date = new Date();
@@ -485,7 +564,7 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	/**
-	 * 基准保存： 修改信息、零部件、原材料、整车信息的状态为已审核
+	 * 基准保存： 修改信息、零件、材料、车型信息的状态为已审核
 	 */
 	public void saveStandard(Account account, Task task) {
 		Integer state = 1;
@@ -495,14 +574,14 @@ public class TaskServiceImpl implements TaskService {
 		info.setState(state);
 		infoDao.update(info);
 
-		// 原材料
+		// 材料
 		Material material = materialDao.selectOne(info.getmId());
 		if (material.getState() == 0) {
 			material.setState(state);
 			materialDao.update(material);
 		}
 
-		// 整车
+		// 车型
 		Vehicle vehicle = vehicleDao.selectOne(info.getvId());
 		if (vehicle.getState() == 0) {
 			vehicle.setState(state);
@@ -510,7 +589,7 @@ public class TaskServiceImpl implements TaskService {
 		}
 
 		if (task.getType() == TaskTypeEnum.OTS.getState()) {
-			// 零部件
+			// 零件
 			Parts parts = partsDao.selectOne(info.getpId());
 			if (parts.getState() == 0) {
 				parts.setState(state);
@@ -523,7 +602,6 @@ public class TaskServiceImpl implements TaskService {
 				"基准信息已保存", new Date(), task.getType());
 		taskRecordDao.insert(taskRecord);
 	}
-
 
 	/**
 	 * 发送邮件
@@ -545,25 +623,25 @@ public class TaskServiceImpl implements TaskService {
 		String lab = "";
 
 		if (type == 1) {
-			lab = "零部件图谱试验";
+			lab = "零件图谱试验";
 
 			if (task.getPartsAtl() != null) {
 				labOrg = task.getPartsAtl().getName();
 			}
 		} else if (type == 2) {
-			lab = "零部件型式试验";
+			lab = "零件型式试验";
 
 			if (task.getPartsPat() != null) {
 				labOrg = task.getPartsPat().getName();
 			}
 		} else if (type == 3) {
-			lab = "原材料图谱试验";
+			lab = "材料图谱试验";
 
 			if (task.getMatAtl() != null) {
 				labOrg = task.getMatAtl().getName();
 			}
 		} else if (type == 4) {
-			lab = "原材料型式试验";
+			lab = "材料型式试验";
 
 			if (task.getMatPat() != null) {
 				labOrg = task.getMatPat().getName();
@@ -580,8 +658,8 @@ public class TaskServiceImpl implements TaskService {
 			for (String email : emailArray) {
 				if (StringUtils.isNotBlank(email)) {
 					// 邮件记录
-					EmailRecord emailRecord = new EmailRecord(titleTemplate, contentTemp, email, task.getId(), account.getId(),
-							EmailTypeEnum.RESULT, mailUser, date);
+					EmailRecord emailRecord = new EmailRecord(titleTemplate, contentTemp, email, task.getId(),
+							account.getId(), EmailTypeEnum.RESULT, mailUser, date);
 					emailRecordList.add(emailRecord);
 				}
 			}
@@ -602,7 +680,7 @@ public class TaskServiceImpl implements TaskService {
 	 * @param account 操作人
 	 * @param date    时间
 	 * @param task    任务
-	 * @param type    类型： 1-零部件图谱，2-零部件型式，3-原材料图谱，4-原材料型式
+	 * @param type    类型： 1-零件图谱，2-零件型式，3-材料图谱，4-材料型式
 	 * @param result  实验结果（1-合格，2-不合格）
 	 */
 	CostRecord getCostRecord(Account account, Date date, Task task, int type, int result) {

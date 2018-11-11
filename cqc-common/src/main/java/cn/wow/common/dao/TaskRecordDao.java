@@ -5,4 +5,6 @@ import java.util.List;
 public interface TaskRecordDao extends SqlDao{
 
 	public List<Long> selectTaskIdList(Long id);
+	
+	public void deleteByCode(String code);
 }

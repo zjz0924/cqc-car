@@ -54,6 +54,7 @@ import cn.wow.common.service.AtlasResultService;
 import cn.wow.common.service.AttachService;
 import cn.wow.common.service.CarCodeService;
 import cn.wow.common.service.DepartmentService;
+import cn.wow.common.service.ExamineRecordService;
 import cn.wow.common.service.InfoService;
 import cn.wow.common.service.LabConclusionService;
 import cn.wow.common.service.LabReqService;
@@ -85,7 +86,7 @@ public class ResultController extends AbstractController {
 	private final static String SEND_DEFAULT_PAGE_SIZE = "10";
 	// 任务记录列表
 	private final static String RECORD_DEFAULT_PAGE_SIZE = "10";
-	// 结果确认列表
+	// 结果接收列表
 	private final static String CONFIRM_DEFAULT_PAGE_SIZE = "10";
 	// 结果对比列表
 	private final static String COMPARE_DEFAULT_PAGE_SIZE = "10";
@@ -122,6 +123,8 @@ public class ResultController extends AbstractController {
 	private AttachService attachService;
 	@Autowired
 	private DepartmentService departmentService;
+	@Autowired
+	private ExamineRecordService examineRecordService;
 
 	// ----------------------------------- 结果上传
 	// ---------------------------------------------------------------
@@ -134,7 +137,7 @@ public class ResultController extends AbstractController {
 	@RequestMapping(value = "/uploadList")
 	public String uploadList(HttpServletRequest request, HttpServletResponse response, Model model, int type) {
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		Menu menu = null;
 
 		if (type == 1) {
@@ -154,13 +157,13 @@ public class ResultController extends AbstractController {
 		List<CarCode> carCodeList = carCodeService.getCarCodeList();
 		model.addAttribute("addressList", addressList);
 		model.addAttribute("carCodeList", carCodeList);
-		
+
 		// 是否是实验室用户
 		int isLabUser = 0;
-		if(account.getOrg() != null && account.getOrg().getType() == 3) {
+		if (account.getOrg() != null && account.getOrg().getType() == 3) {
 			isLabUser = 1;
 		}
-		model.addAttribute("isLabUser",  isLabUser);
+		model.addAttribute("isLabUser", isLabUser);
 
 		return "result/upload_list";
 	}
@@ -250,9 +253,9 @@ public class ResultController extends AbstractController {
 		}
 
 		if (type == 1) {
-			// 零部件试验次数
+			// 零件试验次数
 			int pNum = pfResultService.getExpNoByCatagory(id, 1);
-			// 原材料试验次数
+			// 材料试验次数
 			int mNum = pfResultService.getExpNoByCatagory(id, 2);
 
 			model.addAttribute("pNum", pNum + 1);
@@ -272,12 +275,12 @@ public class ResultController extends AbstractController {
 	 * 图谱结果上传
 	 * 
 	 * @param taskId   任务ID
-	 * @param p_tgLab  零部件热重分析描述
-	 * @param p_infLab 零部件红外光分析描述
-	 * @param p_dtLab  零部件差热扫描描述
-	 * @param m_tgLab  原材料热重分析描述
-	 * @param m_infLab 原材料红外光分析描述
-	 * @param m_dtLab  原材料差热扫描描述
+	 * @param p_tgLab  零件热重分析描述
+	 * @param p_infLab 零件红外光分析描述
+	 * @param p_dtLab  零件差热扫描描述
+	 * @param m_tgLab  材料热重分析描述
+	 * @param m_infLab 材料红外光分析描述
+	 * @param m_dtLab  材料差热扫描描述
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/atlasUpload")
@@ -299,9 +302,9 @@ public class ResultController extends AbstractController {
 			Date date = new Date();
 			List<AtlasResult> dataList = new ArrayList<AtlasResult>();
 
-			/** 零部件结果 **/
+			/** 零件结果 **/
 			if (p_tgfile != null) {
-				// 零部件试验次数
+				// 零件试验次数
 				int pNum = atlasResultService.getExpNoByCatagory(taskId, 1);
 
 				// 样品照片
@@ -334,9 +337,9 @@ public class ResultController extends AbstractController {
 				dataList.add(p_temp);
 			}
 
-			/** 原材料结果 **/
+			/** 材料结果 **/
 			if (m_tgfile != null) {
-				// 原材料试验次数
+				// 材料试验次数
 				int mNum = atlasResultService.getExpNoByCatagory(taskId, 2);
 
 				// 样品照片
@@ -551,9 +554,9 @@ public class ResultController extends AbstractController {
 				Map<Integer, List<PfResult>> mPfResult = new HashMap<Integer, List<PfResult>>();
 				pfResultService.assemblePfResult(pfDataList, pPfResult, mPfResult);
 
-				// 原材料型式结果
+				// 材料型式结果
 				model.addAttribute("mPfResult", mPfResult);
-				// 零部件型式结果
+				// 零件型式结果
 				model.addAttribute("pPfResult", pPfResult);
 
 				// 型式结果附件
@@ -571,9 +574,9 @@ public class ResultController extends AbstractController {
 				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 				atlasResultService.assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
 
-				// 原材料图谱结果
+				// 材料图谱结果
 				model.addAttribute("mAtlasResult", mAtlasResult);
-				// 零部件图谱结果
+				// 零件图谱结果
 				model.addAttribute("pAtlasResult", pAtlasResult);
 			}
 
@@ -621,10 +624,10 @@ public class ResultController extends AbstractController {
 	 * 结果发送
 	 * 
 	 * @param taskId  任务ID
-	 * @param pAtlVal 零部件图谱
-	 * @param pPatVal 零部件型式
-	 * @param mAtlVal 原材料图谱
-	 * @param mPatVal 原材料型式
+	 * @param pAtlVal 零件图谱
+	 * @param pPatVal 零件型式
+	 * @param mAtlVal 材料图谱
+	 * @param mPatVal 材料型式
 	 * @param type    类型：1-发送结果， 2-不发送，直接跳过
 	 */
 	@ResponseBody
@@ -668,11 +671,11 @@ public class ResultController extends AbstractController {
 		return "result/account_list";
 	}
 
-	// ----------------------------------- 结果确认
+	// ----------------------------------- 结果接收
 	// ---------------------------------------------------------------
 
 	/**
-	 * 结果确认列表
+	 * 结果接收列表
 	 * 
 	 * @param type 类型：1-待上传结果，2-已上传结果
 	 */
@@ -715,7 +718,7 @@ public class ResultController extends AbstractController {
 			String applicat_depart, Long applicat_org) {
 
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -725,9 +728,11 @@ public class ResultController extends AbstractController {
 		Map<String, Object> map = new PageMap(request);
 		map.put("custom_order_sql", "t.create_time desc");
 
-		// 申请的人来接收
-		map.put("applicatId", account.getId());
-		
+		// 申请的人来接收, 超级管理员具有所有的权限
+		if (account.getRole() == null || !Contants.SUPER_ROLE_CODE.equals(account.getRole().getCode())) {
+			map.put("applicatId", account.getId());
+		}
+
 		if (type == 1) {
 			map.put("confirmTask_wait", true);
 		} else {
@@ -758,29 +763,67 @@ public class ResultController extends AbstractController {
 
 		List<Task> dataList = taskService.selectAllList(map);
 
-		// 试验结论
 		if (dataList != null && dataList.size() > 0) {
 			List<Long> idList = new ArrayList<Long>();
+			List<Long> samplingIdList = new ArrayList<Long>();
 
 			for (Task task : dataList) {
-				idList.add(task.getId());
+				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					samplingIdList.add(task.getId());
+				} else {
+					idList.add(task.getId());
+				}
 			}
-			Map<String, Object> labMap = new HashMap<String, Object>();
-			labMap.put("list", idList);
-			List<LabConclusion> conclusionList = labConclusionService.batchQuery(labMap);
 
-			if (conclusionList != null && conclusionList.size() > 0) {
-				for (Task task : dataList) {
-					for (LabConclusion conclusion : conclusionList) {
-						if (conclusion.getTaskId().longValue() == task.getId().longValue()) {
-							if (conclusion.getType() == 1) {
-								task.setPartsAtlConclusion(conclusion.getConclusion());
-							} else if (conclusion.getType() == 2) {
-								task.setMatAtlConclusion(conclusion.getConclusion());
-							} else if (conclusion.getType() == 3) {
-								task.setPartsPatConclusion(conclusion.getConclusion());
-							} else {
-								task.setMatPatConclusion(conclusion.getConclusion());
+			// 试验结论
+			List<LabConclusion> conclusionList = null;
+			if (idList != null && samplingIdList.size() > 0) {
+				Map<String, Object> labMap = new HashMap<String, Object>();
+				labMap.put("list", idList);
+				conclusionList = labConclusionService.batchQuery(labMap);
+			}
+
+			// 对比结果
+			List<ExamineRecord> examineRecord = null;
+			if (samplingIdList != null && samplingIdList.size() > 0) {
+				Map<String, Object> eMap = new PageMap(false);
+
+				List<Integer> categroyList = new ArrayList<Integer>();
+				categroyList.add(4);
+				categroyList.add(8);
+
+				eMap.put("type", 4);
+				eMap.put("catagoryList", categroyList);
+				eMap.put("tIdList", samplingIdList);
+				examineRecord = examineRecordService.selectAllList(eMap);
+			}
+
+			for (Task task : dataList) {
+				if (task.getType() == TaskTypeEnum.PPAP.getState() || task.getType() == TaskTypeEnum.SOP.getState()) {
+					if (examineRecord != null && examineRecord.size() > 0) {
+						for (ExamineRecord examine : examineRecord) {
+							if (examine.gettId().longValue() == task.getId().longValue()) {
+								if (examine.getCatagory() == 4) {
+									task.setPartsAtlConclusion(examine.getState() == 1 ? "一致" : "不一致");
+								} else if (examine.getCatagory() == 8) {
+									task.setMatAtlConclusion(examine.getState() == 1 ? "一致" : "不一致");
+								}
+							}
+						}
+					}
+				} else {
+					if (conclusionList != null && conclusionList.size() > 0) {
+						for (LabConclusion conclusion : conclusionList) {
+							if (conclusion.getTaskId().longValue() == task.getId().longValue()) {
+								if (conclusion.getType() == 1) {
+									task.setPartsAtlConclusion(conclusion.getConclusion());
+								} else if (conclusion.getType() == 2) {
+									task.setMatAtlConclusion(conclusion.getConclusion());
+								} else if (conclusion.getType() == 3) {
+									task.setPartsPatConclusion(conclusion.getConclusion());
+								} else {
+									task.setMatPatConclusion(conclusion.getConclusion());
+								}
 							}
 						}
 					}
@@ -811,7 +854,7 @@ public class ResultController extends AbstractController {
 			List<LabConclusion> conclusionList = labConclusionService.selectByTaskId(id);
 
 			if (task.getType() == TaskTypeEnum.OTS.getState() || task.getType() == TaskTypeEnum.GS.getState()) { // OTS/GS
-																													// 结果确认
+																													// 结果接收
 				// 性能结果
 				Map<String, Object> pfMap = new HashMap<String, Object>();
 				pfMap.put("tId", id);
@@ -832,13 +875,13 @@ public class ResultController extends AbstractController {
 				Map<Integer, List<AtlasResult>> mAtlasResult = new HashMap<Integer, List<AtlasResult>>();
 				atlasResultService.assembleAtlasResult(atDataList, pAtlasResult, mAtlasResult);
 
-				// 原材料图谱结果
+				// 材料图谱结果
 				model.addAttribute("mAtlasResult", mAtlasResult);
-				// 零部件图谱结果
+				// 零件图谱结果
 				model.addAttribute("pAtlasResult", pAtlasResult);
-				// 原材料型式结果
+				// 材料型式结果
 				model.addAttribute("mPfResult", mPfResult);
-				// 零部件型式结果
+				// 零件型式结果
 				model.addAttribute("pPfResult", pPfResult);
 
 				if (conclusionList != null && conclusionList.size() > 0) {
@@ -872,10 +915,10 @@ public class ResultController extends AbstractController {
 				List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
 				groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
 
-				// 零部件图谱结果
+				// 零件图谱结果
 				Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult,
 						sl_pAtlasResult);
-				// 原材料图谱结果
+				// 材料图谱结果
 				Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult,
 						sl_mAtlasResult);
 				// 对比结果
@@ -905,11 +948,11 @@ public class ResultController extends AbstractController {
 	}
 
 	/**
-	 * 结果确认
+	 * 结果接收
 	 * 
 	 * @param taskId 任务ID
 	 * @param result 结果：1-接收，2-不接收
-	 * @param type   类型：1-零部件图谱试验，2-零部件型式试验，3-原材料图谱试验，4-原材料型式试验，5-全部 （针对OTS任务类型）
+	 * @param type   类型：1-零件图谱试验，2-零件型式试验，3-材料图谱试验，4-材料型式试验，5-全部 （针对OTS任务类型）
 	 * @param remark 不接受的理由
 	 * @param orgs   发送警告书的机构
 	 */
@@ -1000,7 +1043,7 @@ public class ResultController extends AbstractController {
 			String applicat_depart, Long applicat_org) {
 
 		Account account = (Account) request.getSession().getAttribute(Contants.CURRENT_ACCOUNT);
-		
+
 		// 设置默认记录数
 		String pageSize = request.getParameter("pageSize");
 		if (!StringUtils.isNotBlank(pageSize)) {
@@ -1068,16 +1111,16 @@ public class ResultController extends AbstractController {
 			List<AtlasResult> sl_mAtlasResult = new ArrayList<AtlasResult>();
 			groupAtlasResult(atDataList, sl_pAtlasResult, sl_mAtlasResult);
 
-			// 零部件图谱结果
+			// 零件图谱结果
 			Map<Integer, CompareVO> pAtlasResult = atlasResultService.assembleCompareAtlas(sd_pAtlasResult,
 					sl_pAtlasResult);
-			// 原材料图谱结果
+			// 材料图谱结果
 			Map<Integer, CompareVO> mAtlasResult = atlasResultService.assembleCompareAtlas(st_mAtlasResult,
 					sl_mAtlasResult);
 
-			// 原材料图谱结果
+			// 材料图谱结果
 			model.addAttribute("mAtlasResult", mAtlasResult);
-			// 零部件图谱结果
+			// 零件图谱结果
 			model.addAttribute("pAtlasResult", pAtlasResult);
 
 			model.addAttribute("facadeBean", task);
@@ -1094,26 +1137,26 @@ public class ResultController extends AbstractController {
 	 * 结果对比
 	 * 
 	 * @param taskId          任务ID
-	 * @param p_temp          零部件样品照片一致性
-	 * @param p_temp_remark   零部件样品照片结论
-	 * @param p_inf           零部件红外光一致性
-	 * @param p_inf_remark    零部件红外光结论
-	 * @param p_dt            零部件差热一致性
-	 * @param p_dt_remark     零部件差热结论
-	 * @param p_tg            零部件热重一致性
-	 * @param p_tg_remark     零部件热重光结论
-	 * @param p_result        零部件结论一致性
-	 * @param p_result_remark 零部件结论
-	 * @param m_temp          原材料样品照片一致性
-	 * @param m_temp_remark   原材料样品照片结论
-	 * @param m_inf           原材料红外光一致性
-	 * @param m_inf_remark    原材料红外光结论
-	 * @param m_dt            原材料差热一致性
-	 * @param m_dt_remark     原材料差热结论
-	 * @param m_tg            原材料热重一致性
-	 * @param m_tg_remark     原材料热重光结论
-	 * @param m_result        原材料结论一致性
-	 * @param m_result_remark 原材料结论
+	 * @param p_temp          零件样品照片一致性
+	 * @param p_temp_remark   零件样品照片结论
+	 * @param p_inf           零件红外光一致性
+	 * @param p_inf_remark    零件红外光结论
+	 * @param p_dt            零件差热一致性
+	 * @param p_dt_remark     零件差热结论
+	 * @param p_tg            零件热重一致性
+	 * @param p_tg_remark     零件热重光结论
+	 * @param p_result        零件结论一致性
+	 * @param p_result_remark 零件结论
+	 * @param m_temp          材料样品照片一致性
+	 * @param m_temp_remark   材料样品照片结论
+	 * @param m_inf           材料红外光一致性
+	 * @param m_inf_remark    材料红外光结论
+	 * @param m_dt            材料差热一致性
+	 * @param m_dt_remark     材料差热结论
+	 * @param m_tg            材料热重一致性
+	 * @param m_tg_remark     材料热重光结论
+	 * @param m_result        材料结论一致性
+	 * @param m_result_remark 材料结论
 	 * @param state           状态：1-正常，2-异常
 	 */
 	@ResponseBody
@@ -1202,7 +1245,7 @@ public class ResultController extends AbstractController {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
 		List<String> titleList = new ArrayList<String>();
-		titleList.add("类型(零部件/原材料)");
+		titleList.add("类型(零件/材料)");
 		titleList.add("试验项目");
 		titleList.add("参考标准");
 		titleList.add("试验要求");
@@ -1232,7 +1275,7 @@ public class ResultController extends AbstractController {
 				} else {
 					boolean flag = true;
 
-					if (!"类型(零部件/原材料)".equals(titleObj.get(0).toString())) {
+					if (!"类型(零件/材料)".equals(titleObj.get(0).toString())) {
 						flag = false;
 					}
 					if (flag && !"试验项目".equals(titleObj.get(1).toString())) {
@@ -1270,10 +1313,10 @@ public class ResultController extends AbstractController {
 					}
 
 					String type = obj.get(0).toString();
-					if (StringUtils.isBlank(type) || (!"零部件".equals(type) && !"原材料".equals(type))) {
+					if (StringUtils.isBlank(type) || (!"零件".equals(type) && !"材料".equals(type))) {
 						continue;
 					}
-					pf.setCatagory("零部件".equals(type) ? 1 : 2);
+					pf.setCatagory("零件".equals(type) ? 1 : 2);
 
 					if (obj.size() >= 2 && obj.get(1) != null) {
 						pf.setProject(obj.get(1).toString());
@@ -1363,7 +1406,7 @@ public class ResultController extends AbstractController {
 
 			Map<String, CellStyle> styles = ImportExcelUtil.createStyles(wb);
 
-			String[] titles = { "类型(零部件/原材料)", "试验项目", "参考标准", "试验要求", "试验结果", "结果评价", "备注" };
+			String[] titles = { "类型(零件/材料)", "试验项目", "参考标准", "试验要求", "试验结果", "结果评价", "备注" };
 			int r = 0;
 
 			Row titleRow = sh.createRow(0);
@@ -1383,7 +1426,7 @@ public class ResultController extends AbstractController {
 
 				Cell cell1 = contentRow.createCell(0);
 				cell1.setCellStyle(styles.get("cell"));
-				cell1.setCellValue(pfResult.getCatagory().intValue() == 1 ? "零部件" : "原材料");
+				cell1.setCellValue(pfResult.getCatagory().intValue() == 1 ? "零件" : "材料");
 
 				Cell cell2 = contentRow.createCell(1);
 				cell2.setCellStyle(styles.get("cell"));

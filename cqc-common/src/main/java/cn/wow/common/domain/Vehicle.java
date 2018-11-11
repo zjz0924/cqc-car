@@ -5,7 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 整车信息
+ * 车型信息
  * @author zhenjunzhuo
  * 2017-09-28
  */

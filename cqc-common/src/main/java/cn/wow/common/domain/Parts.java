@@ -6,7 +6,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 零部件信息
+ * 零件信息
  * @author zhenjunzhuo
  * 2017-09-29
  */

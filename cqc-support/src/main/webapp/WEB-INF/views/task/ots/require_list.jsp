@@ -50,7 +50,7 @@
 			        url : getDataUrl,
 			        singleSelect : true, /*是否选中一行*/
 			        width:'auto', 	
-			        height: "420px",
+			        height: "480px",
 					title: '申请列表',
 			        pagination : true,  /*是否显示下面的分页菜单*/
 			        border:false,
@@ -292,7 +292,7 @@
 					}
 				});
 				
-				// 零部件供应商
+				// 零件供应商
 				$("#parts_producer").autocomplete("${ctx}/ots/getProducerList?type=1", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象
@@ -310,7 +310,7 @@
 					$("#parts_producer").val(obj.text);
 				});
 				
-				// 原材料供应商
+				// 材料供应商
 				$("#mat_producer").autocomplete("${ctx}/ots/getProducerList?type=2", {
 					formatItem: function(row,i,max) {
 						var obj =eval("(" + row + ")");//转换成js对象

@@ -12,7 +12,7 @@ public enum SamplingTaskEnum {
 	UPLOAD(3, "结果上传中"), 
 	COMPARE(4, "对比中"),
 	SENDING(5, "结果发送中"),
-	COMFIRM(6, "结果确认中"),
+	COMFIRM(6, "结果接收中"),
 	ACCOMPLISH(7, "完成"),
 	APPLYING(8, "申请修改"),
 	APPLY_NOTPASS(9, "申请不通过"),

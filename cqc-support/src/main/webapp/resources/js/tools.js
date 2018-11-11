@@ -405,7 +405,7 @@ function getTaskRecordState(taskType, state){
 		}else if(state == 8){
 			str = "结果发送";
 		}else if(state == 9){
-			str = "结果确认";
+			str = "结果接收";
 		}else if(state == 10){
 			str = "基准保存";
 		}else if(state == 11){
@@ -437,7 +437,7 @@ function getTaskRecordState(taskType, state){
 		}else if(state == 7){
 			str = "结果发送";
 		}else if(state == 8){
-			str = "结果确认";
+			str = "结果接收";
 		}else if(state == 9){
 			str = "结果留存";
 		}else if(state == 10){

@@ -112,13 +112,13 @@ public class CostRecordServiceImpl implements CostRecordService {
 		// 操作日志
 		String lab = "";
 		if (costRecord.getLabType() == 1) {
-			lab = "零部件图谱试验费用单";
+			lab = "零件图谱试验费用单";
 		} else if (costRecord.getLabType() == 2) {
-			lab = "零部件型式试验费用单";
+			lab = "零件型式试验费用单";
 		} else if (costRecord.getLabType() == 3) {
-			lab = "原材料图谱试验费用单";
+			lab = "材料图谱试验费用单";
 		} else {
-			lab = "原材料型式试验费用单";
+			lab = "材料型式试验费用单";
 		}
 		String logDetail = "任务：" + costRecord.getTask().getCode() + "," + lab;
 		addLog(account.getUserName(), OperationType.SEND_COST, ServiceType.COST, logDetail);
@@ -147,13 +147,13 @@ public class CostRecordServiceImpl implements CostRecordService {
 
 			String labType = "";
 			if (costRecord.getLabType() == 1) {
-				labType = "零部件图谱试验";
+				labType = "零件图谱试验";
 			} else if (costRecord.getLabType() == 2) {
-				labType = "零部件型式试验";
+				labType = "零件型式试验";
 			} else if (costRecord.getLabType() == 3) {
-				labType = "原材料图谱试验";
+				labType = "材料图谱试验";
 			} else {
-				labType = "原材料型式试验";
+				labType = "材料型式试验";
 			}
 			costContent = MessageFormat.format(costContent, new Object[] { costRecord.getTask().getCode(), labType });
 

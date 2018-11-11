@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
- * 零部件材料信息
+ * 零件材料信息
  * @author zhenjunzhuo
  * 2017-09-30
  */

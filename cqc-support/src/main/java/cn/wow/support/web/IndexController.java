@@ -191,7 +191,7 @@ public class IndexController {
 				compareNum = taskService.getTaskNum(qMap);
 			}
 
-			// 结果确认-待上传
+			// 结果接收-待上传
 			if (isHasPermission(permissionMap, "waitConfirm")) {
 				if (waitConfirmNum == -1) {
 					waitConfirmNum = 0;
@@ -203,7 +203,7 @@ public class IndexController {
 				waitConfirmNum = taskService.getTaskNum(qMap);
 			}
 
-			// 结果确认已上传
+			// 结果接收已上传
 			if (isHasPermission(permissionMap, "finishConfirm")) {
 				if (finishConfirmNum == -1) {
 					finishConfirmNum = 0;
