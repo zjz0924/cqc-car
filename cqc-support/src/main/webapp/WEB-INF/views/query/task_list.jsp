@@ -91,17 +91,20 @@
 									if(row.type == 1){
 										if(isNull(row.partsAtlId) && isNull(row.matAtlId)){
 											str = "下达任务中";
+											def = false;
 										}else if((row.state == 3 && ((row.partsAtlResult == 0 && !isNull(row.partsAtlId)) || ( row.matAtlResult == 0 && !isNull(row.matAtlId) ))) || (row.infoApply == 1 || (row.resultApply == 1 || !isNull(row.tId)))){
 											str = "审批中";
+											def = false;
 										}
-										def = false;
+										
 									}else{
 										if((( isNull(row.matAtlId) || isNull(row.matPatId) || isNull(row.partsAtlId) || isNull(row.partsPatId)) || (( row.matAtlResult == 0 && !isNull(row.matAtlId)) || ( row.matPatResult == 0 && isNull(row.matPatId)) || ( row.partsPatResult == 0 && isNull(row.partsPatId)) || ( row.partsAtlResult = 0 && isNull(row.partsAtlId)))) && (row.partsAtlResult <= 1 && row.matAtlResult <= 1 && row.matPatResult <= 1 && row.partsPatResult <= 1 )){
 											str = "下达任务中";
+											def = false;
 										}else if((row.state == 3 && ((row.matAtlResult = 0 && !isNull(row.matAtlId)) || (row.matPatResult = 0 && !isNull(row.matPatId) ) || (row.partsPatResult = 0 && !isNull(row.partsPatId)) || (row.partsAtlResult = 0 && !isNull(row.partsAtlId)))) || (row.infoApply = 1 || (row.resultApply = 1 && !isNull(tId)))){
 											str = "审批中";
+											def = false;
 										}
-										def = false;
 									}
 									
 									if(def){
@@ -110,7 +113,7 @@
 										}else if(row.partsAtlResult == 2 || row.matAtlResult == 2 || row. matPatResult == 2 || row.partsPatResult == 2){
 											str = "结果发送中";
 										}else{
-											str = "结果确认中";
+											str = "结果接收中";
 										}
 									}
 								}else if(row.state == 4){
